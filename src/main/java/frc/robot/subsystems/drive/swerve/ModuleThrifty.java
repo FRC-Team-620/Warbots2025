@@ -18,8 +18,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import frc.robot.subsystems.drive.DriveConstants;
-import frc.robot.subsystems.drive.ModuleIOInputsAutoLogged;
+import frc.robot.subsystems.drive.DriveConstants.thriftyConstants;
+// import frc.robot.subsystems.drive.ModuleIOInputsAutoLogged;
 import org.littletonrobotics.junction.Logger;
 
 public class ModuleThrifty {
@@ -52,7 +52,7 @@ public class ModuleThrifty {
     odometryPositions = new SwerveModulePosition[sampleCount];
     for (int i = 0; i < sampleCount; i++) {
       double positionMeters =
-          inputs.odometryDrivePositionsRad[i] * DriveConstants.thriftySwerve.wheelRadiusMeters;
+          inputs.odometryDrivePositionsRad[i] * thriftyConstants.wheelRadiusMeters;
       Rotation2d angle = inputs.odometryTurnPositions[i];
       odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
     }
@@ -69,8 +69,7 @@ public class ModuleThrifty {
     state.cosineScale(inputs.turnPosition);
 
     // Apply setpoints
-    io.setDriveVelocity(
-        state.speedMetersPerSecond / DriveConstants.thriftySwerve.wheelRadiusMeters);
+    io.setDriveVelocity(state.speedMetersPerSecond / thriftyConstants.wheelRadiusMeters);
     io.setTurnPosition(state.angle);
   }
 
@@ -93,12 +92,12 @@ public class ModuleThrifty {
 
   /** Returns the current drive position of the module in meters. */
   public double getPositionMeters() {
-    return inputs.drivePositionRad * DriveConstants.thriftySwerve.wheelRadiusMeters;
+    return inputs.drivePositionRad * thriftyConstants.wheelRadiusMeters;
   }
 
   /** Returns the current drive velocity of the module in meters per second. */
   public double getVelocityMetersPerSec() {
-    return inputs.driveVelocityRadPerSec * DriveConstants.thriftySwerve.wheelRadiusMeters;
+    return inputs.driveVelocityRadPerSec * thriftyConstants.wheelRadiusMeters;
   }
 
   /** Returns the module position (turn angle and drive position). */

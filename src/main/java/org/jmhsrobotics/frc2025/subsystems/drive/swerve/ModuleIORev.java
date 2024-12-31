@@ -11,10 +11,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-package frc.robot.subsystems.drive.swerve;
+package org.jmhsrobotics.frc2025.subsystems.drive.swerve;
 
-import static frc.robot.subsystems.drive.DriveConstants.*;
-import static frc.robot.util.SparkUtil.*;
+import static org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants.*;
+import static org.jmhsrobotics.frc2025.util.SparkUtil.*;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
@@ -24,7 +24,6 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
-import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
@@ -34,16 +33,16 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.subsystems.drive.DriveConstants.thriftyConstants;
-import frc.robot.subsystems.drive.SparkOdometryThread;
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
+import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants.revConstants;
+import org.jmhsrobotics.frc2025.subsystems.drive.SparkOdometryThread;
 
 /**
  * Module IO implementation for Spark Flex drive motor controller, Spark Max turn motor controller,
  * and duty cycle absolute encoder.
  */
-public class ModuleIOThrifty implements ModuleIO {
+public class ModuleIORev implements ModuleIO {
   private final Rotation2d zeroRotation;
 
   // Hardware objects
@@ -65,7 +64,7 @@ public class ModuleIOThrifty implements ModuleIO {
   private final Debouncer driveConnectedDebounce = new Debouncer(0.5);
   private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
 
-  public ModuleIOThrifty(int module) {
+  public ModuleIORev(int module) {
     zeroRotation =
         switch (module) {
           case 0 -> frontLeftZeroRotation;
@@ -75,22 +74,22 @@ public class ModuleIOThrifty implements ModuleIO {
           default -> new Rotation2d();
         };
     driveSpark =
-        new SparkFlex(
+        new SparkMax(
             switch (module) {
-              case 0 -> thriftyConstants.frontLeftDriveCanId;
-              case 1 -> thriftyConstants.frontRightDriveCanId;
-              case 2 -> thriftyConstants.backLeftDriveCanId;
-              case 3 -> thriftyConstants.backRightDriveCanId;
+              case 0 -> revConstants.frontLeftDriveCanId;
+              case 1 -> revConstants.frontRightDriveCanId;
+              case 2 -> revConstants.backLeftDriveCanId;
+              case 3 -> revConstants.backRightDriveCanId;
               default -> 0;
             },
             MotorType.kBrushless);
     turnSpark =
         new SparkMax(
             switch (module) {
-              case 0 -> thriftyConstants.frontLeftTurnCanId;
-              case 1 -> thriftyConstants.frontRightTurnCanId;
-              case 2 -> thriftyConstants.backLeftTurnCanId;
-              case 3 -> thriftyConstants.backRightTurnCanId;
+              case 0 -> revConstants.frontLeftTurnCanId;
+              case 1 -> revConstants.frontRightTurnCanId;
+              case 2 -> revConstants.backLeftTurnCanId;
+              case 3 -> revConstants.backRightTurnCanId;
               default -> 0;
             },
             MotorType.kBrushless);
@@ -103,20 +102,20 @@ public class ModuleIOThrifty implements ModuleIO {
     var driveConfig = new SparkFlexConfig();
     driveConfig
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(thriftyConstants.driveMotorCurrentLimit)
+        .smartCurrentLimit(revConstants.driveMotorCurrentLimit)
         .voltageCompensation(12.0);
     driveConfig
         .encoder
-        .positionConversionFactor(thriftyConstants.driveEncoderPositionFactor)
-        .velocityConversionFactor(thriftyConstants.driveEncoderVelocityFactor)
+        .positionConversionFactor(revConstants.driveEncoderPositionFactor)
+        .velocityConversionFactor(revConstants.driveEncoderVelocityFactor)
         .uvwMeasurementPeriod(10)
         .uvwAverageDepth(2);
     driveConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pidf(
-            thriftyConstants.driveKp, 0.0,
-            thriftyConstants.driveKd, 0.0);
+            revConstants.driveKp, 0.0,
+            revConstants.driveKd, 0.0);
     driveConfig
         .signals
         .primaryEncoderPositionAlwaysOn(true)
@@ -137,23 +136,22 @@ public class ModuleIOThrifty implements ModuleIO {
     // Configure turn motor
     var turnConfig = new SparkMaxConfig();
     turnConfig
-        .inverted(thriftyConstants.turnInverted)
+        .inverted(revConstants.turnInverted)
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(thriftyConstants.turnMotorCurrentLimit)
+        .smartCurrentLimit(revConstants.turnMotorCurrentLimit)
         .voltageCompensation(12.0);
     turnConfig
         .absoluteEncoder
-        .inverted(thriftyConstants.turnEncoderInverted)
-        .positionConversionFactor(thriftyConstants.turnEncoderPositionFactor)
-        .velocityConversionFactor(thriftyConstants.turnEncoderVelocityFactor)
+        .inverted(revConstants.turnEncoderInverted)
+        .positionConversionFactor(revConstants.turnEncoderPositionFactor)
+        .velocityConversionFactor(revConstants.turnEncoderVelocityFactor)
         .averageDepth(2);
     turnConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
         .positionWrappingEnabled(true)
-        .positionWrappingInputRange(
-            thriftyConstants.turnPIDMinInput, thriftyConstants.turnPIDMaxInput)
-        .pidf(thriftyConstants.turnKp, 0.0, thriftyConstants.turnKd, 0.0);
+        .positionWrappingInputRange(revConstants.turnPIDMinInput, revConstants.turnPIDMaxInput)
+        .pidf(revConstants.turnKp, 0.0, revConstants.turnKd, 0.0);
     turnConfig
         .signals
         .absoluteEncoderPositionAlwaysOn(true)
@@ -232,8 +230,8 @@ public class ModuleIOThrifty implements ModuleIO {
   @Override
   public void setDriveVelocity(double velocityRadPerSec) {
     double ffVolts =
-        thriftyConstants.driveKs * Math.signum(velocityRadPerSec)
-            + thriftyConstants.driveKv * velocityRadPerSec;
+        revConstants.driveKs * Math.signum(velocityRadPerSec)
+            + revConstants.driveKv * velocityRadPerSec;
     driveController.setReference(
         velocityRadPerSec, ControlType.kVelocity, 0, ffVolts, ArbFFUnits.kVoltage);
   }
@@ -243,8 +241,8 @@ public class ModuleIOThrifty implements ModuleIO {
     double setpoint =
         MathUtil.inputModulus(
             rotation.plus(zeroRotation).getRadians(),
-            thriftyConstants.turnPIDMinInput,
-            thriftyConstants.turnPIDMaxInput);
+            revConstants.turnPIDMinInput,
+            revConstants.turnPIDMaxInput);
     turnController.setReference(setpoint, ControlType.kPosition);
   }
 }

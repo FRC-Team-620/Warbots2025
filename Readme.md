@@ -11,7 +11,7 @@
 [Port Assignments Spreadsheet](https://docs.google.com/spreadsheets/d/1JnKaW68rw6jji8XbuGrL-Ybvpk9ygWXbmWGPe8dS9cM)
 
 
-# CAD 
+# CAD
 TODO:
 
 # Dashboards
@@ -21,4 +21,4 @@ TODO:
 TODO:
 
 # Logs:
-TODO: 
+TODO:

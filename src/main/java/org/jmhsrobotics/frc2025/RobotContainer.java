@@ -9,13 +9,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.jmhsrobotics.frc2025.Constants.RobotType;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOPigeon2;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIORev;
-import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOSimRev;
+import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOSimThrifty;
+import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOThrifty;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -39,13 +41,24 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        drive =
-            new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIORev(0),
-                new ModuleIORev(1),
-                new ModuleIORev(2),
-                new ModuleIORev(3));
+        if (Constants.ROBOT_TYPE == RobotType.COMP_BOT) {
+          drive =
+              new Drive(
+                  new GyroIOPigeon2(),
+                  new ModuleIOThrifty(0),
+                  new ModuleIOThrifty(1),
+                  new ModuleIOThrifty(2),
+                  new ModuleIOThrifty(3));
+        } else {
+          drive =
+              new Drive(
+                  new GyroIOPigeon2(),
+                  new ModuleIORev(0),
+                  new ModuleIORev(1),
+                  new ModuleIORev(2),
+                  new ModuleIORev(3));
+        }
+
         break;
 
       case SIM:
@@ -53,10 +66,10 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIO() {},
-                new ModuleIOSimRev(),
-                new ModuleIOSimRev(),
-                new ModuleIOSimRev(),
-                new ModuleIOSimRev());
+                new ModuleIOSimThrifty(),
+                new ModuleIOSimThrifty(),
+                new ModuleIOSimThrifty(),
+                new ModuleIOSimThrifty());
         break;
 
       default:

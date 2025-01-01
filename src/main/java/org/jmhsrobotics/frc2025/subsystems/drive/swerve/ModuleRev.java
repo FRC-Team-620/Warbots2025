@@ -11,18 +11,17 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-package frc.robot.subsystems.drive.swerve;
+package org.jmhsrobotics.frc2025.subsystems.drive.swerve;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import frc.robot.subsystems.drive.DriveConstants.thriftyConstants;
-// import frc.robot.subsystems.drive.ModuleIOInputsAutoLogged;
+import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants.revConstants;
 import org.littletonrobotics.junction.Logger;
 
-public class ModuleThrifty {
+public class ModuleRev {
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
   private final int index;
@@ -31,7 +30,7 @@ public class ModuleThrifty {
   private final Alert turnDisconnectedAlert;
   private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
 
-  public ModuleThrifty(ModuleIO io, int index) {
+  public ModuleRev(ModuleIO io, int index) {
     this.io = io;
     this.index = index;
     driveDisconnectedAlert =
@@ -51,8 +50,7 @@ public class ModuleThrifty {
     int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
     odometryPositions = new SwerveModulePosition[sampleCount];
     for (int i = 0; i < sampleCount; i++) {
-      double positionMeters =
-          inputs.odometryDrivePositionsRad[i] * thriftyConstants.wheelRadiusMeters;
+      double positionMeters = inputs.odometryDrivePositionsRad[i] * revConstants.wheelRadiusMeters;
       Rotation2d angle = inputs.odometryTurnPositions[i];
       odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
     }
@@ -69,7 +67,7 @@ public class ModuleThrifty {
     state.cosineScale(inputs.turnPosition);
 
     // Apply setpoints
-    io.setDriveVelocity(state.speedMetersPerSecond / thriftyConstants.wheelRadiusMeters);
+    io.setDriveVelocity(state.speedMetersPerSecond / revConstants.wheelRadiusMeters);
     io.setTurnPosition(state.angle);
   }
 
@@ -92,12 +90,12 @@ public class ModuleThrifty {
 
   /** Returns the current drive position of the module in meters. */
   public double getPositionMeters() {
-    return inputs.drivePositionRad * thriftyConstants.wheelRadiusMeters;
+    return inputs.drivePositionRad * revConstants.wheelRadiusMeters;
   }
 
   /** Returns the current drive velocity of the module in meters per second. */
   public double getVelocityMetersPerSec() {
-    return inputs.driveVelocityRadPerSec * thriftyConstants.wheelRadiusMeters;
+    return inputs.driveVelocityRadPerSec * revConstants.wheelRadiusMeters;
   }
 
   /** Returns the module position (turn angle and drive position). */

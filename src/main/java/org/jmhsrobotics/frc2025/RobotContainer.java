@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-package frc.robot;
+package org.jmhsrobotics.frc2025;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,13 +22,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.DriveCommands;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIOPigeon2;
-import frc.robot.subsystems.drive.swerve.ModuleIO;
-import frc.robot.subsystems.drive.swerve.ModuleIORev;
-import frc.robot.subsystems.drive.swerve.ModuleIOSimRev;
+import org.jmhsrobotics.frc2025.commands.DriveCommands;
+import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
+import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
+import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOPigeon2;
+import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
+import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIORev;
+import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOSimRev;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**

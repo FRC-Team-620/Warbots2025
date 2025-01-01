@@ -30,7 +30,7 @@ public class DriveConstants {
   public static final Rotation2d backLeftZeroRotation = new Rotation2d(0.0);
   public static final Rotation2d backRightZeroRotation = new Rotation2d(0.0);
 
-  public static class revConstants {
+  public static class RevConstants {
     public static final DCMotor driveGearbox = DCMotor.getNEO(1);
     public static final DCMotor turnGearbox = DCMotor.getNeo550(1);
 
@@ -118,7 +118,7 @@ public class DriveConstants {
             moduleTranslations);
   }
 
-  public static class thriftyConstants {
+  public static class ThriftyConstants {
     public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
     public static final DCMotor turnGearbox = DCMotor.getNEO(1);
 

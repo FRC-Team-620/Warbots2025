@@ -275,7 +275,7 @@ public class DriveCommands {
                         wheelDelta += Math.abs(positions[i] - state.positions[i]) / 4.0;
                       }
                       double wheelRadius =
-                          (state.gyroDelta * DriveConstants.thriftyConstants.driveBaseRadius)
+                          (state.gyroDelta * DriveConstants.ThriftyConstants.driveBaseRadius)
                               / wheelDelta;
 
                       NumberFormat formatter = new DecimalFormat("#0.000");

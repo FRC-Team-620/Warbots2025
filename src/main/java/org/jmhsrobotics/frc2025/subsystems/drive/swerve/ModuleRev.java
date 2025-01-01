@@ -18,7 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants.revConstants;
+import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants.RevConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class ModuleRev {
@@ -50,7 +50,7 @@ public class ModuleRev {
     int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
     odometryPositions = new SwerveModulePosition[sampleCount];
     for (int i = 0; i < sampleCount; i++) {
-      double positionMeters = inputs.odometryDrivePositionsRad[i] * revConstants.wheelRadiusMeters;
+      double positionMeters = inputs.odometryDrivePositionsRad[i] * RevConstants.wheelRadiusMeters;
       Rotation2d angle = inputs.odometryTurnPositions[i];
       odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
     }
@@ -67,7 +67,7 @@ public class ModuleRev {
     state.cosineScale(inputs.turnPosition);
 
     // Apply setpoints
-    io.setDriveVelocity(state.speedMetersPerSecond / revConstants.wheelRadiusMeters);
+    io.setDriveVelocity(state.speedMetersPerSecond / RevConstants.wheelRadiusMeters);
     io.setTurnPosition(state.angle);
   }
 
@@ -90,12 +90,12 @@ public class ModuleRev {
 
   /** Returns the current drive position of the module in meters. */
   public double getPositionMeters() {
-    return inputs.drivePositionRad * revConstants.wheelRadiusMeters;
+    return inputs.drivePositionRad * RevConstants.wheelRadiusMeters;
   }
 
   /** Returns the current drive velocity of the module in meters per second. */
   public double getVelocityMetersPerSec() {
-    return inputs.driveVelocityRadPerSec * revConstants.wheelRadiusMeters;
+    return inputs.driveVelocityRadPerSec * RevConstants.wheelRadiusMeters;
   }
 
   /** Returns the module position (turn angle and drive position). */

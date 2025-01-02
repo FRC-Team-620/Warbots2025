@@ -15,10 +15,10 @@
 TODO:
 
 # Dashboards
-TODO:
+[Dashboard configuration Files](https://github.com/FRC-Team-620/AdvantageKitSwerve2025/tree/master/dashboards)
 
 # Ascope Configurations
-TODO:
+TODO: Ascope Custom Assets configurations
 
 # Logs:
-TODO:
+[Google Drive Logs Folder](https://drive.google.com/drive/u/1/folders/1UfrwtwiEGuxSDN9EB9VWn1Sh0J5j0SBa)

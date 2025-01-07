@@ -13,36 +13,37 @@
 
 package org.jmhsrobotics.frc2025.subsystems.drive;
 
-import static org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants.*;
-
-import com.studica.frc.AHRS;
+import com.reduxrobotics.sensors.canandgyro.Canandgyro;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import java.util.Queue;
+import org.jmhsrobotics.frc2025.Constants;
 
 /** IO implementation for NavX. */
-public class GyroIONavX implements GyroIO {
-  private final AHRS navX = new AHRS(AHRS.NavXComType.kMXP_SPI, (byte) odometryFrequency);
-  private final Queue<Double> yawPositionQueue;
+public class GyroIOBoron implements GyroIO {
+  private Canandgyro canandgyro;
   private final Queue<Double> yawTimestampQueue;
+  private final Queue<Double> yawPositionQueue;
 
-  public GyroIONavX() {
+  public GyroIOBoron() {
+    canandgyro = new Canandgyro(Constants.canandgyroCanID);
     yawTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
-    yawPositionQueue = SparkOdometryThread.getInstance().registerSignal(navX::getAngle);
+    yawPositionQueue = SparkOdometryThread.getInstance().registerSignal(canandgyro::getYaw);
   }
 
+  // Check if gyro is calibrated
   @Override
   public void updateInputs(GyroIOInputs inputs) {
-    inputs.connected = navX.isConnected();
-    inputs.calibrated = navX.isMagnetometerCalibrated();
-    inputs.yawPosition = Rotation2d.fromDegrees(-navX.getAngle());
-    inputs.yawVelocityRadPerSec = Units.degreesToRadians(-navX.getRawGyroZ());
+    inputs.connected = canandgyro.isConnected();
+    inputs.calibrated = !canandgyro.isCalibrating();
+    inputs.yawPosition = Rotation2d.fromDegrees(canandgyro.getYaw());
+    inputs.yawVelocityRadPerSec = Units.rotationsToRadians(canandgyro.getAngularVelocityYaw());
 
     inputs.odometryYawTimestamps =
         yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
     inputs.odometryYawPositions =
         yawPositionQueue.stream()
-            .map((Double value) -> Rotation2d.fromDegrees(-value))
+            .map((Double value) -> Rotation2d.fromRotations(value))
             .toArray(Rotation2d[]::new);
     yawTimestampQueue.clear();
     yawPositionQueue.clear();

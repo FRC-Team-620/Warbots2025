@@ -60,7 +60,7 @@ public class Drive extends SubsystemBase {
   private final SysIdRoutine sysId;
   private final Alert gyroDisconnectedAlert =
       new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
-
+  private final Alert gyroUncalibratedAlert = new Alert("Uncalibrated gyro", AlertType.kWarning);
   private SwerveDriveKinematics kinematics =
       new SwerveDriveKinematics(DriveConstants.thriftyConstants.moduleTranslations);
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -183,6 +183,7 @@ public class Drive extends SubsystemBase {
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+    gyroUncalibratedAlert.set(!gyroInputs.calibrated && Constants.currentMode != Mode.SIM);
   }
 
   /**

@@ -14,6 +14,7 @@
 package org.jmhsrobotics.frc2025;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -52,6 +53,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Change to "SingleControl" or "DoubleControl" here based on preference
     this.control = new SingleControl();
+    CanandEventLoop.getInstance();
 
     switch (Constants.currentMode) {
       case REAL:
@@ -86,6 +88,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         break;
+
+        // Starts CANLink server
+
     }
 
     // Set up auto routines

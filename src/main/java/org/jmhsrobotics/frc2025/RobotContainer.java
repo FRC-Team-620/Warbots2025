@@ -30,8 +30,8 @@ import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOPigeon2;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
-import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIORev;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOSimRev;
+import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOThrifty;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -61,10 +61,10 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(),
-                new ModuleIORev(0),
-                new ModuleIORev(1),
-                new ModuleIORev(2),
-                new ModuleIORev(3));
+                new ModuleIOThrifty(0),
+                new ModuleIOThrifty(1),
+                new ModuleIOThrifty(2),
+                new ModuleIOThrifty(3));
         break;
 
       case SIM:

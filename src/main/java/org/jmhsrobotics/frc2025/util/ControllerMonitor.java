@@ -11,7 +11,11 @@ public class ControllerMonitor {
 
   public static void checkController() {
     for (XboxController control : controllermap.keySet()) {
-      if (control.isConnected()) {
+      if (control.isConnected()
+          && control.getType()
+              != null) { // Weird Work around, controler.isConnected does not seem to work correctly
+        // when reconnecting. See
+        // https://github.com/wpilibsuite/allwpilib/issues/7700
         controllermap.get(control)[0].set((control.getAxisCount() == 6));
         controllermap.get(control)[1].set(false);
       } else {
@@ -19,7 +23,6 @@ public class ControllerMonitor {
         controllermap.get(control)[0].set(false);
         controllermap.get(control)[1].set(true);
       }
-      System.out.println("is connected: " + control.isConnected());
     }
   }
 

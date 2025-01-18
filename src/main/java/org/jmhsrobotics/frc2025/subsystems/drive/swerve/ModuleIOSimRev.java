@@ -13,15 +13,13 @@
 
 package org.jmhsrobotics.frc2025.subsystems.drive.swerve;
 
-
-import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 
 /** Physics sim implementation of module IO. */
 public class ModuleIOSimRev implements ModuleIO {
@@ -31,9 +29,11 @@ public class ModuleIOSimRev implements ModuleIO {
   private boolean driveClosedLoop = false;
   private boolean turnClosedLoop = false;
   private PIDController driveController =
-      new PIDController(DriveConstants.revConstants.driveSimP, 0, DriveConstants.revConstants.driveSimD);
+      new PIDController(
+          DriveConstants.revConstants.driveSimP, 0, DriveConstants.revConstants.driveSimD);
   private PIDController turnController =
-      new PIDController(DriveConstants.revConstants.turnSimP, 0, DriveConstants.revConstants.turnSimD);
+      new PIDController(
+          DriveConstants.revConstants.turnSimP, 0, DriveConstants.revConstants.turnSimD);
   private double driveFFVolts = 0.0;
   private double driveAppliedVolts = 0.0;
   private double turnAppliedVolts = 0.0;
@@ -43,13 +43,17 @@ public class ModuleIOSimRev implements ModuleIO {
     driveSim =
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
-              DriveConstants.revConstants.driveGearbox, 0.025, DriveConstants.revConstants.driveMotorReduction),
-              DriveConstants.revConstants.driveGearbox);
+                DriveConstants.revConstants.driveGearbox,
+                0.025,
+                DriveConstants.revConstants.driveMotorReduction),
+            DriveConstants.revConstants.driveGearbox);
     turnSim =
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
-              DriveConstants.revConstants.turnGearbox, 0.004, DriveConstants.revConstants.turnMotorReduction),
-              DriveConstants.revConstants.turnGearbox);
+                DriveConstants.revConstants.turnGearbox,
+                0.004,
+                DriveConstants.revConstants.turnMotorReduction),
+            DriveConstants.revConstants.turnGearbox);
 
     // Enable wrapping for turn PID
     turnController.enableContinuousInput(-Math.PI, Math.PI);
@@ -112,7 +116,7 @@ public class ModuleIOSimRev implements ModuleIO {
   public void setDriveVelocity(double velocityRadPerSec) {
     driveClosedLoop = true;
     driveFFVolts =
-    DriveConstants.revConstants.driveSimKs * Math.signum(velocityRadPerSec)
+        DriveConstants.revConstants.driveSimKs * Math.signum(velocityRadPerSec)
             + DriveConstants.revConstants.driveSimKv * velocityRadPerSec;
     driveController.setSetpoint(velocityRadPerSec);
   }

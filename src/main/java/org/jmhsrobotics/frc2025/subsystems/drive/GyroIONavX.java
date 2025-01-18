@@ -13,16 +13,15 @@
 
 package org.jmhsrobotics.frc2025.subsystems.drive;
 
-import java.util.Queue;
-
 import com.studica.frc.AHRS;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import java.util.Queue;
 
 /** IO implementation for NavX. */
 public class GyroIONavX implements GyroIO {
-  private final AHRS navX = new AHRS(AHRS.NavXComType.kMXP_SPI, (byte) DriveConstants.odometryFrequency);
+  private final AHRS navX =
+      new AHRS(AHRS.NavXComType.kMXP_SPI, (byte) DriveConstants.odometryFrequency);
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
 

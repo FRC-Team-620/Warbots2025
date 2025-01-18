@@ -13,7 +13,6 @@
 
 package org.jmhsrobotics.frc2025.subsystems.drive.swerve;
 
-
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -34,7 +33,6 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
-
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants.revConstants;
 import org.jmhsrobotics.frc2025.subsystems.drive.SparkOdometryThread;
@@ -182,13 +180,16 @@ public class ModuleIORev implements ModuleIO {
   public void updateInputs(ModuleIOInputs inputs) {
     // Update drive inputs
     SparkUtil.sparkStickyFault = false;
-    SparkUtil.ifOk(driveSpark, driveEncoder::getPosition, (value) -> inputs.drivePositionRad = value);
-    SparkUtil.ifOk(driveSpark, driveEncoder::getVelocity, (value) -> inputs.driveVelocityRadPerSec = value);
+    SparkUtil.ifOk(
+        driveSpark, driveEncoder::getPosition, (value) -> inputs.drivePositionRad = value);
+    SparkUtil.ifOk(
+        driveSpark, driveEncoder::getVelocity, (value) -> inputs.driveVelocityRadPerSec = value);
     SparkUtil.ifOk(
         driveSpark,
         new DoubleSupplier[] {driveSpark::getAppliedOutput, driveSpark::getBusVoltage},
         (values) -> inputs.driveAppliedVolts = values[0] * values[1]);
-    SparkUtil.ifOk(driveSpark, driveSpark::getOutputCurrent, (value) -> inputs.driveCurrentAmps = value);
+    SparkUtil.ifOk(
+        driveSpark, driveSpark::getOutputCurrent, (value) -> inputs.driveCurrentAmps = value);
     inputs.driveConnected = driveConnectedDebounce.calculate(!SparkUtil.sparkStickyFault);
 
     // Update turn inputs
@@ -197,12 +198,14 @@ public class ModuleIORev implements ModuleIO {
         turnSpark,
         turnEncoder::getPosition,
         (value) -> inputs.turnPosition = new Rotation2d(value).minus(zeroRotation));
-    SparkUtil.ifOk(turnSpark, turnEncoder::getVelocity, (value) -> inputs.turnVelocityRadPerSec = value);
+    SparkUtil.ifOk(
+        turnSpark, turnEncoder::getVelocity, (value) -> inputs.turnVelocityRadPerSec = value);
     SparkUtil.ifOk(
         turnSpark,
         new DoubleSupplier[] {turnSpark::getAppliedOutput, turnSpark::getBusVoltage},
         (values) -> inputs.turnAppliedVolts = values[0] * values[1]);
-    SparkUtil.ifOk(turnSpark, turnSpark::getOutputCurrent, (value) -> inputs.turnCurrentAmps = value);
+    SparkUtil.ifOk(
+        turnSpark, turnSpark::getOutputCurrent, (value) -> inputs.turnCurrentAmps = value);
     inputs.turnConnected = turnConnectedDebounce.calculate(!SparkUtil.sparkStickyFault);
 
     // Update odometry inputs

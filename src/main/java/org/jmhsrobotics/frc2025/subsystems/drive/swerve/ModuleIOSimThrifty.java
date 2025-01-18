@@ -13,15 +13,13 @@
 
 package org.jmhsrobotics.frc2025.subsystems.drive.swerve;
 
-
-import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 
 /** Physics sim implementation of module IO. */
 public class ModuleIOSimThrifty implements ModuleIO {
@@ -31,9 +29,11 @@ public class ModuleIOSimThrifty implements ModuleIO {
   private boolean driveClosedLoop = false;
   private boolean turnClosedLoop = false;
   private PIDController driveController =
-      new PIDController(DriveConstants.thriftyConstants.driveSimP, 0, DriveConstants.thriftyConstants.driveSimD);
+      new PIDController(
+          DriveConstants.thriftyConstants.driveSimP, 0, DriveConstants.thriftyConstants.driveSimD);
   private PIDController turnController =
-      new PIDController(DriveConstants.thriftyConstants.turnSimP, 0, DriveConstants.thriftyConstants.turnSimD);
+      new PIDController(
+          DriveConstants.thriftyConstants.turnSimP, 0, DriveConstants.thriftyConstants.turnSimD);
   private double driveFFVolts = 0.0;
   private double driveAppliedVolts = 0.0;
   private double turnAppliedVolts = 0.0;
@@ -43,13 +43,17 @@ public class ModuleIOSimThrifty implements ModuleIO {
     driveSim =
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
-              DriveConstants.thriftyConstants.driveGearbox, 0.025, DriveConstants.thriftyConstants.driveMotorReduction),
-              DriveConstants.thriftyConstants.driveGearbox);
+                DriveConstants.thriftyConstants.driveGearbox,
+                0.025,
+                DriveConstants.thriftyConstants.driveMotorReduction),
+            DriveConstants.thriftyConstants.driveGearbox);
     turnSim =
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
-              DriveConstants.thriftyConstants.turnGearbox, 0.004, DriveConstants.thriftyConstants.turnMotorReduction),
-          DriveConstants.thriftyConstants.turnGearbox);
+                DriveConstants.thriftyConstants.turnGearbox,
+                0.004,
+                DriveConstants.thriftyConstants.turnMotorReduction),
+            DriveConstants.thriftyConstants.turnGearbox);
 
     // Enable wrapping for turn PID
     turnController.enableContinuousInput(-Math.PI, Math.PI);

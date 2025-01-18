@@ -13,23 +13,11 @@
 
 package org.jmhsrobotics.frc2025.subsystems.drive;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.jmhsrobotics.frc2025.Constants;
-import org.jmhsrobotics.frc2025.Constants.Mode;
-import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
-import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleThrifty;
-import org.jmhsrobotics.frc2025.util.LocalADStarAK;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
-
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -52,6 +40,15 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.Constants.Mode;
+import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
+import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleThrifty;
+import org.jmhsrobotics.frc2025.util.LocalADStarAK;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
@@ -197,7 +194,8 @@ public class Drive extends SubsystemBase {
 
     speeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(speeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, DriveConstants.maxSpeedMetersPerSec);
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        setpointStates, DriveConstants.maxSpeedMetersPerSec);
 
     // Log unoptimized setpoints
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);

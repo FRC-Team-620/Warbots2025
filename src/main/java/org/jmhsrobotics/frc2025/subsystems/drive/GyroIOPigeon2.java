@@ -13,8 +13,6 @@
 
 package org.jmhsrobotics.frc2025.subsystems.drive;
 
-import static org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants.*;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -37,7 +35,7 @@ public class GyroIOPigeon2 implements GyroIO {
   public GyroIOPigeon2() {
     pigeon.getConfigurator().apply(new Pigeon2Configuration());
     pigeon.getConfigurator().setYaw(0.0);
-    yaw.setUpdateFrequency(odometryFrequency);
+    yaw.setUpdateFrequency(DriveConstants.odometryFrequency);
     yawVelocity.setUpdateFrequency(50.0);
     pigeon.optimizeBusUtilization();
     yawTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();

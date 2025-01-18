@@ -32,6 +32,11 @@ import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOPigeon2;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOSimRev;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOThrifty;
+import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionIO;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionIOPhotonVision;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -43,6 +48,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Vision vision;
 
   private final ControlBoard control;
   // Controller
@@ -65,8 +71,22 @@ public class RobotContainer {
                 new ModuleIOThrifty(1),
                 new ModuleIOThrifty(2),
                 new ModuleIOThrifty(3));
+        // break;
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVision(
+                    VisionConstants.camera0Name, VisionConstants.robotToCamera0),
+                new VisionIOPhotonVision(
+                    VisionConstants.camera1Name, VisionConstants.robotToCamera1));
         break;
-
+        // vision =
+        // new Vision(
+        // Drive::addVisionMeasurement,
+        // new VisionIOPhotonVision(VisionConstants.camera0Name,
+        // VisionConstants.robotToCamera0),
+        // new VisionIOPhotonVision(VisionConstants.camera1Name,
+        // VisionConstants.robotToCamera1));
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive =
@@ -76,6 +96,14 @@ public class RobotContainer {
                 new ModuleIOSimRev(),
                 new ModuleIOSimRev(),
                 new ModuleIOSimRev());
+
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
         break;
 
       default:
@@ -87,6 +115,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
     }
 

@@ -36,7 +36,7 @@ public class GyroIOBoron implements GyroIO {
   public void updateInputs(GyroIOInputs inputs) {
     inputs.connected = canandgyro.isConnected();
     inputs.calibrated = !canandgyro.isCalibrating();
-    inputs.yawPosition = Rotation2d.fromDegrees(canandgyro.getYaw());
+    inputs.yawPosition = Rotation2d.fromRotations(canandgyro.getYaw());
     inputs.yawVelocityRadPerSec = Units.rotationsToRadians(canandgyro.getAngularVelocityYaw());
 
     inputs.odometryYawTimestamps =

@@ -119,6 +119,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+    configureDriverFeedback();
 
     setupSmartDashbaord();
   }
@@ -145,6 +146,10 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive));
+  }
+
+  private void configureDriverFeedback() {
+    // Changes LED light status and controller rumble
   }
 
   private void setupSmartDashbaord() {

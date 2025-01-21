@@ -13,6 +13,9 @@
 
 package org.jmhsrobotics.frc2025;
 
+import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -29,6 +32,8 @@ public final class Constants {
   public static final int ledPWMHeader = 5;
   // led length in pixels
   public static final int ledLength = 10;
+  // Density of the LED Strip - currently set at 120 LEDs per meter
+  public static final Distance ledSpacing = Meters.of(1 / 120.0);
 
   public static enum Mode {
     /** Running on a real robot. */

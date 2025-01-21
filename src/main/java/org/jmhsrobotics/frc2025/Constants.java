@@ -26,6 +26,10 @@ public final class Constants {
 
   public static final int canandgyroCanID = 62;
 
+  public static final int ledPWMHeader = 5;
+  // led length in pixels
+  public static final int ledLength = 10;
+
   public static enum Mode {
     /** Running on a real robot. */
     REAL,

@@ -32,6 +32,8 @@ import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOPigeon2;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOSimRev;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOThrifty;
+import org.jmhsrobotics.frc2025.subsystems.led.LED;
+import org.jmhsrobotics.frc2025.subsystems.led.RedLEDCommand;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -45,7 +47,7 @@ public class RobotContainer {
   private final Drive drive;
 
   private final ControlBoard control;
-  // Controller
+  private final LED led;
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -65,6 +67,10 @@ public class RobotContainer {
                 new ModuleIOThrifty(1),
                 new ModuleIOThrifty(2),
                 new ModuleIOThrifty(3));
+        led = new LED();
+        led.setDefaultCommand(new RedLEDCommand(this.led));
+        // initialize led
+
         break;
 
       case SIM:
@@ -76,6 +82,7 @@ public class RobotContainer {
                 new ModuleIOSimRev(),
                 new ModuleIOSimRev(),
                 new ModuleIOSimRev());
+        led = new LED();
         break;
 
       default:
@@ -87,6 +94,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        led = new LED();
         break;
     }
 

@@ -22,3 +22,6 @@ TODO: Ascope Custom Assets configurations
 
 # Logs:
 [Google Drive Logs Folder](https://drive.google.com/drive/u/1/folders/1UfrwtwiEGuxSDN9EB9VWn1Sh0J5j0SBa)
+
+# Thrifty Module Azimuth Encoder Zeroing Procedure
+[Google Drive Programming Folder](https://docs.google.com/document/d/1wnJfbLzpVgwjBBD8k-uFfK8kBwKNOHNH9EUZB00zbIM/edit?usp=sharing)

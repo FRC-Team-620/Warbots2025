@@ -18,7 +18,6 @@ public class AltControlMode implements ControlBoard {
   @Override
   public double translationX() {
     return calculateTotalTranslation(true);
-    
   }
 
   @Override
@@ -26,9 +25,8 @@ public class AltControlMode implements ControlBoard {
     return calculateTotalTranslation(false);
   }
 
-
-  //normalizes the X and Y translations and puts them in a vector
-  private double calculateTotalTranslation(boolean isX){
+  // normalizes the X and Y translations and puts them in a vector
+  private double calculateTotalTranslation(boolean isX) {
     double driveX = driver.getLeftX();
     double driveY = driver.getLeftY();
     if (driveX == 0 && driveY == 0) {
@@ -36,14 +34,13 @@ public class AltControlMode implements ControlBoard {
     }
     Vector<N2> translationVector = VecBuilder.fill(driveX, driveY);
     translationVector = translationVector.unit();
-    
-    //multiply the normalized translation by the amount that the right trigger is pressed
-    // if(isX){  
+
+    // multiply the normalized translation by the amount that the right trigger is pressed
+    // if(isX){
     //     return translationVector.get(0) * driver.getRightTriggerAxis();
     // }
-    return translationVector.get(isX?0:1) * driver.getRightTriggerAxis();
+    return translationVector.get(isX ? 0 : 1) * driver.getRightTriggerAxis();
   }
-
 
   @Override
   public Trigger resetForward() {

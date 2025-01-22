@@ -26,6 +26,9 @@ public final class Constants {
 
   public static final int canandgyroCanID = 62;
 
+  public static final int elevatorMotor1ID = 30;
+  public static final int elevatorMotor2ID = 31;
+
   public static enum Mode {
     /** Running on a real robot. */
     REAL,

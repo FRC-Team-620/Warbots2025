@@ -11,7 +11,7 @@ public class SimElevatorIO implements ElevatorIO {
   ElevatorSim simElevator =
       new ElevatorSim(
           DCMotor.getNeoVortex(2),
-          1.0 / 10.0,
+          10.0,
           Units.lbsToKilograms(20.0),
           Units.inchesToMeters(0.944000),
           0,
@@ -19,7 +19,7 @@ public class SimElevatorIO implements ElevatorIO {
           true,
           0,
           new double[0]);
-  PIDController pidController = new PIDController(1, 0, 0);
+  PIDController pidController = new PIDController(12, 0, 0);
 
   public SimElevatorIO() {
     SmartDashboard.putData(pidController);

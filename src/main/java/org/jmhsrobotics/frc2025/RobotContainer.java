@@ -76,6 +76,7 @@ public class RobotContainer {
                 new ModuleIOThrifty(3));
 
         elevator = new Elevator(new VortexElevatorIO() {});
+        System.out.println("Mode: REAL");
         break;
 
       case SIM:
@@ -89,6 +90,7 @@ public class RobotContainer {
                 new ModuleIOSimRev());
 
         elevator = new Elevator(new SimElevatorIO() {});
+        System.out.println("Mode: SIM");
         break;
 
       default:
@@ -102,6 +104,7 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         elevator = new Elevator(new ElevatorIO() {});
+        System.out.println("Mode: DEFAULT");
         break;
     }
     up = new ElevatorCommand(this.elevator, .75);

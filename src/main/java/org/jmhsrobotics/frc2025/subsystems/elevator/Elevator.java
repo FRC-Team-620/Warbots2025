@@ -1,12 +1,10 @@
 package org.jmhsrobotics.frc2025.subsystems.elevator;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
 
 public class Elevator extends SubsystemBase {
   private ElevatorIO elevatorIO;
-  private ElevatorIOInputs inputs = new ElevatorIOInputsAutoLogged();
-  private double setPointMeters;
+  private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
   public Elevator(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;
@@ -14,7 +12,6 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // TODO Auto-generated method stub
     elevatorIO.updateInputs(inputs);
   }
 
@@ -23,6 +20,6 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setSetpoint(double setPoint) {
-    this.setPointMeters = setPoint;
+    elevatorIO.setPositionMeters(setPoint);
   }
 }

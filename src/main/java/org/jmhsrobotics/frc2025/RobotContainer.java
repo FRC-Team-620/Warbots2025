@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
+import org.jmhsrobotics.frc2025.commands.ElevatorCommand;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
@@ -32,6 +33,10 @@ import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOPigeon2;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOSimRev;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOThrifty;
+import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
+import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
+import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
+import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -43,8 +48,12 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Elevator elevator;
 
   private final ControlBoard control;
+
+  private final ElevatorCommand up;
+  private final ElevatorCommand down;
   // Controller
 
   // Dashboard inputs
@@ -65,6 +74,8 @@ public class RobotContainer {
                 new ModuleIOThrifty(1),
                 new ModuleIOThrifty(2),
                 new ModuleIOThrifty(3));
+
+        elevator = new Elevator(new VortexElevatorIO() {});
         break;
 
       case SIM:
@@ -76,6 +87,8 @@ public class RobotContainer {
                 new ModuleIOSimRev(),
                 new ModuleIOSimRev(),
                 new ModuleIOSimRev());
+
+        elevator = new Elevator(new SimElevatorIO() {});
         break;
 
       default:
@@ -87,8 +100,12 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+
+        elevator = new Elevator(new ElevatorIO() {});
         break;
     }
+    up = new ElevatorCommand(this.elevator, .75);
+    down = new ElevatorCommand(this.elevator, .25);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -141,6 +158,9 @@ public class RobotContainer {
 
   private void setupSmartDashbaord() {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
+
+    SmartDashboard.putData("up", up);
+    SmartDashboard.putData("down", down);
   }
 
   /**

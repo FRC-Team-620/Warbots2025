@@ -26,8 +26,19 @@ public final class Constants {
 
   public static final int canandgyroCanID = 62;
 
-  public static final int elevatorMotor1ID = 30;
-  public static final int elevatorMotor2ID = 31;
+  public static class ElevatatorConstants {
+    public static final int elevatorMotorLeftID = 30;
+    public static final int elevatorMotorRightID = 31;
+
+    public static final double elevatorLevel1Height = 0.25;
+    public static final double elevatorLevel2Height = 0.50;
+    public static final double elevatorLevel3Height = 0.75;
+    public static final double elevatorLevel4Height = 1.00;
+
+    public static final double elevatorkP = .01;
+    public static final double elevatorkI = .00;
+    public static final double elevatorkD = .00;
+  }
 
   public static enum Mode {
     /** Running on a real robot. */

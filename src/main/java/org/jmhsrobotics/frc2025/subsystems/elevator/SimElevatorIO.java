@@ -8,25 +8,39 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SimElevatorIO implements ElevatorIO {
 
-  ElevatorSim simElevator = new ElevatorSim(DCMotor.getNeoVortex(2), 1.0/10.0, Units.lbsToKilograms(20.0), Units.inchesToMeters(0.944000), 0, Units.inchesToMeters(78), true, 0, null);
+  ElevatorSim simElevator =
+      new ElevatorSim(
+          DCMotor.getNeoVortex(2),
+          1.0 / 10.0,
+          Units.lbsToKilograms(20.0),
+          Units.inchesToMeters(0.944000),
+          0,
+          Units.inchesToMeters(78),
+          true,
+          0,
+          new double[0]);
   PIDController pidController = new PIDController(1, 0, 0);
+
   public SimElevatorIO() {
     SmartDashboard.putData(pidController);
   }
 
   @Override
-  public void updateInputs(ElevatorInputs inputs) {
+  public void updateInputs(ElevatorIOInputs inputs) {
     double output = this.pidController.calculate(simElevator.getPositionMeters());
-      this.simElevator.setInput(output);
-      this.simElevator.update(0.02);
+    this.simElevator.setInput(output);
+    this.simElevator.update(0.02);
 
-      inputs.motorAmps = new double[]{simElevator.getCurrentDrawAmps()/2.0,simElevator.getCurrentDrawAmps()/2.0};
-      inputs.positionMeters = simElevator.getPositionMeters();
-      inputs.velocityMPS = simElevator.getVelocityMetersPerSecond();
+    inputs.motorAmps =
+        new double[] {
+          simElevator.getCurrentDrawAmps() / 2.0, simElevator.getCurrentDrawAmps() / 2.0
+        };
+    inputs.positionMeters = simElevator.getPositionMeters();
+    inputs.velocityMPS = simElevator.getVelocityMetersPerSecond();
   }
 
   @Override
-  public void setSetpoint(double positionMeters) {
-      this.pidController.setSetpoint(positionMeters);
+  public void setPositionMeters(double positionMeters) {
+    this.pidController.setSetpoint(positionMeters);
   }
 }

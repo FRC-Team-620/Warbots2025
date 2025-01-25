@@ -14,6 +14,10 @@
 package org.jmhsrobotics.frc2025;
 
 import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -104,6 +108,11 @@ public class Robot extends LoggedRobot {
 
     // Return to normal thread priority
     Threads.setCurrentThreadPriority(false, 10);
+
+    Logger.recordOutput(
+        "RobotPose3", new Pose3d(new Translation3d(), new Rotation3d(Rotation2d.fromDegrees(90))));
+    // Logger.recordOutput(
+    //     "ZeroedComponentPoses", new Pose3d[] {new Pose3d(), new Pose3d(), new Pose3d()});
   }
 
   /** This function is called once when the robot is disabled. */

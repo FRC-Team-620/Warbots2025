@@ -1,0 +1,32 @@
+package org.jmhsrobotics.frc2025.subsystems.elevator;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+public class SimElevatorIO implements ElevatorIO {
+
+  ElevatorSim simElevator = new ElevatorSim(DCMotor.getNeoVortex(2), 1.0/10.0, Units.lbsToKilograms(20.0), Units.inchesToMeters(0.944000), 0, Units.inchesToMeters(78), true, 0, null);
+  PIDController pidController = new PIDController(1, 0, 0);
+  public SimElevatorIO() {
+    SmartDashboard.putData(pidController);
+  }
+
+  @Override
+  public void updateInputs(ElevatorInputs inputs) {
+    double output = this.pidController.calculate(simElevator.getPositionMeters());
+      this.simElevator.setInput(output);
+      this.simElevator.update(0.02);
+
+      inputs.motorAmps = new double[]{simElevator.getCurrentDrawAmps()/2.0,simElevator.getCurrentDrawAmps()/2.0};
+      inputs.positionMeters = simElevator.getPositionMeters();
+      inputs.velocityMPS = simElevator.getVelocityMetersPerSecond();
+  }
+
+  @Override
+  public void setSetpoint(double positionMeters) {
+      this.pidController.setSetpoint(positionMeters);
+  }
+}

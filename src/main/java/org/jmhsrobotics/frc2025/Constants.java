@@ -35,6 +35,20 @@ public final class Constants {
   // Density of the LED Strip - currently set at 120 LEDs per meter
   public static final Distance ledSpacing = Meters.of(1 / 120.0);
 
+  public static class ElevatatorConstants {
+    public static final int elevatorMotorLeftID = 30;
+    public static final int elevatorMotorRightID = 31;
+
+    public static final double elevatorLevel1Height = 0.25;
+    public static final double elevatorLevel2Height = 0.50;
+    public static final double elevatorLevel3Height = 0.75;
+    public static final double elevatorLevel4Height = 1.00;
+
+    public static final double elevatorkP = .01;
+    public static final double elevatorkI = .00;
+    public static final double elevatorkD = .00;
+  }
+
   public static enum Mode {
     /** Running on a real robot. */
     REAL,

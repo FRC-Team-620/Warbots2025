@@ -1,0 +1,252 @@
+{
+  "hubs": [
+    {
+      "x": -1928,
+      "y": -8,
+      "width": 1936,
+      "height": 1056,
+      "state": {
+        "sidebar": {
+          "width": 300,
+          "expanded": [
+            "/AdvantageKit/RealOutputs/Odometry",
+            "/AdvantageKit/RealOutputs/SwerveStates",
+            "/AdvantageKit/RealOutputs/SwerveChassisSpeeds",
+            "/AdvantageKit/PowerDistribution",
+            "/AdvantageKit/Drive/Gyro",
+            "/AdvantageKit/Drive/Module0",
+            "/AdvantageKit/RealOutputs/gripper",
+            "/AdvantageKit/Vision/Camera1",
+            "/AdvantageKit/Vision/Camera0",
+            "/AdvantageKit/RealOutputs/Vision/Camera1",
+            "/AdvantageKit/RealOutputs/Vision/Summary"
+          ]
+        },
+        "tabs": {
+          "selected": 5,
+          "tabs": [
+            {
+              "type": 0,
+              "title": "",
+              "controller": null,
+              "controllerUUID": "suyzmiy3kdduv5qid4d03ecxfdng431u",
+              "renderer": "#/",
+              "controlsHeight": 0
+            },
+            {
+              "type": 1,
+              "title": "Line Graph",
+              "controller": {
+                "leftSources": [],
+                "rightSources": [],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "fpjrvuxa79cb1wj0buqmxodde4sojpab",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 2,
+              "title": "Odometry",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Odometry/Robot",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {}
+                  }
+                ],
+                "game": "Evergreen",
+                "bumpers": "auto",
+                "origin": "auto",
+                "orientation": 0,
+                "size": 30
+              },
+              "controllerUUID": "ghjp9ub9yvdpvypowibbrdbcvsw5ggr3",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 12,
+              "title": "Metadata",
+              "controller": null,
+              "controllerUUID": "4712i2j8i62vs8txbajndm17m4s0q1jc",
+              "renderer": null,
+              "controlsHeight": 0
+            },
+            {
+              "type": 5,
+              "title": "Console",
+              "controller": "NT:/AdvantageKit/RealOutputs/Console",
+              "controllerUUID": "03lnmc8uz6kwxwfi5klh5d9yv7acgypx",
+              "renderer": {
+                "highlight": false
+              },
+              "controlsHeight": 0
+            },
+            {
+              "type": 3,
+              "title": "3D Field",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Odometry/Robot",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "Warbots2025"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/stage1",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/stage2",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/gripper",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Summary/TagPoses",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "aprilTag",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Summary/TagPoses",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "family": "36h11"
+                    }
+                  }
+                ],
+                "game": "2025 Field",
+                "origin": "blue"
+              },
+              "controllerUUID": "2fxt356i7ant59kbkehanuy2i2iv9zhy",
+              "renderer": {
+                "cameraIndex": -2,
+                "orbitFov": 50,
+                "cameraPosition": [
+                  1.5016560623595099,
+                  1.1143362279902325,
+                  1.2423062662889892
+                ],
+                "cameraTarget": [
+                  0.022517616473193086,
+                  0.8591025393031976,
+                  0.24997256503185789
+                ]
+              },
+              "controlsHeight": 290
+            },
+            {
+              "type": 9,
+              "title": "Swerve",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "chassisSpeeds",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/SwerveChassisSpeeds/Measured",
+                    "logType": "ChassisSpeeds",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000"
+                    }
+                  },
+                  {
+                    "type": "states",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/SwerveStates/SetpointsOptimized",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "states",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/SwerveStates/Setpoints",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "states",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/SwerveStates/Measured",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#0000ff",
+                      "arrangement": "0,1,2,3"
+                    }
+                  }
+                ],
+                "maxSpeed": 5,
+                "sizeX": 0.65,
+                "sizeY": 0.65,
+                "orientation": 1
+              },
+              "controllerUUID": "8nj5ybob4eh7cfe5vsfzswtqnqxh7snf",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 8,
+              "title": "Joysticks",
+              "controller": [
+                "Xbox Controller (White)",
+                "None",
+                "None",
+                "None",
+                "None",
+                "None"
+              ],
+              "controllerUUID": "5q93ngpy53k9s19faeo3w8ch3vzvao19",
+              "renderer": null,
+              "controlsHeight": 85
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "satellites": [],
+  "version": "4.1.1"
+}

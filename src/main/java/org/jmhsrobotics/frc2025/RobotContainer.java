@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
+import org.jmhsrobotics.frc2025.commands.ElevatorCommand;
 import org.jmhsrobotics.frc2025.controlBoard.AltControlMode;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
@@ -32,8 +33,17 @@ import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOPigeon2;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOSimRev;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOThrifty;
+import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
+import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
+import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
+import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.led.RedLEDCommand;
+import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionIO;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionIOPhotonVision;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -45,9 +55,15 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Vision vision;
+  public final Elevator elevator;
 
   private final ControlBoard control;
   private final LED led;
+
+  private final ElevatorCommand up;
+  private final ElevatorCommand down;
+  // Controller
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -71,6 +87,17 @@ public class RobotContainer {
         led.setDefaultCommand(new RedLEDCommand(this.led));
         // initialize led
 
+        // break;
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVision(
+                    VisionConstants.camera0Name, VisionConstants.robotToCamera0),
+                new VisionIOPhotonVision(
+                    VisionConstants.camera1Name, VisionConstants.robotToCamera1));
+
+        elevator = new Elevator(new VortexElevatorIO() {});
+        System.out.println("Mode: REAL");
         break;
 
       case SIM:
@@ -83,6 +110,16 @@ public class RobotContainer {
                 new ModuleIOSimRev(),
                 new ModuleIOSimRev());
         led = new LED();
+
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
+        elevator = new Elevator(new SimElevatorIO() {});
+        System.out.println("Mode: SIM");
         break;
 
       default:
@@ -95,8 +132,14 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         led = new LED();
+
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
+        System.out.println("Mode: DEFAULT");
         break;
     }
+    up = new ElevatorCommand(this.elevator, .75);
+    down = new ElevatorCommand(this.elevator, .25);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -154,6 +197,9 @@ public class RobotContainer {
 
   private void setupSmartDashbaord() {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
+
+    SmartDashboard.putData("up", up);
+    SmartDashboard.putData("down", down);
   }
 
   /**

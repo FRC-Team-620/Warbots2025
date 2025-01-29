@@ -25,8 +25,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.ElevatorCommand;
+import org.jmhsrobotics.frc2025.controlBoard.AltControlMode;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
-import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOPigeon2;
@@ -62,7 +62,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Change to "SingleControl" or "DoubleControl" here based on preference
-    this.control = new SingleControl();
+    this.control = new AltControlMode();
 
     switch (Constants.currentMode) {
       case REAL:

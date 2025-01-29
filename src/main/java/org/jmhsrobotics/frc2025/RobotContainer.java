@@ -92,13 +92,7 @@ public class RobotContainer {
         elevator = new Elevator(new VortexElevatorIO() {});
         System.out.println("Mode: REAL");
         break;
-        // vision =
-        // new Vision(
-        // Drive::addVisionMeasurement,
-        // new VisionIOPhotonVision(VisionConstants.camera0Name,
-        // VisionConstants.robotToCamera0),
-        // new VisionIOPhotonVision(VisionConstants.camera1Name,
-        // VisionConstants.robotToCamera1));
+
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive =

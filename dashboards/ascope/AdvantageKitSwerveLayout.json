@@ -1,10 +1,10 @@
 {
   "hubs": [
     {
-      "x": 0,
-      "y": 36,
-      "width": 1470,
-      "height": 920,
+      "x": -1920,
+      "y": -221,
+      "width": 1920,
+      "height": 1055,
       "state": {
         "sidebar": {
           "width": 300,
@@ -18,7 +18,8 @@
             "/AdvantageKit",
             "/AdvantageKit/Drive",
             "/AdvantageKit/Drive/Gyro",
-            "/AdvantageKit/Drive/Module0"
+            "/AdvantageKit/Drive/Module0",
+            "/AdvantageKit/RealOutputs/gripper"
           ]
         },
         "tabs": {
@@ -108,11 +109,32 @@
                     "logType": "Pose2d",
                     "visible": true,
                     "options": {
-                      "model": "620 bot"
+                      "model": "Warbots2025"
                     }
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/stage1",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/stage2",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/gripper",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
                   }
                 ],
-                "game": "Evergreen",
+                "game": "2025 Field",
                 "origin": "blue"
               },
               "controllerUUID": "2fxt356i7ant59kbkehanuy2i2iv9zhy",
@@ -120,9 +142,9 @@
                 "cameraIndex": -2,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  -3.129269872702003,
-                  2.4813201231252684,
-                  -4.0960729163691445
+                  -3.4157976777129457,
+                  1.6021229775884755,
+                  -1.5159031423507774
                 ],
                 "cameraTarget": [
                   0,
@@ -130,7 +152,7 @@
                   0
                 ]
               },
-              "controlsHeight": 200
+              "controlsHeight": 290
             },
             {
               "type": 9,
@@ -207,5 +229,5 @@
     }
   ],
   "satellites": [],
-  "version": "4.0.0-beta-4"
+  "version": "4.1.0"
 }

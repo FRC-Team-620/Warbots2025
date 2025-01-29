@@ -10,8 +10,10 @@ public class Elevator extends SubsystemBase {
   private ElevatorIO elevatorIO;
   private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
   private double setPointMeters;
-  private MechanismLigament2d stage1 = new MechanismLigament2d("stage1", 3, 90,10,new Color8Bit(0, 0, 168));
-  private MechanismLigament2d carriage = new MechanismLigament2d("carriage", 3, 0,5,new Color8Bit(255, 0, 0));
+  private MechanismLigament2d stage1 =
+      new MechanismLigament2d("stage1", 3, 90, 10, new Color8Bit(0, 0, 168));
+  private MechanismLigament2d carriage =
+      new MechanismLigament2d("carriage", 3, 0, 5, new Color8Bit(255, 0, 0));
   Mechanism2d elevatorMech = new Mechanism2d(4, 4);
 
   public Elevator(ElevatorIO elevatorIO) {
@@ -25,7 +27,7 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     elevatorIO.updateInputs(inputs);
     stage1.setLength(inputs.positionMeters / 2);
-    carrage.setLength(inputs.positionMeters / 2);
+    carriage.setLength(inputs.positionMeters / 2);
   }
 
   public boolean atGoal() {
@@ -34,5 +36,9 @@ public class Elevator extends SubsystemBase {
 
   public void setSetpoint(double setPoint) {
     elevatorIO.setPositionMeters(setPoint);
+  }
+
+  public double getHeight() {
+    return inputs.positionMeters;
   }
 }

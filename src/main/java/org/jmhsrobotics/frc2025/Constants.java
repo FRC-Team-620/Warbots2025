@@ -25,6 +25,8 @@ public final class Constants {
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
   public static final int canandgyroCanID = 62;
+  public static final int GEAR1 = 4;
+  public static final int GEAR2 = 11;
 
   public static enum Mode {
     /** Running on a real robot. */

@@ -1,10 +1,10 @@
 {
   "hubs": [
     {
-      "x": -1928,
-      "y": -8,
-      "width": 1936,
-      "height": 1056,
+      "x": -1920,
+      "y": -221,
+      "width": 1920,
+      "height": 1055,
       "state": {
         "sidebar": {
           "width": 300,
@@ -18,7 +18,8 @@
             "/AdvantageKit",
             "/AdvantageKit/Drive",
             "/AdvantageKit/Drive/Gyro",
-            "/AdvantageKit/Drive/Module0"
+            "/AdvantageKit/Drive/Module0",
+            "/AdvantageKit/RealOutputs/gripper"
           ]
         },
         "tabs": {
@@ -127,7 +128,7 @@
                   },
                   {
                     "type": "component",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/RobotPose4",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/gripper",
                     "logType": "Pose3d",
                     "visible": true,
                     "options": {}
@@ -138,12 +139,12 @@
               },
               "controllerUUID": "2fxt356i7ant59kbkehanuy2i2iv9zhy",
               "renderer": {
-                "cameraIndex": -4,
+                "cameraIndex": -2,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  10.249862583432362,
-                  1.574800000000001,
-                  2.1272658811792864
+                  -3.4157976777129457,
+                  1.6021229775884755,
+                  -1.5159031423507774
                 ],
                 "cameraTarget": [
                   0,
@@ -228,5 +229,5 @@
     }
   ],
   "satellites": [],
-  "version": "4.1.1"
+  "version": "4.1.0"
 }

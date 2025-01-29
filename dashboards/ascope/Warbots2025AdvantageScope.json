@@ -1,10 +1,10 @@
 {
   "hubs": [
     {
-      "x": -1920,
-      "y": -221,
-      "width": 1920,
-      "height": 1055,
+      "x": 0,
+      "y": 37,
+      "width": 1470,
+      "height": 919,
       "state": {
         "sidebar": {
           "width": 300,
@@ -16,10 +16,14 @@
             "/AdvantageKit/RealOutputs/SwerveChassisSpeeds",
             "/AdvantageKit/PowerDistribution",
             "/AdvantageKit",
-            "/AdvantageKit/Drive",
             "/AdvantageKit/Drive/Gyro",
             "/AdvantageKit/Drive/Module0",
-            "/AdvantageKit/RealOutputs/gripper"
+            "/AdvantageKit/RealOutputs/gripper",
+            "/AdvantageKit/Vision/Camera1",
+            "/AdvantageKit/Vision/Camera0",
+            "/AdvantageKit/RealOutputs/Vision",
+            "/AdvantageKit/RealOutputs/Vision/Camera1",
+            "/AdvantageKit/RealOutputs/Vision/Summary"
           ]
         },
         "tabs": {
@@ -132,6 +136,15 @@
                     "logType": "Pose3d",
                     "visible": true,
                     "options": {}
+                  },
+                  {
+                    "type": "aprilTag",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Summary/TagPoses",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "family": "36h11"
+                    }
                   }
                 ],
                 "game": "2025 Field",
@@ -142,9 +155,9 @@
                 "cameraIndex": -2,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  -3.4157976777129457,
-                  1.6021229775884755,
-                  -1.5159031423507774
+                  4.482815867870651,
+                  5.599635257557732,
+                  -4.210383573890221
                 ],
                 "cameraTarget": [
                   0,

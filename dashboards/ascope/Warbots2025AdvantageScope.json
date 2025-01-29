@@ -1,25 +1,25 @@
 {
   "hubs": [
     {
-      "x": -1920,
-      "y": -221,
-      "width": 1920,
-      "height": 1055,
+      "x": -1928,
+      "y": -8,
+      "width": 1936,
+      "height": 1056,
       "state": {
         "sidebar": {
           "width": 300,
           "expanded": [
-            "/SmartDashboard",
-            "/AdvantageKit/RealOutputs",
             "/AdvantageKit/RealOutputs/Odometry",
             "/AdvantageKit/RealOutputs/SwerveStates",
             "/AdvantageKit/RealOutputs/SwerveChassisSpeeds",
             "/AdvantageKit/PowerDistribution",
-            "/AdvantageKit",
-            "/AdvantageKit/Drive",
             "/AdvantageKit/Drive/Gyro",
             "/AdvantageKit/Drive/Module0",
-            "/AdvantageKit/RealOutputs/gripper"
+            "/AdvantageKit/RealOutputs/gripper",
+            "/AdvantageKit/Vision/Camera1",
+            "/AdvantageKit/Vision/Camera0",
+            "/AdvantageKit/RealOutputs/Vision/Camera1",
+            "/AdvantageKit/RealOutputs/Vision/Summary"
           ]
         },
         "tabs": {
@@ -132,6 +132,25 @@
                     "logType": "Pose3d",
                     "visible": true,
                     "options": {}
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Summary/TagPoses",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "aprilTag",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Summary/TagPoses",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "family": "36h11"
+                    }
                   }
                 ],
                 "game": "2025 Field",
@@ -142,14 +161,14 @@
                 "cameraIndex": -2,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  -3.4157976777129457,
-                  1.6021229775884755,
-                  -1.5159031423507774
+                  1.5016560623595099,
+                  1.1143362279902325,
+                  1.2423062662889892
                 ],
                 "cameraTarget": [
-                  0,
-                  0.5,
-                  0
+                  0.022517616473193086,
+                  0.8591025393031976,
+                  0.24997256503185789
                 ]
               },
               "controlsHeight": 290
@@ -229,5 +248,5 @@
     }
   ],
   "satellites": [],
-  "version": "4.1.0"
+  "version": "4.1.1"
 }

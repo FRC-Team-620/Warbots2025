@@ -18,7 +18,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -117,8 +116,8 @@ public class Robot extends LoggedRobot {
 
   private void demoElevator() {
     demoTime += 0.02;
-    var height =
-        (Math.sin(demoTime) * (Units.inchesToMeters(74) / 2)) + (Units.inchesToMeters(74) / 2);
+    var height = robotContainer.elevator.getHeight();
+
     Logger.recordOutput(
         "stage1",
         new Pose3d(new Translation3d(0, 0, height / 2), new Rotation3d(Rotation2d.fromDegrees(0))));

@@ -37,4 +37,8 @@ public class Elevator extends SubsystemBase {
   public void setSetpoint(double setPoint) {
     elevatorIO.setPositionMeters(setPoint);
   }
+
+  public double getHeight() {
+    return inputs.positionMeters;
+  }
 }

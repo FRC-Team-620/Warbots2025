@@ -37,6 +37,8 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
+import org.jmhsrobotics.frc2025.subsystems.led.LED;
+import org.jmhsrobotics.frc2025.subsystems.led.RedLEDCommand;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionIO;
@@ -57,6 +59,7 @@ public class RobotContainer {
   public final Elevator elevator;
 
   private final ControlBoard control;
+  private final LED led;
 
   private final ElevatorCommand up;
   private final ElevatorCommand down;
@@ -80,6 +83,10 @@ public class RobotContainer {
                 new ModuleIOThrifty(1),
                 new ModuleIOThrifty(2),
                 new ModuleIOThrifty(3));
+        led = new LED();
+        led.setDefaultCommand(new RedLEDCommand(this.led));
+        // initialize led
+
         // break;
         vision =
             new Vision(
@@ -102,6 +109,7 @@ public class RobotContainer {
                 new ModuleIOSimRev(),
                 new ModuleIOSimRev(),
                 new ModuleIOSimRev());
+        led = new LED();
 
         vision =
             new Vision(
@@ -123,6 +131,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        led = new LED();
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         elevator = new Elevator(new ElevatorIO() {});
@@ -153,6 +162,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+    configureDriverFeedback();
 
     setupSmartDashbaord();
   }
@@ -179,6 +189,10 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive));
+  }
+
+  private void configureDriverFeedback() {
+    // Changes LED light status and controller rumble
   }
 
   private void setupSmartDashbaord() {

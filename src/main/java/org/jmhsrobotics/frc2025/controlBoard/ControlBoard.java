@@ -13,6 +13,10 @@ public interface ControlBoard {
 
   public Trigger resetForward();
 
+  public Trigger upExample();
+
+  public Trigger downExample();
+
   // =======Operator Controls=======
 
 }

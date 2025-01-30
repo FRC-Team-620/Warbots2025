@@ -10,10 +10,11 @@ public class RainbowLEDCommand extends Command {
   private LED led;
   private final LEDPattern rainbow = LEDPattern.rainbow(255, 255);
   private final LEDPattern scrollingRainbow =
-      rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Constants.ledSpacing);
+      rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.1), Constants.ledSpacing);
 
   public RainbowLEDCommand(LED led) {
     this.led = led;
+    addRequirements(led);
   }
 
   @Override

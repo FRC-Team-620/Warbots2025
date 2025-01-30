@@ -10,6 +10,7 @@ public class RedLEDCommand extends Command {
 
   public RedLEDCommand(LED led) {
     this.led = led;
+    addRequirements(this.led);
   }
 
   @Override

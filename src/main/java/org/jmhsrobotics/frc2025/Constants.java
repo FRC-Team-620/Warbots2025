@@ -15,6 +15,7 @@ package org.jmhsrobotics.frc2025;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -36,17 +37,17 @@ public final class Constants {
   public static final Distance ledSpacing = Meters.of(1 / 120.0);
 
   public static class ElevatatorConstants {
-    public static final int elevatorMotorLeftID = 30;
-    public static final int elevatorMotorRightID = 31;
+    public static final int kMotorLeftId = 30;
+    public static final int kMotorRightID = 31;
 
-    public static final double elevatorLevel1Height = 0.25;
-    public static final double elevatorLevel2Height = 0.50;
-    public static final double elevatorLevel3Height = 0.75;
-    public static final double elevatorLevel4Height = 1.00;
+    public static final double kLevel1Meters = 0.0;
+    public static final double kLevel2Meters = 0.50;
+    public static final double kLevel3Meters = 0.75;
+    public static final double kLevel4Meters = Units.inchesToMeters(47);
 
-    public static final double elevatorkP = .01;
-    public static final double elevatorkI = .00;
-    public static final double elevatorkD = .00;
+    public static final double kP = .01;
+    public static final double kI = .00;
+    public static final double kD = .00;
   }
 
   public static enum Mode {

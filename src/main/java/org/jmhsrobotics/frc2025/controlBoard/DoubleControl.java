@@ -1,17 +1,16 @@
 package org.jmhsrobotics.frc2025.controlBoard;
 
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.jmhsrobotics.frc2025.util.ControllerMonitor;
 
 public class DoubleControl implements ControlBoard {
-  public XboxController driver = new XboxController(0);
-  public XboxController operator = new XboxController(1);
+  public CommandXboxController driver = new CommandXboxController(0);
+  public CommandXboxController operator = new CommandXboxController(1);
 
   public DoubleControl() {
-    ControllerMonitor.addController(this.operator, "Operator");
-    ControllerMonitor.addController(this.driver, "Driver");
+    ControllerMonitor.addController(this.operator.getHID(), "Operator");
+    ControllerMonitor.addController(this.driver.getHID(), "Driver");
   }
 
   // ========Driver Controls========
@@ -29,7 +28,17 @@ public class DoubleControl implements ControlBoard {
   }
 
   public Trigger resetForward() {
-    return new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    return driver.rightBumper();
+  }
+
+  @Override
+  public Trigger upExample() {
+    return driver.x();
+  }
+
+  @Override
+  public Trigger downExample() {
+    return driver.a();
   }
 
   // =======Operator Controls=======

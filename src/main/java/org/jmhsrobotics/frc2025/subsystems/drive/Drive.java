@@ -42,8 +42,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import org.jmhsrobotics.frc2025.Constants;
-import org.jmhsrobotics.frc2025.Constants.Mode;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleThrifty;
 import org.jmhsrobotics.frc2025.util.LocalADStarAK;
@@ -168,7 +166,11 @@ public class Drive extends SubsystemBase {
       // Update gyro angle
       if (gyroInputs.connected) {
         // Use the real gyro angle
-        rawGyroRotation = gyroInputs.odometryYawPositions[i];
+        rawGyroRotation =
+            gyroInputs
+                .odometryYawPositions[
+                i]; // FIXME: Big issue here that causes the robot code to crash, this causes an out
+        // of bounds error somtimes.
       } else {
         // Use the angle delta from the kinematics and module deltas
         Twist2d twist = kinematics.toTwist2d(moduleDeltas);
@@ -180,8 +182,8 @@ public class Drive extends SubsystemBase {
     }
 
     // Update gyro alert
-    gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
-    gyroUncalibratedAlert.set(!gyroInputs.calibrated && Constants.currentMode != Mode.SIM);
+    gyroDisconnectedAlert.set(!gyroInputs.connected);
+    gyroUncalibratedAlert.set(!gyroInputs.calibrated);
   }
 
   /**

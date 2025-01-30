@@ -24,11 +24,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
-import org.jmhsrobotics.frc2025.commands.ElevatorCommand;
-import org.jmhsrobotics.frc2025.controlBoard.AltControlMode;
+import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
+import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
+import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOBoron;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOPigeon2;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOSimRev;
@@ -38,7 +39,7 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
-import org.jmhsrobotics.frc2025.subsystems.led.RedLEDCommand;
+import org.jmhsrobotics.frc2025.subsystems.led.RainbowLEDCommand;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionIO;
@@ -61,8 +62,8 @@ public class RobotContainer {
   private final ControlBoard control;
   private final LED led;
 
-  private final ElevatorCommand up;
-  private final ElevatorCommand down;
+  private final ElevatorMoveTo up;
+  private final ElevatorMoveTo down;
   // Controller
 
   // Dashboard inputs
@@ -71,7 +72,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Change to "SingleControl" or "DoubleControl" here based on preference
-    this.control = new AltControlMode();
+    this.control = new SingleControl();
 
     switch (Constants.currentMode) {
       case REAL:
@@ -83,11 +84,6 @@ public class RobotContainer {
                 new ModuleIOThrifty(1),
                 new ModuleIOThrifty(2),
                 new ModuleIOThrifty(3));
-        led = new LED();
-        led.setDefaultCommand(new RedLEDCommand(this.led));
-        // initialize led
-
-        // break;
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -104,13 +100,11 @@ public class RobotContainer {
         // Sim robot, instantiate physics sim IO implementations
         drive =
             new Drive(
-                new GyroIO() {},
+                new GyroIOBoron(),
                 new ModuleIOSimRev(),
                 new ModuleIOSimRev(),
                 new ModuleIOSimRev(),
                 new ModuleIOSimRev());
-        led = new LED();
-
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -131,15 +125,16 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        led = new LED();
-
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         System.out.println("Mode: DEFAULT");
         break;
     }
-    up = new ElevatorCommand(this.elevator, .75);
-    down = new ElevatorCommand(this.elevator, .25);
+
+    led = new LED();
+    led.setDefaultCommand(new RainbowLEDCommand(this.led));
+    up = new ElevatorMoveTo(this.elevator, .75);
+    down = new ElevatorMoveTo(this.elevator, .25);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -189,6 +184,12 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive));
+    control
+        .downExample()
+        .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel1Meters));
+    control
+        .upExample()
+        .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel4Meters));
   }
 
   private void configureDriverFeedback() {

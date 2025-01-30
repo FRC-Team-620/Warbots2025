@@ -9,8 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Elevator extends SubsystemBase {
   private ElevatorIO elevatorIO;
   private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
-  private double setPointMeters;
-  private MechanismLigament2d stage1 =
+  private MechanismLigament2d stage1 = // TODO move to Robot Container
       new MechanismLigament2d("stage1", 3, 90, 10, new Color8Bit(0, 0, 168));
   private MechanismLigament2d carriage =
       new MechanismLigament2d("carriage", 3, 0, 5, new Color8Bit(255, 0, 0));

@@ -3,12 +3,11 @@ package org.jmhsrobotics.frc2025.controlBoard;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N2;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class AltControlMode implements ControlBoard {
-  XboxController driver = new XboxController(0);
+  CommandXboxController driver = new CommandXboxController(0);
 
   @Override
   public double rotation() {
@@ -44,6 +43,17 @@ public class AltControlMode implements ControlBoard {
 
   @Override
   public Trigger resetForward() {
-    return new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    // return new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    return driver.rightBumper();
+  }
+
+  @Override
+  public Trigger upExample() {
+    return driver.x();
+  }
+
+  @Override
+  public Trigger downExample() {
+    return driver.a();
   }
 }

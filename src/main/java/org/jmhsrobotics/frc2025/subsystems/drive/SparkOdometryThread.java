@@ -13,15 +13,17 @@
 
 package org.jmhsrobotics.frc2025.subsystems.drive;
 
-import com.revrobotics.REVLibError;
-import com.revrobotics.spark.SparkBase;
-import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.RobotController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.DoubleSupplier;
+
+import com.revrobotics.REVLibError;
+import com.revrobotics.spark.SparkBase;
+
+import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotController;
 
 /**
  * Provides an interface for asynchronously reading high-frequency measurements to a set of queues.
@@ -52,9 +54,10 @@ public class SparkOdometryThread {
   }
 
   public void start() {
-    if (timestampQueues.size() > 0) {
-      notifier.startPeriodic(1.0 / DriveConstants.odometryFrequency);
-    }
+    // SmartDashboard.putNumber("timestapSize", timestampQueues.size());
+    // if (timestampQueues.size() > 0) { //TODO: Removed for now seems to cause issues, might need to disable it for log replay?
+    notifier.startPeriodic(1.0 / DriveConstants.odometryFrequency);
+  // }
   }
 
   /** Registers a Spark signal to be read from the thread. */

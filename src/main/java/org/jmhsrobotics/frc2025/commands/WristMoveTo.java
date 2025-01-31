@@ -10,6 +10,8 @@ public class WristMoveTo extends Command {
   public WristMoveTo(Wrist elevator, double goalDegrees) {
     this.wrist = wrist;
     this.goalDegrees = goalDegrees;
+
+    addRequirements(this.wrist);
   }
 
   @Override

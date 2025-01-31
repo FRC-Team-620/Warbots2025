@@ -13,10 +13,39 @@ public interface ControlBoard {
 
   public Trigger resetForward();
 
+  public Trigger turboMode();
+
   public Trigger upExample();
 
   public Trigger downExample();
 
   // =======Operator Controls=======
 
+  public Trigger intakeCoral();
+
+  public Trigger intakeAlgae();
+
+  public Trigger placeCoralL1();
+
+  public Trigger placeCoralL2();
+
+  public Trigger placeCoralL3();
+
+  public Trigger placeCoralL4();
+
+  public Trigger removeAlgaeL23();
+
+  public Trigger removeAlgaeL34();
+
+  public Trigger scoreProcessor();
+
+  public Trigger scoreBarge();
+
+  public Trigger climbUp();
+
+  public Trigger climbDown();
+
+  public Trigger indexerUp();
+
+  public Trigger indexerDown();
 }

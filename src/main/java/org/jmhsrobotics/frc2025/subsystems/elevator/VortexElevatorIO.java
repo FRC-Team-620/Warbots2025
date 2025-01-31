@@ -10,9 +10,9 @@ import org.jmhsrobotics.frc2025.Constants;
 
 public class VortexElevatorIO implements ElevatorIO {
   private SparkFlex vortexLeft =
-      new SparkFlex(Constants.ElevatatorConstants.kMotorLeftId, MotorType.kBrushless);
+      new SparkFlex(Constants.ElevatorConstants.kMotorLeftId, MotorType.kBrushless);
   private SparkFlex vortexRight =
-      new SparkFlex(Constants.ElevatatorConstants.kMotorRightId, MotorType.kBrushless);
+      new SparkFlex(Constants.ElevatorConstants.kMotorRightId, MotorType.kBrushless);
   private SparkFlexConfig vortexLeftConfig;
   private SparkFlexConfig vortexRightConfig;
   private SparkClosedLoopController pidController;

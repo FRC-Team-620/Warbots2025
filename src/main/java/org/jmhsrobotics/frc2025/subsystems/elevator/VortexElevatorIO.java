@@ -12,7 +12,7 @@ public class VortexElevatorIO implements ElevatorIO {
   private SparkFlex vortexLeft =
       new SparkFlex(Constants.ElevatatorConstants.kMotorLeftId, MotorType.kBrushless);
   private SparkFlex vortexRight =
-      new SparkFlex(Constants.ElevatatorConstants.kMotorRightID, MotorType.kBrushless);
+      new SparkFlex(Constants.ElevatatorConstants.kMotorRightId, MotorType.kBrushless);
   private SparkFlexConfig vortexLeftConfig;
   private SparkFlexConfig vortexRightConfig;
   private SparkClosedLoopController pidController;

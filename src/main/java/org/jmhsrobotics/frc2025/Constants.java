@@ -38,7 +38,7 @@ public final class Constants {
 
   public static class ElevatatorConstants {
     public static final int kMotorLeftId = 30;
-    public static final int kMotorRightID = 31;
+    public static final int kMotorRightId = 31;
 
     public static final double kLevel1Meters = 0.0;
     public static final double kLevel2Meters = 0.50;
@@ -48,6 +48,22 @@ public final class Constants {
     public static final double kP = .01;
     public static final double kI = .00;
     public static final double kD = .00;
+  }
+
+  public static class WristConstants {
+    public static final int kMotorId = 40;
+
+    public static final double kRotationLevel1 = 0;
+    public static final double kRotationLevel2 = 0;
+    public static final double kRotationLevel3 = 0;
+    public static final double kRotationLevel4 = 0;
+
+    public static final double kRotationAlgae = 0;
+    public static final double kRotationProcesser = 0;
+
+    public static final double kP = 0.01;
+    public static final double kI = 0.00;
+    public static final double kD = 0.00;
   }
 
   public static enum Mode {

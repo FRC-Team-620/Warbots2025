@@ -31,6 +31,10 @@ public class DoubleControl implements ControlBoard {
     return driver.rightBumper();
   }
 
+  public Trigger turboMode() {
+    return driver.leftBumper();
+  }
+
   @Override
   public Trigger upExample() {
     return driver.x();
@@ -43,4 +47,59 @@ public class DoubleControl implements ControlBoard {
 
   // =======Operator Controls=======
 
+  public Trigger intakeCoral() {
+    return operator.leftTrigger();
+  }
+
+  public Trigger intakeAlgae() {
+    return operator.rightTrigger();
+  }
+
+  public Trigger placeCoralL1() {
+    return operator.a();
+  }
+
+  public Trigger placeCoralL2() {
+    return operator.b();
+  }
+
+  public Trigger placeCoralL3() {
+    return operator.x();
+  }
+
+  public Trigger placeCoralL4() {
+    return operator.y();
+  }
+
+  public Trigger removeAlgaeL23() {
+    return operator.leftBumper();
+  }
+
+  public Trigger removeAlgaeL34() {
+    return operator.rightBumper();
+  }
+
+  public Trigger scoreProcessor() {
+    return operator.back();
+  }
+
+  public Trigger scoreBarge() {
+    return operator.start();
+  }
+
+  public Trigger climbUp() {
+    return operator.povUp();
+  }
+
+  public Trigger climbDown() {
+    return operator.povDown();
+  }
+
+  public Trigger indexerUp() {
+    return operator.leftStick();
+  }
+
+  public Trigger indexerDown() {
+    return operator.rightStick();
+  }
 }

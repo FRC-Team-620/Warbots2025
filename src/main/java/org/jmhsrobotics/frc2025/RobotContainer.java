@@ -184,12 +184,31 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive));
+    // control.turboMode().onTrue(down);
+
+    // Operator Control Bindings //
+    // control.intakeCoral().onTrue(down);
+    // control.intakeAlgae().onTrue(down);
     control
-        .downExample()
+        .placeCoralL1()
         .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel1Meters));
     control
-        .upExample()
+        .placeCoralL2()
+        .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel2Meters));
+    control
+        .placeCoralL3()
+        .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel3Meters));
+    control
+        .placeCoralL4()
         .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel4Meters));
+    // control.removeAlgaeL23().onTrue(down);
+    // control.removeAlgaeL34().onTrue(down);
+    // control.scoreProcessor().onTrue(down);
+    // control.scoreBarge().onTrue(down);
+    // control.climbUp().onTrue(down);
+    // control.climbDown().onTrue(down);
+    // control.indexerUp().onTrue(down);
+    // control.indexerDown().onTrue(down);
   }
 
   private void configureDriverFeedback() {

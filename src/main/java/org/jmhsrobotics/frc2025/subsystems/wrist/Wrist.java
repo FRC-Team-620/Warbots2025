@@ -20,6 +20,10 @@ public class Wrist extends SubsystemBase {
     return Math.abs(setPoint - inputs.positionDegrees) < Constants.WristConstants.kAngleTolerance;
   }
 
+  public double getPositionDegrees() {
+    return inputs.positionDegrees;
+  }
+
   public void setSetpoint(double setPoint) {
     wristIO.setPositionDegrees(setPoint);
   }

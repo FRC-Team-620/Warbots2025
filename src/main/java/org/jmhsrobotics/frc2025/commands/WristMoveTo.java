@@ -7,7 +7,7 @@ public class WristMoveTo extends Command {
   private Wrist wrist;
   private double goalDegrees;
 
-  public WristMoveTo(Wrist elevator, double goalDegrees) {
+  public WristMoveTo(Wrist wrist, double goalDegrees) {
     this.wrist = wrist;
     this.goalDegrees = goalDegrees;
 

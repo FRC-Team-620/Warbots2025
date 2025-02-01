@@ -65,7 +65,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   public final Elevator elevator;
-  private final Wrist wrist;
+  public final Wrist wrist;
   private final ControlBoard control;
   private final LED led;
 

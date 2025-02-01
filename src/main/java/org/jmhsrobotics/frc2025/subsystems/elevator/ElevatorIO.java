@@ -5,14 +5,15 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ElevatorIO {
   @AutoLog
   public static class ElevatorIOInputs {
+    // index[0] for arrays is the left motor
     public double[] motorPositionMeters;
-    public double velocityMPS;
-    public double[] motorRPM;
     public double[] motorAmps;
-    public double positionMeters;
+    public double[] motorRPM;
+    public double velocityMPS;
+    public double heightMeters;
   }
 
   public default void updateInputs(ElevatorIOInputs inputs) {}
 
-  public default void setPositionMeters(double positionMeters) {}
+  public default void setPositionMeters(double heightMeters) {}
 }

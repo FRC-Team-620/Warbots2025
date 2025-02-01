@@ -26,13 +26,12 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     elevatorIO.updateInputs(inputs);
-    stage1.setLength(inputs.positionMeters / 2);
-    carriage.setLength(inputs.positionMeters / 2);
+    stage1.setLength(inputs.heightMeters / 2);
+    carriage.setLength(inputs.heightMeters / 2);
   }
 
   public boolean atGoal(double setPoint) {
-    return Math.abs(inputs.positionMeters - setPoint)
-        < Constants.ElevatorConstants.kHeightTolerance;
+    return Math.abs(inputs.heightMeters - setPoint) < Constants.ElevatorConstants.kHeightTolerance;
   }
 
   public void setSetpoint(double setPoint) {
@@ -40,6 +39,6 @@ public class Elevator extends SubsystemBase {
   }
 
   public double getHeight() {
-    return inputs.positionMeters;
+    return inputs.heightMeters;
   }
 }

@@ -1,5 +1,6 @@
 package org.jmhsrobotics.frc2025.subsystems.elevator;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -16,6 +17,9 @@ public class VortexElevatorIO implements ElevatorIO {
       new SparkFlex(Constants.ElevatorConstants.kMotorLeftId, MotorType.kBrushless);
   private SparkFlex vortexRight =
       new SparkFlex(Constants.ElevatorConstants.kMotorRightId, MotorType.kBrushless);
+  private AbsoluteEncoder leftEncoder = vortexLeft.getAbsoluteEncoder();
+  private AbsoluteEncoder rightEncoder = vortexRight.getAbsoluteEncoder();
+
   private SparkFlexConfig vortexLeftConfig;
   private SparkFlexConfig vortexRightConfig;
   private SparkClosedLoopController pidController;
@@ -56,20 +60,21 @@ public class VortexElevatorIO implements ElevatorIO {
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    inputs.motorAmps = new double[] {vortexLeft.getOutputCurrent(), vortexRight.getOutputCurrent()};
-    inputs.motorRPM =
-        new double[] {
-          vortexLeft.getEncoder().getVelocity(), vortexRight.getEncoder().getVelocity()
-        };
+    SparkUtil.ifOk(
+        vortexLeft, vortexLeft::getOutputCurrent, (value) -> inputs.motorAmps[0] = value);
+    SparkUtil.ifOk(
+        vortexRight, vortexRight::getOutputCurrent, (value) -> inputs.motorAmps[1] = value);
 
-    inputs.motorPositionMeters =
-        new double[] {
-          vortexLeft.getAbsoluteEncoder().getPosition(),
-          vortexRight.getAbsoluteEncoder().getPosition()
-        };
+    SparkUtil.ifOk(vortexLeft, leftEncoder::getVelocity, (value) -> inputs.motorRPM[0] = value);
+    SparkUtil.ifOk(vortexRight, rightEncoder::getVelocity, (value) -> inputs.motorRPM[1] = value);
+
+    SparkUtil.ifOk(
+        vortexLeft, leftEncoder::getPosition, (value) -> inputs.motorPositionMeters[0] = value);
+    SparkUtil.ifOk(
+        vortexRight, rightEncoder::getPosition, (value) -> inputs.motorPositionMeters[1] = value);
 
     // TODO
-    inputs.positionMeters = vortexLeft.getEncoder().getPosition();
+    SparkUtil.ifOk(vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value);
 
     pidController.setReference(this.goalMeters, ControlType.kPosition);
   }

@@ -204,25 +204,25 @@ public class RobotContainer {
         .onTrue(
             new SequentialCommandGroup(
                 new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel1Meters),
-                new WristMoveTo(wrist, Constants.WristConstants.kRotationLevel1)));
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationL1Degrees)));
     control
         .placeCoralL2()
         .onTrue(
             new ParallelCommandGroup(
                 new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel3Meters),
-                new WristMoveTo(wrist, Constants.WristConstants.kRotationLevel2)));
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationL2Degrees)));
     control
         .placeCoralL3()
         .onTrue(
             new ParallelCommandGroup(
                 new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel3Meters),
-                new WristMoveTo(wrist, Constants.WristConstants.kRotationLevel3)));
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationL3Degrees)));
     control
         .placeCoralL4()
         .onTrue(
             new ParallelCommandGroup(
                 new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel4Meters),
-                new WristMoveTo(wrist, Constants.WristConstants.kRotationLevel4)));
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationL4Degrees)));
 
     control
         .intakeCoral()

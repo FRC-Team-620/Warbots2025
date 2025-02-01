@@ -1,12 +1,15 @@
 package org.jmhsrobotics.frc2025.subsystems.elevator;
 
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.util.SparkUtil;
 
 public class VortexElevatorIO implements ElevatorIO {
   private SparkFlex vortexLeft =
@@ -34,6 +37,19 @@ public class VortexElevatorIO implements ElevatorIO {
         .voltageCompensation(12)
         .inverted(false)
         .follow(vortexLeft);
+
+    SparkUtil.tryUntilOk(
+        vortexLeft,
+        5,
+        () ->
+            vortexLeft.configure(
+                vortexLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+    SparkUtil.tryUntilOk(
+        vortexRight,
+        5,
+        () ->
+            vortexRight.configure(
+                vortexRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     pidController = vortexLeft.getClosedLoopController();
   }

@@ -56,13 +56,13 @@ public final class Constants {
 
     public static final double kRotationIntakeCoral = 0;
 
-    public static final double kRotationLevel1 = 10;
-    public static final double kRotationLevel2 = 25;
-    public static final double kRotationLevel3 = 25;
-    public static final double kRotationLevel4 = 75;
+    public static final double kRotationL1Degrees = 10;
+    public static final double kRotationL2Degrees = 25;
+    public static final double kRotationL3Degrees = 25;
+    public static final double kRotationL4Degrees = 75;
 
-    public static final double kRotationAlgae = 190;
-    public static final double kRotationProcesser = 180;
+    public static final double kRotationAlgaeDegrees = 190;
+    public static final double kRotationProcesserDegrees = 180;
 
     public static final double kP = 0.01;
     public static final double kI = 0.00;

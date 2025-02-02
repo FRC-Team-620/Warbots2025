@@ -22,9 +22,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
+import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
@@ -45,6 +48,10 @@ import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionIO;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionIOPhotonVision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionIOPhotonVisionSim;
+import org.jmhsrobotics.frc2025.subsystems.wrist.NeoWristIO;
+import org.jmhsrobotics.frc2025.subsystems.wrist.SimWristIO;
+import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
+import org.jmhsrobotics.frc2025.subsystems.wrist.WristIO;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -58,12 +65,10 @@ public class RobotContainer {
   private final Drive drive;
   private final Vision vision;
   public final Elevator elevator;
-
+  public final Wrist wrist;
   private final ControlBoard control;
   private final LED led;
 
-  private final ElevatorMoveTo up;
-  private final ElevatorMoveTo down;
   // Controller
 
   // Dashboard inputs
@@ -93,6 +98,8 @@ public class RobotContainer {
                     VisionConstants.camera1Name, VisionConstants.robotToCamera1));
 
         elevator = new Elevator(new VortexElevatorIO() {});
+        wrist = new Wrist(new NeoWristIO());
+
         System.out.println("Mode: REAL");
         break;
 
@@ -113,6 +120,7 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(
                     VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
         elevator = new Elevator(new SimElevatorIO() {});
+        wrist = new Wrist(new SimWristIO());
         System.out.println("Mode: SIM");
         break;
 
@@ -127,14 +135,13 @@ public class RobotContainer {
                 new ModuleIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         elevator = new Elevator(new ElevatorIO() {});
+        wrist = new Wrist(new WristIO() {});
         System.out.println("Mode: DEFAULT");
         break;
     }
 
     led = new LED();
     led.setDefaultCommand(new RainbowLEDCommand(this.led));
-    up = new ElevatorMoveTo(this.elevator, .75);
-    down = new ElevatorMoveTo(this.elevator, .25);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -189,18 +196,37 @@ public class RobotContainer {
     // Operator Control Bindings //
     // control.intakeCoral().onTrue(down);
     // control.intakeAlgae().onTrue(down);
+    // control
+    //     .placeCoralL1()
+    //     .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel1Meters));
     control
         .placeCoralL1()
-        .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel1Meters));
+        .onTrue(
+            new SequentialCommandGroup(
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel1Meters),
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationL1Degrees)));
     control
         .placeCoralL2()
-        .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel2Meters));
+        .onTrue(
+            new ParallelCommandGroup(
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel3Meters),
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationL2Degrees)));
     control
         .placeCoralL3()
-        .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel3Meters));
+        .onTrue(
+            new ParallelCommandGroup(
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel3Meters),
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationL3Degrees)));
     control
         .placeCoralL4()
-        .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel4Meters));
+        .onTrue(
+            new ParallelCommandGroup(
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel4Meters),
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationL4Degrees)));
+
+    control
+        .intakeCoral()
+        .whileTrue(new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoral));
     // control.removeAlgaeL23().onTrue(down);
     // control.removeAlgaeL34().onTrue(down);
     // control.scoreProcessor().onTrue(down);
@@ -217,9 +243,6 @@ public class RobotContainer {
 
   private void setupSmartDashbaord() {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
-
-    SmartDashboard.putData("up", up);
-    SmartDashboard.putData("down", down);
   }
 
   /**

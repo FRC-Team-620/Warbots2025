@@ -35,7 +35,7 @@ public class SimElevatorIO implements ElevatorIO {
         new double[] {
           simElevator.getCurrentDrawAmps() / 2.0, simElevator.getCurrentDrawAmps() / 2.0
         };
-    inputs.positionMeters = simElevator.getPositionMeters();
+    inputs.heightMeters = simElevator.getPositionMeters();
     inputs.velocityMPS = simElevator.getVelocityMetersPerSecond();
   }
 

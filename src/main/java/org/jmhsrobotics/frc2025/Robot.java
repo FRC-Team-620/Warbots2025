@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -116,8 +117,8 @@ public class Robot extends LoggedRobot {
 
   private void demoElevator() {
     demoTime += 0.02;
-    var height = robotContainer.elevator.getHeight();
-
+    double height = robotContainer.elevator.getHeight();
+    double gripperDegrees = robotContainer.wrist.getPositionDegrees();
     Logger.recordOutput(
         "stage1",
         new Pose3d(new Translation3d(0, 0, height / 2), new Rotation3d(Rotation2d.fromDegrees(0))));
@@ -128,7 +129,7 @@ public class Robot extends LoggedRobot {
         "gripper",
         new Pose3d(
             new Translation3d(0.2730451486, 0, 0.4064 + height),
-            new Rotation3d(0, Math.sin(demoTime), 0)));
+            new Rotation3d(0, Units.degreesToRadians(gripperDegrees), 0)));
   }
 
   /** This function is called once when the robot is disabled. */

@@ -48,58 +48,58 @@ public class SingleControl implements ControlBoard {
   }
 
   public Trigger intakeCoral() {
-    return nop;
+    return driver.leftTrigger();
   }
 
   public Trigger intakeAlgae() {
-    return nop;
+    return driver.rightTrigger();
   }
 
   public Trigger placeCoralL1() {
-    return nop;
+    return driver.a();
   }
 
   public Trigger placeCoralL2() {
-    return nop;
+    return driver.b();
   }
 
   public Trigger placeCoralL3() {
-    return nop;
+    return driver.x();
   }
 
   public Trigger placeCoralL4() {
-    return nop;
+    return driver.y();
   }
 
   public Trigger removeAlgaeL23() {
-    return nop;
+    return driver.leftBumper();
   }
 
   public Trigger removeAlgaeL34() {
-    return nop;
+    return driver.rightBumper();
   }
 
   public Trigger scoreProcessor() {
-    return nop;
+    return driver.back();
   }
 
   public Trigger scoreBarge() {
-    return nop;
+    return driver.start();
   }
 
   public Trigger climbUp() {
-    return nop;
+    return driver.povUp();
   }
 
   public Trigger climbDown() {
-    return nop;
+    return driver.povDown();
   }
 
   public Trigger indexerUp() {
-    return nop;
+    return driver.leftStick();
   }
 
   public Trigger indexerDown() {
-    return nop;
+    return driver.rightStick();
   }
 }

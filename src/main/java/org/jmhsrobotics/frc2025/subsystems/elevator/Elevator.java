@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.jmhsrobotics.frc2025.Constants;
 
 public class Elevator extends SubsystemBase {
   private ElevatorIO elevatorIO;
@@ -25,12 +26,12 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     elevatorIO.updateInputs(inputs);
-    stage1.setLength(inputs.positionMeters / 2);
-    carriage.setLength(inputs.positionMeters / 2);
+    stage1.setLength(inputs.heightMeters / 2);
+    carriage.setLength(inputs.heightMeters / 2);
   }
 
-  public boolean atGoal() {
-    return false;
+  public boolean atGoal(double setPoint) {
+    return Math.abs(inputs.heightMeters - setPoint) < Constants.ElevatorConstants.kHeightTolerance;
   }
 
   public void setSetpoint(double setPoint) {
@@ -38,6 +39,6 @@ public class Elevator extends SubsystemBase {
   }
 
   public double getHeight() {
-    return inputs.positionMeters;
+    return inputs.heightMeters;
   }
 }

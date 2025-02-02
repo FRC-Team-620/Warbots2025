@@ -50,6 +50,13 @@ public final class Constants {
     public static final double kD = .00;
   }
 
+  public static class IntakeConstants {
+    public static final int kMotorId = 50;
+
+    public static final int kCoralSensorId = 51;
+    public static final int kAlgaeSensorId = 52;
+  }
+
   public static enum Mode {
     /** Running on a real robot. */
     REAL,

@@ -13,4 +13,8 @@ public interface WristIO {
   public default void updateInputs(WristIOInputs inputs) {}
 
   public default void setPositionDegrees(double angle) {}
+
+  public default double getSetpoint() {
+    return 0;
+  }
 }

@@ -59,4 +59,8 @@ public class NeoWristIO implements WristIO {
   public void setPositionDegrees(double positionDegrees) {
     this.goalDegrees = positionDegrees;
   }
+
+  public double getSetpoint() {
+    return goalDegrees;
+  }
 }

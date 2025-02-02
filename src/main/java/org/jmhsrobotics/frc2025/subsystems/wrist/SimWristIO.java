@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SimWristIO implements WristIO {
 
+  private double goalDegrees;
   // TODO: move these to contants
   // Gearing is 25:1 then a 24:60
   SingleJointedArmSim armSim =
@@ -43,6 +44,11 @@ public class SimWristIO implements WristIO {
 
   @Override
   public void setPositionDegrees(double angle) {
+    this.goalDegrees = angle;
     this.pidController.setSetpoint(angle);
+  }
+
+  public double getSetpoint() {
+    return goalDegrees;
   }
 }

@@ -21,6 +21,6 @@ public class WristMoveTo extends Command {
 
   @Override
   public boolean isFinished() {
-    return this.wrist.atGoal(goalDegrees);
+    return this.wrist.atGoal();
   }
 }

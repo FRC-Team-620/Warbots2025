@@ -20,11 +20,15 @@ public class Intake extends SubsystemBase {
     timeOfFLightIO.updateInputs(sensorInputs);
   }
 
-  // Method to determine and return current control mode: Algae, Coral, or 
+  // Method to determine and return current control mode: Algae, Coral, or
   // Possibly return an enum containing the correct setpoint values for each mode?
-  public String getMode(){
+  public String getMode() {
     if (sensorInputs.algaeDistance <= 50) return "Algae";
     else if (sensorInputs.coralDistance <= 30) return "Coral";
     return "Search";
+  }
+
+  public void set(double speedDutyCycle) {
+    intakeIO.set(speedDutyCycle);
   }
 }

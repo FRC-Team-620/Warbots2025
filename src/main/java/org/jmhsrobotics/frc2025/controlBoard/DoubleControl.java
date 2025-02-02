@@ -51,7 +51,7 @@ public class DoubleControl implements ControlBoard {
     return operator.leftTrigger();
   }
 
-  public Trigger intakeAlgae() {
+  public Trigger extakeCoral() {
     return operator.rightTrigger();
   }
 

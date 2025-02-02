@@ -38,8 +38,7 @@ public class NeoIntakeIO implements IntakeIO {
     SparkUtil.ifOk(motor, encoder::getVelocity, (value) -> inputs.motorRPM = value);
   }
 
-  public void set(double speedDutyCycle){
-    
+  public void set(double speedDutyCycle) {
+    motor.set(speedDutyCycle);
   }
-
 }

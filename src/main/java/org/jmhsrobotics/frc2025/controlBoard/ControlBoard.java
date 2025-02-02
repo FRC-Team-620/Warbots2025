@@ -23,7 +23,7 @@ public interface ControlBoard {
 
   public Trigger intakeCoral();
 
-  public Trigger intakeAlgae();
+  public Trigger extakeCoral();
 
   public Trigger placeCoralL1();
 

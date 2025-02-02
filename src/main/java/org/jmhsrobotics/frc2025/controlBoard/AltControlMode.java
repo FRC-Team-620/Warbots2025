@@ -72,7 +72,7 @@ public class AltControlMode implements ControlBoard {
     return nop;
   }
 
-  public Trigger intakeAlgae() {
+  public Trigger extakeCoral() {
     return nop;
   }
 

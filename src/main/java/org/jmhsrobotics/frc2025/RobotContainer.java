@@ -238,10 +238,6 @@ public class RobotContainer {
 
     control
         .intakeCoral()
-        .whileTrue(new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoral));
-
-    control
-        .intakeCoral()
         .whileTrue(
             new ParallelCommandGroup(
                 new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoral),

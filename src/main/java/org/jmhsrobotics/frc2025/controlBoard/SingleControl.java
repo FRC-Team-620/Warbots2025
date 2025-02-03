@@ -51,7 +51,7 @@ public class SingleControl implements ControlBoard {
     return driver.leftTrigger();
   }
 
-  public Trigger intakeAlgae() {
+  public Trigger extakeCoral() {
     return driver.rightTrigger();
   }
 

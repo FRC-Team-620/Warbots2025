@@ -70,6 +70,16 @@ public final class Constants {
     public static final double kAngleTolerance = 3;
   }
 
+  public static class IntakeConstants {
+    public static final int kMotorId = 50;
+
+    public static final int kCoralSensorId = 51;
+    public static final int kAlgaeSensorId = 52;
+
+    public static final double kIntakeSpeedDutyCycle = 0.25;
+    public static final double kExtakeSpeedDutyCycle = -0.25;
+  }
+
   public static enum Mode {
     /** Running on a real robot. */
     REAL,

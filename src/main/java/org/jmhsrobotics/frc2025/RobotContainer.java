@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
+import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
@@ -41,6 +42,11 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
+import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
+import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
+import org.jmhsrobotics.frc2025.subsystems.intake.IntakeIO;
+import org.jmhsrobotics.frc2025.subsystems.intake.NeoIntakeIO;
+import org.jmhsrobotics.frc2025.subsystems.intake.TimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.led.RainbowLEDCommand;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
@@ -68,6 +74,7 @@ public class RobotContainer {
   public final Wrist wrist;
   private final ControlBoard control;
   private final LED led;
+  private final Intake intake;
 
   // Controller
 
@@ -99,6 +106,7 @@ public class RobotContainer {
 
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
+        intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -121,6 +129,8 @@ public class RobotContainer {
                     VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
         elevator = new Elevator(new SimElevatorIO() {});
         wrist = new Wrist(new SimWristIO());
+        intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
+
         System.out.println("Mode: SIM");
         break;
 
@@ -136,6 +146,8 @@ public class RobotContainer {
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
+        intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
+
         System.out.println("Mode: DEFAULT");
         break;
     }
@@ -226,7 +238,15 @@ public class RobotContainer {
 
     control
         .intakeCoral()
-        .whileTrue(new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoral));
+        .whileTrue(
+            new ParallelCommandGroup(
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoral),
+                new IntakeMove(intake, Constants.IntakeConstants.kIntakeSpeedDutyCycle)));
+
+    control
+        .extakeCoral()
+        .whileTrue(new IntakeMove(intake, Constants.IntakeConstants.kExtakeSpeedDutyCycle));
+
     // control.removeAlgaeL23().onTrue(down);
     // control.removeAlgaeL34().onTrue(down);
     // control.scoreProcessor().onTrue(down);

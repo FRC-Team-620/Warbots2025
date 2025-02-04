@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2025.controlBoard;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.util.ControllerMonitor;
 
@@ -15,6 +16,12 @@ public class DoubleControl implements ControlBoard {
     ControllerMonitor.addController(this.driver.getHID(), "Driver");
     this.intake = intake;
   }
+
+  private Trigger nop =
+      new Trigger(
+          () -> {
+            return false;
+          });
 
   // ========Driver Controls========
 
@@ -49,42 +56,61 @@ public class DoubleControl implements ControlBoard {
   }
 
   public Trigger placeCoralLevel1() {
+    if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+
     return operator.a();
   }
 
   public Trigger placeCoralLevel2() {
+    if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+
     return operator.b();
   }
 
   public Trigger placeCoralLevel3() {
+    if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+
     return operator.x();
   }
 
   public Trigger placeCoralLevel4() {
+    if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
     return operator.y();
   }
 
   public Trigger scoreAlgaeProcesser() {
+    if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
+
     return operator.a();
   }
 
   public Trigger scoreAlgaeBarge() {
+    if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
+
     return operator.y();
   }
 
   public Trigger elevatorIntakeCoral() {
+    if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+
     return operator.a();
   }
 
   public Trigger takeAlgaeLevel2() {
+    if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+
     return operator.b();
   }
 
   public Trigger takeAlgaeLevel3() {
+    if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+
     return operator.x();
   }
 
   public Trigger takeAlgaeQTip() {
+    if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+
     return operator.y();
   }
 

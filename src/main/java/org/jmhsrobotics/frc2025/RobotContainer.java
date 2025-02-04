@@ -29,7 +29,7 @@ import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
-import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
+import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOBoron;
@@ -83,8 +83,6 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Change to "SingleControl" or "DoubleControl" here based on preference
-    this.control = new SingleControl();
-
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -150,6 +148,8 @@ public class RobotContainer {
         System.out.println("Mode: DEFAULT");
         break;
     }
+
+    this.control = new DoubleControl(intake);
 
     led = new LED();
     led.setDefaultCommand(new RainbowLEDCommand(this.led));
@@ -236,11 +236,53 @@ public class RobotContainer {
                 new WristMoveTo(wrist, Constants.WristConstants.kRotationL4Degrees)));
 
     control
+        .scoreAlgaeProcesser()
+        .onTrue(
+            new ParallelCommandGroup(
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kProcesserMeters),
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationProcesserDegrees)));
+
+    control
+        .scoreAlgaeBarge()
+        .onTrue(
+            new ParallelCommandGroup(
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kBargeMeters),
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationBargeDegrees)));
+
+    control
+        .elevatorIntakeCoral()
+        .onTrue(
+            new ParallelCommandGroup(
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kCoralIntakeMeters),
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoralDegrees)));
+
+    control
+        .takeAlgaeLevel2()
+        .whileTrue(
+            new ParallelCommandGroup(
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kAlgaeIntakeL2Meters),
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationAlgaeDegrees)));
+
+    control
+        .takeAlgaeLevel3()
+        .onTrue(
+            new ParallelCommandGroup(
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kAlgaeIntakeL3Meters),
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationAlgaeDegrees)));
+
+    control
+        .takeAlgaeQTip()
+        .onTrue(
+            new ParallelCommandGroup(
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kAlgaeQTipMeters),
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationQTipDegrees)));
+
+    control
         .intakeCoral()
         .whileTrue(
             new ParallelCommandGroup(
-                new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoral),
-                new IntakeMove(intake, Constants.IntakeConstants.kIntakeSpeedDutyCycle)));
+                new IntakeMove(intake, Constants.IntakeConstants.kIntakeSpeedDutyCycle),
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoralDegrees)));
 
     control
         .extakeCoral()
@@ -262,6 +304,8 @@ public class RobotContainer {
 
   private void setupSmartDashbaord() {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
+    SmartDashboard.putData("SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
+    SmartDashboard.putData("SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
   }
 
   /**

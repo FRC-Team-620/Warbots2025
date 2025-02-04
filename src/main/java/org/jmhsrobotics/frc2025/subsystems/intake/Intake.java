@@ -1,5 +1,6 @@
 package org.jmhsrobotics.frc2025.subsystems.intake;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
@@ -9,7 +10,7 @@ public class Intake extends SubsystemBase {
   private TimeOfFLightIO timeOfFLightIO;
   private TimeOfFLightIOInputsAutoLogged sensorInputs = new TimeOfFLightIOInputsAutoLogged();
 
-  private int mode;
+  private int mode = 2;
   private boolean override;
 
   public Intake(IntakeIO intakeIO, TimeOfFLightIO timeOfFLightIO) {
@@ -21,6 +22,7 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     intakeIO.updateInputs(intakeInputs);
     timeOfFLightIO.updateInputs(sensorInputs);
+    SmartDashboard.putNumber("Control Mode", getMode());
   }
 
   /**
@@ -33,18 +35,25 @@ public class Intake extends SubsystemBase {
     if (override) {
       return mode;
     }
-    if (sensorInputs.algaeDistance <= 50) return 0;
-    else if (sensorInputs.coralDistance <= 30) return 2;
-    return 1;
+    if (sensorInputs.algaeDistance <= 50) return 1;
+    else if (sensorInputs.coralDistance <= 30) return 3;
+    System.out.println("Mode: " + mode);
+    return 2;
   }
 
+  /**
+   * Manual override to set control mode if sensors stop working during match. Override cannot be
+   * reversed
+   *
+   * @param increment +1 to go from search to coral/algae to search, -1 for opposite
+   */
   public void setMode(int increment) {
     this.override = true;
     this.mode += increment;
-    if (this.mode < 0) {
-      this.mode = 0;
-    } else if (this.mode > 2) {
-      this.mode = 2;
+    if (this.mode < 1) {
+      this.mode = 1;
+    } else if (this.mode > 3) {
+      this.mode = 3;
     }
   }
 

@@ -69,58 +69,50 @@ public class AltControlMode implements ControlBoard {
   }
 
   public Trigger intakeCoral() {
-    return nop;
+    return driver.leftTrigger();
   }
 
   public Trigger extakeCoral() {
-    return nop;
+    return driver.rightTrigger();
   }
 
-  public Trigger placeCoralL1() {
-    return nop;
+  public Trigger buttonA() {
+    return driver.a();
   }
 
-  public Trigger placeCoralL2() {
-    return nop;
+  public Trigger buttonB() {
+    return driver.b();
   }
 
-  public Trigger placeCoralL3() {
-    return nop;
+  public Trigger buttonX() {
+    return driver.x();
   }
 
-  public Trigger placeCoralL4() {
-    return nop;
-  }
-
-  public Trigger removeAlgaeL23() {
-    return nop;
-  }
-
-  public Trigger removeAlgaeL34() {
-    return nop;
-  }
-
-  public Trigger scoreProcessor() {
-    return nop;
-  }
-
-  public Trigger scoreBarge() {
-    return nop;
+  public Trigger buttonY() {
+    return driver.y();
   }
 
   public Trigger climbUp() {
-    return nop;
+    return driver.povUp();
   }
 
   public Trigger climbDown() {
-    return nop;
+    return driver.povDown();
   }
 
   public Trigger indexerUp() {
-    return nop;
+    return driver.leftStick();
   }
 
   public Trigger indexerDown() {
-    return nop;
+    return driver.rightStick();
+  }
+
+  public Trigger changeModeLeft() {
+    return driver.back();
+  }
+
+  public Trigger changeModeRight() {
+    return driver.start();
   }
 }

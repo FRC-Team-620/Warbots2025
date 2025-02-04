@@ -9,6 +9,9 @@ public class Intake extends SubsystemBase {
   private TimeOfFLightIO timeOfFLightIO;
   private TimeOfFLightIOInputsAutoLogged sensorInputs = new TimeOfFLightIOInputsAutoLogged();
 
+  private int mode;
+  private boolean override;
+
   public Intake(IntakeIO intakeIO, TimeOfFLightIO timeOfFLightIO) {
     this.intakeIO = intakeIO;
     this.timeOfFLightIO = timeOfFLightIO;
@@ -20,13 +23,29 @@ public class Intake extends SubsystemBase {
     timeOfFLightIO.updateInputs(sensorInputs);
   }
 
-  // Method to determine and return current control mode: Algae, Coral, or Search
-  // Algae will be mode 0, Search will be 1, Coral will be 2
-  // Possibly return an enum containing the correct setpoint values for each mode?
+  /**
+   * Determines the current control mode. If override is true returns mode, otherwise returns mode
+   * based on ToF sensor inputs
+   *
+   * @return
+   */
   public int getMode() {
+    if (override) {
+      return mode;
+    }
     if (sensorInputs.algaeDistance <= 50) return 0;
     else if (sensorInputs.coralDistance <= 30) return 2;
     return 1;
+  }
+
+  public void setMode(int increment) {
+    this.override = true;
+    this.mode += increment;
+    if (this.mode < 0) {
+      this.mode = 0;
+    } else if (this.mode > 2) {
+      this.mode = 2;
+    }
   }
 
   public void set(double speedDutyCycle) {

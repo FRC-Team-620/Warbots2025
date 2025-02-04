@@ -25,21 +25,13 @@ public interface ControlBoard {
 
   public Trigger extakeCoral();
 
-  public Trigger placeCoralL1();
+  public Trigger buttonA();
 
-  public Trigger placeCoralL2();
+  public Trigger buttonB();
 
-  public Trigger placeCoralL3();
+  public Trigger buttonX();
 
-  public Trigger placeCoralL4();
-
-  public Trigger removeAlgaeL23();
-
-  public Trigger removeAlgaeL34();
-
-  public Trigger scoreProcessor();
-
-  public Trigger scoreBarge();
+  public Trigger buttonY();
 
   public Trigger climbUp();
 
@@ -48,4 +40,8 @@ public interface ControlBoard {
   public Trigger indexerUp();
 
   public Trigger indexerDown();
+
+  public Trigger changeModeLeft();
+
+  public Trigger changeModeRight();
 }

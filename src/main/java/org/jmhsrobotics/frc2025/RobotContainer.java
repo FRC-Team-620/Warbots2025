@@ -212,25 +212,25 @@ public class RobotContainer {
     //     .placeCoralL1()
     //     .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel1Meters));
     control
-        .placeCoralL1()
+        .buttonA()
         .onTrue(
             new SequentialCommandGroup(
                 new ElevatorMoveTo(elevator, intake, Constants.ButtonConstants.kA),
                 new WristMoveTo(wrist, Constants.WristConstants.kRotationL1Degrees)));
     control
-        .placeCoralL2()
+        .buttonB()
         .onTrue(
             new ParallelCommandGroup(
                 new ElevatorMoveTo(elevator, intake, Constants.ButtonConstants.kB),
                 new WristMoveTo(wrist, Constants.WristConstants.kRotationL2Degrees)));
     control
-        .placeCoralL3()
+        .buttonX()
         .onTrue(
             new ParallelCommandGroup(
                 new ElevatorMoveTo(elevator, intake, Constants.ButtonConstants.kX),
                 new WristMoveTo(wrist, Constants.WristConstants.kRotationL3Degrees)));
     control
-        .placeCoralL4()
+        .buttonY()
         .onTrue(
             new ParallelCommandGroup(
                 new ElevatorMoveTo(elevator, intake, Constants.ButtonConstants.kY),
@@ -247,14 +247,13 @@ public class RobotContainer {
         .extakeCoral()
         .whileTrue(new IntakeMove(intake, Constants.IntakeConstants.kExtakeSpeedDutyCycle));
 
-    // control.removeAlgaeL23().onTrue(down);
-    // control.removeAlgaeL34().onTrue(down);
-    // control.scoreProcessor().onTrue(down);
-    // control.scoreBarge().onTrue(down);
     // control.climbUp().onTrue(down);
     // control.climbDown().onTrue(down);
     // control.indexerUp().onTrue(down);
     // control.indexerDown().onTrue(down);
+
+    control.changeModeLeft().onTrue(Commands.runOnce(() -> intake.setMode(-1), intake));
+    control.changeModeRight().onTrue(Commands.runOnce(() -> intake.setMode(1), intake));
   }
 
   private void configureDriverFeedback() {

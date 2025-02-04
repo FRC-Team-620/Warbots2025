@@ -30,7 +30,7 @@ import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
-import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
+import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOBoron;
@@ -84,7 +84,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Change to "SingleControl" or "DoubleControl" here based on preference
-    this.control = new DoubleControl();
+    this.control = new SingleControl();
 
     switch (Constants.currentMode) {
       case REAL:
@@ -212,28 +212,28 @@ public class RobotContainer {
     //     .placeCoralL1()
     //     .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel1Meters));
     control
-        .buttonA()
+        .placeCoralL1()
         .onTrue(
             new SequentialCommandGroup(
-                new ElevatorMoveTo(elevator, intake, Constants.ButtonConstants.kA),
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel1Meters),
                 new WristMoveTo(wrist, Constants.WristConstants.kRotationL1Degrees)));
     control
-        .buttonB()
+        .placeCoralL2()
         .onTrue(
             new ParallelCommandGroup(
-                new ElevatorMoveTo(elevator, intake, Constants.ButtonConstants.kB),
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel3Meters),
                 new WristMoveTo(wrist, Constants.WristConstants.kRotationL2Degrees)));
     control
-        .buttonX()
+        .placeCoralL3()
         .onTrue(
             new ParallelCommandGroup(
-                new ElevatorMoveTo(elevator, intake, Constants.ButtonConstants.kX),
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel3Meters),
                 new WristMoveTo(wrist, Constants.WristConstants.kRotationL3Degrees)));
     control
-        .buttonY()
+        .placeCoralL4()
         .onTrue(
             new ParallelCommandGroup(
-                new ElevatorMoveTo(elevator, intake, Constants.ButtonConstants.kY),
+                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel4Meters),
                 new WristMoveTo(wrist, Constants.WristConstants.kRotationL4Degrees)));
 
     control
@@ -247,14 +247,14 @@ public class RobotContainer {
         .extakeCoral()
         .whileTrue(new IntakeMove(intake, Constants.IntakeConstants.kExtakeSpeedDutyCycle));
 
+    // control.removeAlgaeL23().onTrue(down);
+    // control.removeAlgaeL34().onTrue(down);
+    // control.scoreProcessor().onTrue(down);
+    // control.scoreBarge().onTrue(down);
     // control.climbUp().onTrue(down);
     // control.climbDown().onTrue(down);
     // control.indexerUp().onTrue(down);
     // control.indexerDown().onTrue(down);
-
-    control.changeModeLeft().onTrue(Commands.runOnce(() -> intake.setMode(-1), intake));
-
-    control.changeModeRight().onTrue(Commands.runOnce(() -> intake.setMode(1), intake));
   }
 
   private void configureDriverFeedback() {

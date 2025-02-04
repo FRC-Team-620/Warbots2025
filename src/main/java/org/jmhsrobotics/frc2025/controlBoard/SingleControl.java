@@ -55,20 +55,36 @@ public class SingleControl implements ControlBoard {
     return driver.rightTrigger();
   }
 
-  public Trigger buttonA() {
+  public Trigger placeCoralL1() {
     return driver.a();
   }
 
-  public Trigger buttonB() {
+  public Trigger placeCoralL2() {
     return driver.b();
   }
 
-  public Trigger buttonX() {
+  public Trigger placeCoralL3() {
     return driver.x();
   }
 
-  public Trigger buttonY() {
+  public Trigger placeCoralL4() {
     return driver.y();
+  }
+
+  public Trigger removeAlgaeL23() {
+    return driver.leftBumper();
+  }
+
+  public Trigger removeAlgaeL34() {
+    return driver.rightBumper();
+  }
+
+  public Trigger scoreProcessor() {
+    return driver.back();
+  }
+
+  public Trigger scoreBarge() {
+    return driver.start();
   }
 
   public Trigger climbUp() {
@@ -85,13 +101,5 @@ public class SingleControl implements ControlBoard {
 
   public Trigger indexerDown() {
     return driver.rightStick();
-  }
-
-  public Trigger changeModeLeft() {
-    return driver.back();
-  }
-
-  public Trigger changeModeRight() {
-    return driver.start();
   }
 }

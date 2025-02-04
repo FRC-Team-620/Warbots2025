@@ -253,6 +253,7 @@ public class RobotContainer {
     // control.indexerDown().onTrue(down);
 
     control.changeModeLeft().onTrue(Commands.runOnce(() -> intake.setMode(-1), intake));
+
     control.changeModeRight().onTrue(Commands.runOnce(() -> intake.setMode(1), intake));
   }
 

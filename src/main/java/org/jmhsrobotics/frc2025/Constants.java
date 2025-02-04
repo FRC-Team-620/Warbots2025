@@ -101,57 +101,6 @@ public final class Constants {
     public static final double kExtakeSpeedDutyCycle = -0.25;
   }
 
-  public static enum CoralModeControl {
-    WristA(10),
-    ELEVATORA(0),
-    WRISTB(25),
-    ELEVATORB(.5),
-    WRISTX(25),
-    ELEVATORX(.75),
-    WRISTY(75),
-    ELEVATORY(1);
-
-    double value;
-
-    CoralModeControl(double value) {
-      this.value = value;
-    }
-  }
-
-  public static enum SearchModeControl {
-    WristA(10),
-    ELEVATORA(0),
-    WRISTB(25),
-    ELEVATORB(.5),
-    WRISTX(25),
-    ELEVATORX(.75),
-    WRISTY(75),
-    ELEVATORY(1);
-
-    double value;
-
-    SearchModeControl(double value) {
-      this.value = value;
-    }
-  }
-
-  public static enum AlgaeModeControl {
-    WristA(10),
-    ELEVATORA(0),
-    WRISTB(25),
-    ELEVATORB(.5),
-    WRISTX(25),
-    ELEVATORX(.75),
-    WRISTY(75),
-    ELEVATORY(1);
-
-    double value;
-
-    AlgaeModeControl(double value) {
-      this.value = value;
-    }
-  }
-
   public static enum Mode {
     /** Running on a real robot. */
     REAL,

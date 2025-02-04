@@ -37,7 +37,6 @@ public class Intake extends SubsystemBase {
     }
     if (sensorInputs.algaeDistance <= 50) return 1;
     else if (sensorInputs.coralDistance <= 30) return 3;
-    System.out.println("Mode: " + mode);
     return 2;
   }
 

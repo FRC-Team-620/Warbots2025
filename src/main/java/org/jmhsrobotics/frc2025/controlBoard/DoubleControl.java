@@ -55,20 +55,36 @@ public class DoubleControl implements ControlBoard {
     return operator.rightTrigger();
   }
 
-  public Trigger buttonA() {
+  public Trigger placeCoralL1() {
     return operator.a();
   }
 
-  public Trigger buttonB() {
+  public Trigger placeCoralL2() {
     return operator.b();
   }
 
-  public Trigger buttonX() {
+  public Trigger placeCoralL3() {
     return operator.x();
   }
 
-  public Trigger buttonY() {
+  public Trigger placeCoralL4() {
     return operator.y();
+  }
+
+  public Trigger removeAlgaeL23() {
+    return operator.leftBumper();
+  }
+
+  public Trigger removeAlgaeL34() {
+    return operator.rightBumper();
+  }
+
+  public Trigger scoreProcessor() {
+    return operator.back();
+  }
+
+  public Trigger scoreBarge() {
+    return operator.start();
   }
 
   public Trigger climbUp() {
@@ -85,13 +101,5 @@ public class DoubleControl implements ControlBoard {
 
   public Trigger indexerDown() {
     return operator.rightStick();
-  }
-
-  public Trigger changeModeLeft() {
-    return operator.leftBumper();
-  }
-
-  public Trigger changeModeRight() {
-    return operator.rightBumper();
   }
 }

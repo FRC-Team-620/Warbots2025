@@ -2,15 +2,18 @@ package org.jmhsrobotics.frc2025.controlBoard;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.util.ControllerMonitor;
 
 public class DoubleControl implements ControlBoard {
   public CommandXboxController driver = new CommandXboxController(0);
   public CommandXboxController operator = new CommandXboxController(1);
+  private Intake intake;
 
-  public DoubleControl() {
+  public DoubleControl(Intake intake) {
     ControllerMonitor.addController(this.operator.getHID(), "Operator");
     ControllerMonitor.addController(this.driver.getHID(), "Driver");
+    this.intake = intake;
   }
 
   // ========Driver Controls========
@@ -35,16 +38,6 @@ public class DoubleControl implements ControlBoard {
     return driver.leftBumper();
   }
 
-  @Override
-  public Trigger upExample() {
-    return driver.x();
-  }
-
-  @Override
-  public Trigger downExample() {
-    return driver.a();
-  }
-
   // =======Operator Controls=======
 
   public Trigger intakeCoral() {
@@ -55,19 +48,43 @@ public class DoubleControl implements ControlBoard {
     return operator.rightTrigger();
   }
 
-  public Trigger buttonA() {
+  public Trigger placeCoralLevel1() {
     return operator.a();
   }
 
-  public Trigger buttonB() {
+  public Trigger placeCoralLevel2() {
     return operator.b();
   }
 
-  public Trigger buttonX() {
+  public Trigger placeCoralLevel3() {
     return operator.x();
   }
 
-  public Trigger buttonY() {
+  public Trigger placeCoralLevel4() {
+    return operator.y();
+  }
+
+  public Trigger scoreAlgaeProcesser() {
+    return operator.a();
+  }
+
+  public Trigger scoreAlgaeBarge() {
+    return operator.y();
+  }
+
+  public Trigger elevatorIntakeCoral() {
+    return operator.a();
+  }
+
+  public Trigger takeAlgaeLevel2() {
+    return operator.b();
+  }
+
+  public Trigger takeAlgaeLevel3() {
+    return operator.x();
+  }
+
+  public Trigger takeAlgaeQTip() {
     return operator.y();
   }
 

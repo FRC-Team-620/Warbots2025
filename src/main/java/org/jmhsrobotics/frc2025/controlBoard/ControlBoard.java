@@ -15,23 +15,31 @@ public interface ControlBoard {
 
   public Trigger turboMode();
 
-  public Trigger upExample();
-
-  public Trigger downExample();
-
   // =======Operator Controls=======
 
   public Trigger intakeCoral();
 
   public Trigger extakeCoral();
 
-  public Trigger buttonA();
+  public Trigger placeCoralLevel1();
 
-  public Trigger buttonB();
+  public Trigger placeCoralLevel2();
 
-  public Trigger buttonX();
+  public Trigger placeCoralLevel3();
 
-  public Trigger buttonY();
+  public Trigger placeCoralLevel4();
+
+  public Trigger scoreAlgaeProcesser();
+
+  public Trigger scoreAlgaeBarge();
+
+  public Trigger elevatorIntakeCoral();
+
+  public Trigger takeAlgaeLevel2();
+
+  public Trigger takeAlgaeLevel3();
+
+  public Trigger takeAlgaeQTip();
 
   public Trigger climbUp();
 

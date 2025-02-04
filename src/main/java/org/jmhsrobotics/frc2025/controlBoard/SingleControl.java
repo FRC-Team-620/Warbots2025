@@ -37,15 +37,7 @@ public class SingleControl implements ControlBoard {
     return nop;
   }
 
-  @Override
-  public Trigger upExample() {
-    return driver.x();
-  }
-
-  @Override
-  public Trigger downExample() {
-    return driver.a();
-  }
+  // =======Operator Controls=======
 
   public Trigger intakeCoral() {
     return driver.leftTrigger();
@@ -55,19 +47,43 @@ public class SingleControl implements ControlBoard {
     return driver.rightTrigger();
   }
 
-  public Trigger buttonA() {
+  public Trigger placeCoralLevel1() {
     return driver.a();
   }
 
-  public Trigger buttonB() {
+  public Trigger placeCoralLevel2() {
     return driver.b();
   }
 
-  public Trigger buttonX() {
+  public Trigger placeCoralLevel3() {
     return driver.x();
   }
 
-  public Trigger buttonY() {
+  public Trigger placeCoralLevel4() {
+    return driver.y();
+  }
+
+  public Trigger scoreAlgaeProcesser() {
+    return driver.a();
+  }
+
+  public Trigger scoreAlgaeBarge() {
+    return driver.y();
+  }
+
+  public Trigger elevatorIntakeCoral() {
+    return driver.a();
+  }
+
+  public Trigger takeAlgaeLevel2() {
+    return driver.b();
+  }
+
+  public Trigger takeAlgaeLevel3() {
+    return driver.x();
+  }
+
+  public Trigger takeAlgaeQTip() {
     return driver.y();
   }
 

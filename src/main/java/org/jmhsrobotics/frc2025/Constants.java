@@ -48,10 +48,10 @@ public final class Constants {
     public static final double kProcesserMeters = 0;
     public static final double kBargeMeters = 1.5;
 
-    public static final double kAlgaeQTipMeters = 0;
+    public static final double kAlgaeQTipMeters = 0.15;
     public static final double kCoralIntakeMeters = 0;
-    public static final double kAlgaeIntakeL2 = .6;
-    public static final double kAlgaeIntakeL3 = .8;
+    public static final double kAlgaeIntakeL2Meters = .6;
+    public static final double kAlgaeIntakeL3Meters = .8;
 
     public static final double kP = .01;
     public static final double kI = .00;

@@ -45,10 +45,31 @@ public final class Constants {
     public static final double kLevel3Meters = 0.75;
     public static final double kLevel4Meters = Units.inchesToMeters(47);
 
+    public static final double kProcesserMeters = 0;
+    public static final double kBargeMeters = 1.5;
+
+    public static final double kAlgaeQTipMeters = 0;
+    public static final double kCoralIntakeMeters = 0;
+    public static final double kAlgaeIntakeL2 = .6;
+    public static final double kAlgaeIntakeL3 = .8;
+
     public static final double kP = .01;
     public static final double kI = .00;
     public static final double kD = .00;
     public static final double kHeightTolerance = 0.1;
+  }
+
+  public static class ModeConstants {
+    public static final int kAlgae = 0;
+    public static final int kSearch = 1;
+    public static final int kCoral = 2;
+  }
+
+  public static class ButtonConstants {
+    public static final int kA = 1;
+    public static final int kB = 2;
+    public static final int kX = 3;
+    public static final int kY = 4;
   }
 
   public static class WristConstants {
@@ -78,6 +99,57 @@ public final class Constants {
 
     public static final double kIntakeSpeedDutyCycle = 0.25;
     public static final double kExtakeSpeedDutyCycle = -0.25;
+  }
+
+  public static enum CoralModeControl {
+    WristA(10),
+    ELEVATORA(0),
+    WRISTB(25),
+    ELEVATORB(.5),
+    WRISTX(25),
+    ELEVATORX(.75),
+    WRISTY(75),
+    ELEVATORY(1);
+
+    double value;
+
+    CoralModeControl(double value) {
+      this.value = value;
+    }
+  }
+
+  public static enum SearchModeControl {
+    WristA(10),
+    ELEVATORA(0),
+    WRISTB(25),
+    ELEVATORB(.5),
+    WRISTX(25),
+    ELEVATORX(.75),
+    WRISTY(75),
+    ELEVATORY(1);
+
+    double value;
+
+    SearchModeControl(double value) {
+      this.value = value;
+    }
+  }
+
+  public static enum AlgaeModeControl {
+    WristA(10),
+    ELEVATORA(0),
+    WRISTB(25),
+    ELEVATORB(.5),
+    WRISTX(25),
+    ELEVATORX(.75),
+    WRISTY(75),
+    ELEVATORY(1);
+
+    double value;
+
+    AlgaeModeControl(double value) {
+      this.value = value;
+    }
   }
 
   public static enum Mode {

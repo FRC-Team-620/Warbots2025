@@ -1,6 +1,7 @@
 package org.jmhsrobotics.frc2025.subsystems.elevator;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -17,8 +18,10 @@ public class VortexElevatorIO implements ElevatorIO {
       new SparkFlex(Constants.ElevatorConstants.kMotorLeftId, MotorType.kBrushless);
   private SparkFlex vortexRight =
       new SparkFlex(Constants.ElevatorConstants.kMotorRightId, MotorType.kBrushless);
-  private AbsoluteEncoder leftEncoder = vortexLeft.getAbsoluteEncoder();
-  private AbsoluteEncoder rightEncoder = vortexRight.getAbsoluteEncoder();
+  //private AbsoluteEncoder leftEncoder = vortexLeft.getAbsoluteEncoder();
+  //private AbsoluteEncoder rightEncoder = vortexRight.getAbsoluteEncoder();
+  private RelativeEncoder leftEncoder = vortexLeft.getEncoder();
+  private RelativeEncoder rightEncoder = vortexRight.getEncoder();
 
   private SparkFlexConfig vortexLeftConfig;
   private SparkFlexConfig vortexRightConfig;
@@ -81,5 +84,9 @@ public class VortexElevatorIO implements ElevatorIO {
 
   public void setPositionMeters(double positionMeters) {
     this.goalMeters = positionMeters;
+  }
+
+  public void setVoltage(double voltage){
+
   }
 }

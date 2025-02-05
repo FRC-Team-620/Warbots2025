@@ -11,9 +11,13 @@ public interface ElevatorIO {
     public double[] motorRPM;
     public double velocityMPS;
     public double heightMeters;
+    public boolean isOpenLoop = true;
   }
 
   public default void updateInputs(ElevatorIOInputs inputs) {}
 
   public default void setPositionMeters(double heightMeters) {}
+
+  public default void setVoltage(double voltage) {}
+
 }

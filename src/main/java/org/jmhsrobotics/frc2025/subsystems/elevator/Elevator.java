@@ -38,6 +38,10 @@ public class Elevator extends SubsystemBase {
     elevatorIO.setPositionMeters(setPoint);
   }
 
+  public void setVoltage(double voltage){
+    elevatorIO.setVoltage(voltage);
+  }
+
   public double getHeight() {
     return inputs.heightMeters;
   }

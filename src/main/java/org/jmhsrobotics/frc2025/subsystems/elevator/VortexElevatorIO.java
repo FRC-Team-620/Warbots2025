@@ -82,4 +82,8 @@ public class VortexElevatorIO implements ElevatorIO {
   public void setPositionMeters(double positionMeters) {
     this.goalMeters = positionMeters;
   }
+
+  public double getSetpoint() {
+    return this.goalMeters;
+  }
 }

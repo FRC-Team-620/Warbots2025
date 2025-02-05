@@ -16,4 +16,8 @@ public interface ElevatorIO {
   public default void updateInputs(ElevatorIOInputs inputs) {}
 
   public default void setPositionMeters(double heightMeters) {}
+
+  public default double getSetpoint() {
+    return 0;
+  }
 }

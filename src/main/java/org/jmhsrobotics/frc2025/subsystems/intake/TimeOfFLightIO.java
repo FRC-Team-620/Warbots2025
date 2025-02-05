@@ -6,8 +6,8 @@ public interface TimeOfFLightIO {
   @AutoLog
   public static class TimeOfFLightIOInputs {
     // distance in millimeters
-    public int coralDistance;
-    public int algaeDistance;
+    public int coralDistance = 60;
+    public int algaeDistance = 60;
   }
 
   public default void updateInputs(TimeOfFLightIOInputs inputs) {}

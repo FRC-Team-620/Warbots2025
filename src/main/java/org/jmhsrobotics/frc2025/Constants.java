@@ -45,24 +45,40 @@ public final class Constants {
     public static final double kLevel3Meters = 0.75;
     public static final double kLevel4Meters = Units.inchesToMeters(47);
 
+    public static final double kProcesserMeters = 0;
+    public static final double kBargeMeters = 1.8;
+
+    public static final double kAlgaeQTipMeters = 0.15;
+    public static final double kCoralIntakeMeters = 0;
+    public static final double kAlgaeIntakeL2Meters = .8;
+    public static final double kAlgaeIntakeL3Meters = 1.15;
+
     public static final double kP = .01;
     public static final double kI = .00;
     public static final double kD = .00;
     public static final double kHeightTolerance = 0.1;
   }
 
+  public static class ModeConstants {
+    public static final int kAlgae = 1;
+    public static final int kSearch = 2;
+    public static final int kCoral = 3;
+  }
+
   public static class WristConstants {
     public static final int kMotorId = 40;
 
-    public static final double kRotationIntakeCoral = 0;
+    public static final double kRotationIntakeCoralDegrees = 0;
 
     public static final double kRotationL1Degrees = 10;
     public static final double kRotationL2Degrees = 25;
     public static final double kRotationL3Degrees = 25;
     public static final double kRotationL4Degrees = 75;
 
-    public static final double kRotationAlgaeDegrees = 190;
-    public static final double kRotationProcesserDegrees = 180;
+    public static final double kRotationAlgaeDegrees = 150;
+    public static final double kRotationProcesserDegrees = 140;
+    public static final double kRotationBargeDegrees = 70;
+    public static final double kRotationQTipDegrees = 150;
 
     public static final double kP = 0.01;
     public static final double kI = 0.00;

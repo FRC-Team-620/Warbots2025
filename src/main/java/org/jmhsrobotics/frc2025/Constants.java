@@ -15,7 +15,6 @@ package org.jmhsrobotics.frc2025;
 
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -50,17 +49,17 @@ public final class Constants {
   public static class ElevatorConstants {
 
     public static final double kLevel1Meters = 0.0;
-    public static final double kLevel2Meters = 0.50;
+    public static final double kLevel2Meters = 0.35;
     public static final double kLevel3Meters = 0.75;
-    public static final double kLevel4Meters = Units.inchesToMeters(47);
+    public static final double kLevel4Meters = 1.6;
 
-    public static final double kProcesserMeters = 0;
+    public static final double kProcesserMeters = .15;
     public static final double kBargeMeters = 1.8;
 
-    public static final double kAlgaeQTipMeters = 0.15;
+    public static final double kAlgaeQTipMeters = 0.125;
     public static final double kCoralIntakeMeters = 0;
-    public static final double kAlgaeIntakeL2Meters = .8;
-    public static final double kAlgaeIntakeL3Meters = 1.15;
+    public static final double kAlgaeIntakeL2Meters = .55;
+    public static final double kAlgaeIntakeL3Meters = 0.95;
 
     public static final double kP = .01;
     public static final double kI = .00;
@@ -73,14 +72,14 @@ public final class Constants {
     public static final double kRotationIntakeCoralDegrees = 0;
 
     public static final double kLevel1Degrees = 10;
-    public static final double kLevel2Degrees = 25;
-    public static final double kLevel3Degrees = 25;
+    public static final double kLevel2Degrees = 24;
+    public static final double kLevel3Degrees = 24;
     public static final double kLevel4Degrees = 75;
 
-    public static final double kRotationAlgaeDegrees = 150;
-    public static final double kRotationProcesserDegrees = 140;
+    public static final double kRotationAlgaeDegrees = 180;
+    public static final double kRotationProcesserDegrees = 170;
     public static final double kRotationBargeDegrees = 70;
-    public static final double kRotationQTipDegrees = 150;
+    public static final double kRotationQTipDegrees = 175;
 
     public static final double kP = 0.01;
     public static final double kI = 0.00;

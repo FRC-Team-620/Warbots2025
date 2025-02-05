@@ -52,9 +52,11 @@ public class SparkOdometryThread {
   }
 
   public void start() {
-    if (timestampQueues.size() > 0) {
-      notifier.startPeriodic(1.0 / DriveConstants.odometryFrequency);
-    }
+    // SmartDashboard.putNumber("timestapSize", timestampQueues.size());
+    // if (timestampQueues.size() > 0) { //TODO: Removed for now seems to cause issues, might need
+    // to disable it for log replay?
+    notifier.startPeriodic(1.0 / DriveConstants.odometryFrequency);
+    // }
   }
 
   /** Registers a Spark signal to be read from the thread. */

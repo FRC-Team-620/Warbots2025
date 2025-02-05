@@ -3,6 +3,7 @@ package org.jmhsrobotics.frc2025.controlBoard;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public interface ControlBoard {
+
   // ========Driver Controls========
   public double rotation();
 
@@ -12,6 +13,43 @@ public interface ControlBoard {
 
   public Trigger resetForward();
 
+  public Trigger turboMode();
+
   // =======Operator Controls=======
 
+  public Trigger intakeCoral();
+
+  public Trigger extakeCoral();
+
+  public Trigger placeCoralLevel1();
+
+  public Trigger placeCoralLevel2();
+
+  public Trigger placeCoralLevel3();
+
+  public Trigger placeCoralLevel4();
+
+  public Trigger scoreAlgaeProcesser();
+
+  public Trigger scoreAlgaeBarge();
+
+  public Trigger elevatorIntakeCoral();
+
+  public Trigger takeAlgaeLevel2();
+
+  public Trigger takeAlgaeLevel3();
+
+  public Trigger takeAlgaeQTip();
+
+  public Trigger climbUp();
+
+  public Trigger climbDown();
+
+  public Trigger indexerUp();
+
+  public Trigger indexerDown();
+
+  public Trigger changeModeLeft();
+
+  public Trigger changeModeRight();
 }

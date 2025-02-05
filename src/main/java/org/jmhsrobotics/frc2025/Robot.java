@@ -13,9 +13,17 @@
 
 package org.jmhsrobotics.frc2025;
 
+import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.jmhsrobotics.frc2025.util.ControllerMonitor;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -89,6 +97,7 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during all modes. */
   @Override
   public void robotPeriodic() {
+
     // Switch thread to high priority to improve loop timing
     Threads.setCurrentThreadPriority(true, 99);
 
@@ -101,6 +110,26 @@ public class Robot extends LoggedRobot {
 
     // Return to normal thread priority
     Threads.setCurrentThreadPriority(false, 10);
+    demoElevator();
+  }
+
+  double demoTime = 0;
+
+  private void demoElevator() {
+    demoTime += 0.02;
+    double height = robotContainer.elevator.getHeight();
+    double gripperDegrees = robotContainer.wrist.getPositionDegrees();
+    Logger.recordOutput(
+        "stage1",
+        new Pose3d(new Translation3d(0, 0, height / 2), new Rotation3d(Rotation2d.fromDegrees(0))));
+    Logger.recordOutput(
+        "stage2",
+        new Pose3d(new Translation3d(0, 0, height), new Rotation3d(Rotation2d.fromDegrees(0))));
+    Logger.recordOutput(
+        "gripper",
+        new Pose3d(
+            new Translation3d(0.2730451486, 0, 0.4064 + height),
+            new Rotation3d(0, Units.degreesToRadians(gripperDegrees), 0)));
   }
 
   /** This function is called once when the robot is disabled. */
@@ -109,7 +138,9 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    ControllerMonitor.checkController();
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -155,7 +186,11 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    DriverStationSim.setDsAttached(true);
+    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
+    DriverStationSim.setEnabled(true);
+  }
 
   /** This function is called periodically whilst in simulation. */
   @Override

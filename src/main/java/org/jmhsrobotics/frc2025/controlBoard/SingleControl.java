@@ -2,7 +2,6 @@ package org.jmhsrobotics.frc2025.controlBoard;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.util.ControllerMonitor;
@@ -11,19 +10,18 @@ public class SingleControl implements ControlBoard {
   CommandXboxController driver = new CommandXboxController(0);
   private Intake intake;
 
-  private Trigger nop = 
-    new Trigger(
-      () -> {
-        return false;
-      }
-    );
+  private Trigger nop =
+      new Trigger(
+          () -> {
+            return false;
+          });
 
   public SingleControl(Intake intake) {
     ControllerMonitor.addController(driver.getHID(), "Driver");
     this.intake = intake;
   }
 
-    private Trigger coralMode =
+  private Trigger coralMode =
       new Trigger(
           () -> {
             return intake.getMode() == Constants.ModeConstants.kCoral;

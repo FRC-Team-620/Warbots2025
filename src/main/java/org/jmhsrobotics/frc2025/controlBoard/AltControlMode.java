@@ -1,13 +1,12 @@
 package org.jmhsrobotics.frc2025.controlBoard;
 
-import org.jmhsrobotics.frc2025.Constants;
-import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 
 public class AltControlMode implements ControlBoard {
   CommandXboxController driver = new CommandXboxController(0);
@@ -23,7 +22,7 @@ public class AltControlMode implements ControlBoard {
     this.intake = intake;
   }
 
-    private Trigger coralMode =
+  private Trigger coralMode =
       new Trigger(
           () -> {
             return intake.getMode() == Constants.ModeConstants.kCoral;
@@ -40,7 +39,7 @@ public class AltControlMode implements ControlBoard {
           () -> {
             return intake.getMode() == Constants.ModeConstants.kSearch;
           });
-  
+
   @Override
   public double rotation() {
     return driver.getRightX();

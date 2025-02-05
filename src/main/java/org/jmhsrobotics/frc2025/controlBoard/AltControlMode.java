@@ -1,5 +1,8 @@
 package org.jmhsrobotics.frc2025.controlBoard;
 
+import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N2;
@@ -8,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class AltControlMode implements ControlBoard {
   CommandXboxController driver = new CommandXboxController(0);
+  private Intake intake;
 
   private Trigger nop =
       new Trigger(
@@ -15,6 +19,28 @@ public class AltControlMode implements ControlBoard {
             return false;
           });
 
+  public AltControlMode(Intake intake) {
+    this.intake = intake;
+  }
+
+    private Trigger coralMode =
+      new Trigger(
+          () -> {
+            return intake.getMode() == Constants.ModeConstants.kCoral;
+          });
+
+  private Trigger algaeMode =
+      new Trigger(
+          () -> {
+            return intake.getMode() == Constants.ModeConstants.kAlgae;
+          });
+
+  private Trigger searchMode =
+      new Trigger(
+          () -> {
+            return intake.getMode() == Constants.ModeConstants.kSearch;
+          });
+  
   @Override
   public double rotation() {
     return driver.getRightX();
@@ -69,43 +95,62 @@ public class AltControlMode implements ControlBoard {
   }
 
   public Trigger placeCoralLevel1() {
-    return driver.a();
+    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+
+    return driver.a().and(coralMode);
   }
 
   public Trigger placeCoralLevel2() {
-    return driver.b();
+    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+
+    return driver.b().and(coralMode);
   }
 
   public Trigger placeCoralLevel3() {
-    return driver.x();
+    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+
+    return driver.x().and(coralMode);
   }
 
   public Trigger placeCoralLevel4() {
-    return driver.y();
+    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+    return driver.y().and(coralMode);
   }
 
   public Trigger scoreAlgaeProcesser() {
-    return driver.a();
+    //  if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
+
+    return (driver.a().or(driver.b())).and(algaeMode);
   }
 
   public Trigger scoreAlgaeBarge() {
-    return driver.y();
+    //  if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
+
+    return (driver.y().or(driver.x())).and(algaeMode);
   }
 
   public Trigger elevatorIntakeCoral() {
-    return driver.a();
+    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+
+    return driver.a().and(searchMode);
   }
 
   public Trigger takeAlgaeLevel2() {
-    return driver.b();
+    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+
+    return driver.b().and(searchMode);
   }
 
   public Trigger takeAlgaeLevel3() {
-    return driver.x();
+    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+
+    return driver.x().and(searchMode);
   }
 
   public Trigger takeAlgaeQTip() {
-    return driver.y();
+    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+
+    return driver.y().and(searchMode);
   }
 
   public Trigger climbUp() {

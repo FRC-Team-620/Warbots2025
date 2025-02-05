@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2025.subsystems.intake;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private IntakeIO intakeIO;
@@ -11,7 +12,7 @@ public class Intake extends SubsystemBase {
   private TimeOfFLightIOInputsAutoLogged sensorInputs = new TimeOfFLightIOInputsAutoLogged();
 
   private int mode = 2;
-  private boolean override;
+  private boolean override = true;
 
   public Intake(IntakeIO intakeIO, TimeOfFLightIO timeOfFLightIO) {
     this.intakeIO = intakeIO;
@@ -23,6 +24,7 @@ public class Intake extends SubsystemBase {
     intakeIO.updateInputs(intakeInputs);
     timeOfFLightIO.updateInputs(sensorInputs);
     SmartDashboard.putNumber("Control Mode", getMode());
+    Logger.recordOutput("Current Control Mode", mode);
   }
 
   /**

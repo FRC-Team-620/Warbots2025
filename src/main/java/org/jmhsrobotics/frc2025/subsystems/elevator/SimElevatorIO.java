@@ -46,6 +46,7 @@ public class SimElevatorIO implements ElevatorIO {
     this.pidController.setSetpoint(positionMeters);
   }
 
+  @Override
   public double getSetpoint() {
     return this.goalMeters;
   }

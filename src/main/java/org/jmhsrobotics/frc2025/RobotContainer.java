@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
@@ -124,7 +125,7 @@ public class RobotContainer {
                     VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose),
                 new VisionIOPhotonVisionSim(
                     VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
-        elevator = new Elevator(new SimElevatorIO() {});
+        elevator = new Elevator(new SimElevatorIO());
         wrist = new Wrist(new SimWristIO());
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
 
@@ -223,6 +224,20 @@ public class RobotContainer {
                 new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel2Meters),
                 new WristMoveTo(wrist, Constants.WristConstants.kRotationL2Degrees)));
     control
+        .placeCoralLevel2()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  System.out.println("");
+                }));
+    control
+        .placeCoralLevel1()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  System.out.println("");
+                }));
+    control
         .placeCoralLevel3()
         .onTrue(
             new ParallelCommandGroup(
@@ -293,9 +308,13 @@ public class RobotContainer {
     // control.indexerUp().onTrue(down);
     // control.indexerDown().onTrue(down);
 
-    control.changeModeLeft().onTrue(Commands.runOnce(() -> intake.setMode(-1), intake));
+    control
+        .changeModeLeft()
+        .onTrue(Commands.runOnce(() -> intake.setMode(-1), intake).ignoringDisable(true));
 
-    control.changeModeRight().onTrue(Commands.runOnce(() -> intake.setMode(1), intake));
+    control
+        .changeModeRight()
+        .onTrue(Commands.runOnce(() -> intake.setMode(1), intake).ignoringDisable(true));
   }
 
   private void configureDriverFeedback() {

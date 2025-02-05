@@ -28,17 +28,26 @@ public final class Constants {
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
-  public static final int canandgyroCanID = 62;
-
   public static final int ledPWMHeader = 5;
   // led length in pixels
   public static final int ledLength = 10;
   // Density of the LED Strip - currently set at 120 LEDs per meter
   public static final Distance ledSpacing = Meters.of(1 / 120.0);
 
+  public static class CAN {
+    public static final int kElevatorMotorLeftID = 30;
+    public static final int kElevatorMotorRightID = 31;
+
+    public static final int kWristMotorID = 40;
+
+    public static final int kIntakeMotorID = 50;
+    public static final int kCoralSensorID = 51;
+    public static final int kAlgaeSensorID = 52;
+
+    public static final int kCanAndGyroID = 60;
+  }
+
   public static class ElevatorConstants {
-    public static final int kMotorLeftId = 30;
-    public static final int kMotorRightId = 31;
 
     public static final double kLevel1Meters = 0.0;
     public static final double kLevel2Meters = 0.50;
@@ -66,7 +75,6 @@ public final class Constants {
   }
 
   public static class WristConstants {
-    public static final int kMotorId = 40;
 
     public static final double kRotationIntakeCoralDegrees = 0;
 
@@ -87,10 +95,6 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int kMotorId = 50;
-
-    public static final int kCoralSensorId = 51;
-    public static final int kAlgaeSensorId = 52;
 
     public static final double kIntakeSpeedDutyCycle = 0.25;
     public static final double kExtakeSpeedDutyCycle = -0.25;

@@ -8,8 +8,8 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
   private LaserCan algaeSensor;
 
   public GrappleTimeOfFLightIO() {
-    coralSensor = new LaserCan(Constants.IntakeConstants.kCoralSensorId);
-    algaeSensor = new LaserCan(Constants.IntakeConstants.kAlgaeSensorId);
+    coralSensor = new LaserCan(Constants.CAN.kCoralSensorID);
+    algaeSensor = new LaserCan(Constants.CAN.kAlgaeSensorID);
   }
 
   @Override

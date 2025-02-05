@@ -68,12 +68,6 @@ public final class Constants {
     public static final double kHeightTolerance = 0.1;
   }
 
-  public static class ModeConstants {
-    public static final int kAlgae = 1;
-    public static final int kSearch = 2;
-    public static final int kCoral = 3;
-  }
-
   public static class WristConstants {
 
     public static final double kRotationIntakeCoralDegrees = 0;
@@ -95,9 +89,14 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-
     public static final double kIntakeSpeedDutyCycle = 0.25;
     public static final double kExtakeSpeedDutyCycle = -0.25;
+  }
+
+  public static class ModeConstants {
+    public static final int kAlgae = 1;
+    public static final int kSearch = 2;
+    public static final int kCoral = 3;
   }
 
   public static enum Mode {

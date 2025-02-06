@@ -218,7 +218,8 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kLevel1Meters,
-                Constants.WristConstants.kLevel1Degrees));
+                Constants.WristConstants.kLevel1Degrees,
+                intake.getMode()));
     control
         .placeCoralLevel2()
         .onTrue(
@@ -226,7 +227,8 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kLevel2Meters,
-                Constants.WristConstants.kLevel2Degrees));
+                Constants.WristConstants.kLevel2Degrees,
+                intake.getMode()));
     control
         .placeCoralLevel2()
         .onTrue(
@@ -248,7 +250,8 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kLevel3Meters,
-                Constants.WristConstants.kLevel3Degrees));
+                Constants.WristConstants.kLevel3Degrees,
+                intake.getMode()));
     control
         .placeCoralLevel4()
         .onTrue(
@@ -256,7 +259,8 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kLevel4Meters,
-                Constants.WristConstants.kLevel4Degrees));
+                Constants.WristConstants.kLevel4Degrees,
+                intake.getMode()));
 
     control
         .scoreAlgaeProcesser()
@@ -265,7 +269,8 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kProcesserMeters,
-                Constants.WristConstants.kRotationProcesserDegrees));
+                Constants.WristConstants.kRotationProcesserDegrees,
+                intake.getMode()));
 
     control
         .scoreAlgaeBarge()
@@ -274,7 +279,8 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kBargeMeters,
-                Constants.WristConstants.kRotationBargeDegrees));
+                Constants.WristConstants.kRotationBargeDegrees,
+                intake.getMode()));
 
     control
         .elevatorIntakeCoral()
@@ -283,7 +289,8 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kCoralIntakeMeters,
-                Constants.WristConstants.kRotationIntakeCoralDegrees));
+                Constants.WristConstants.kRotationIntakeCoralDegrees,
+                intake.getMode()));
 
     control
         .takeAlgaeLevel2()
@@ -292,7 +299,8 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kAlgaeIntakeL2Meters,
-                Constants.WristConstants.kRotationAlgaeDegrees));
+                Constants.WristConstants.kRotationAlgaeDegrees,
+                intake.getMode()));
 
     control
         .takeAlgaeLevel3()
@@ -301,7 +309,8 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kAlgaeIntakeL3Meters,
-                Constants.WristConstants.kRotationAlgaeDegrees));
+                Constants.WristConstants.kRotationAlgaeDegrees,
+                intake.getMode()));
 
     control
         .takeAlgaeQTip()
@@ -310,7 +319,8 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
-                Constants.WristConstants.kRotationQTipDegrees));
+                Constants.WristConstants.kRotationQTipDegrees,
+                intake.getMode()));
 
     control
         .intakeCoral()

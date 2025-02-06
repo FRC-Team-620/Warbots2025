@@ -11,6 +11,8 @@ public class ElevatorAndWristMove extends Command {
   private double elevatorGoalMeters;
   private double wristGoalDegrees;
 
+  private boolean startedElevator = false;
+
   public ElevatorAndWristMove(
       Elevator elevator, Wrist wrist, double elevatorGoalMeters, double wristGoalDegrees) {
     this.elevator = elevator;
@@ -25,12 +27,30 @@ public class ElevatorAndWristMove extends Command {
   @Override
   public void initialize() {
     wrist.setSetpoint(wristGoalDegrees);
-    elevator.setSetpoint(elevatorGoalMeters);
+  }
+
+  @Override
+  public void execute() {
+    if (checkWristSafe() && !startedElevator) {
+      elevator.setSetpoint(elevatorGoalMeters);
+      startedElevator = true;
+    }
+  }
+
+  /**
+   * Ensures that the wrist is in a safe position, and returns true to enable the elevator to start
+   * moving Currently just returning true, full functionality coming soon
+   *
+   * @return
+   */
+  public boolean checkWristSafe() {
+    return true;
   }
 
   @Override
   public boolean isFinished() {
-    // TODO Auto-generated method stub
-    return wrist.atGoal() && elevator.atGoal();
+    // return wrist.atGoal() && elevator.atGoal() && startedElevator;
+    // return elevator.atGoal();
+    return wrist.atGoal() && elevator.atGoal() && startedElevator;
   }
 }

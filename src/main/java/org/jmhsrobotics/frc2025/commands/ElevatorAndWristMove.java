@@ -1,6 +1,7 @@
 package org.jmhsrobotics.frc2025.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 
@@ -10,6 +11,8 @@ public class ElevatorAndWristMove extends Command {
 
   private double elevatorGoalMeters;
   private double wristGoalDegrees;
+
+  private boolean startedElevator = false;
 
   private int controlMode = 2;
 
@@ -31,18 +34,22 @@ public class ElevatorAndWristMove extends Command {
 
   @Override
   public void initialize() {
-    wrist.setSetpoint(wristGoalDegrees);
+    wrist.setSetpoint(Constants.WristConstants.kSafeAngle);
   }
 
   @Override
   public void execute() {
-    if (wrist.checkWristSafe()) elevator.setSetpoint(elevatorGoalMeters);
+    if (wrist.atGoal() && !startedElevator) {
+      elevator.setSetpoint(elevatorGoalMeters);
+      startedElevator = true;
+    }
+    if (startedElevator && elevator.atGoal()) wrist.setSetpoint(wristGoalDegrees);
   }
 
   @Override
   public boolean isFinished() {
     // return wrist.atGoal() && elevator.atGoal() && startedElevator;
     // return elevator.atGoal();
-    return wrist.atGoal() && elevator.atGoal();
+    return wrist.atGoal() && startedElevator;
   }
 }

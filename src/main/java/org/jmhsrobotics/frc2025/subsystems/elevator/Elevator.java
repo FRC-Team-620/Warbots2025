@@ -16,7 +16,7 @@ public class Elevator extends SubsystemBase {
   private MechanismLigament2d carriage =
       new MechanismLigament2d("carriage", 3, 0, 5, new Color8Bit(255, 0, 0));
   Mechanism2d elevatorMech = new Mechanism2d(4, 4);
-  private DigitalInput limitSwitch = new DigitalInput(2); //TODO figure out channel
+  private DigitalInput limitSwitch = new DigitalInput(2); // TODO figure out channel
 
   public Elevator(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;
@@ -31,7 +31,7 @@ public class Elevator extends SubsystemBase {
     elevatorIO.updateInputs(inputs);
     stage1.setLength(inputs.heightMeters / 2);
     carriage.setLength(inputs.heightMeters / 2);
-    if(!limitSwitch.get()){
+    if (!limitSwitch.get()) {
       setVoltage(0);
       setZero();
     }
@@ -46,7 +46,7 @@ public class Elevator extends SubsystemBase {
     elevatorIO.setPositionMeters(setPoint);
   }
 
-  public void setVoltage(double voltage){
+  public void setVoltage(double voltage) {
     elevatorIO.setVoltage(voltage);
   }
 
@@ -54,7 +54,7 @@ public class Elevator extends SubsystemBase {
     return inputs.heightMeters;
   }
 
-  public void setZero(){
+  public void setZero() {
     elevatorIO.setZero();
   }
 }

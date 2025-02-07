@@ -1,6 +1,5 @@
 package org.jmhsrobotics.frc2025.subsystems.elevator;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -14,8 +13,10 @@ import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.util.SparkUtil;
 
 public class VortexElevatorIO implements ElevatorIO {
-  private SparkFlex vortexLeft = new SparkFlex(Constants.CAN.kElevatorMotorLeftID, MotorType.kBrushless);
-  private SparkFlex vortexRight = new SparkFlex(Constants.CAN.kElevatorMotorRightID, MotorType.kBrushless);
+  private SparkFlex vortexLeft =
+      new SparkFlex(Constants.CAN.kElevatorMotorLeftID, MotorType.kBrushless);
+  private SparkFlex vortexRight =
+      new SparkFlex(Constants.CAN.kElevatorMotorRightID, MotorType.kBrushless);
   // private AbsoluteEncoder leftEncoder = vortexLeft.getAbsoluteEncoder();
   // private AbsoluteEncoder rightEncoder = vortexRight.getAbsoluteEncoder();
   private RelativeEncoder leftEncoder = vortexLeft.getEncoder();
@@ -46,13 +47,15 @@ public class VortexElevatorIO implements ElevatorIO {
     SparkUtil.tryUntilOk(
         vortexLeft,
         5,
-        () -> vortexLeft.configure(
-            vortexLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+        () ->
+            vortexLeft.configure(
+                vortexLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
     SparkUtil.tryUntilOk(
         vortexRight,
         5,
-        () -> vortexRight.configure(
-            vortexRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+        () ->
+            vortexRight.configure(
+                vortexRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     pidController = vortexLeft.getClosedLoopController();
   }
@@ -72,7 +75,8 @@ public class VortexElevatorIO implements ElevatorIO {
     SparkUtil.ifOk(
         vortexRight, rightEncoder::getPosition, (value) -> inputs.motorPositionMeters[1] = value);
     SparkUtil.ifOk(vortexLeft, vortexLeft::getBusVoltage, (value) -> inputs.motorVolts[0] = value);
-    SparkUtil.ifOk(vortexRight, vortexRight::getBusVoltage, (value) -> inputs.motorVolts[1] = value);
+    SparkUtil.ifOk(
+        vortexRight, vortexRight::getBusVoltage, (value) -> inputs.motorVolts[1] = value);
 
     // TODO
     SparkUtil.ifOk(vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value);

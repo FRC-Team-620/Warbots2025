@@ -22,15 +22,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
-import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
+import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
+import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
+import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
+import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
+import org.jmhsrobotics.frc2025.subsystems.climber.SimClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOBoron;
@@ -75,6 +80,7 @@ public class RobotContainer {
   private final ControlBoard control;
   private final LED led;
   private final Intake intake;
+  public final Climber climber;
 
   // Controller
 
@@ -83,9 +89,6 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Change to "SingleControl" or "DoubleControl" here based on preference
-    this.control = new SingleControl();
-
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -107,6 +110,7 @@ public class RobotContainer {
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
         intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
+        climber = new Climber(new NeoClimberIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -127,9 +131,10 @@ public class RobotContainer {
                     VisionConstants.camera0Name, VisionConstants.robotToCamera0, drive::getPose),
                 new VisionIOPhotonVisionSim(
                     VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
-        elevator = new Elevator(new SimElevatorIO() {});
+        elevator = new Elevator(new SimElevatorIO());
         wrist = new Wrist(new SimWristIO());
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
+        climber = new Climber(new SimClimberIO());
 
         System.out.println("Mode: SIM");
         break;
@@ -147,10 +152,13 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
+        climber = new Climber(new ClimberIO() {});
 
         System.out.println("Mode: DEFAULT");
         break;
     }
+
+    this.control = new SingleControl(intake);
 
     led = new LED();
     led.setDefaultCommand(new RainbowLEDCommand(this.led));
@@ -212,49 +220,131 @@ public class RobotContainer {
     //     .placeCoralL1()
     //     .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel1Meters));
     control
-        .placeCoralL1()
+        .placeCoralLevel1()
         .onTrue(
-            new SequentialCommandGroup(
-                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel1Meters),
-                new WristMoveTo(wrist, Constants.WristConstants.kRotationL1Degrees)));
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kLevel1Meters,
+                Constants.WristConstants.kLevel1Degrees));
     control
-        .placeCoralL2()
+        .placeCoralLevel2()
         .onTrue(
-            new ParallelCommandGroup(
-                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel3Meters),
-                new WristMoveTo(wrist, Constants.WristConstants.kRotationL2Degrees)));
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kLevel2Meters,
+                Constants.WristConstants.kLevel2Degrees));
     control
-        .placeCoralL3()
+        .placeCoralLevel2()
         .onTrue(
-            new ParallelCommandGroup(
-                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel3Meters),
-                new WristMoveTo(wrist, Constants.WristConstants.kRotationL3Degrees)));
+            new InstantCommand(
+                () -> {
+                  System.out.println("");
+                }));
     control
-        .placeCoralL4()
+        .placeCoralLevel1()
         .onTrue(
-            new ParallelCommandGroup(
-                new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel4Meters),
-                new WristMoveTo(wrist, Constants.WristConstants.kRotationL4Degrees)));
+            new InstantCommand(
+                () -> {
+                  System.out.println("");
+                }));
+    control
+        .placeCoralLevel3()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kLevel3Meters,
+                Constants.WristConstants.kLevel3Degrees));
+    control
+        .placeCoralLevel4()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kLevel4Meters,
+                Constants.WristConstants.kLevel4Degrees));
+
+    control
+        .scoreAlgaeProcesser()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kProcesserMeters,
+                Constants.WristConstants.kRotationProcesserDegrees));
+
+    control
+        .scoreAlgaeBarge()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kBargeMeters,
+                Constants.WristConstants.kRotationBargeDegrees));
+
+    control
+        .elevatorIntakeCoral()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kCoralIntakeMeters,
+                Constants.WristConstants.kRotationIntakeCoralDegrees));
+
+    control
+        .takeAlgaeLevel2()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kAlgaeIntakeL2Meters,
+                Constants.WristConstants.kRotationAlgaeDegrees));
+
+    control
+        .takeAlgaeLevel3()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kAlgaeIntakeL3Meters,
+                Constants.WristConstants.kRotationAlgaeDegrees));
+
+    control
+        .takeAlgaeQTip()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kAlgaeQTipMeters,
+                Constants.WristConstants.kRotationQTipDegrees));
 
     control
         .intakeCoral()
         .whileTrue(
             new ParallelCommandGroup(
-                new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoral),
-                new IntakeMove(intake, Constants.IntakeConstants.kIntakeSpeedDutyCycle)));
+                new IntakeMove(intake, Constants.IntakeConstants.kIntakeSpeedDutyCycle),
+                new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoralDegrees)));
 
     control
         .extakeCoral()
         .whileTrue(new IntakeMove(intake, Constants.IntakeConstants.kExtakeSpeedDutyCycle));
 
-    // control.removeAlgaeL23().onTrue(down);
-    // control.removeAlgaeL34().onTrue(down);
-    // control.scoreProcessor().onTrue(down);
-    // control.scoreBarge().onTrue(down);
-    // control.climbUp().onTrue(down);
-    // control.climbDown().onTrue(down);
+    control.climbUp().whileTrue(new ClimberMove(climber, -1));
+
+    control.climbDown().whileTrue(new ClimberMove(climber, 1));
+
     // control.indexerUp().onTrue(down);
     // control.indexerDown().onTrue(down);
+
+    control
+        .changeModeLeft()
+        .onTrue(Commands.runOnce(() -> intake.setMode(-1), intake).ignoringDisable(true));
+
+    control
+        .changeModeRight()
+        .onTrue(Commands.runOnce(() -> intake.setMode(1), intake).ignoringDisable(true));
   }
 
   private void configureDriverFeedback() {
@@ -263,6 +353,10 @@ public class RobotContainer {
 
   private void setupSmartDashbaord() {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
+    SmartDashboard.putData("SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
+    SmartDashboard.putData("SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
+    SmartDashboard.putData("MoveClimberUp", new ClimberMove(climber, -1));
+    SmartDashboard.putData("MoveClimberDown", new ClimberMove(climber, 1));
   }
 
   /**

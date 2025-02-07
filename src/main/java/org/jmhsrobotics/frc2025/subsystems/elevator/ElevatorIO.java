@@ -23,4 +23,7 @@ public interface ElevatorIO {
 
   public default void setZero() {}
 
+  public default double getSetpoint() {
+    return 0;
+  }
 }

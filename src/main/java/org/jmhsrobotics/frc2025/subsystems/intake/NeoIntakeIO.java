@@ -1,6 +1,6 @@
 package org.jmhsrobotics.frc2025.subsystems.intake;
 
-import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -11,8 +11,8 @@ import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.util.SparkUtil;
 
 public class NeoIntakeIO implements IntakeIO {
-  private SparkMax motor = new SparkMax(Constants.IntakeConstants.kMotorId, MotorType.kBrushless);
-  private AbsoluteEncoder encoder;
+  private SparkMax motor = new SparkMax(Constants.CAN.kIntakeMotorID, MotorType.kBrushless);
+  private RelativeEncoder encoder;
   private SparkMaxConfig motorConfig;
 
   public NeoIntakeIO() {
@@ -30,7 +30,7 @@ public class NeoIntakeIO implements IntakeIO {
         () ->
             motor.configure(
                 motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
-    encoder = motor.getAbsoluteEncoder();
+    encoder = motor.getEncoder();
   }
 
   public void updateInputs(IntakeIOInputs inputs) {

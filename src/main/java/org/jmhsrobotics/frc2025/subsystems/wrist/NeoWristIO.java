@@ -14,7 +14,7 @@ import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.util.SparkUtil;
 
 public class NeoWristIO implements WristIO {
-  private SparkMax motor = new SparkMax(Constants.WristConstants.kMotorId, MotorType.kBrushless);
+  private SparkMax motor = new SparkMax(Constants.CAN.kWristMotorID, MotorType.kBrushless);
   private AbsoluteEncoder encoder;
 
   private SparkMaxConfig motorConfig;

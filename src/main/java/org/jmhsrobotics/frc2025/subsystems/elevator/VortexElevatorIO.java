@@ -14,12 +14,10 @@ import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.util.SparkUtil;
 
 public class VortexElevatorIO implements ElevatorIO {
-  private SparkFlex vortexLeft =
-      new SparkFlex(Constants.ElevatorConstants.kMotorLeftId, MotorType.kBrushless);
-  private SparkFlex vortexRight =
-      new SparkFlex(Constants.ElevatorConstants.kMotorRightId, MotorType.kBrushless);
-  //private AbsoluteEncoder leftEncoder = vortexLeft.getAbsoluteEncoder();
-  //private AbsoluteEncoder rightEncoder = vortexRight.getAbsoluteEncoder();
+  private SparkFlex vortexLeft = new SparkFlex(Constants.CAN.kElevatorMotorLeftID, MotorType.kBrushless);
+  private SparkFlex vortexRight = new SparkFlex(Constants.CAN.kElevatorMotorRightID, MotorType.kBrushless);
+  // private AbsoluteEncoder leftEncoder = vortexLeft.getAbsoluteEncoder();
+  // private AbsoluteEncoder rightEncoder = vortexRight.getAbsoluteEncoder();
   private RelativeEncoder leftEncoder = vortexLeft.getEncoder();
   private RelativeEncoder rightEncoder = vortexRight.getEncoder();
 
@@ -48,15 +46,13 @@ public class VortexElevatorIO implements ElevatorIO {
     SparkUtil.tryUntilOk(
         vortexLeft,
         5,
-        () ->
-            vortexLeft.configure(
-                vortexLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+        () -> vortexLeft.configure(
+            vortexLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
     SparkUtil.tryUntilOk(
         vortexRight,
         5,
-        () ->
-            vortexRight.configure(
-                vortexRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+        () -> vortexRight.configure(
+            vortexRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     pidController = vortexLeft.getClosedLoopController();
   }
@@ -88,13 +84,17 @@ public class VortexElevatorIO implements ElevatorIO {
     this.goalMeters = positionMeters;
   }
 
-  public void setVoltage(double voltage){
+  public void setVoltage(double voltage) {
     this.vortexLeft.setVoltage(voltage);
     this.vortexRight.setVoltage(voltage);
   }
 
-  public void setZero(){
+  public void setZero() {
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
+  }
+
+  public double getSetpoint() {
+    return this.goalMeters;
   }
 }

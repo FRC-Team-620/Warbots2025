@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj.RobotBase;
  */
 public final class Constants {
   public static final Mode simMode = Mode.SIM;
+  public static final double ksimTimestep = 0.02;
+  public static final double krealTimeStep = ksimTimestep;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
   public static final int ledPWMHeader = 5;

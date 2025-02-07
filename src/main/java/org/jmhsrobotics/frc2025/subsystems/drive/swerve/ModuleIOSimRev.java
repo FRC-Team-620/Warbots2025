@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 
 /** Physics sim implementation of module IO. */
@@ -77,8 +78,8 @@ public class ModuleIOSimRev implements ModuleIO {
     // Update simulation state
     driveSim.setInputVoltage(MathUtil.clamp(driveAppliedVolts, -12.0, 12.0));
     turnSim.setInputVoltage(MathUtil.clamp(turnAppliedVolts, -12.0, 12.0));
-    driveSim.update(0.02);
-    turnSim.update(0.02);
+    driveSim.update(Constants.ksimTimestep);
+    turnSim.update(Constants.ksimTimestep);
 
     // Update drive inputs
     inputs.driveConnected = true;

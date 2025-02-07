@@ -1,11 +1,14 @@
 package org.jmhsrobotics.frc2025.subsystems.climber;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import org.jmhsrobotics.frc2025.Constants;
 
 public class SimClimberIO implements ClimberIO {
-  private double speedDutyCycle;
+  private double motorVolts;
 
   SingleJointedArmSim climberSim =
       new SingleJointedArmSim(
@@ -15,8 +18,8 @@ public class SimClimberIO implements ClimberIO {
 
   @Override
   public void updateInputs(ClimberIOInputs inputs) {
-    this.climberSim.setInput(speedDutyCycle);
-    this.climberSim.update(0.02);
+    this.climberSim.setInput(motorVolts);
+    this.climberSim.update(Constants.ksimTimestep);
 
     inputs.motorAmps = this.climberSim.getCurrentDrawAmps();
     inputs.motorRPM = Units.radiansPerSecondToRotationsPerMinute(climberSim.getVelocityRadPerSec());
@@ -25,6 +28,6 @@ public class SimClimberIO implements ClimberIO {
 
   @Override
   public void set(double speedDutyCycle) {
-    this.speedDutyCycle = speedDutyCycle;
+    this.motorVolts = MathUtil.clamp(speedDutyCycle, -1, 1) * RobotController.getBatteryVoltage();
   }
 }

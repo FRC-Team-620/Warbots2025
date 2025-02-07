@@ -6,6 +6,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.jmhsrobotics.frc2025.Constants;
 
 public class SimWristIO implements WristIO {
 
@@ -34,7 +35,7 @@ public class SimWristIO implements WristIO {
     double output = this.pidController.calculate(Units.radiansToDegrees(armSim.getAngleRads()));
     this.armSim.setInput(
         MathUtil.clamp(output, -13, 13)); // TODO: Clamp based on current battery bus voltage
-    this.armSim.update(0.02); // TODO: use sim timestep constant
+    this.armSim.update(Constants.ksimTimestep);
 
     inputs.motorAmps = this.armSim.getCurrentDrawAmps();
     inputs.motorRPM =
@@ -48,6 +49,7 @@ public class SimWristIO implements WristIO {
     this.pidController.setSetpoint(angle);
   }
 
+  @Override
   public double getSetpoint() {
     return goalDegrees;
   }

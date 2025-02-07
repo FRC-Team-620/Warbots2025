@@ -110,13 +110,10 @@ public class Robot extends LoggedRobot {
 
     // Return to normal thread priority
     Threads.setCurrentThreadPriority(false, 10);
-    demoElevator();
+    updateAscopeVis();
   }
 
-  double demoTime = 0;
-
-  private void demoElevator() {
-    demoTime += 0.02;
+  private void updateAscopeVis() {
     double height = robotContainer.elevator.getHeight();
     double gripperDegrees = robotContainer.wrist.getPositionDegrees();
     double climberDegrees = robotContainer.climber.getPositionDegrees();

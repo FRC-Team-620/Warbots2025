@@ -5,14 +5,39 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 
 public class AltControlMode implements ControlBoard {
   CommandXboxController driver = new CommandXboxController(0);
+  private Intake intake;
 
   private Trigger nop =
       new Trigger(
           () -> {
             return false;
+          });
+
+  public AltControlMode(Intake intake) {
+    this.intake = intake;
+  }
+
+  private Trigger coralMode =
+      new Trigger(
+          () -> {
+            return intake.getMode() == Constants.ModeConstants.kCoral;
+          });
+
+  private Trigger algaeMode =
+      new Trigger(
+          () -> {
+            return intake.getMode() == Constants.ModeConstants.kAlgae;
+          });
+
+  private Trigger searchMode =
+      new Trigger(
+          () -> {
+            return intake.getMode() == Constants.ModeConstants.kSearch;
           });
 
   @Override
@@ -58,69 +83,96 @@ public class AltControlMode implements ControlBoard {
     return nop;
   }
 
-  @Override
-  public Trigger upExample() {
-    return driver.x();
-  }
-
-  @Override
-  public Trigger downExample() {
-    return driver.a();
-  }
+  // =======Operator Controls=======
 
   public Trigger intakeCoral() {
-    return nop;
+    return driver.leftTrigger();
   }
 
   public Trigger extakeCoral() {
-    return nop;
+    return driver.rightTrigger();
   }
 
-  public Trigger placeCoralL1() {
-    return nop;
+  public Trigger placeCoralLevel1() {
+    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+
+    return driver.a().and(coralMode);
   }
 
-  public Trigger placeCoralL2() {
-    return nop;
+  public Trigger placeCoralLevel2() {
+    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+
+    return driver.b().and(coralMode);
   }
 
-  public Trigger placeCoralL3() {
-    return nop;
+  public Trigger placeCoralLevel3() {
+    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+
+    return driver.x().and(coralMode);
   }
 
-  public Trigger placeCoralL4() {
-    return nop;
+  public Trigger placeCoralLevel4() {
+    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+    return driver.y().and(coralMode);
   }
 
-  public Trigger removeAlgaeL23() {
-    return nop;
+  public Trigger scoreAlgaeProcesser() {
+    //  if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
+
+    return (driver.a().or(driver.b())).and(algaeMode);
   }
 
-  public Trigger removeAlgaeL34() {
-    return nop;
+  public Trigger scoreAlgaeBarge() {
+    //  if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
+
+    return (driver.y().or(driver.x())).and(algaeMode);
   }
 
-  public Trigger scoreProcessor() {
-    return nop;
+  public Trigger elevatorIntakeCoral() {
+    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+
+    return driver.a().and(searchMode);
   }
 
-  public Trigger scoreBarge() {
-    return nop;
+  public Trigger takeAlgaeLevel2() {
+    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+
+    return driver.b().and(searchMode);
+  }
+
+  public Trigger takeAlgaeLevel3() {
+    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+
+    return driver.x().and(searchMode);
+  }
+
+  public Trigger takeAlgaeQTip() {
+    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+
+    return driver.y().and(searchMode);
   }
 
   public Trigger climbUp() {
-    return nop;
+    return driver.povUp();
   }
 
   public Trigger climbDown() {
-    return nop;
+    return driver.povDown();
   }
 
   public Trigger indexerUp() {
-    return nop;
+    return driver.leftStick();
   }
 
   public Trigger indexerDown() {
-    return nop;
+    return driver.rightStick();
+  }
+
+  public Trigger changeModeLeft() {
+    return driver.back();
+  }
+
+  public Trigger changeModeRight() {
+    return driver.start();
   }
 }

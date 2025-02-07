@@ -25,6 +25,10 @@ public class Wrist extends SubsystemBase {
     return inputs.positionDegrees;
   }
 
+  public boolean checkWristSafe() {
+    return this.getPositionDegrees() > 20;
+  }
+
   public void setSetpoint(double setPoint) {
     wristIO.setPositionDegrees(setPoint);
   }

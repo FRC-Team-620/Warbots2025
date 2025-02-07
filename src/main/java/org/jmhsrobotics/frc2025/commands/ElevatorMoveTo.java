@@ -22,6 +22,6 @@ public class ElevatorMoveTo extends Command {
   @Override
   public boolean isFinished() {
     // TODO Auto-generated method stub
-    return elevatorSubsystem.atGoal(this.goalMeters);
+    return elevatorSubsystem.atGoal();
   }
 }

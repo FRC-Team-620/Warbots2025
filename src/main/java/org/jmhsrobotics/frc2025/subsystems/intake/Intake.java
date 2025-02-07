@@ -1,6 +1,8 @@
 package org.jmhsrobotics.frc2025.subsystems.intake;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
   private IntakeIO intakeIO;
@@ -8,6 +10,9 @@ public class Intake extends SubsystemBase {
 
   private TimeOfFLightIO timeOfFLightIO;
   private TimeOfFLightIOInputsAutoLogged sensorInputs = new TimeOfFLightIOInputsAutoLogged();
+
+  private int mode = 2;
+  private boolean override = true;
 
   public Intake(IntakeIO intakeIO, TimeOfFLightIO timeOfFLightIO) {
     this.intakeIO = intakeIO;
@@ -18,15 +23,39 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     intakeIO.updateInputs(intakeInputs);
     timeOfFLightIO.updateInputs(sensorInputs);
+    SmartDashboard.putNumber("Control Mode", getMode());
+    Logger.recordOutput("Current Control Mode", mode);
   }
 
-  // Method to determine and return current control mode: Algae, Coral, or Search
-  // Algae will be mode 0, Search will be 1, Coral will be 2
-  // Possibly return an enum containing the correct setpoint values for each mode?
+  /**
+   * Determines the current control mode. If override is true returns mode, otherwise returns mode
+   * based on ToF sensor inputs
+   *
+   * @return
+   */
   public int getMode() {
-    if (sensorInputs.algaeDistance <= 50) return 0;
-    else if (sensorInputs.coralDistance <= 30) return 2;
-    return 1;
+    if (override) {
+      return mode;
+    }
+    if (sensorInputs.algaeDistance <= 50) return 1;
+    else if (sensorInputs.coralDistance <= 30) return 3;
+    return 2;
+  }
+
+  /**
+   * Manual override to set control mode if sensors stop working during match. Override cannot be
+   * reversed
+   *
+   * @param increment +1 to go from search to coral/algae to search, -1 for opposite
+   */
+  public void setMode(int increment) {
+    this.override = true;
+    this.mode += increment;
+    if (this.mode < 1) {
+      this.mode = 1;
+    } else if (this.mode > 3) {
+      this.mode = 3;
+    }
   }
 
   public void set(double speedDutyCycle) {

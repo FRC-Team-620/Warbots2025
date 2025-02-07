@@ -26,7 +26,7 @@ public class GyroIOBoron implements GyroIO {
   private final Queue<Double> yawPositionQueue;
 
   public GyroIOBoron() {
-    canandgyro = new Canandgyro(Constants.canandgyroCanID);
+    canandgyro = new Canandgyro(Constants.CAN.kCanAndGyroID);
     yawTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
     yawPositionQueue = SparkOdometryThread.getInstance().registerSignal(canandgyro::getYaw);
   }

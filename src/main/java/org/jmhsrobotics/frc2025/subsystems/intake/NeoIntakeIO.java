@@ -11,7 +11,7 @@ import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.util.SparkUtil;
 
 public class NeoIntakeIO implements IntakeIO {
-  private SparkMax motor = new SparkMax(Constants.IntakeConstants.kMotorId, MotorType.kBrushless);
+  private SparkMax motor = new SparkMax(Constants.CAN.kIntakeMotorID, MotorType.kBrushless);
   private AbsoluteEncoder encoder;
   private SparkMaxConfig motorConfig;
 

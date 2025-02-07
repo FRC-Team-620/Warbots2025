@@ -63,13 +63,13 @@
         },
         {
           "axis": "y",
-          "degrees": 73
+          "degrees": 0
         }
       ],
       "zeroedPosition": [
-        -1.325,
+        -0.27,
         0,
-        -0.12
+        -1.3
       ]
     }
   ]

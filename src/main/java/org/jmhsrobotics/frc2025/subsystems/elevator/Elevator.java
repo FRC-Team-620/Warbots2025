@@ -30,8 +30,9 @@ public class Elevator extends SubsystemBase {
     carriage.setLength(inputs.heightMeters / 2);
   }
 
-  public boolean atGoal(double setPoint) {
-    return Math.abs(inputs.heightMeters - setPoint) < Constants.ElevatorConstants.kHeightTolerance;
+  public boolean atGoal() {
+    return Math.abs(inputs.heightMeters - elevatorIO.getSetpoint())
+        < Constants.ElevatorConstants.kHeightTolerance;
   }
 
   public void setSetpoint(double setPoint) {

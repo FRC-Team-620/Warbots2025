@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SimElevatorIO implements ElevatorIO {
+  private double goalMeters;
 
   ElevatorSim simElevator =
       new ElevatorSim(
@@ -41,6 +42,12 @@ public class SimElevatorIO implements ElevatorIO {
 
   @Override
   public void setPositionMeters(double positionMeters) {
+    this.goalMeters = positionMeters;
     this.pidController.setSetpoint(positionMeters);
+  }
+
+  @Override
+  public double getSetpoint() {
+    return this.goalMeters;
   }
 }

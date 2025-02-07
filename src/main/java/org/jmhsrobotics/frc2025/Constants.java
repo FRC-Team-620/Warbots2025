@@ -43,6 +43,9 @@ public final class Constants {
     public static final int kCoralSensorID = 51;
     public static final int kAlgaeSensorID = 52;
 
+    public static final int kIndexerMotorID = 55;
+    public static final int kClimberMotorID = 65;
+
     public static final int kCanAndGyroID = 60;
   }
 

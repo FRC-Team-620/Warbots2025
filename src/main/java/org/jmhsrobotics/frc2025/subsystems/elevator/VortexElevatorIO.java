@@ -14,9 +14,9 @@ import org.jmhsrobotics.frc2025.util.SparkUtil;
 
 public class VortexElevatorIO implements ElevatorIO {
   private SparkFlex vortexLeft =
-      new SparkFlex(Constants.ElevatorConstants.kMotorLeftId, MotorType.kBrushless);
+      new SparkFlex(Constants.CAN.kElevatorMotorLeftID, MotorType.kBrushless);
   private SparkFlex vortexRight =
-      new SparkFlex(Constants.ElevatorConstants.kMotorRightId, MotorType.kBrushless);
+      new SparkFlex(Constants.CAN.kElevatorMotorRightID, MotorType.kBrushless);
   private AbsoluteEncoder leftEncoder = vortexLeft.getAbsoluteEncoder();
   private AbsoluteEncoder rightEncoder = vortexRight.getAbsoluteEncoder();
 

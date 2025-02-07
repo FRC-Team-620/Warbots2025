@@ -42,6 +42,7 @@ public class NeoWristIO implements WristIO {
     pidController = motor.getClosedLoopController();
   }
 
+  @Override
   public void updateInputs(WristIOInputs inputs) {
     // getPosition() multiplied by 360 to convert from rotations to degrees
     SparkUtil.sparkStickyFault = false;
@@ -56,10 +57,12 @@ public class NeoWristIO implements WristIO {
     pidController.setReference(goalDegrees, ControlType.kPosition);
   }
 
+  @Override
   public void setPositionDegrees(double positionDegrees) {
     this.goalDegrees = positionDegrees;
   }
 
+  @Override
   public double getSetpoint() {
     return goalDegrees;
   }

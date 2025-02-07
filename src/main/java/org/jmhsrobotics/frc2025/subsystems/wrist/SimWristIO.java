@@ -48,6 +48,7 @@ public class SimWristIO implements WristIO {
     this.pidController.setSetpoint(angle);
   }
 
+  @Override
   public double getSetpoint() {
     return goalDegrees;
   }

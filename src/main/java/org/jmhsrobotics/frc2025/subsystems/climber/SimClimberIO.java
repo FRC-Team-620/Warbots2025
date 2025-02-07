@@ -23,6 +23,7 @@ public class SimClimberIO implements ClimberIO {
     inputs.positionDegrees = Units.radiansToDegrees(climberSim.getAngleRads());
   }
 
+  @Override
   public void set(double speedDutyCycle) {
     this.speedDutyCycle = speedDutyCycle;
   }

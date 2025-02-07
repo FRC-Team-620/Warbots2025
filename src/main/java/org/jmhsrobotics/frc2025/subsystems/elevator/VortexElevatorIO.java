@@ -79,10 +79,12 @@ public class VortexElevatorIO implements ElevatorIO {
     pidController.setReference(this.goalMeters, ControlType.kPosition);
   }
 
+  @Override
   public void setPositionMeters(double positionMeters) {
     this.goalMeters = positionMeters;
   }
 
+  @Override
   public double getSetpoint() {
     return this.goalMeters;
   }

@@ -333,7 +333,7 @@ public class RobotContainer {
 
     control.climbUp().whileTrue(new ClimberMove(climber, -1));
 
-    control.climbDown().onTrue(new ClimberMove(climber, 1));
+    control.climbDown().whileTrue(new ClimberMove(climber, 1));
 
     // control.indexerUp().onTrue(down);
     // control.indexerDown().onTrue(down);

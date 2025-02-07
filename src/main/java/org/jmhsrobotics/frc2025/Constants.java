@@ -86,7 +86,7 @@ public final class Constants {
     public static final double kD = 0.00;
     public static final double kAngleTolerance = 3;
 
-    public static final double kSafeAngle = 20;
+    public static final double kSafeAngleDegrees = 20;
   }
 
   public static class IntakeConstants {

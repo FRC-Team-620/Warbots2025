@@ -15,7 +15,6 @@ package org.jmhsrobotics.frc2025;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.reduxrobotics.canand.CanandEventLoop;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -93,7 +92,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Setup Boron Server
     CanandEventLoop.getInstance();
-    
+
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations

@@ -75,6 +75,8 @@ public class VortexElevatorIO implements ElevatorIO {
         vortexLeft, leftEncoder::getPosition, (value) -> inputs.motorPositionMeters[0] = value);
     SparkUtil.ifOk(
         vortexRight, rightEncoder::getPosition, (value) -> inputs.motorPositionMeters[1] = value);
+    SparkUtil.ifOk(vortexLeft, vortexLeft::getBusVoltage, (value) -> inputs.motorVolts[0] = value);
+    SparkUtil.ifOk(vortexRight, vortexRight::getBusVoltage, (value) -> inputs.motorVolts[1] = value);
 
     // TODO
     SparkUtil.ifOk(vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value);
@@ -87,6 +89,12 @@ public class VortexElevatorIO implements ElevatorIO {
   }
 
   public void setVoltage(double voltage){
+    this.vortexLeft.setVoltage(voltage);
+    this.vortexRight.setVoltage(voltage);
+  }
 
+  public void setZero(){
+    leftEncoder.setPosition(0);
+    rightEncoder.setPosition(0);
   }
 }

@@ -9,6 +9,7 @@ public interface ElevatorIO {
     public double[] motorPositionMeters;
     public double[] motorAmps;
     public double[] motorRPM;
+    public double[] motorVolts;
     public double velocityMPS;
     public double heightMeters;
     public boolean isOpenLoop = true;
@@ -19,5 +20,7 @@ public interface ElevatorIO {
   public default void setPositionMeters(double heightMeters) {}
 
   public default void setVoltage(double voltage) {}
+
+  public default void setZero() {}
 
 }

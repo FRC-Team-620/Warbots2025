@@ -25,13 +25,17 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
-import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
+import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
+import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
+import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
+import org.jmhsrobotics.frc2025.subsystems.climber.SimClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOBoron;
@@ -76,6 +80,7 @@ public class RobotContainer {
   private final ControlBoard control;
   private final LED led;
   private final Intake intake;
+  public final Climber climber;
 
   // Controller
 
@@ -105,6 +110,7 @@ public class RobotContainer {
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
         intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
+        climber = new Climber(new NeoClimberIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -128,6 +134,7 @@ public class RobotContainer {
         elevator = new Elevator(new SimElevatorIO());
         wrist = new Wrist(new SimWristIO());
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
+        climber = new Climber(new SimClimberIO());
 
         System.out.println("Mode: SIM");
         break;
@@ -145,6 +152,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
+        climber = new Climber(new ClimberIO() {});
 
         System.out.println("Mode: DEFAULT");
         break;
@@ -303,15 +311,6 @@ public class RobotContainer {
                 Constants.ElevatorConstants.kAlgaeIntakeL3Meters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
 
-    // control
-    //     .takeAlgaeQTip()
-    //     .onTrue(
-    //         new ElevatorAndWristMove(
-    //             elevator,
-    //             wrist,
-    //             Constants.ElevatorConstants.kAlgaeQTipMeters,
-    //             Constants.WristConstants.kRotationQTipDegrees,
-    //             intake.getMode()));
     control
         .takeAlgaeQTip()
         .onTrue(
@@ -332,8 +331,10 @@ public class RobotContainer {
         .extakeCoral()
         .whileTrue(new IntakeMove(intake, Constants.IntakeConstants.kExtakeSpeedDutyCycle));
 
-    // control.climbUp().onTrue(down);
-    // control.climbDown().onTrue(down);
+    control.climbUp().whileTrue(new ClimberMove(climber, -1));
+
+    control.climbDown().onTrue(new ClimberMove(climber, 1));
+
     // control.indexerUp().onTrue(down);
     // control.indexerDown().onTrue(down);
 
@@ -354,7 +355,8 @@ public class RobotContainer {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
     SmartDashboard.putData("SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
-    SmartDashboard.putData("Move Elevator Middle", new ElevatorMoveTo(elevator, 1));
+    SmartDashboard.putData("MoveClimberUp", new ClimberMove(climber, -1));
+    SmartDashboard.putData("MoveClimberDown", new ClimberMove(climber, 1));
   }
 
   /**

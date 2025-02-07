@@ -1,25 +1,23 @@
 {
   "hubs": [
     {
-      "x": -1928,
-      "y": -8,
-      "width": 1936,
-      "height": 1056,
+      "x": 518,
+      "y": 152,
+      "width": 955,
+      "height": 659,
       "state": {
         "sidebar": {
-          "width": 300,
+          "width": 0,
           "expanded": [
-            "/AdvantageKit/RealOutputs/Odometry",
-            "/AdvantageKit/RealOutputs/SwerveStates",
-            "/AdvantageKit/RealOutputs/SwerveChassisSpeeds",
             "/AdvantageKit/PowerDistribution",
             "/AdvantageKit/Drive/Gyro",
             "/AdvantageKit/Drive/Module0",
-            "/AdvantageKit/RealOutputs/gripper",
             "/AdvantageKit/Vision/Camera1",
             "/AdvantageKit/Vision/Camera0",
             "/AdvantageKit/RealOutputs/Vision/Camera1",
-            "/AdvantageKit/RealOutputs/Vision/Summary"
+            "/AdvantageKit/RealOutputs/Vision/Summary",
+            "/AdvantageKit",
+            "/AdvantageKit/RealOutputs"
           ]
         },
         "tabs": {
@@ -134,6 +132,13 @@
                     "options": {}
                   },
                   {
+                    "type": "component",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/climber",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
                     "type": "vision",
                     "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Summary/TagPoses",
                     "logType": "Pose3d[]",
@@ -161,17 +166,17 @@
                 "cameraIndex": -2,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  1.5016560623595099,
-                  1.1143362279902325,
-                  1.2423062662889892
+                  -1.2349468094837308,
+                  3.5141552818977484,
+                  4.72285680676448
                 ],
                 "cameraTarget": [
-                  0.022517616473193086,
-                  0.8591025393031976,
-                  0.24997256503185789
+                  -0.27894444123012735,
+                  0.1945740408428377,
+                  0.04831756301995121
                 ]
               },
-              "controlsHeight": 290
+              "controlsHeight": 134
             },
             {
               "type": 9,
@@ -248,5 +253,5 @@
     }
   ],
   "satellites": [],
-  "version": "4.1.1"
+  "version": "4.1.2"
 }

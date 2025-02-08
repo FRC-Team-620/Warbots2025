@@ -42,8 +42,8 @@ public class SimElevatorIO implements ElevatorIO {
               -RobotController.getBatteryVoltage(),
               RobotController.getBatteryVoltage());
       this.simElevator.setInput(outvolts);
-      this.simElevator.update(Constants.ksimTimestep);
     }
+    this.simElevator.update(Constants.ksimTimestep);
 
     inputs.motorAmps =
         new double[] {
@@ -64,6 +64,13 @@ public class SimElevatorIO implements ElevatorIO {
     this.isOpenLoop = true;
     this.controlVoltage = controlVoltage;
     simElevator.setInputVoltage(controlVoltage);
+  }
+
+  // I can't find a way to set the encoders to zero, so I am using this as a visual placeholder for
+  // when the encoders would be set to zero
+  @Override
+  public void setZero() {
+    simElevator.setState(0.5, 0);
   }
 
   @Override

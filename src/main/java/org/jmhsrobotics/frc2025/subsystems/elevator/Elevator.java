@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2025.Constants;
+import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
   private ElevatorIO elevatorIO;
@@ -35,6 +36,8 @@ public class Elevator extends SubsystemBase {
       setVoltage(0);
       setZero();
     }
+    Logger.recordOutput("Elevator Position:", inputs.heightMeters);
+    Logger.recordOutput("Elevator Velocity: ", inputs.velocityMPS);
   }
 
   public boolean atGoal() {
@@ -52,6 +55,10 @@ public class Elevator extends SubsystemBase {
 
   public double getHeight() {
     return inputs.heightMeters;
+  }
+
+  public double getVelocity() {
+    return inputs.velocityMPS;
   }
 
   public void setZero() {

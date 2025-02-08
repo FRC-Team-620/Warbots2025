@@ -55,6 +55,8 @@ public final class Constants {
 
   public static class ElevatorConstants {
 
+    public static final double conversionFactor = 1.0 / 60.0;
+
     public static final double kLevel1Meters = 0.0;
     public static final double kLevel2Meters = 0.35;
     public static final double kLevel3Meters = 0.75;

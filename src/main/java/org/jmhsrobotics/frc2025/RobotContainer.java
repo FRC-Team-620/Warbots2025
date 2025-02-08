@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
+import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
@@ -361,6 +362,8 @@ public class RobotContainer {
     SmartDashboard.putData("SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
     SmartDashboard.putData("MoveClimberUp", new ClimberMove(climber, -1));
     SmartDashboard.putData("MoveClimberDown", new ClimberMove(climber, 1));
+    SmartDashboard.putData("SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
+    SmartDashboard.putData("RunElevatorZeroCommand", new ElevatorSetZero(elevator));
   }
 
   /**

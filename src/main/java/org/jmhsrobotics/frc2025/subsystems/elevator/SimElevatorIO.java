@@ -11,6 +11,8 @@ import org.jmhsrobotics.frc2025.Constants;
 
 public class SimElevatorIO implements ElevatorIO {
   private double goalMeters;
+  private boolean isOpenLoop;
+  private double controlVoltage;
 
   ElevatorSim simElevator =
       new ElevatorSim(
@@ -31,12 +33,17 @@ public class SimElevatorIO implements ElevatorIO {
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    double outvolts =
-        MathUtil.clamp(
-            this.pidController.calculate(simElevator.getPositionMeters()),
-            -RobotController.getBatteryVoltage(),
-            RobotController.getBatteryVoltage());
-    this.simElevator.setInput(outvolts);
+    if (isOpenLoop) {
+      this.simElevator.setInputVoltage(controlVoltage);
+    } else {
+      double outvolts =
+          MathUtil.clamp(
+              this.pidController.calculate(simElevator.getPositionMeters()),
+              -RobotController.getBatteryVoltage(),
+              RobotController.getBatteryVoltage());
+      this.simElevator.setInput(outvolts);
+    }
+
     this.simElevator.update(Constants.ksimTimestep);
 
     inputs.motorAmps =
@@ -49,12 +56,22 @@ public class SimElevatorIO implements ElevatorIO {
 
   @Override
   public void setPositionMeters(double positionMeters) {
+    this.isOpenLoop = false;
     this.goalMeters = positionMeters;
     this.pidController.setSetpoint(positionMeters);
   }
 
   @Override
-  public double getSetpoint() {
-    return this.goalMeters;
+  public void setVoltage(double controlVoltage) {
+    this.isOpenLoop = true;
+    this.controlVoltage = controlVoltage;
+    simElevator.setInputVoltage(controlVoltage);
+  }
+
+  // I can't find a way to set the encoders to zero, so I am using this as a visual placeholder for
+  // when the encoders would be set to zero
+  @Override
+  public void setZero() {
+    simElevator.setState(0.5, 0);
   }
 }

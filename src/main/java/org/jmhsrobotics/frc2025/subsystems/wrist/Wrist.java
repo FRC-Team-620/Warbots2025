@@ -6,6 +6,7 @@ import org.jmhsrobotics.frc2025.Constants;
 public class Wrist extends SubsystemBase {
   private WristIO wristIO;
   private WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
+  private double setPointDegrees;
 
   public Wrist(WristIO wristIO) {
     this.wristIO = wristIO;
@@ -17,7 +18,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public boolean atGoal() {
-    return Math.abs(wristIO.getSetpoint() - inputs.positionDegrees)
+    return Math.abs(setPointDegrees - inputs.positionDegrees)
         < Constants.WristConstants.kAngleTolerance;
   }
 
@@ -30,6 +31,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setSetpoint(double setPoint) {
+    this.setPointDegrees = setPoint;
     wristIO.setPositionDegrees(setPoint);
   }
 }

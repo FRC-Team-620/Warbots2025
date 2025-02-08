@@ -1,6 +1,6 @@
 package org.jmhsrobotics.frc2025.subsystems.elevator;
 
-import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -17,12 +17,18 @@ public class VortexElevatorIO implements ElevatorIO {
       new SparkFlex(Constants.CAN.kElevatorMotorLeftID, MotorType.kBrushless);
   private SparkFlex vortexRight =
       new SparkFlex(Constants.CAN.kElevatorMotorRightID, MotorType.kBrushless);
-  private AbsoluteEncoder leftEncoder = vortexLeft.getAbsoluteEncoder();
-  private AbsoluteEncoder rightEncoder = vortexRight.getAbsoluteEncoder();
+  // private AbsoluteEncoder leftEncoder = vortexLeft.getAbsoluteEncoder();
+  // private AbsoluteEncoder rightEncoder = vortexRight.getAbsoluteEncoder();
+  private RelativeEncoder leftEncoder = vortexLeft.getEncoder();
+  private RelativeEncoder rightEncoder = vortexRight.getEncoder();
 
   private SparkFlexConfig vortexLeftConfig;
   private SparkFlexConfig vortexRightConfig;
   private SparkClosedLoopController pidController;
+
+  private boolean isOpenLoop = true;
+
+  private double controlVoltage;
 
   private double goalMeters = 0;
 
@@ -32,7 +38,9 @@ public class VortexElevatorIO implements ElevatorIO {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(60)
         .voltageCompensation(12)
-        .inverted(true);
+        .inverted(true)
+        .encoder
+        .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
 
     vortexRightConfig = new SparkFlexConfig();
     vortexRightConfig
@@ -40,7 +48,9 @@ public class VortexElevatorIO implements ElevatorIO {
         .smartCurrentLimit(60)
         .voltageCompensation(12)
         .inverted(false)
-        .follow(vortexLeft);
+        .follow(vortexLeft)
+        .encoder
+        .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
 
     SparkUtil.tryUntilOk(
         vortexLeft,
@@ -72,20 +82,38 @@ public class VortexElevatorIO implements ElevatorIO {
         vortexLeft, leftEncoder::getPosition, (value) -> inputs.motorPositionMeters[0] = value);
     SparkUtil.ifOk(
         vortexRight, rightEncoder::getPosition, (value) -> inputs.motorPositionMeters[1] = value);
+    SparkUtil.ifOk(vortexLeft, vortexLeft::getBusVoltage, (value) -> inputs.motorVolts[0] = value);
+    SparkUtil.ifOk(
+        vortexRight, vortexRight::getBusVoltage, (value) -> inputs.motorVolts[1] = value);
 
     // TODO
     SparkUtil.ifOk(vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value);
 
-    pidController.setReference(this.goalMeters, ControlType.kPosition);
+    inputs.isOpenLoop = this.isOpenLoop;
+
+    if (isOpenLoop) {
+      this.vortexLeft.setVoltage(this.controlVoltage);
+      this.vortexRight.setVoltage(this.controlVoltage);
+    } else {
+      pidController.setReference(this.goalMeters, ControlType.kPosition);
+    }
   }
 
   @Override
   public void setPositionMeters(double positionMeters) {
+    isOpenLoop = false;
     this.goalMeters = positionMeters;
   }
 
-  @Override
-  public double getSetpoint() {
-    return this.goalMeters;
+  public void setVoltage(double voltage) {
+    isOpenLoop = true;
+    this.controlVoltage = voltage;
+    this.vortexLeft.setVoltage(voltage);
+    this.vortexRight.setVoltage(voltage);
+  }
+
+  public void setZero() {
+    leftEncoder.setPosition(0);
+    rightEncoder.setPosition(0);
   }
 }

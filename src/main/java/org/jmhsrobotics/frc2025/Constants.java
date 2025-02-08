@@ -78,24 +78,24 @@ public final class Constants {
 
   public static class WristConstants {
 
-    public static final double kRotationIntakeCoralDegrees = 0;
+    public static final double kRotationIntakeCoralDegrees = -70;
 
-    public static final double kLevel1Degrees = 10;
-    public static final double kLevel2Degrees = 24;
-    public static final double kLevel3Degrees = 24;
-    public static final double kLevel4Degrees = 75;
+    public static final double kLevel1Degrees = -60;
+    public static final double kLevel2Degrees = -46;
+    public static final double kLevel3Degrees = -46;
+    public static final double kLevel4Degrees = 5;
 
-    public static final double kRotationAlgaeDegrees = 180;
-    public static final double kRotationProcesserDegrees = 170;
-    public static final double kRotationBargeDegrees = 70;
-    public static final double kRotationQTipDegrees = 175;
+    public static final double kRotationAlgaeDegrees = 110;
+    public static final double kRotationProcesserDegrees = 100;
+    public static final double kRotationBargeDegrees = 0;
+    public static final double kRotationQTipDegrees = 105;
 
     public static final double kP = 0.01;
     public static final double kI = 0.00;
     public static final double kD = 0.00;
     public static final double kAngleTolerance = 3;
 
-    public static final double kSafeAngleDegrees = 20;
+    public static final double kSafeAngleDegrees = -50;
   }
 
   public static class IntakeConstants {

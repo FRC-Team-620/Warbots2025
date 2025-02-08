@@ -41,7 +41,6 @@ import org.jmhsrobotics.frc2025.subsystems.climber.SimClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOBoron;
-import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOPigeon2;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOSimRev;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOThrifty;
@@ -99,7 +98,7 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         drive =
             new Drive(
-                new GyroIOPigeon2(),
+                new GyroIOBoron(),
                 new ModuleIOThrifty(0),
                 new ModuleIOThrifty(1),
                 new ModuleIOThrifty(2),

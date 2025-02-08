@@ -70,21 +70,11 @@ public class VortexElevatorIO implements ElevatorIO {
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
+    inputs.motorAmps = new double[2];
     SparkUtil.ifOk(
         vortexLeft, vortexLeft::getOutputCurrent, (value) -> inputs.motorAmps[0] = value);
     SparkUtil.ifOk(
         vortexRight, vortexRight::getOutputCurrent, (value) -> inputs.motorAmps[1] = value);
-
-    SparkUtil.ifOk(vortexLeft, leftEncoder::getVelocity, (value) -> inputs.motorRPM[0] = value);
-    SparkUtil.ifOk(vortexRight, rightEncoder::getVelocity, (value) -> inputs.motorRPM[1] = value);
-
-    SparkUtil.ifOk(
-        vortexLeft, leftEncoder::getPosition, (value) -> inputs.motorPositionMeters[0] = value);
-    SparkUtil.ifOk(
-        vortexRight, rightEncoder::getPosition, (value) -> inputs.motorPositionMeters[1] = value);
-    SparkUtil.ifOk(vortexLeft, vortexLeft::getBusVoltage, (value) -> inputs.motorVolts[0] = value);
-    SparkUtil.ifOk(
-        vortexRight, vortexRight::getBusVoltage, (value) -> inputs.motorVolts[1] = value);
 
     // TODO
     SparkUtil.ifOk(vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value);

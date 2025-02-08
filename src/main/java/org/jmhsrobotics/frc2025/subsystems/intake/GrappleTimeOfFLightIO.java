@@ -15,7 +15,9 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
   @Override
   public void updateInputs(TimeOfFLightIOInputs inputs) {
     // distance is in millimeters
-    inputs.coralDistance = coralSensor.getMeasurement().distance_mm;
-    inputs.algaeDistance = algaeSensor.getMeasurement().distance_mm;
+
+    // TODO: fix null pointer exception
+    // inputs.coralDistance = coralSensor.getMeasurement().distance_mm;
+    // inputs.algaeDistance = algaeSensor.getMeasurement().distance_mm;
   }
 }

@@ -33,6 +33,7 @@ public class NeoClimberIO implements ClimberIO {
     encoder = motor.getEncoder();
   }
 
+  @Override
   public void updateInputs(ClimberIOInputs inputs) {
     SparkUtil.ifOk(motor, motor::getOutputCurrent, (value) -> inputs.motorAmps = value);
     SparkUtil.ifOk(motor, encoder::getVelocity, (value) -> inputs.motorRPM = value);
@@ -42,6 +43,7 @@ public class NeoClimberIO implements ClimberIO {
     SparkUtil.ifOk(motor, encoder::getPosition, (value) -> inputs.positionDegrees = value);
   }
 
+  @Override
   public void set(double speedDutyCycle) {
     motor.set(speedDutyCycle);
   }

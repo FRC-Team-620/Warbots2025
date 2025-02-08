@@ -99,6 +99,7 @@ public class VortexElevatorIO implements ElevatorIO {
     }
   }
 
+  @Override
   public void setPositionMeters(double positionMeters) {
     isOpenLoop = false;
     this.goalMeters = positionMeters;
@@ -116,6 +117,7 @@ public class VortexElevatorIO implements ElevatorIO {
     rightEncoder.setPosition(0);
   }
 
+  @Override
   public double getSetpoint() {
     return this.goalMeters;
   }

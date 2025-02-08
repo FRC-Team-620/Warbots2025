@@ -1,10 +1,13 @@
 package org.jmhsrobotics.frc2025.subsystems.elevator;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.jmhsrobotics.frc2025.Constants;
 
 public class SimElevatorIO implements ElevatorIO {
   private double goalMeters;
@@ -33,9 +36,13 @@ public class SimElevatorIO implements ElevatorIO {
     if (isOpenLoop) {
       this.simElevator.setInputVoltage(controlVoltage);
     } else {
-      double output = this.pidController.calculate(simElevator.getPositionMeters());
-      this.simElevator.setInput(output);
-      this.simElevator.update(0.02);
+      double outvolts =
+          MathUtil.clamp(
+              this.pidController.calculate(simElevator.getPositionMeters()),
+              -RobotController.getBatteryVoltage(),
+              RobotController.getBatteryVoltage());
+      this.simElevator.setInput(outvolts);
+      this.simElevator.update(Constants.ksimTimestep);
     }
 
     inputs.motorAmps =

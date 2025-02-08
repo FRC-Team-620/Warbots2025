@@ -13,6 +13,7 @@ public interface ElevatorIO {
     public double velocityMPS;
     public double heightMeters;
     public boolean isOpenLoop = true;
+    public double setPointMeters;
   }
 
   public default void updateInputs(ElevatorIOInputs inputs) {}
@@ -22,8 +23,4 @@ public interface ElevatorIO {
   public default void setVoltage(double voltage) {}
 
   public default void setZero() {}
-
-  public default double getSetpoint() {
-    return 0;
-  }
 }

@@ -43,6 +43,7 @@ public class SimElevatorIO implements ElevatorIO {
               RobotController.getBatteryVoltage());
       this.simElevator.setInput(outvolts);
     }
+
     this.simElevator.update(Constants.ksimTimestep);
 
     inputs.motorAmps =
@@ -60,6 +61,7 @@ public class SimElevatorIO implements ElevatorIO {
     this.pidController.setSetpoint(positionMeters);
   }
 
+  @Override
   public void setVoltage(double controlVoltage) {
     this.isOpenLoop = true;
     this.controlVoltage = controlVoltage;
@@ -71,10 +73,5 @@ public class SimElevatorIO implements ElevatorIO {
   @Override
   public void setZero() {
     simElevator.setState(0.5, 0);
-  }
-
-  @Override
-  public double getSetpoint() {
-    return this.goalMeters;
   }
 }

@@ -16,6 +16,7 @@ public class Elevator extends SubsystemBase {
   private MechanismLigament2d carriage =
       new MechanismLigament2d("carriage", 3, 0, 5, new Color8Bit(255, 0, 0));
   Mechanism2d elevatorMech = new Mechanism2d(4, 4);
+  private double setPointMeters;
 
   public Elevator(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;
@@ -30,16 +31,16 @@ public class Elevator extends SubsystemBase {
     stage1.setLength(inputs.heightMeters / 2);
     carriage.setLength(inputs.heightMeters / 2);
 
-    Logger.recordOutput("Elevator Position:", inputs.heightMeters);
-    Logger.recordOutput("Elevator Velocity: ", inputs.velocityMPS);
+    Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
   }
 
   public boolean atGoal() {
-    return Math.abs(inputs.heightMeters - elevatorIO.getSetpoint())
+    return Math.abs(inputs.heightMeters - setPointMeters)
         < Constants.ElevatorConstants.kHeightTolerance;
   }
 
   public void setSetpoint(double setPoint) {
+    this.setPointMeters = setPoint;
     elevatorIO.setPositionMeters(setPoint);
   }
 
@@ -53,6 +54,14 @@ public class Elevator extends SubsystemBase {
 
   public double getVelocity() {
     return inputs.velocityMPS;
+  }
+
+  public double getCurrentAmps() {
+    double totalAmps = 0;
+    for (int i = 0; i < inputs.motorAmps.length; i++) {
+      totalAmps += inputs.motorAmps[i];
+    }
+    return totalAmps;
   }
 
   public void setZero() {

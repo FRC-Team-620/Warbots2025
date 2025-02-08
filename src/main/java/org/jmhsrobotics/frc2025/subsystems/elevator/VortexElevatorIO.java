@@ -116,9 +116,4 @@ public class VortexElevatorIO implements ElevatorIO {
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
   }
-
-  @Override
-  public double getSetpoint() {
-    return this.goalMeters;
-  }
 }

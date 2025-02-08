@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SimElevatorIO implements ElevatorIO {
   private double goalMeters;
+  private boolean isOpenLoop;
+  private double controlVoltage;
 
   ElevatorSim simElevator =
       new ElevatorSim(
@@ -28,9 +30,13 @@ public class SimElevatorIO implements ElevatorIO {
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    double output = this.pidController.calculate(simElevator.getPositionMeters());
-    this.simElevator.setInput(output);
-    this.simElevator.update(0.02);
+    if (isOpenLoop) {
+      this.simElevator.setInputVoltage(controlVoltage);
+    } else {
+      double output = this.pidController.calculate(simElevator.getPositionMeters());
+      this.simElevator.setInput(output);
+      this.simElevator.update(0.02);
+    }
 
     inputs.motorAmps =
         new double[] {
@@ -42,8 +48,15 @@ public class SimElevatorIO implements ElevatorIO {
 
   @Override
   public void setPositionMeters(double positionMeters) {
+    this.isOpenLoop = false;
     this.goalMeters = positionMeters;
     this.pidController.setSetpoint(positionMeters);
+  }
+
+  public void setVoltage(double controlVoltage) {
+    this.isOpenLoop = true;
+    this.controlVoltage = controlVoltage;
+    simElevator.setInputVoltage(controlVoltage);
   }
 
   @Override

@@ -16,7 +16,8 @@ public class ElevatorAndWristMove extends SequentialCommandGroup {
   public ElevatorAndWristMove(
       Elevator elevator, Wrist wrist, double elevatorGoalMeters, double wristGoalDegrees) {
     addCommands(
-        new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees),
+        new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees)
+            .onlyIf(() -> wrist.getPositionDegrees() <= Constants.WristConstants.kSafeAngleDegrees),
         new ElevatorMoveTo(elevator, elevatorGoalMeters),
         new WristMoveTo(wrist, wristGoalDegrees));
   }

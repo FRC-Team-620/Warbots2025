@@ -26,6 +26,10 @@ public class VortexElevatorIO implements ElevatorIO {
   private SparkFlexConfig vortexRightConfig;
   private SparkClosedLoopController pidController;
 
+  private boolean isOpenLoop = true;
+
+  private double controlVoltage;
+
   private double goalMeters = 0;
 
   public VortexElevatorIO() {
@@ -34,7 +38,9 @@ public class VortexElevatorIO implements ElevatorIO {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(60)
         .voltageCompensation(12)
-        .inverted(true);
+        .inverted(true)
+        .encoder
+        .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
 
     vortexRightConfig = new SparkFlexConfig();
     vortexRightConfig
@@ -42,7 +48,9 @@ public class VortexElevatorIO implements ElevatorIO {
         .smartCurrentLimit(60)
         .voltageCompensation(12)
         .inverted(false)
-        .follow(vortexLeft);
+        .follow(vortexLeft)
+        .encoder
+        .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
 
     SparkUtil.tryUntilOk(
         vortexLeft,
@@ -81,14 +89,24 @@ public class VortexElevatorIO implements ElevatorIO {
     // TODO
     SparkUtil.ifOk(vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value);
 
-    pidController.setReference(this.goalMeters, ControlType.kPosition);
+    inputs.isOpenLoop = this.isOpenLoop;
+
+    if (isOpenLoop) {
+      this.vortexLeft.setVoltage(this.controlVoltage);
+      this.vortexRight.setVoltage(this.controlVoltage);
+    } else {
+      pidController.setReference(this.goalMeters, ControlType.kPosition);
+    }
   }
 
   public void setPositionMeters(double positionMeters) {
+    isOpenLoop = false;
     this.goalMeters = positionMeters;
   }
 
   public void setVoltage(double voltage) {
+    isOpenLoop = true;
+    this.controlVoltage = voltage;
     this.vortexLeft.setVoltage(voltage);
     this.vortexRight.setVoltage(voltage);
   }

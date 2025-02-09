@@ -15,7 +15,22 @@
     0,
     0
   ],
-  "cameras": [],
+  "cameras": [
+    {
+      "name": "cam1",
+      "rotations": [],
+      "position": [
+        0.314,
+        -0.275198,
+        0.192
+      ],
+      "resolution": [
+        1280,
+        800
+      ],
+      "fov": 70
+    }
+  ],
   "components": [
     {
       "zeroedRotations": [

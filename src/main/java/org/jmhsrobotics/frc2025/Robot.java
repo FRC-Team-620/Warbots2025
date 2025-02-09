@@ -17,6 +17,7 @@ import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Threads;
@@ -33,9 +34,12 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.littletonrobotics.urcl.URCL;
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the
+ * name of this class or
+ * the package after creating this project, you must also update the
+ * build.gradle file in the
  * project.
  */
 public class Robot extends LoggedRobot {
@@ -133,11 +137,17 @@ public class Robot extends LoggedRobot {
         new Pose3d(
             new Translation3d(-.075, 0.267, 0.165),
             new Rotation3d(Units.degreesToRadians(climberDegrees), 0, 0)));
+    var robotpos = new Pose3d( robotContainer.drive.getPose());
+    Logger.recordOutput(
+        "camtest",
+        
+            robotpos.plus(new Transform3d(0.16,-0.29198,0.192,new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(-10), Units.degreesToRadians(35)))));
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+  }
 
   /** This function is called periodically when disabled. */
   @Override
@@ -145,7 +155,10 @@ public class Robot extends LoggedRobot {
     ControllerMonitor.checkController();
   }
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  /**
+   * This autonomous runs the autonomous command selected by your
+   * {@link RobotContainer} class.
+   */
   @Override
   public void autonomousInit() {
     autonomousCommand = robotContainer.getAutonomousCommand();
@@ -158,7 +171,8 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   /** This function is called once when teleop is enabled. */
   @Override
@@ -174,7 +188,8 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override
@@ -185,7 +200,8 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override
@@ -197,5 +213,6 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically whilst in simulation. */
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+  }
 }

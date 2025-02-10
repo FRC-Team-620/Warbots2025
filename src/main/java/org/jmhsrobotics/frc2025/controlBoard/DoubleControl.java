@@ -172,4 +172,8 @@ public class DoubleControl implements ControlBoard {
   public Trigger changeModeRight() {
     return operator.rightBumper();
   }
+
+  public Trigger resetIndexer() {
+    return operator.povLeft();
+  }
 }

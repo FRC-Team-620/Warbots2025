@@ -35,7 +35,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public boolean atGoal() {
-    return Math.abs(inputs.heightMeters - setPointMeters)
+    return Math.abs(inputs.heightMeters - this.setPointMeters)
         < Constants.ElevatorConstants.kHeightTolerance;
   }
 

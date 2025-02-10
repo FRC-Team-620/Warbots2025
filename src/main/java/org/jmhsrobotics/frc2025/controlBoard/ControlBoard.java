@@ -52,4 +52,6 @@ public interface ControlBoard {
   public Trigger changeModeLeft();
 
   public Trigger changeModeRight();
+
+  public Trigger resetIndexer();
 }

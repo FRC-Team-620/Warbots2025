@@ -175,4 +175,8 @@ public class AltControlMode implements ControlBoard {
   public Trigger changeModeRight() {
     return driver.start();
   }
+
+  public Trigger resetIndexer() {
+    return driver.povLeft();
+  }
 }

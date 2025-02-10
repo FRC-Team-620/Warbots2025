@@ -103,6 +103,15 @@ public final class Constants {
     public static final double kExtakeSpeedDutyCycle = -0.25;
   }
 
+  public static final class IndexerConstants {
+    public static final double kRotationUpDegrees = 180;
+    public static final double kRotationDownDegrees = 0;
+
+    public static final double kP = 0.1;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+  }
+
   public static class ModeConstants {
     public static final int kAlgae = 1;
     public static final int kSearch = 2;

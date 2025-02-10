@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import org.jmhsrobotics.frc2025.commands.ClimberMove;
+import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
@@ -38,6 +38,9 @@ import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.SimClimberIO;
+import org.jmhsrobotics.frc2025.subsystems.climber.indexer.IndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.climber.indexer.NeoIndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.climber.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOBoron;
@@ -114,7 +117,7 @@ public class RobotContainer {
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
         intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
-        climber = new Climber(new NeoClimberIO());
+        climber = new Climber(new NeoClimberIO(), new NeoIndexerIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -138,7 +141,7 @@ public class RobotContainer {
         elevator = new Elevator(new SimElevatorIO());
         wrist = new Wrist(new SimWristIO());
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
-        climber = new Climber(new SimClimberIO());
+        climber = new Climber(new SimClimberIO(), new SimIndexerIO());
 
         System.out.println("Mode: SIM");
         break;
@@ -156,7 +159,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
-        climber = new Climber(new ClimberIO() {});
+        climber = new Climber(new ClimberIO() {}, new IndexerIO() {});
 
         System.out.println("Mode: DEFAULT");
         break;
@@ -335,9 +338,20 @@ public class RobotContainer {
         .extakeCoral()
         .whileTrue(new IntakeMove(intake, Constants.IntakeConstants.kExtakeSpeedDutyCycle));
 
-    control.climbUp().whileTrue(new ClimberMove(climber, -1));
+    control
+        .climbUp()
+        .whileTrue(
+            new ClimberAndIndexerMove(climber, -1, Constants.IndexerConstants.kRotationUpDegrees));
 
-    control.climbDown().whileTrue(new ClimberMove(climber, 1));
+    control
+        .climbDown()
+        .whileTrue(
+            new ClimberAndIndexerMove(climber, 1, Constants.IndexerConstants.kRotationUpDegrees));
+
+    control
+        .resetIndexer()
+        .onTrue(
+            new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
 
     // control.indexerUp().onTrue(down);
     // control.indexerDown().onTrue(down);
@@ -359,9 +373,15 @@ public class RobotContainer {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
     SmartDashboard.putData("SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
-    SmartDashboard.putData("MoveClimberUp", new ClimberMove(climber, -1));
-    SmartDashboard.putData("MoveClimberDown", new ClimberMove(climber, 1));
-    SmartDashboard.putData("SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
+    SmartDashboard.putData(
+        "MoveClimberUp",
+        new ClimberAndIndexerMove(climber, -1, Constants.IndexerConstants.kRotationUpDegrees));
+    SmartDashboard.putData(
+        "MoveClimberDown",
+        new ClimberAndIndexerMove(climber, 1, Constants.IndexerConstants.kRotationUpDegrees));
+    SmartDashboard.putData(
+        "ResetIndexerPosition",
+        new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
     SmartDashboard.putData("RunElevatorZeroCommand", new ElevatorSetZero(elevator));
   }
 

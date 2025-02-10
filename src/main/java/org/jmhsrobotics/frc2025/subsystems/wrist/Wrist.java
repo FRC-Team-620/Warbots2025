@@ -18,7 +18,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public boolean atGoal() {
-    return Math.abs(setPointDegrees - inputs.positionDegrees)
+    return Math.abs(this.setPointDegrees - inputs.positionDegrees)
         < Constants.WristConstants.kAngleTolerance;
   }
 

@@ -383,6 +383,8 @@ public class RobotContainer {
         "ResetIndexerPosition",
         new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
     SmartDashboard.putData("RunElevatorZeroCommand", new ElevatorSetZero(elevator));
+    SmartDashboard.putData("WristToZeroCommand", new WristMoveTo(wrist, 0));
+    SmartDashboard.putData("WristToTwentyCommand", new WristMoveTo(wrist, 20));
   }
 
   /**

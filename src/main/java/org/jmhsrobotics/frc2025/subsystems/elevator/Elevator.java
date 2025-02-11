@@ -32,6 +32,8 @@ public class Elevator extends SubsystemBase {
     carriage.setLength(inputs.heightMeters / 2);
 
     Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
+    Logger.recordOutput("Elevator/Height", inputs.heightMeters);
+    Logger.recordOutput("Elevator/Setpoint Value", inputs.setPointMeters);
   }
 
   public boolean atGoal() {

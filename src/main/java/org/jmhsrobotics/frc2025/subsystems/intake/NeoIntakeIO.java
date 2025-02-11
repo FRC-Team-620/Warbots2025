@@ -21,7 +21,7 @@ public class NeoIntakeIO implements IntakeIO {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(40)
         .voltageCompensation(12)
-        .inverted(false);
+        .inverted(true);
 
     // attempts to burn configuration, throws an error if parameters are not persisting
     SparkUtil.tryUntilOk(

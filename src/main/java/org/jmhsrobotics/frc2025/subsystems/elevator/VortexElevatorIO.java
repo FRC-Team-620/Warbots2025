@@ -47,7 +47,7 @@ public class VortexElevatorIO implements ElevatorIO {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(60)
         .voltageCompensation(12)
-        .inverted(false)
+        .inverted(true)
         .follow(vortexLeft)
         .encoder
         .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);

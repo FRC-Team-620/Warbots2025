@@ -17,6 +17,9 @@ public class Wrist extends SubsystemBase {
   public void periodic() {
     wristIO.updateInputs(inputs);
     Logger.recordOutput("Wrist/AngleDegrees", inputs.positionDegrees);
+    Logger.recordOutput("Wrist/OutputCurrent", inputs.motorAmps);
+    Logger.recordOutput("Wrist/GoalAngle", setPointDegrees);
+    Logger.recordOutput("Wrist/RelativeEncoderPosition", inputs.relativePositionDegrees);
   }
 
   public boolean atGoal() {

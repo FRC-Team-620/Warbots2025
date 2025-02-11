@@ -90,10 +90,10 @@ public final class Constants {
     public static final double kRotationBargeDegrees = 0;
     public static final double kRotationQTipDegrees = 105;
 
-    public static final double kP = 0.01;
+    public static final double kP = 0.02;
     public static final double kI = 0.00;
     public static final double kD = 0.00;
-    public static final double kAngleTolerance = 3;
+    public static final double kAngleTolerance = 0.1;
 
     public static final double kSafeAngleDegrees = -50;
   }

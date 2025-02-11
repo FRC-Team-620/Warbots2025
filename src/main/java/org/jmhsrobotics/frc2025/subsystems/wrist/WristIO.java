@@ -8,6 +8,7 @@ public interface WristIO {
     public double positionDegrees;
     public double motorRPM;
     public double motorAmps;
+    public double relativePositionDegrees;
   }
 
   public default void updateInputs(WristIOInputs inputs) {}

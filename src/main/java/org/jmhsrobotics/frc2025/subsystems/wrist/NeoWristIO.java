@@ -20,6 +20,7 @@ public class NeoWristIO implements WristIO {
   private SparkMaxConfig motorConfig = new SparkMaxConfig();
 
   private SparkClosedLoopController pidController;
+  // P:0.02
 
   private double setPointDegrees;
 

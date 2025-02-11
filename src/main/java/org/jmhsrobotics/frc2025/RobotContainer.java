@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
+import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
@@ -385,6 +386,8 @@ public class RobotContainer {
     SmartDashboard.putData("RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("WristToZeroCommand", new WristMoveTo(wrist, 0));
     SmartDashboard.putData("WristToTwentyCommand", new WristMoveTo(wrist, 20));
+    SmartDashboard.putData("ElevatorUpSafe", new ElevatorMoveTo(elevator, 0.2));
+    SmartDashboard.putData("ClimberDownSafe", new ElevatorMoveTo(elevator, 0));
   }
 
   /**

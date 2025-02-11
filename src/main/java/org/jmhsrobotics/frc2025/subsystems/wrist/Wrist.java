@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2025.subsystems.wrist;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2025.Constants;
+import org.littletonrobotics.junction.Logger;
 
 public class Wrist extends SubsystemBase {
   private WristIO wristIO;
@@ -15,6 +16,7 @@ public class Wrist extends SubsystemBase {
   @Override
   public void periodic() {
     wristIO.updateInputs(inputs);
+    Logger.recordOutput("Wrist/AngleDegrees", inputs.positionDegrees);
   }
 
   public boolean atGoal() {

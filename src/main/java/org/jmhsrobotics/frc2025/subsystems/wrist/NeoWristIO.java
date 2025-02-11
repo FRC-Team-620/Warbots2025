@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.util.Units;
@@ -18,6 +19,7 @@ public class NeoWristIO implements WristIO {
   private AbsoluteEncoder encoder;
 
   private SparkMaxConfig motorConfig = new SparkMaxConfig();
+  private AbsoluteEncoderConfig encoderConfig = new AbsoluteEncoderConfig();
 
   private SparkClosedLoopController pidController;
   // P:0.02
@@ -29,7 +31,17 @@ public class NeoWristIO implements WristIO {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(40)
         .voltageCompensation(12)
-        .inverted(false);
+        .inverted(false)
+        .signals
+        .absoluteEncoderVelocityAlwaysOn(true)
+        .absoluteEncoderPositionAlwaysOn(true)
+        .absoluteEncoderPositionPeriodMs(20)
+        .absoluteEncoderVelocityPeriodMs(20)
+        .appliedOutputPeriodMs(20)
+        .busVoltagePeriodMs(20)
+        .outputCurrentPeriodMs(20);
+
+    encoderConfig.positionConversionFactor(360);
 
     SparkUtil.tryUntilOk(
         motor,
@@ -44,7 +56,6 @@ public class NeoWristIO implements WristIO {
 
   @Override
   public void updateInputs(WristIOInputs inputs) {
-    // getPosition() multiplied by 360 to convert from rotations to degrees
     SparkUtil.sparkStickyFault = false;
     SparkUtil.ifOk(
         motor,

@@ -70,32 +70,34 @@ public final class Constants {
     public static final double kAlgaeIntakeL2Meters = .55;
     public static final double kAlgaeIntakeL3Meters = 0.95;
 
-    public static final double kP = .01;
+    public static final double kP = .5;
     public static final double kI = .00;
     public static final double kD = .00;
-    public static final double kHeightTolerance = 0.1;
+    public static final double kHeightTolerance = 0.05;
   }
 
   public static class WristConstants {
 
-    public static final double kRotationIntakeCoralDegrees = -70;
+    // TODO: When absolute encoder conversion is fixed, remove  / 360, recalibrate PID and change
+    // tolerance to 1 degree;
+    public static final double kRotationIntakeCoralDegrees = 20;
 
-    public static final double kLevel1Degrees = -60;
-    public static final double kLevel2Degrees = -46;
-    public static final double kLevel3Degrees = -46;
-    public static final double kLevel4Degrees = 5;
+    public static final double kLevel1Degrees = 30.0;
+    public static final double kLevel2Degrees = 44.0;
+    public static final double kLevel3Degrees = 44.0;
+    public static final double kLevel4Degrees = 95.0;
 
-    public static final double kRotationAlgaeDegrees = 110;
-    public static final double kRotationProcesserDegrees = 100;
-    public static final double kRotationBargeDegrees = 0;
-    public static final double kRotationQTipDegrees = 105;
+    public static final double kRotationAlgaeDegrees = 200;
+    public static final double kRotationProcesserDegrees = 190;
+    public static final double kRotationBargeDegrees = 90;
+    public static final double kRotationQTipDegrees = 195;
 
-    public static final double kP = 0.01;
+    public static final double kP = 0.005;
     public static final double kI = 0.00;
     public static final double kD = 0.00;
-    public static final double kAngleTolerance = 3;
+    public static final double kAngleTolerance = 2;
 
-    public static final double kSafeAngleDegrees = -50;
+    public static final double kSafeAngleDegrees = 40;
   }
 
   public static class IntakeConstants {

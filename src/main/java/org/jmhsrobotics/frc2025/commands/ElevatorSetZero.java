@@ -17,13 +17,13 @@ public class ElevatorSetZero extends Command {
   @Override
   public void initialize() {
     timer.reset();
-    elevator.setVoltage(-1);
+    elevator.setVoltage(-5);
   }
 
   @Override
   public void execute() {
     // if the velocity is at or near zero, the timer starts. otherwise it is reset to 0
-    if (elevator.getCurrentAmps() > 2) timer.start();
+    if (elevator.getCurrentAmps() > 110) timer.start();
     else timer.reset();
   }
 

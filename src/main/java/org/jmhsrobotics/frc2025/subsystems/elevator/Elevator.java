@@ -33,7 +33,7 @@ public class Elevator extends SubsystemBase {
 
     Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
     Logger.recordOutput("Elevator/Height", inputs.heightMeters);
-    Logger.recordOutput("Elevator/Setpoint Value", inputs.setPointMeters);
+    Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
   }
 
   public boolean atGoal() {

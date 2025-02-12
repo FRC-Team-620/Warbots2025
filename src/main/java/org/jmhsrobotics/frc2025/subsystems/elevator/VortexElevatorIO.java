@@ -41,6 +41,13 @@ public class VortexElevatorIO implements ElevatorIO {
         .inverted(true)
         .encoder
         .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
+    vortexLeftConfig
+        .closedLoop
+        .pid(
+            Constants.ElevatorConstants.kP,
+            Constants.ElevatorConstants.kI,
+            Constants.ElevatorConstants.kD)
+        .outputRange(-0.25, 0.25);
 
     vortexRightConfig = new SparkFlexConfig();
     vortexRightConfig
@@ -51,6 +58,13 @@ public class VortexElevatorIO implements ElevatorIO {
         .follow(vortexLeft)
         .encoder
         .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
+    vortexRightConfig
+        .closedLoop
+        .pid(
+            Constants.ElevatorConstants.kP,
+            Constants.ElevatorConstants.kI,
+            Constants.ElevatorConstants.kD)
+        .outputRange(-0.25, 0.25);
 
     SparkUtil.tryUntilOk(
         vortexLeft,

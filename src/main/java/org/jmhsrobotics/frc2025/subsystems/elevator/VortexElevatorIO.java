@@ -36,35 +36,28 @@ public class VortexElevatorIO implements ElevatorIO {
     vortexLeftConfig = new SparkFlexConfig();
     vortexLeftConfig
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(60)
+        .smartCurrentLimit(40)
         .voltageCompensation(12)
         .inverted(true)
         .encoder
         .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
-    vortexLeftConfig
-        .closedLoop
-        .pid(
-            Constants.ElevatorConstants.kP,
-            Constants.ElevatorConstants.kI,
-            Constants.ElevatorConstants.kD)
-        .outputRange(-0.25, 0.25);
+    vortexLeftConfig.closedLoop.pid(
+        Constants.ElevatorConstants.kP,
+        Constants.ElevatorConstants.kI,
+        Constants.ElevatorConstants.kD);
 
     vortexRightConfig = new SparkFlexConfig();
     vortexRightConfig
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(60)
+        .smartCurrentLimit(40)
         .voltageCompensation(12)
-        .inverted(false)
-        .follow(vortexLeft)
+        .follow(vortexLeft, true)
         .encoder
         .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
-    vortexRightConfig
-        .closedLoop
-        .pid(
-            Constants.ElevatorConstants.kP,
-            Constants.ElevatorConstants.kI,
-            Constants.ElevatorConstants.kD)
-        .outputRange(-0.25, 0.25);
+    vortexRightConfig.closedLoop.pid(
+        Constants.ElevatorConstants.kP,
+        Constants.ElevatorConstants.kI,
+        Constants.ElevatorConstants.kD);
 
     SparkUtil.tryUntilOk(
         vortexLeft,
@@ -90,6 +83,10 @@ public class VortexElevatorIO implements ElevatorIO {
     SparkUtil.ifOk(
         vortexRight, vortexRight::getOutputCurrent, (value) -> inputs.motorAmps[1] = value);
 
+    inputs.motorVolts = new double[2];
+    SparkUtil.ifOk(vortexLeft, vortexLeft::getBusVoltage, (value) -> inputs.motorVolts[0] = value);
+    SparkUtil.ifOk(
+        vortexRight, vortexRight::getBusVoltage, (value) -> inputs.motorVolts[1] = value);
     // TODO
     SparkUtil.ifOk(vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value);
 
@@ -113,7 +110,6 @@ public class VortexElevatorIO implements ElevatorIO {
     isOpenLoop = true;
     this.controlVoltage = voltage;
     this.vortexLeft.setVoltage(voltage);
-    this.vortexRight.setVoltage(voltage);
   }
 
   public void setZero() {

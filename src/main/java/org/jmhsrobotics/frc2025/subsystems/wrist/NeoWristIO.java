@@ -24,14 +24,14 @@ public class NeoWristIO implements WristIO {
   private SparkClosedLoopController pidController;
   // P:0.02
 
-  private double setPointDegrees = Constants.WristConstants.kRotationIntakeCoralDegrees;
+  private double setPointDegrees = Constants.WristConstants.kSafeAngleDegrees;
 
   public NeoWristIO() {
     encoderConfig.positionConversionFactor(360);
 
     motorConfig
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(40)
+        .smartCurrentLimit(30)
         .voltageCompensation(12)
         .inverted(false)
         .signals

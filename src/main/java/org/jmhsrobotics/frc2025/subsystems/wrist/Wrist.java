@@ -7,7 +7,7 @@ import org.littletonrobotics.junction.Logger;
 public class Wrist extends SubsystemBase {
   private WristIO wristIO;
   private WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
-  private double setPointDegrees = Constants.WristConstants.kRotationIntakeCoralDegrees;
+  private double setPointDegrees = Constants.WristConstants.kSafeAngleDegrees;
 
   public Wrist(WristIO wristIO) {
     this.wristIO = wristIO;

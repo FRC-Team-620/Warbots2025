@@ -1,6 +1,7 @@
 package org.jmhsrobotics.frc2025.controlBoard;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.function.DoubleSupplier;
 
 public interface ControlBoard {
 
@@ -17,9 +18,9 @@ public interface ControlBoard {
 
   // =======Operator Controls=======
 
-  public Trigger intakeCoral();
+  public DoubleSupplier intakeCoral();
 
-  public Trigger extakeCoral();
+  public DoubleSupplier extakeCoral();
 
   public Trigger placeCoralLevel1();
 

@@ -80,24 +80,24 @@ public final class Constants {
 
     // TODO: When absolute encoder conversion is fixed, remove  / 360, recalibrate PID and change
     // tolerance to 1 degree;
-    public static final double kRotationIntakeCoralDegrees = 20.0 / 360.0;
+    public static final double kRotationIntakeCoralDegrees = 20;
 
-    public static final double kLevel1Degrees = 30.0 / 360.0;
-    public static final double kLevel2Degrees = 44.0 / 360.0;
-    public static final double kLevel3Degrees = 44.0 / 360.0;
-    public static final double kLevel4Degrees = 95.0 / 360.0;
+    public static final double kLevel1Degrees = 30.0;
+    public static final double kLevel2Degrees = 44.0;
+    public static final double kLevel3Degrees = 44.0;
+    public static final double kLevel4Degrees = 95.0;
 
-    public static final double kRotationAlgaeDegrees = 200.0 / 360.0;
-    public static final double kRotationProcesserDegrees = 190.0 / 360.0;
-    public static final double kRotationBargeDegrees = 90.0 / 360.0;
-    public static final double kRotationQTipDegrees = 195.0 / 360.0;
+    public static final double kRotationAlgaeDegrees = 200;
+    public static final double kRotationProcesserDegrees = 190;
+    public static final double kRotationBargeDegrees = 90;
+    public static final double kRotationQTipDegrees = 195;
 
-    public static final double kP = 0.6;
+    public static final double kP = 0.02;
     public static final double kI = 0.00;
     public static final double kD = 0.00;
-    public static final double kAngleTolerance = 0.01;
+    public static final double kAngleTolerance = 2;
 
-    public static final double kSafeAngleDegrees = 40.0 / 360.0;
+    public static final double kSafeAngleDegrees = 40;
   }
 
   public static class IntakeConstants {

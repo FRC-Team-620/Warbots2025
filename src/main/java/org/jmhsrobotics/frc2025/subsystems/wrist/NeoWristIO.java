@@ -27,6 +27,8 @@ public class NeoWristIO implements WristIO {
   private double setPointDegrees = Constants.WristConstants.kRotationIntakeCoralDegrees;
 
   public NeoWristIO() {
+    encoderConfig.positionConversionFactor(360);
+
     motorConfig
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(40)
@@ -45,8 +47,8 @@ public class NeoWristIO implements WristIO {
         .pid(Constants.WristConstants.kP, Constants.WristConstants.kI, Constants.WristConstants.kD)
         .outputRange(-0.25, 0.25)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+    motorConfig.absoluteEncoder.apply(encoderConfig);
 
-    encoderConfig.positionConversionFactor(360);
     SparkUtil.tryUntilOk(
         motor,
         5,

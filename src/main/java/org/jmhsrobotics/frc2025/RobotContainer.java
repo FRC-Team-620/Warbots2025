@@ -389,7 +389,9 @@ public class RobotContainer {
         new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoralDegrees));
     SmartDashboard.putData(
         "WristScoreLevel4", new WristMoveTo(wrist, Constants.WristConstants.kLevel4Degrees));
-    SmartDashboard.putData("ElevatorUpSafe", new ElevatorMoveTo(elevator, 0.2));
+    SmartDashboard.putData(
+        "WristScoreLevel2", new WristMoveTo(wrist, Constants.WristConstants.kLevel2Degrees));
+    SmartDashboard.putData("ElevatorUpSafe", new ElevatorMoveTo(elevator, 0.5));
     SmartDashboard.putData("ElevatorDownSafe", new ElevatorMoveTo(elevator, 0));
   }
 

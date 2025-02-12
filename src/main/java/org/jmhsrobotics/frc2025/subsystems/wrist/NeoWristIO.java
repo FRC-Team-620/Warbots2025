@@ -1,7 +1,6 @@
 package org.jmhsrobotics.frc2025.subsystems.wrist;
 
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -17,8 +16,7 @@ import org.jmhsrobotics.frc2025.util.SparkUtil;
 
 public class NeoWristIO implements WristIO {
   private SparkMax motor = new SparkMax(Constants.CAN.kWristMotorID, MotorType.kBrushless);
-  private AbsoluteEncoder encoder;
-  private RelativeEncoder relativeEncoder;
+  private AbsoluteEncoder encoder = motor.getAbsoluteEncoder();
 
   private SparkMaxConfig motorConfig = new SparkMaxConfig();
   private AbsoluteEncoderConfig encoderConfig = new AbsoluteEncoderConfig();
@@ -26,7 +24,7 @@ public class NeoWristIO implements WristIO {
   private SparkClosedLoopController pidController;
   // P:0.02
 
-  private double setPointDegrees;
+  private double setPointDegrees = Constants.WristConstants.kRotationIntakeCoralDegrees;
 
   public NeoWristIO() {
     motorConfig
@@ -49,8 +47,6 @@ public class NeoWristIO implements WristIO {
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
     encoderConfig.positionConversionFactor(360);
-    encoder = motor.getAbsoluteEncoder();
-
     SparkUtil.tryUntilOk(
         motor,
         5,
@@ -70,8 +66,6 @@ public class NeoWristIO implements WristIO {
     SparkUtil.ifOk(motor, encoder::getVelocity, (value) -> inputs.motorRPM = value);
 
     pidController.setReference(setPointDegrees, ControlType.kPosition);
-
-    inputs.relativePositionDegrees = motor.getEncoder().getPosition();
   }
 
   @Override

@@ -384,10 +384,13 @@ public class RobotContainer {
         "ResetIndexerPosition",
         new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
     SmartDashboard.putData("ElevatorZeroCommand", new ElevatorSetZero(elevator));
-    SmartDashboard.putData("WristToZeroCommand", new WristMoveTo(wrist, 0));
-    SmartDashboard.putData("WristToTwentyCommand", new WristMoveTo(wrist, 20));
+    SmartDashboard.putData(
+        "WristCoralIntake",
+        new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoralDegrees));
+    SmartDashboard.putData(
+        "WristScoreLevel4", new WristMoveTo(wrist, Constants.WristConstants.kLevel4Degrees));
     SmartDashboard.putData("ElevatorUpSafe", new ElevatorMoveTo(elevator, 0.2));
-    SmartDashboard.putData("ClimberDownSafe", new ElevatorMoveTo(elevator, 0));
+    SmartDashboard.putData("ElevatorDownSafe", new ElevatorMoveTo(elevator, 0));
   }
 
   /**

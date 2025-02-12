@@ -7,7 +7,7 @@ import org.littletonrobotics.junction.Logger;
 public class Wrist extends SubsystemBase {
   private WristIO wristIO;
   private WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
-  private double setPointDegrees;
+  private double setPointDegrees = Constants.WristConstants.kRotationIntakeCoralDegrees;
 
   public Wrist(WristIO wristIO) {
     this.wristIO = wristIO;
@@ -19,7 +19,6 @@ public class Wrist extends SubsystemBase {
     Logger.recordOutput("Wrist/AngleDegrees", inputs.positionDegrees);
     Logger.recordOutput("Wrist/OutputCurrent", inputs.motorAmps);
     Logger.recordOutput("Wrist/GoalAngle", setPointDegrees);
-    Logger.recordOutput("Wrist/RelativeEncoderPosition", inputs.relativePositionDegrees);
   }
 
   public boolean atGoal() {

@@ -34,11 +34,6 @@ public class Elevator extends SubsystemBase {
     Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
   }
 
-  public boolean atGoal() {
-    return Math.abs(inputs.heightMeters - setPointMeters)
-        < Constants.ElevatorConstants.kHeightTolerance;
-  }
-
   public void setSetpoint(double setPoint) {
     this.setPointMeters = setPoint;
     elevatorIO.setPositionMeters(setPoint);
@@ -62,6 +57,9 @@ public class Elevator extends SubsystemBase {
       totalAmps += inputs.motorAmps[i];
     }
     return totalAmps;
+  }
+  public double getSetpoint(){
+    return this.setPointMeters;
   }
 
   public void setZero() {

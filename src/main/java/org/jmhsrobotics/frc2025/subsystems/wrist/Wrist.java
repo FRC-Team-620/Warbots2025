@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2025.subsystems.wrist;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2025.Constants;
+import wristio
 
 public class Wrist extends SubsystemBase {
   private WristIO wristIO;
@@ -17,17 +18,15 @@ public class Wrist extends SubsystemBase {
     wristIO.updateInputs(inputs);
   }
 
-  public boolean atGoal() {
-    return Math.abs(setPointDegrees - inputs.positionDegrees)
-        < Constants.WristConstants.kAngleTolerance;
-  }
-
   public double getPositionDegrees() {
     return inputs.positionDegrees;
   }
 
   public boolean checkWristSafe() {
     return this.getPositionDegrees() > 20;
+  }
+  public double getSetpoint(){
+    return setPointDegrees;
   }
 
   public void setSetpoint(double setPoint) {

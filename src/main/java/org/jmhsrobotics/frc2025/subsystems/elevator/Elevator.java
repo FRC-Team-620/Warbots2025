@@ -69,4 +69,8 @@ public class Elevator extends SubsystemBase {
   public void setZero() {
     elevatorIO.setZero();
   }
+
+  public void setBrakeMode(boolean enable) {
+    elevatorIO.setBrakeMode(enable);
+  }
 }

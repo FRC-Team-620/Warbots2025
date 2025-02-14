@@ -12,4 +12,6 @@ public interface IntakeIO {
   public default void updateInputs(IntakeIOInputs inputs) {}
 
   public default void set(double speedDutyCycle) {}
+
+  public default void setBrakeMode(boolean enable) {}
 }

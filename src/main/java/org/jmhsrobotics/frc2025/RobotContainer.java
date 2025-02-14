@@ -33,6 +33,7 @@ import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
+import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
@@ -51,10 +52,10 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
-import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.intake.IntakeIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.NeoIntakeIO;
+import org.jmhsrobotics.frc2025.subsystems.intake.SimTimeOfFlightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.TimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.led.RainbowLEDCommand;
@@ -117,7 +118,7 @@ public class RobotContainer {
 
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
-        intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
+        intake = new Intake(new NeoIntakeIO(), new SimTimeOfFlightIO());
         climber = new Climber(new NeoClimberIO());
 
         System.out.println("Mode: REAL");
@@ -141,7 +142,7 @@ public class RobotContainer {
                     VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
         elevator = new Elevator(new SimElevatorIO());
         wrist = new Wrist(new SimWristIO());
-        intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
+        intake = new Intake(new IntakeIO() {}, new SimTimeOfFlightIO() {});
         climber = new Climber(new SimClimberIO());
 
         System.out.println("Mode: SIM");
@@ -370,6 +371,18 @@ public class RobotContainer {
     SmartDashboard.putData("toogleBrakeMode", getToggleBrakeCommand());
     new Trigger(RobotController::getUserButton)
         .onTrue(getToggleBrakeCommand()); // TODO: disable when in a match?
+
+    SmartDashboard.putData("cmd/Scheduler", CommandScheduler.getInstance());
+    SmartDashboard.putData(
+        "cmd/SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
+    SmartDashboard.putData(
+        "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
+    SmartDashboard.putData("cmd/MoveClimberUp", new ClimberMove(climber, -1));
+    SmartDashboard.putData("cmd/MoveClimberDown", new ClimberMove(climber, 1));
+    SmartDashboard.putData(
+        "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
+    SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
+    SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
   }
 
   public Command getToggleBrakeCommand() {

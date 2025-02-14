@@ -17,6 +17,7 @@ import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Threads;
@@ -133,6 +134,18 @@ public class Robot extends LoggedRobot {
         new Pose3d(
             new Translation3d(-.075, 0.267, 0.165),
             new Rotation3d(Units.degreesToRadians(climberDegrees), 0, 0)));
+    var robotpos = new Pose3d(robotContainer.drive.getPose());
+    Logger.recordOutput(
+        "camtest",
+        robotpos.plus(
+            new Transform3d(
+                0.16,
+                -0.29198,
+                0.192,
+                new Rotation3d(
+                    Units.degreesToRadians(0),
+                    Units.degreesToRadians(-10),
+                    Units.degreesToRadians(35)))));
   }
 
   /** This function is called once when the robot is disabled. */

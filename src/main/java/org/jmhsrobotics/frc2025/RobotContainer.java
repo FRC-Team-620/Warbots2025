@@ -28,10 +28,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
-import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
-import org.jmhsrobotics.frc2025.commands.WristMoveTo;
+import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
@@ -51,10 +50,10 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
-import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.intake.IntakeIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.NeoIntakeIO;
+import org.jmhsrobotics.frc2025.subsystems.intake.SimTimeOfFlightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.TimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.led.RainbowLEDCommand;
@@ -116,8 +115,8 @@ public class RobotContainer {
 
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
-        intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
         climber = new Climber(new NeoClimberIO(), new NeoIndexerIO());
+        intake = new Intake(new NeoIntakeIO(), new SimTimeOfFlightIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -140,8 +139,8 @@ public class RobotContainer {
                     VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
         elevator = new Elevator(new SimElevatorIO());
         wrist = new Wrist(new SimWristIO());
-        intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
         climber = new Climber(new SimClimberIO(), new SimIndexerIO());
+        intake = new Intake(new IntakeIO() {}, new SimTimeOfFlightIO() {});
 
         System.out.println("Mode: SIM");
         break;
@@ -361,59 +360,15 @@ public class RobotContainer {
   }
 
   private void setupSmartDashbaord() {
-    SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
-    SmartDashboard.putData("SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
-    SmartDashboard.putData("SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
+    SmartDashboard.putData("cmd/Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData(
-        "MoveClimberUp",
-        new ClimberAndIndexerMove(climber, -1, Constants.IndexerConstants.kRotationUpDegrees));
+        "cmd/SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
     SmartDashboard.putData(
-        "MoveClimberDown",
-        new ClimberAndIndexerMove(climber, 1, Constants.IndexerConstants.kRotationUpDegrees));
+        "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
     SmartDashboard.putData(
-        "ResetIndexerPosition",
-        new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
-    SmartDashboard.putData("ElevatorZeroCommand", new ElevatorSetZero(elevator));
-    SmartDashboard.putData(
-        "WristCoralIntake",
-        new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoralDegrees));
-    SmartDashboard.putData(
-        "WristScoreLevel4", new WristMoveTo(wrist, Constants.WristConstants.kLevel4Degrees));
-    SmartDashboard.putData(
-        "WristScoreLevel2", new WristMoveTo(wrist, Constants.WristConstants.kLevel2Degrees));
-    SmartDashboard.putData(
-        "WristAlgaeIntake", new WristMoveTo(wrist, Constants.WristConstants.kRotationAlgaeDegrees));
-    SmartDashboard.putData("ElevatorUpSafe", new ElevatorMoveTo(elevator, 1));
-    SmartDashboard.putData("ElevatorDownSafe", new ElevatorMoveTo(elevator, 0));
-    SmartDashboard.putData("ElevatorMidSafe", new ElevatorMoveTo(elevator, 0.2));
-    SmartDashboard.putData(
-        "WristAndElevatorScoreL1",
-        new ElevatorAndWristMove(
-            elevator,
-            wrist,
-            Constants.ElevatorConstants.kLevel2Meters,
-            Constants.WristConstants.kLevel2Degrees));
-    SmartDashboard.putData(
-        "WristAndElevatorScoreL4",
-        new ElevatorAndWristMove(
-            elevator,
-            wrist,
-            Constants.ElevatorConstants.kLevel4Meters,
-            Constants.WristConstants.kLevel4Degrees));
-    SmartDashboard.putData(
-        "WristAndElevatorTakeAlgaeL3",
-        new ElevatorAndWristMove(
-            elevator,
-            wrist,
-            Constants.ElevatorConstants.kAlgaeIntakeL3Meters,
-            Constants.WristConstants.kRotationAlgaeDegrees));
-    SmartDashboard.putData(
-        "WristAndElevatorScoreProcesser",
-        new ElevatorAndWristMove(
-            elevator,
-            wrist,
-            Constants.ElevatorConstants.kProcesserMeters,
-            Constants.WristConstants.kRotationProcesserDegrees));
+        "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
+    SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
+    SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
   }
 
   /**

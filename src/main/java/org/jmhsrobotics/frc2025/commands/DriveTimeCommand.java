@@ -1,51 +1,46 @@
 package org.jmhsrobotics.frc2025.commands;
 
-import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
-
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 
-public class DriveTimeCommand extends Command{
-    private Drive drive;
+public class DriveTimeCommand extends Command {
+  private Drive drive;
 
-    private double driveSeconds;
-    private ChassisSpeeds speeds; 
+  private double driveSeconds;
+  private ChassisSpeeds speeds;
 
-	private Timer timer = new Timer();
+  private Timer timer = new Timer();
 
-	public DriveTimeCommand(double seconds, double speed, Drive subsystem) {
+  public DriveTimeCommand(double seconds, double speed, Drive subsystem) {
 
-		driveSeconds = seconds;
-		speeds = new ChassisSpeeds(speed, 0, 0);
+    driveSeconds = seconds;
+    speeds = new ChassisSpeeds(speed, 0, 0);
 
-		drive = subsystem;
-		addRequirements(subsystem);
+    drive = subsystem;
+    addRequirements(subsystem);
+  }
 
-	}
+  public void initialize() {
 
-	public void initialize() {
+    timer.start();
+    timer.reset();
+  }
 
-		timer.start();
-		timer.reset();
+  @Override
+  public void execute() {
 
-	}
+    this.drive.runVelocity(speeds);
+  }
 
-	@Override
-	public void execute() {
+  @Override
+  public boolean isFinished() {
 
-		this.drive.runVelocity(speeds);
+    return timer.get() >= driveSeconds;
+  }
 
-	}
-
-	@Override
-	public boolean isFinished() {
-
-		return timer.get() >= driveSeconds;
-
-	}
-
-	public void end() {
-		this.drive.stop();
-	}
+  public void end() {
+    this.drive.stop();
+  }
 }

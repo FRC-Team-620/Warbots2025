@@ -112,6 +112,11 @@ public final class Constants {
     public static final double kP = 0.1;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
+    public static final double kAngleTolerance = 1;
+  }
+
+  public static final class ClimberConstants {
+    public static final double kMaxDegrees = 20; // NEED TO FIND ACTUAL DEGREES
   }
 
   public static class ModeConstants {

@@ -1,0 +1,33 @@
+package org.jmhsrobotics.frc2025.commands;
+
+import edu.wpi.first.wpilibj2.command.Command;
+
+import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
+
+public class ClimberMove extends Command {
+  private Climber climber;
+  private double climberSpeedDutyCycle;
+
+  public ClimberMove(Climber climber, double climberSpeedDutyCycle) {
+    this.climber = climber;
+    this.climberSpeedDutyCycle = climberSpeedDutyCycle;
+
+    addRequirements(climber);
+  }
+
+  @Override
+  public void execute() {
+    this.climber.setClimberSpeed(this.climberSpeedDutyCycle);
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    this.climber.setClimberSpeed(0);
+  }
+
+  @Override
+  public boolean isFinished() {
+    // TODO Auto-generated method stub
+    return this.climber.climberAtMax();
+  }
+}

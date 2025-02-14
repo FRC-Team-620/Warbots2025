@@ -12,7 +12,7 @@ public class SimClimberIO implements ClimberIO {
 
   SingleJointedArmSim climberSim =
       new SingleJointedArmSim(
-          DCMotor.getNEO(1), 100, .07318977, 0.27, -.8, 0, false, 0, new double[0]);
+          DCMotor.getNEO(1), 27, .07318977, 0.27, -.8, 0, false, 0, new double[0]);
 
   public SimClimberIO() {}
 

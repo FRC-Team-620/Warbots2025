@@ -13,23 +13,12 @@
 
 package org.jmhsrobotics.frc2025;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.reduxrobotics.canand.CanandEventLoop;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
+import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
+import org.jmhsrobotics.frc2025.commands.IndexerMove;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
@@ -68,6 +57,20 @@ import org.jmhsrobotics.frc2025.subsystems.wrist.SimWristIO;
 import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 import org.jmhsrobotics.frc2025.subsystems.wrist.WristIO;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.reduxrobotics.canand.CanandEventLoop;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -330,19 +333,14 @@ public class RobotContainer {
     intake.setDefaultCommand(new IntakeMove(intake, control.intakeCoral(), control.extakeCoral()));
 
     control
-        .climbUp()
-        .whileTrue(
-            new ClimberAndIndexerMove(climber, -1, Constants.IndexerConstants.kRotationUpDegrees));
-
-    control
         .climbDown()
         .whileTrue(
-            new ClimberAndIndexerMove(climber, 1, Constants.IndexerConstants.kRotationUpDegrees));
+            new ClimberMove(climber, 0.5));
 
     control
         .resetIndexer()
         .onTrue(
-            new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
+            new IndexerMove(climber, Constants.IndexerConstants.kRotationUpDegrees));
 
     // control.indexerUp().onTrue(down);
     // control.indexerDown().onTrue(down);
@@ -364,15 +362,15 @@ public class RobotContainer {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
     SmartDashboard.putData("SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
-    SmartDashboard.putData(
-        "MoveClimberUp",
-        new ClimberAndIndexerMove(climber, -1, Constants.IndexerConstants.kRotationUpDegrees));
-    SmartDashboard.putData(
-        "MoveClimberDown",
-        new ClimberAndIndexerMove(climber, 1, Constants.IndexerConstants.kRotationUpDegrees));
-    SmartDashboard.putData(
-        "ResetIndexerPosition",
-        new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
+    // SmartDashboard.putData(
+    //     "MoveClimberUp",
+    //     new IndexerMove(climber, -1, Constants.IndexerConstants.kRotationUpDegrees));
+    // SmartDashboard.putData(
+    //     "MoveClimberDown",
+    //     new IndexerMove(climber, 1, Constants.IndexerConstants.kRotationUpDegrees));
+    // SmartDashboard.putData(
+    //     "ResetIndexerPosition",
+    //     new IndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
     SmartDashboard.putData("ElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData(
         "WristCoralIntake",

@@ -17,4 +17,6 @@ public interface WristIO {
   public default double getSetpoint() {
     return 0;
   }
+
+  public default void setBrakeMode(boolean enable) {}
 }

@@ -254,4 +254,22 @@ public class ModuleIORev implements ModuleIO {
             revConstants.turnPIDMaxInput);
     turnController.setReference(setpoint, ControlType.kPosition);
   }
+
+  @Override
+  public void setBrakeMode(boolean enable) {
+    var brakeConfig = new SparkMaxConfig();
+    brakeConfig.idleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+    SparkUtil.tryUntilOk(
+        driveSpark,
+        5,
+        () ->
+            driveSpark.configure(
+                brakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+    SparkUtil.tryUntilOk(
+        turnSpark,
+        5,
+        () ->
+            turnSpark.configure(
+                brakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+  }
 }

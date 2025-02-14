@@ -22,4 +22,8 @@ public class Climber extends SubsystemBase {
   public double getPositionDegrees() {
     return inputs.positionDegrees;
   }
+
+  public void setBrakeMode(boolean enable) {
+    climberIO.setBrakeMode(enable);
+  }
 }

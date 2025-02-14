@@ -18,6 +18,7 @@ import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
@@ -83,6 +85,7 @@ public class RobotContainer {
   private final LED led;
   private final Intake intake;
   public final Climber climber;
+  private boolean isBrakeMode = true;
 
   // Controller
 
@@ -364,6 +367,22 @@ public class RobotContainer {
     SmartDashboard.putData("MoveClimberDown", new ClimberMove(climber, 1));
     SmartDashboard.putData("SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
     SmartDashboard.putData("RunElevatorZeroCommand", new ElevatorSetZero(elevator));
+    SmartDashboard.putData("toogleBrakeMode", getToggleBrakeCommand());
+    new Trigger(RobotController::getUserButton)
+        .onTrue(getToggleBrakeCommand()); // TODO: disable when in a match?
+  }
+
+  public Command getToggleBrakeCommand() {
+    return Commands.runOnce(
+            () -> {
+              isBrakeMode = !isBrakeMode;
+              drive.setBrakeMode(isBrakeMode);
+              elevator.setBrakeMode(isBrakeMode);
+              wrist.setBrakeMode(isBrakeMode);
+              intake.setBrakeMode(isBrakeMode);
+              climber.setBrakeMode(isBrakeMode);
+            })
+        .ignoringDisable(true);
   }
 
   /**

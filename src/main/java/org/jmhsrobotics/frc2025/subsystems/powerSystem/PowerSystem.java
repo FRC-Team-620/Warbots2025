@@ -36,15 +36,13 @@ public class PowerSystem extends SubsystemBase {
                 Logger.recordOutput("mito/" + name + "/voltage", current);
               },
               () -> System.out.println("Couldn't get mito-volts: " + channel + " " + name));
-      powerhouse 
-          .setChannelEnabled(MitoCANdria.MITOCANDRIA_CHANNEL_5VA, true);
-          System.out.println("5VA channel enabled");
+      powerhouse.setChannelEnabled(MitoCANdria.MITOCANDRIA_CHANNEL_5VA, true);
+      System.out.println("5VA channel enabled");
       powerhouse
           .getChannelEnabled(MitoCANdria.MITOCANDRIA_CHANNEL_5VA)
           .ifPresentOrElse(
               enabled -> System.out.println("5VA channel enabled: " + (enabled == 1)),
-              () -> System.out.println("Couldn't check if 5VA channel is enabled")
-          );
+              () -> System.out.println("Couldn't check if 5VA channel is enabled"));
     } catch (Exception e) {
       System.out.println("Couldn't get mito: " + channel + " " + name);
     }

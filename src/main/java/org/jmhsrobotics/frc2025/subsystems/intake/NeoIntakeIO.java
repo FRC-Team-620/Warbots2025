@@ -23,7 +23,8 @@ public class NeoIntakeIO implements IntakeIO {
         .voltageCompensation(12)
         .inverted(false);
 
-    // attempts to burn configuration, throws an error if parameters are not persisting
+    // attempts to burn configuration, throws an error if parameters are not
+    // persisting
     SparkUtil.tryUntilOk(
         motor,
         5,
@@ -33,12 +34,26 @@ public class NeoIntakeIO implements IntakeIO {
     encoder = motor.getEncoder();
   }
 
+  @Override
   public void updateInputs(IntakeIOInputs inputs) {
     SparkUtil.ifOk(motor, motor::getOutputCurrent, (value) -> inputs.motorAmps = value);
     SparkUtil.ifOk(motor, encoder::getVelocity, (value) -> inputs.motorRPM = value);
   }
 
+  @Override
   public void set(double speedDutyCycle) {
     motor.set(speedDutyCycle);
+  }
+
+  @Override
+  public void setBrakeMode(boolean enable) {
+    var brakeConfig = new SparkMaxConfig();
+    brakeConfig.idleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+    SparkUtil.tryUntilOk(
+        motor,
+        5,
+        () ->
+            motor.configure(
+                brakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
   }
 }

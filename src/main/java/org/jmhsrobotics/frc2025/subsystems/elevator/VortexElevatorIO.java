@@ -116,4 +116,22 @@ public class VortexElevatorIO implements ElevatorIO {
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
   }
+
+  @Override
+  public void setBrakeMode(boolean enable) {
+    var brakeConfig = new SparkFlexConfig();
+    brakeConfig.idleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+    SparkUtil.tryUntilOk(
+        vortexLeft,
+        5,
+        () ->
+            vortexLeft.configure(
+                brakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+    SparkUtil.tryUntilOk(
+        vortexLeft,
+        5,
+        () ->
+            vortexLeft.configure(
+                brakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+  }
 }

@@ -66,4 +66,16 @@ public class NeoWristIO implements WristIO {
   public double getSetpoint() {
     return goalDegrees;
   }
+
+  @Override
+  public void setBrakeMode(boolean enable) {
+    var brakeConfig = new SparkMaxConfig();
+    brakeConfig.idleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+    SparkUtil.tryUntilOk(
+        motor,
+        5,
+        () ->
+            motor.configure(
+                brakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+  }
 }

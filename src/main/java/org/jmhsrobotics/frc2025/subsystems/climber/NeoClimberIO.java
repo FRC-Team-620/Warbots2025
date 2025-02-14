@@ -47,4 +47,16 @@ public class NeoClimberIO implements ClimberIO {
   public void set(double speedDutyCycle) {
     motor.set(speedDutyCycle);
   }
+
+  @Override
+  public void setBrakeMode(boolean enable) {
+    var brakeConfig = new SparkMaxConfig();
+    brakeConfig.idleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+    SparkUtil.tryUntilOk(
+        motor,
+        5,
+        () ->
+            motor.configure(
+                brakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+  }
 }

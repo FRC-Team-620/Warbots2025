@@ -327,4 +327,11 @@ public class Drive extends SubsystemBase {
   public double getMaxAngularSpeedRadPerSec() {
     return DriveConstants.maxSpeedMetersPerSec / DriveConstants.thriftyConstants.driveBaseRadius;
   }
+
+  /** Sets all Motor Controllers to brake or coast mode */
+  public void setBrakeMode(boolean enable) {
+    for (var module : modules) {
+      module.setBrakeMode(enable);
+    }
+  }
 }

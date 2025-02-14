@@ -129,4 +129,9 @@ public class ModuleThrifty {
   public double getFFCharacterizationVelocity() {
     return inputs.driveVelocityRadPerSec;
   }
+
+  /** Sets all Motor Controllers on the module to brake or coast mode */
+  public void setBrakeMode(boolean enable) {
+    io.setBrakeMode(enable);
+  }
 }

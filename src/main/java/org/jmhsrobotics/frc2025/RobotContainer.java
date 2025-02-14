@@ -31,6 +31,7 @@ import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
+import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
@@ -357,13 +358,17 @@ public class RobotContainer {
   }
 
   private void setupSmartDashbaord() {
-    SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
-    SmartDashboard.putData("SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
-    SmartDashboard.putData("SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
-    SmartDashboard.putData("MoveClimberUp", new ClimberMove(climber, -1));
-    SmartDashboard.putData("MoveClimberDown", new ClimberMove(climber, 1));
-    SmartDashboard.putData("SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
-    SmartDashboard.putData("RunElevatorZeroCommand", new ElevatorSetZero(elevator));
+    SmartDashboard.putData("cmd/Scheduler", CommandScheduler.getInstance());
+    SmartDashboard.putData(
+        "cmd/SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
+    SmartDashboard.putData(
+        "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
+    SmartDashboard.putData("cmd/MoveClimberUp", new ClimberMove(climber, -1));
+    SmartDashboard.putData("cmd/MoveClimberDown", new ClimberMove(climber, 1));
+    SmartDashboard.putData(
+        "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
+    SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
+    SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
   }
 
   /**

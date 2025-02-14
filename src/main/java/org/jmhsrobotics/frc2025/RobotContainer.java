@@ -362,12 +362,6 @@ public class RobotContainer {
 
   private void setupSmartDashbaord() {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
-    SmartDashboard.putData("SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
-    SmartDashboard.putData("SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
-    SmartDashboard.putData("MoveClimberUp", new ClimberMove(climber, -1));
-    SmartDashboard.putData("MoveClimberDown", new ClimberMove(climber, 1));
-    SmartDashboard.putData("SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
-    SmartDashboard.putData("RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("toogleBrakeMode", getToggleBrakeCommand());
     new Trigger(RobotController::getUserButton)
         .onTrue(getToggleBrakeCommand()); // TODO: disable when in a match?

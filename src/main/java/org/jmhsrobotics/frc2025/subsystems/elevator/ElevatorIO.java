@@ -7,7 +7,6 @@ public interface ElevatorIO {
   public static class ElevatorIOInputs {
     // index[0] for arrays is the left motor
     public double[] motorAmps;
-    public double[] motorVolts;
     public double velocityMPS;
     public double heightMeters;
     public boolean isOpenLoop = true;

@@ -83,11 +83,7 @@ public class VortexElevatorIO implements ElevatorIO {
     SparkUtil.ifOk(
         vortexRight, vortexRight::getOutputCurrent, (value) -> inputs.motorAmps[1] = value);
 
-    inputs.motorVolts = new double[2];
-    SparkUtil.ifOk(vortexLeft, vortexLeft::getBusVoltage, (value) -> inputs.motorVolts[0] = value);
-    SparkUtil.ifOk(
-        vortexRight, vortexRight::getBusVoltage, (value) -> inputs.motorVolts[1] = value);
-    // TODO
+    // inputs.motorVolts = new double[2];
     SparkUtil.ifOk(vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value);
 
     inputs.isOpenLoop = this.isOpenLoop;

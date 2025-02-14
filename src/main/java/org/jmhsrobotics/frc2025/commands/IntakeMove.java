@@ -22,8 +22,8 @@ public class IntakeMove extends Command {
   public void execute() {
     double rightTrigger = rightTriggerAxis.getAsDouble();
     double leftTrigger = leftTriggerAxis.getAsDouble();
-    if (rightTrigger >= leftTrigger) this.intake.set(-(Math.pow(rightTrigger, 3)));
-    else this.intake.set(Math.pow(leftTrigger, 3));
+    if (rightTrigger >= leftTrigger) this.intake.set(-(Math.pow(rightTrigger, 4)));
+    else this.intake.set(Math.pow(leftTrigger, 4));
   }
 
   @Override

@@ -7,11 +7,6 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 
 public class ElevatorAndWristMove extends SequentialCommandGroup {
-  // private Elevator elevator;
-  private Wrist wrist;
-
-  // private double elevatorGoalMeters;
-  // private double wristGoalDegrees;
 
   public ElevatorAndWristMove(
       Elevator elevator, Wrist wrist, double elevatorGoalMeters, double wristGoalDegrees) {
@@ -19,6 +14,6 @@ public class ElevatorAndWristMove extends SequentialCommandGroup {
         new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees)
             .onlyIf(() -> wrist.getPositionDegrees() <= Constants.WristConstants.kSafeAngleDegrees),
         new ElevatorMoveTo(elevator, elevatorGoalMeters),
-        new WristMoveTo(wrist, wristGoalDegrees));
+        new WristMoveTo(wrist, wristGoalDegrees).withTimeout(3));
   }
 }

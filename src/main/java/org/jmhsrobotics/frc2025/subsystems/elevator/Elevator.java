@@ -34,7 +34,6 @@ public class Elevator extends SubsystemBase {
     Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
     Logger.recordOutput("Elevator/Height", inputs.heightMeters);
     Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
-    Logger.recordOutput("Elevator/OutputVoltage", this.getVoltage());
   }
 
   public boolean atGoal() {
@@ -65,14 +64,6 @@ public class Elevator extends SubsystemBase {
       totalAmps += inputs.motorAmps[i];
     }
     return totalAmps;
-  }
-
-  public double getVoltage() {
-    double totalVolts = 0;
-    for (int i = 0; i < inputs.motorVolts.length; i++) {
-      totalVolts += inputs.motorVolts[i];
-    }
-    return totalVolts;
   }
 
   public void setZero() {

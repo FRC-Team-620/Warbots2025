@@ -60,10 +60,10 @@ public final class Constants {
     public static final double kLevel1Meters = 0.0;
     public static final double kLevel2Meters = 0.35;
     public static final double kLevel3Meters = 0.75;
-    public static final double kLevel4Meters = 1.6;
+    public static final double kLevel4Meters = 1.7;
 
     public static final double kProcesserMeters = .15;
-    public static final double kBargeMeters = 1.8;
+    public static final double kBargeMeters = 1.75;
 
     public static final double kAlgaeQTipMeters = 0.125;
     public static final double kCoralIntakeMeters = 0;
@@ -95,7 +95,7 @@ public final class Constants {
     public static final double kP = 0.005;
     public static final double kI = 0.00;
     public static final double kD = 0.00;
-    public static final double kAngleTolerance = 2;
+    public static final double kAngleTolerance = 4;
 
     public static final double kSafeAngleDegrees = 40;
   }

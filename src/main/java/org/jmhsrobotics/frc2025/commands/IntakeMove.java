@@ -12,6 +12,9 @@ public class IntakeMove extends Command {
   private DoubleSupplier leftTriggerAxis;
   private DoubleSupplier rightTriggerAxis;
 
+  // helps determine which way the intake should move
+  private boolean isInAlgaeMode;
+
   public IntakeMove(
       Intake intake, Wrist wrist, DoubleSupplier leftTriggerAxis, DoubleSupplier rightTriggerAxis) {
     this.intake = intake;
@@ -24,16 +27,30 @@ public class IntakeMove extends Command {
 
   @Override
   public void execute() {
+    if (wrist.getSetpoint() == Constants.WristConstants.kRotationAlgaeDegrees
+        || wrist.getSetpoint() == Constants.WristConstants.kRotationBargeDegrees
+        || wrist.getSetpoint() == Constants.WristConstants.kRotationProcesserDegrees) {
+      isInAlgaeMode = true;
+    }
+
     double rightTrigger = rightTriggerAxis.getAsDouble();
     double leftTrigger = leftTriggerAxis.getAsDouble();
-    if (rightTrigger >= leftTrigger)
-      this.intake.set(rightTrigger * Constants.IntakeConstants.kMaxReverseSpeedDutyCycle);
-    else this.intake.set(leftTrigger * Constants.IntakeConstants.kMaxSpeedDutyCycle);
+
+    // chooses which trigger to use based on which input is greater
+    // Makes it so the intake moves a different direction based on the angle of the wrist so that
+    // the right trigger is always intake
+    if (rightTrigger >= leftTrigger) {
+      if (isInAlgaeMode)
+        this.intake.set(rightTrigger * Constants.IntakeConstants.kMaxReverseSpeedDutyCycle);
+      else this.intake.set(rightTrigger * Constants.IntakeConstants.kMaxSpeedDutyCycle);
+    } else {
+      if (isInAlgaeMode)
+        this.intake.set(leftTrigger * Constants.IntakeConstants.kMaxSpeedDutyCycle);
+      else this.intake.set(leftTrigger * Constants.IntakeConstants.kMaxReverseSpeedDutyCycle);
+    }
 
     if (rightTrigger + leftTrigger == 0) {
-      if (wrist.getSetpoint() == Constants.WristConstants.kRotationAlgaeDegrees
-          || wrist.getSetpoint() == Constants.WristConstants.kRotationBargeDegrees
-          || wrist.getSetpoint() == Constants.WristConstants.kRotationProcesserDegrees) {
+      if (isInAlgaeMode) {
         algaeDefaultCommand();
       } else if (wrist.getSetpoint() == Constants.WristConstants.kSafeAngleDegrees) {
       } else {

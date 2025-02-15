@@ -32,10 +32,12 @@ public class Elevator extends SubsystemBase {
     carriage.setLength(inputs.heightMeters / 2);
 
     Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
+    Logger.recordOutput("Elevator/Height", inputs.heightMeters);
+    Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
   }
 
   public boolean atGoal() {
-    return Math.abs(inputs.heightMeters - setPointMeters)
+    return Math.abs(inputs.heightMeters - this.setPointMeters)
         < Constants.ElevatorConstants.kHeightTolerance;
   }
 
@@ -66,5 +68,9 @@ public class Elevator extends SubsystemBase {
 
   public void setZero() {
     elevatorIO.setZero();
+  }
+
+  public void setBrakeMode(boolean enable) {
+    elevatorIO.setBrakeMode(enable);
   }
 }

@@ -5,6 +5,7 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.function.DoubleSupplier;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 
@@ -65,9 +66,10 @@ public class AltControlMode implements ControlBoard {
     Vector<N2> translationVector = VecBuilder.fill(driveX, driveY);
     translationVector = translationVector.unit();
 
-    // multiply the normalized translation by the amount that the right trigger is pressed
+    // multiply the normalized translation by the amount that the right trigger is
+    // pressed
     // if(isX){
-    //     return translationVector.get(0) * driver.getRightTriggerAxis();
+    // return translationVector.get(0) * driver.getRightTriggerAxis();
     // }
     return translationVector.get(isX ? 0 : 1) * driver.getRightTriggerAxis();
   }
@@ -84,70 +86,72 @@ public class AltControlMode implements ControlBoard {
   }
 
   // =======Operator Controls=======
-
-  public Trigger intakeCoral() {
-    return driver.leftTrigger();
+  @Override
+  public DoubleSupplier intakeCoral() {
+    // return driver.leftTrigger();
+    return () -> driver.getLeftTriggerAxis();
   }
 
-  public Trigger extakeCoral() {
-    return driver.rightTrigger();
+  @Override
+  public DoubleSupplier extakeCoral() {
+    return () -> driver.getRightTriggerAxis();
   }
 
   public Trigger placeCoralLevel1() {
-    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+    // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
 
     return driver.a().and(coralMode);
   }
 
   public Trigger placeCoralLevel2() {
-    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+    // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
 
     return driver.b().and(coralMode);
   }
 
   public Trigger placeCoralLevel3() {
-    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+    // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
 
     return driver.x().and(coralMode);
   }
 
   public Trigger placeCoralLevel4() {
-    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
+    // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
     return driver.y().and(coralMode);
   }
 
   public Trigger scoreAlgaeProcesser() {
-    //  if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
+    // if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
 
     return (driver.a().or(driver.b())).and(algaeMode);
   }
 
   public Trigger scoreAlgaeBarge() {
-    //  if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
+    // if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
 
     return (driver.y().or(driver.x())).and(algaeMode);
   }
 
   public Trigger elevatorIntakeCoral() {
-    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+    // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
 
     return driver.a().and(searchMode);
   }
 
   public Trigger takeAlgaeLevel2() {
-    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+    // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
 
     return driver.b().and(searchMode);
   }
 
   public Trigger takeAlgaeLevel3() {
-    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+    // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
 
     return driver.x().and(searchMode);
   }
 
   public Trigger takeAlgaeQTip() {
-    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
+    // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
 
     return driver.y().and(searchMode);
   }
@@ -174,5 +178,9 @@ public class AltControlMode implements ControlBoard {
 
   public Trigger changeModeRight() {
     return driver.start();
+  }
+
+  public Trigger resetIndexer() {
+    return driver.povLeft();
   }
 }

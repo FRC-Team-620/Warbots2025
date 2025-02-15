@@ -58,22 +58,22 @@ public final class Constants {
     public static final double conversionFactor = 1.0 / 60.0;
 
     public static final double kLevel1Meters = 0.0;
-    public static final double kLevel2Meters = 0.35;
+    public static final double kLevel2Meters = 0.28;
     public static final double kLevel3Meters = 0.75;
-    public static final double kLevel4Meters = 1.7;
+    public static final double kLevel4Meters = 1.8;
 
     public static final double kProcesserMeters = .15;
-    public static final double kBargeMeters = 1.75;
+    public static final double kBargeMeters = 1.8;
 
     public static final double kAlgaeQTipMeters = 0.125;
     public static final double kCoralIntakeMeters = 0;
-    public static final double kAlgaeIntakeL2Meters = .55;
-    public static final double kAlgaeIntakeL3Meters = 0.95;
+    public static final double kAlgaeIntakeL2Meters = 0.6;
+    public static final double kAlgaeIntakeL3Meters = 1.1;
 
     public static final double kP = 1.75;
     public static final double kI = .00;
     public static final double kD = .005;
-    public static final double kHeightTolerance = 0.05;
+    public static final double kHeightTolerance = 0.1;
   }
 
   public static class WristConstants {
@@ -83,9 +83,9 @@ public final class Constants {
     public static final double kRotationIntakeCoralDegrees = 20;
 
     public static final double kLevel1Degrees = 30.0;
-    public static final double kLevel2Degrees = 44.0;
-    public static final double kLevel3Degrees = 44.0;
-    public static final double kLevel4Degrees = 95.0;
+    public static final double kLevel2Degrees = 40.5;
+    public static final double kLevel3Degrees = 40.5;
+    public static final double kLevel4Degrees = 105.0;
 
     public static final double kRotationAlgaeDegrees = 190;
     public static final double kRotationProcesserDegrees = 190;
@@ -95,7 +95,7 @@ public final class Constants {
     public static final double kP = 0.005;
     public static final double kI = 0.00;
     public static final double kD = 0.00;
-    public static final double kAngleTolerance = 4;
+    public static final double kAngleTolerance = 5;
 
     public static final double kSafeAngleDegrees = 40;
   }

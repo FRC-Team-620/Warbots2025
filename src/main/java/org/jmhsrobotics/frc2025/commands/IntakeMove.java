@@ -30,13 +30,15 @@ public class IntakeMove extends Command {
       this.intake.set(rightTrigger * Constants.IntakeConstants.kMaxReverseSpeedDutyCycle);
     else this.intake.set(leftTrigger * Constants.IntakeConstants.kMaxSpeedDutyCycle);
 
-    if (wrist.getSetpoint() == Constants.WristConstants.kRotationAlgaeDegrees
-        || wrist.getSetpoint() == Constants.WristConstants.kRotationBargeDegrees
-        || wrist.getSetpoint() == Constants.WristConstants.kRotationProcesserDegrees) {
-      algaeDefaultCommand();
-    } else if (wrist.getSetpoint() == Constants.WristConstants.kSafeAngleDegrees) {
-    } else {
-      coralDefaultCommand();
+    if (rightTrigger + leftTrigger == 0) {
+      if (wrist.getSetpoint() == Constants.WristConstants.kRotationAlgaeDegrees
+          || wrist.getSetpoint() == Constants.WristConstants.kRotationBargeDegrees
+          || wrist.getSetpoint() == Constants.WristConstants.kRotationProcesserDegrees) {
+        algaeDefaultCommand();
+      } else if (wrist.getSetpoint() == Constants.WristConstants.kSafeAngleDegrees) {
+      } else {
+        coralDefaultCommand();
+      }
     }
   }
 

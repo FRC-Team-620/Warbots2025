@@ -1,22 +1,29 @@
 package org.jmhsrobotics.frc2025.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import java.util.function.DoubleSupplier;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 
 public class IntakeMove extends Command {
   private Intake intake;
-  private double speedDutyCycle;
+  private DoubleSupplier leftTriggerAxis;
+  private DoubleSupplier rightTriggerAxis;
 
-  public IntakeMove(Intake intake, double speedDutyCycle) {
+  public IntakeMove(
+      Intake intake, DoubleSupplier leftTriggerAxis, DoubleSupplier rightTriggerAxis) {
     this.intake = intake;
-    this.speedDutyCycle = speedDutyCycle;
+    this.leftTriggerAxis = leftTriggerAxis;
+    this.rightTriggerAxis = rightTriggerAxis;
 
     addRequirements(this.intake);
   }
 
   @Override
   public void execute() {
-    this.intake.set(speedDutyCycle);
+    double rightTrigger = rightTriggerAxis.getAsDouble();
+    double leftTrigger = leftTriggerAxis.getAsDouble();
+    if (rightTrigger >= leftTrigger) this.intake.set(-(Math.pow(rightTrigger, 4)));
+    else this.intake.set(Math.pow(leftTrigger, 4));
   }
 
   @Override

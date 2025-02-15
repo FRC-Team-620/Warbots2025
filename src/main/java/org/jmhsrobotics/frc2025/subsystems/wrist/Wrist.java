@@ -2,11 +2,12 @@ package org.jmhsrobotics.frc2025.subsystems.wrist;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2025.Constants;
+import org.littletonrobotics.junction.Logger;
 
 public class Wrist extends SubsystemBase {
   private WristIO wristIO;
   private WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
-  private double setPointDegrees;
+  private double setPointDegrees = Constants.WristConstants.kSafeAngleDegrees;
 
   public Wrist(WristIO wristIO) {
     this.wristIO = wristIO;
@@ -15,10 +16,13 @@ public class Wrist extends SubsystemBase {
   @Override
   public void periodic() {
     wristIO.updateInputs(inputs);
+    Logger.recordOutput("Wrist/AngleDegrees", inputs.positionDegrees);
+    Logger.recordOutput("Wrist/OutputCurrent", inputs.motorAmps);
+    Logger.recordOutput("Wrist/GoalAngle", setPointDegrees);
   }
 
   public boolean atGoal() {
-    return Math.abs(setPointDegrees - inputs.positionDegrees)
+    return Math.abs(this.setPointDegrees - inputs.positionDegrees)
         < Constants.WristConstants.kAngleTolerance;
   }
 

@@ -3,6 +3,7 @@ package org.jmhsrobotics.frc2025.controlBoard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.function.DoubleSupplier;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.util.ControllerMonitor;
@@ -82,12 +83,13 @@ public class DoubleControl implements ControlBoard {
 
   // =======Operator Controls=======
 
-  public Trigger intakeCoral() {
-    return operator.leftTrigger();
+  public DoubleSupplier intakeCoral() {
+    // return driver.leftTrigger();
+    return () -> operator.getLeftTriggerAxis();
   }
 
-  public Trigger extakeCoral() {
-    return operator.rightTrigger();
+  public DoubleSupplier extakeCoral() {
+    return () -> operator.getRightTriggerAxis();
   }
 
   public Trigger placeCoralLevel1() {
@@ -171,5 +173,9 @@ public class DoubleControl implements ControlBoard {
 
   public Trigger changeModeRight() {
     return operator.rightBumper();
+  }
+
+  public Trigger resetIndexer() {
+    return operator.povLeft();
   }
 }

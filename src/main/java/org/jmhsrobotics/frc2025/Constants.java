@@ -90,7 +90,6 @@ public final class Constants {
     public static final double kRotationAlgaeDegrees = 190;
     public static final double kRotationProcesserDegrees = 190;
     public static final double kRotationBargeDegrees = 90;
-    public static final double kRotationQTipDegrees = 190;
 
     public static final double kP = 0.005;
     public static final double kI = 0.00;
@@ -101,8 +100,10 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final double kIntakeSpeedDutyCycle = 0.25;
-    public static final double kExtakeSpeedDutyCycle = -0.25;
+    public static final double kMaxSpeedDutyCycle = 0.2;
+    public static final double kMaxReverseSpeedDutyCycle = -0.2;
+    public static final double kAlgaeDefaultCommandSpeed = 0.1;
+    public static final double kCoralDefaultCommandSpeed = -0.05;
   }
 
   public static final class IndexerConstants {

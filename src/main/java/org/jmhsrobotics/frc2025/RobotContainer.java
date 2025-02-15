@@ -327,9 +327,10 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
-                Constants.WristConstants.kRotationQTipDegrees));
+                Constants.WristConstants.kRotationAlgaeDegrees));
 
-    intake.setDefaultCommand(new IntakeMove(intake, control.intakeCoral(), control.extakeCoral()));
+    intake.setDefaultCommand(
+        new IntakeMove(intake, wrist, control.intakeCoral(), control.extakeCoral()));
 
     control
         .climbUp()

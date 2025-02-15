@@ -63,4 +63,12 @@ public class Intake extends SubsystemBase {
   public void setBrakeMode(boolean enable) {
     intakeIO.setBrakeMode(enable);
   }
+
+  public double getCoralDistance() {
+    return sensorInputs.coralDistance;
+  }
+
+  public double getAlgaeDistance() {
+    return sensorInputs.algaeDistance;
+  }
 }

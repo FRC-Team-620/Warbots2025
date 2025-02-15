@@ -23,6 +23,7 @@ public class Intake extends SubsystemBase {
     intakeIO.updateInputs(intakeInputs);
     timeOfFLightIO.updateInputs(sensorInputs);
     Logger.recordOutput("Current Control Mode", mode);
+    Logger.recordOutput("Intake/Coral Sensor Distance", sensorInputs.coralDistance);
   }
 
   /**

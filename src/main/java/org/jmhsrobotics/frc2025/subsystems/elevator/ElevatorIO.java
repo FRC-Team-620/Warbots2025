@@ -6,10 +6,7 @@ public interface ElevatorIO {
   @AutoLog
   public static class ElevatorIOInputs {
     // index[0] for arrays is the left motor
-    public double[] motorPositionMeters;
     public double[] motorAmps;
-    public double[] motorRPM;
-    public double[] motorVolts;
     public double velocityMPS;
     public double heightMeters;
     public boolean isOpenLoop = true;
@@ -23,4 +20,6 @@ public interface ElevatorIO {
   public default void setVoltage(double voltage) {}
 
   public default void setZero() {}
+
+  public default void setBrakeMode(boolean enable) {}
 }

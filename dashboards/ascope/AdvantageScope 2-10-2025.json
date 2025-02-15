@@ -1,13 +1,13 @@
 {
   "hubs": [
     {
-      "x": 518,
-      "y": 152,
-      "width": 955,
-      "height": 659,
+      "x": 164,
+      "y": 89,
+      "width": 1017,
+      "height": 813,
       "state": {
         "sidebar": {
-          "width": 0,
+          "width": 160,
           "expanded": [
             "/AdvantageKit/PowerDistribution",
             "/AdvantageKit/Drive/Gyro",
@@ -139,6 +139,13 @@
                     "options": {}
                   },
                   {
+                    "type": "component",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/indexer",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
                     "type": "vision",
                     "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Summary/TagPoses",
                     "logType": "Pose3d[]",
@@ -158,7 +165,7 @@
                     }
                   }
                 ],
-                "game": "2025 Field",
+                "game": "Axes",
                 "origin": "blue"
               },
               "controllerUUID": "2fxt356i7ant59kbkehanuy2i2iv9zhy",
@@ -166,14 +173,14 @@
                 "cameraIndex": -2,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  -1.2349468094837308,
-                  3.5141552818977484,
-                  4.72285680676448
+                  2.393273397840082,
+                  0.8978291910537195,
+                  2.162262881524686
                 ],
                 "cameraTarget": [
-                  -0.27894444123012735,
-                  0.1945740408428377,
-                  0.04831756301995121
+                  -0.2647070173356994,
+                  1.1451753320008766,
+                  -0.3704533955605186
                 ]
               },
               "controlsHeight": 134

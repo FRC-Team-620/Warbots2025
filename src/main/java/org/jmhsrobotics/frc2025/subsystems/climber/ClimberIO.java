@@ -13,4 +13,6 @@ public interface ClimberIO {
   public default void updateInputs(ClimberIOInputs inputs) {}
 
   public default void set(double speedDutyCycle) {}
+
+  public default void setBrakeMode(boolean enable) {}
 }

@@ -18,30 +18,33 @@ import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import org.jmhsrobotics.frc2025.commands.ClimberMove;
+import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
-import org.jmhsrobotics.frc2025.commands.WristMoveTo;
+import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
-import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
+import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.SimClimberIO;
+import org.jmhsrobotics.frc2025.subsystems.climber.indexer.IndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.climber.indexer.NeoIndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.climber.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOBoron;
-import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOPigeon2;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOSimRev;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOThrifty;
@@ -49,10 +52,10 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
-import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.intake.IntakeIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.NeoIntakeIO;
+import org.jmhsrobotics.frc2025.subsystems.intake.SimTimeOfFlightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.TimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.led.RainbowLEDCommand;
@@ -75,7 +78,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   // Subsystems
-  private final Drive drive;
+  public final Drive drive;
   private final Vision vision;
   public final Elevator elevator;
   public final Wrist wrist;
@@ -83,6 +86,7 @@ public class RobotContainer {
   private final LED led;
   private final Intake intake;
   public final Climber climber;
+  private boolean isBrakeMode = true;
 
   // Controller
 
@@ -99,7 +103,7 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         drive =
             new Drive(
-                new GyroIOPigeon2(),
+                new GyroIOBoron(),
                 new ModuleIOThrifty(0),
                 new ModuleIOThrifty(1),
                 new ModuleIOThrifty(2),
@@ -114,8 +118,8 @@ public class RobotContainer {
 
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
-        intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
-        climber = new Climber(new NeoClimberIO());
+        climber = new Climber(new NeoClimberIO(), new NeoIndexerIO());
+        intake = new Intake(new NeoIntakeIO(), new SimTimeOfFlightIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -138,8 +142,8 @@ public class RobotContainer {
                     VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
         elevator = new Elevator(new SimElevatorIO());
         wrist = new Wrist(new SimWristIO());
-        intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
-        climber = new Climber(new SimClimberIO());
+        climber = new Climber(new SimClimberIO(), new SimIndexerIO());
+        intake = new Intake(new IntakeIO() {}, new SimTimeOfFlightIO() {});
 
         System.out.println("Mode: SIM");
         break;
@@ -157,13 +161,13 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
-        climber = new Climber(new ClimberIO() {});
+        climber = new Climber(new ClimberIO() {}, new IndexerIO() {});
 
         System.out.println("Mode: DEFAULT");
         break;
     }
 
-    this.control = new SingleControl(intake);
+    this.control = new DoubleControl(intake);
 
     led = new LED();
     led.setDefaultCommand(new RainbowLEDCommand(this.led));
@@ -205,8 +209,8 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -control.translationY(),
-            () -> -control.translationX(),
+            () -> control.translationY(),
+            () -> control.translationX(),
             () -> -control.rotation()));
 
     // Reset gyro to 0° when right bumper is pressed
@@ -325,20 +329,22 @@ public class RobotContainer {
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
                 Constants.WristConstants.kRotationQTipDegrees));
 
+    intake.setDefaultCommand(new IntakeMove(intake, control.intakeCoral(), control.extakeCoral()));
+
     control
-        .intakeCoral()
+        .climbUp()
         .whileTrue(
-            new ParallelCommandGroup(
-                new IntakeMove(intake, Constants.IntakeConstants.kIntakeSpeedDutyCycle),
-                new WristMoveTo(wrist, Constants.WristConstants.kRotationIntakeCoralDegrees)));
+            new ClimberAndIndexerMove(climber, -1, Constants.IndexerConstants.kRotationUpDegrees));
 
     control
-        .extakeCoral()
-        .whileTrue(new IntakeMove(intake, Constants.IntakeConstants.kExtakeSpeedDutyCycle));
+        .climbDown()
+        .whileTrue(
+            new ClimberAndIndexerMove(climber, 1, Constants.IndexerConstants.kRotationUpDegrees));
 
-    control.climbUp().whileTrue(new ClimberMove(climber, -1));
-
-    control.climbDown().whileTrue(new ClimberMove(climber, 1));
+    control
+        .resetIndexer()
+        .onTrue(
+            new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
 
     // control.indexerUp().onTrue(down);
     // control.indexerDown().onTrue(down);
@@ -358,12 +364,32 @@ public class RobotContainer {
 
   private void setupSmartDashbaord() {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
-    SmartDashboard.putData("SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
-    SmartDashboard.putData("SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
-    SmartDashboard.putData("MoveClimberUp", new ClimberMove(climber, -1));
-    SmartDashboard.putData("MoveClimberDown", new ClimberMove(climber, 1));
-    SmartDashboard.putData("SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
-    SmartDashboard.putData("RunElevatorZeroCommand", new ElevatorSetZero(elevator));
+    SmartDashboard.putData("toogleBrakeMode", getToggleBrakeCommand());
+    new Trigger(RobotController::getUserButton)
+        .onTrue(getToggleBrakeCommand()); // TODO: disable when in a match?
+
+    SmartDashboard.putData("cmd/Scheduler", CommandScheduler.getInstance());
+    SmartDashboard.putData(
+        "cmd/SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
+    SmartDashboard.putData(
+        "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
+    SmartDashboard.putData(
+        "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
+    SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
+    SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
+  }
+
+  public Command getToggleBrakeCommand() {
+    return Commands.runOnce(
+            () -> {
+              isBrakeMode = !isBrakeMode;
+              drive.setBrakeMode(isBrakeMode);
+              elevator.setBrakeMode(isBrakeMode);
+              wrist.setBrakeMode(isBrakeMode);
+              intake.setBrakeMode(isBrakeMode);
+              climber.setBrakeMode(isBrakeMode);
+            })
+        .ignoringDisable(true);
   }
 
   /**

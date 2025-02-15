@@ -59,4 +59,8 @@ public class Intake extends SubsystemBase {
   public void set(double speedDutyCycle) {
     intakeIO.set(speedDutyCycle);
   }
+
+  public void setBrakeMode(boolean enable) {
+    intakeIO.setBrakeMode(enable);
+  }
 }

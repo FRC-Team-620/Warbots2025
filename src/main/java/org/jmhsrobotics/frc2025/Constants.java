@@ -58,49 +58,60 @@ public final class Constants {
     public static final double conversionFactor = 1.0 / 60.0;
 
     public static final double kLevel1Meters = 0.0;
-    public static final double kLevel2Meters = 0.35;
+    public static final double kLevel2Meters = 0.28;
     public static final double kLevel3Meters = 0.75;
-    public static final double kLevel4Meters = 1.6;
+    public static final double kLevel4Meters = 1.8;
 
     public static final double kProcesserMeters = .15;
     public static final double kBargeMeters = 1.8;
 
     public static final double kAlgaeQTipMeters = 0.125;
     public static final double kCoralIntakeMeters = 0;
-    public static final double kAlgaeIntakeL2Meters = .55;
-    public static final double kAlgaeIntakeL3Meters = 0.95;
+    public static final double kAlgaeIntakeL2Meters = 0.6;
+    public static final double kAlgaeIntakeL3Meters = 1.1;
 
-    public static final double kP = .01;
+    public static final double kP = 1.75;
     public static final double kI = .00;
-    public static final double kD = .00;
+    public static final double kD = .005;
     public static final double kHeightTolerance = 0.1;
   }
 
   public static class WristConstants {
 
-    public static final double kRotationIntakeCoralDegrees = 0;
+    // TODO: When absolute encoder conversion is fixed, remove  / 360, recalibrate PID and change
+    // tolerance to 1 degree;
+    public static final double kRotationIntakeCoralDegrees = 20;
 
-    public static final double kLevel1Degrees = 10;
-    public static final double kLevel2Degrees = 24;
-    public static final double kLevel3Degrees = 24;
-    public static final double kLevel4Degrees = 75;
+    public static final double kLevel1Degrees = 30.0;
+    public static final double kLevel2Degrees = 40.5;
+    public static final double kLevel3Degrees = 40.5;
+    public static final double kLevel4Degrees = 105.0;
 
-    public static final double kRotationAlgaeDegrees = 180;
-    public static final double kRotationProcesserDegrees = 170;
-    public static final double kRotationBargeDegrees = 70;
-    public static final double kRotationQTipDegrees = 175;
+    public static final double kRotationAlgaeDegrees = 190;
+    public static final double kRotationProcesserDegrees = 190;
+    public static final double kRotationBargeDegrees = 90;
+    public static final double kRotationQTipDegrees = 190;
 
-    public static final double kP = 0.01;
+    public static final double kP = 0.005;
     public static final double kI = 0.00;
     public static final double kD = 0.00;
-    public static final double kAngleTolerance = 3;
+    public static final double kAngleTolerance = 5;
 
-    public static final double kSafeAngleDegrees = 20;
+    public static final double kSafeAngleDegrees = 40;
   }
 
   public static class IntakeConstants {
     public static final double kIntakeSpeedDutyCycle = 0.25;
     public static final double kExtakeSpeedDutyCycle = -0.25;
+  }
+
+  public static final class IndexerConstants {
+    public static final double kRotationUpDegrees = 180;
+    public static final double kRotationDownDegrees = 0;
+
+    public static final double kP = 0.1;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
   }
 
   public static class ModeConstants {

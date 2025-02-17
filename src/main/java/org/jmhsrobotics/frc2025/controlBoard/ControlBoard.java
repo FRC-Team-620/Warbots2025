@@ -22,6 +22,8 @@ public interface ControlBoard {
 
   public DoubleSupplier extakeCoral();
 
+  public Trigger intakeCoralFromIndexer();
+
   public Trigger placeCoralLevel1();
 
   public Trigger placeCoralLevel2();

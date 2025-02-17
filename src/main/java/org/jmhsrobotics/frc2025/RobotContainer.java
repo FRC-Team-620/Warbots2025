@@ -31,10 +31,11 @@ import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
+import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
-import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
+import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
@@ -167,7 +168,7 @@ public class RobotContainer {
         break;
     }
 
-    this.control = new DoubleControl(intake);
+    this.control = new SingleControl(intake, elevator);
 
     led = new LED();
     led.setDefaultCommand(new RainbowLEDCommand(this.led));
@@ -300,7 +301,7 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kCoralIntakeMeters,
-                Constants.WristConstants.kRotationIntakeCoralDegrees));
+                Constants.WristConstants.kSafeAngleDegrees));
 
     control
         .takeAlgaeLevel2()
@@ -331,6 +332,8 @@ public class RobotContainer {
 
     intake.setDefaultCommand(
         new IntakeMove(intake, wrist, control.intakeCoral(), control.extakeCoral()));
+
+    control.intakeCoralFromIndexer().whileTrue(new IntakeFromIndexer(wrist, intake));
 
     control
         .climbUp()

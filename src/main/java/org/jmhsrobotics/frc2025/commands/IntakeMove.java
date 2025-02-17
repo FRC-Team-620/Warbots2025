@@ -31,7 +31,7 @@ public class IntakeMove extends Command {
         || wrist.getSetpoint() == Constants.WristConstants.kRotationBargeDegrees
         || wrist.getSetpoint() == Constants.WristConstants.kRotationProcesserDegrees) {
       isInAlgaeMode = true;
-    }
+    } else isInAlgaeMode = false;
 
     double rightTrigger = rightTriggerAxis.getAsDouble();
     double leftTrigger = leftTriggerAxis.getAsDouble();

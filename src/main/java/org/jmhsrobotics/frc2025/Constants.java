@@ -103,8 +103,8 @@ public final class Constants {
     public static final double kMaxSpeedDutyCycle = 0.2;
     public static final double kMaxReverseSpeedDutyCycle = -0.2;
 
-    public static final double kAlgaeDefaultCommandSpeed = -0.1;
-    public static final double kCoralDefaultCommandSpeed = -0.05;
+    public static final double kAlgaeDefaultCommandSpeed = -0.05;
+    public static final double kCoralDefaultCommandSpeed = -0.03;
 
     public static final double kIntakeCoralSpeedDutyCycle = 0.3;
   }

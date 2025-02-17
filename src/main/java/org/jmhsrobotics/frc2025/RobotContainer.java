@@ -53,6 +53,7 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
+import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.intake.IntakeIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.NeoIntakeIO;
@@ -120,7 +121,7 @@ public class RobotContainer {
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
         climber = new Climber(new NeoClimberIO(), new NeoIndexerIO());
-        intake = new Intake(new NeoIntakeIO(), new SimTimeOfFlightIO());
+        intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
 
         System.out.println("Mode: REAL");
         break;

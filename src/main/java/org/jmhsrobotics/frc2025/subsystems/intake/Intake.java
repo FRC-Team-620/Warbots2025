@@ -24,6 +24,7 @@ public class Intake extends SubsystemBase {
     timeOfFLightIO.updateInputs(sensorInputs);
     Logger.recordOutput("Current Control Mode", mode);
     Logger.recordOutput("Intake/Coral Sensor Distance", sensorInputs.coralDistance);
+    Logger.recordOutput("Intake/Algae Sensor Distance", sensorInputs.algaeDistance);
   }
 
   /**
@@ -36,8 +37,8 @@ public class Intake extends SubsystemBase {
     if (override) {
       return mode;
     }
-    if (sensorInputs.algaeDistance <= 50) return 1;
-    else if (sensorInputs.coralDistance <= 30) return 3;
+    if (sensorInputs.algaeDistance <= 30 && sensorInputs.algaeDistance != 0) return 1;
+    else if (sensorInputs.coralDistance <= 30 && sensorInputs.coralDistance != 0) return 3;
     return 2;
   }
 

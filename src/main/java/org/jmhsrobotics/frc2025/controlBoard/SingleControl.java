@@ -4,12 +4,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
 import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.util.ControllerMonitor;
 
 public class SingleControl implements ControlBoard {
   CommandXboxController driver = new CommandXboxController(0);
   private Intake intake;
+  private Elevator elevator;
 
   private Trigger nop =
       new Trigger(
@@ -17,9 +19,10 @@ public class SingleControl implements ControlBoard {
             return false;
           });
 
-  public SingleControl(Intake intake) {
+  public SingleControl(Intake intake, Elevator elevator) {
     ControllerMonitor.addController(driver.getHID(), "Driver");
     this.intake = intake;
+    this.elevator = elevator;
   }
 
   private Trigger coralMode =
@@ -38,6 +41,12 @@ public class SingleControl implements ControlBoard {
       new Trigger(
           () -> {
             return intake.getMode() == Constants.ModeConstants.kSearch;
+          });
+
+  private Trigger elevatorAtBottom =
+      new Trigger(
+          () -> {
+            return elevator.getSetpoint() == Constants.ElevatorConstants.kCoralIntakeMeters;
           });
 
   public double rotation() {
@@ -61,6 +70,11 @@ public class SingleControl implements ControlBoard {
   }
 
   // =======Operator Controls=======
+
+  @Override
+  public Trigger intakeCoralFromIndexer() {
+    return driver.rightTrigger().and(elevatorAtBottom);
+  }
 
   public DoubleSupplier intakeCoral() {
     // return driver.leftTrigger();

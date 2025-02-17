@@ -11,7 +11,7 @@ public class Intake extends SubsystemBase {
   private TimeOfFLightIOInputsAutoLogged sensorInputs = new TimeOfFLightIOInputsAutoLogged();
 
   private int mode = 2;
-  private boolean override = true;
+  private boolean override = false;
 
   public Intake(IntakeIO intakeIO, TimeOfFLightIO timeOfFLightIO) {
     this.intakeIO = intakeIO;
@@ -20,9 +20,10 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
+    this.mode = getMode();
     intakeIO.updateInputs(intakeInputs);
     timeOfFLightIO.updateInputs(sensorInputs);
-    Logger.recordOutput("Current Control Mode", mode);
+    Logger.recordOutput("Current Control Mode", this.mode);
     Logger.recordOutput("Intake/Coral Sensor Distance", sensorInputs.coralDistance);
     Logger.recordOutput("Intake/Algae Sensor Distance", sensorInputs.algaeDistance);
   }
@@ -38,7 +39,7 @@ public class Intake extends SubsystemBase {
       return mode;
     }
     if (sensorInputs.algaeDistance <= 30 && sensorInputs.algaeDistance != 0) return 1;
-    else if (sensorInputs.coralDistance <= 30 && sensorInputs.coralDistance != 0) return 3;
+    else if (sensorInputs.coralDistance <= 20 && sensorInputs.coralDistance != 0) return 3;
     return 2;
   }
 

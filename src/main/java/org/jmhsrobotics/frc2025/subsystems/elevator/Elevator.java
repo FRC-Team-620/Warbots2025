@@ -22,8 +22,8 @@ public class Elevator extends SubsystemBase {
   private TrapezoidProfile trapezoidProfile =
       new TrapezoidProfile(
           new TrapezoidProfile.Constraints(
-              Constants.ElevatorConstants.kProfiledPIDMaxVelocity,
-              Constants.ElevatorConstants.kProfiledPIDMaxAcceleration));
+              Constants.ElevatorConstants.kTrapezoidalProfileMaxVelocity,
+              Constants.ElevatorConstants.kTrapezoidalProfileMaxAcceleration));
 
   private boolean closedLoopMode = true;
 
@@ -32,8 +32,6 @@ public class Elevator extends SubsystemBase {
     var root = elevatorMech.getRoot("base", 1, 0);
     root.append(stage1).append(carriage);
     SmartDashboard.putData("Elevator", elevatorMech);
-
-    // profiledPIDController = new ProfiledPIDController(0.5, 0.0, 0.0, constraints);
   }
 
   @Override
@@ -42,18 +40,23 @@ public class Elevator extends SubsystemBase {
     stage1.setLength(inputs.heightMeters / 2);
     carriage.setLength(inputs.heightMeters / 2);
 
+    TrapezoidProfile.State calculatedState =
+        trapezoidProfile.calculate(
+            0.02,
+            new TrapezoidProfile.State(inputs.heightMeters, inputs.velocityMPS),
+            new TrapezoidProfile.State(this.setPointMeters, 0));
+
     Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
     Logger.recordOutput("Elevator/Height", inputs.heightMeters);
-    Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
+    Logger.recordOutput("Elevator/Goal Meters", setPointMeters);
     Logger.recordOutput("Elevator/SpeedMPS", inputs.velocityMPS);
+    Logger.recordOutput("Elevator/AccelerationMPSS", inputs.accelerationMPSS);
+    Logger.recordOutput("Elevator/Trapezoidal Profile Setpoint", calculatedState.position);
 
     if (closedLoopMode) {
-      TrapezoidProfile.State state =
-          trapezoidProfile.calculate(
-              0.02,
-              new TrapezoidProfile.State(inputs.heightMeters, inputs.velocityMPS),
-              new TrapezoidProfile.State(setPointMeters, 0));
-      elevatorIO.setPositionMeters(state.position);
+      if (calculatedState.position < 1.8 && calculatedState.position > 0) {
+        elevatorIO.setPositionMeters(calculatedState.position);
+      }
     }
   }
 

@@ -76,6 +76,13 @@ public class VortexElevatorIO implements ElevatorIO {
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
     inputs.motorAmps = new double[2];
+
+    // Get current speed, subtract from previous tic's speed, divide by time interval
+    SparkUtil.ifOk(
+        vortexLeft,
+        leftEncoder::getVelocity,
+        (value) -> inputs.accelerationMPSS = (((value / 60.0) / 60.0) - inputs.velocityMPS) / 0.02);
+
     SparkUtil.ifOk(
         vortexLeft, vortexLeft::getOutputCurrent, (value) -> inputs.motorAmps[0] = value);
     SparkUtil.ifOk(
@@ -83,13 +90,17 @@ public class VortexElevatorIO implements ElevatorIO {
 
     SparkUtil.ifOk(vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value);
 
-    SparkUtil.ifOk(vortexLeft, leftEncoder::getVelocity, (value) -> inputs.velocityMPS = value);
+    // divide RPM by 60 for the 1:60 gear ratio, divide by 60 again for minutes to seconds
+    SparkUtil.ifOk(
+        vortexLeft,
+        leftEncoder::getVelocity,
+        (value) -> inputs.velocityMPS = (value / 60.0) / 60.0);
 
     inputs.isOpenLoop = this.isOpenLoop;
 
     if (isOpenLoop) {
-      this.vortexLeft.set(this.controlVoltage);
-      this.vortexRight.set(this.controlVoltage);
+      this.vortexLeft.setVoltage(this.controlVoltage);
+      this.vortexRight.setVoltage(this.controlVoltage);
     } else {
       pidController.setReference(this.goalMeters, ControlType.kPosition);
     }
@@ -104,7 +115,7 @@ public class VortexElevatorIO implements ElevatorIO {
   public void setVoltage(double voltage) {
     isOpenLoop = true;
     this.controlVoltage = voltage;
-    this.vortexLeft.set(voltage);
+    this.vortexLeft.setVoltage(voltage);
   }
 
   public void setZero() {

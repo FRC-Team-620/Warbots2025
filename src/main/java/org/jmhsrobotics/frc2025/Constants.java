@@ -75,8 +75,8 @@ public final class Constants {
     public static final double kD = .005;
     public static final double kHeightTolerance = 0.1;
 
-    public static final double kProfiledPIDMaxVelocity = 0.5;
-    public static final double kProfiledPIDMaxAcceleration = 0.5;
+    public static final double kTrapezoidalProfileMaxVelocity = 1.68;
+    public static final double kTrapezoidalProfileMaxAcceleration = 4;
   }
 
   public static class WristConstants {

@@ -382,10 +382,6 @@ public class RobotContainer {
     //     "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
-    SmartDashboard.putData(
-        "cmd/ElevatorUpClosedLoop", Commands.run(() -> elevator.setVoltage(1), elevator));
-    SmartDashboard.putData(
-        "cmd/ElevatorDownClosedLoop", Commands.run(() -> elevator.setVoltage(-1), elevator));
   }
 
   public Command getToggleBrakeCommand() {

@@ -73,4 +73,8 @@ public class Elevator extends SubsystemBase {
   public void setBrakeMode(boolean enable) {
     elevatorIO.setBrakeMode(enable);
   }
+
+  public double getSetpoint() {
+    return setPointMeters;
+  }
 }

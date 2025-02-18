@@ -1,8 +1,6 @@
 package org.jmhsrobotics.frc2025.subsystems.elevator;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,11 +24,8 @@ public class Elevator extends SubsystemBase {
           new TrapezoidProfile.Constraints(
               Constants.ElevatorConstants.kProfiledPIDMaxVelocity,
               Constants.ElevatorConstants.kProfiledPIDMaxAcceleration));
-  private Constraints constraints =
-      new Constraints(
-          Constants.ElevatorConstants.kProfiledPIDMaxVelocity,
-          Constants.ElevatorConstants.kProfiledPIDMaxAcceleration);
-  private ProfiledPIDController profiledPIDController;
+
+  private boolean closedLoopMode = true;
 
   public Elevator(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;
@@ -38,7 +33,7 @@ public class Elevator extends SubsystemBase {
     root.append(stage1).append(carriage);
     SmartDashboard.putData("Elevator", elevatorMech);
 
-    profiledPIDController = new ProfiledPIDController(0.1, 0.0, 0.0, constraints);
+    // profiledPIDController = new ProfiledPIDController(0.5, 0.0, 0.0, constraints);
   }
 
   @Override
@@ -50,9 +45,16 @@ public class Elevator extends SubsystemBase {
     Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
     Logger.recordOutput("Elevator/Height", inputs.heightMeters);
     Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
+    Logger.recordOutput("Elevator/SpeedMPS", inputs.velocityMPS);
 
-    double nextSetpoint = profiledPIDController.calculate(inputs.heightMeters, setPointMeters);
-    elevatorIO.setPositionMeters(nextSetpoint);
+    if (closedLoopMode) {
+      TrapezoidProfile.State state =
+          trapezoidProfile.calculate(
+              0.02,
+              new TrapezoidProfile.State(inputs.heightMeters, inputs.velocityMPS),
+              new TrapezoidProfile.State(setPointMeters, 0));
+      elevatorIO.setPositionMeters(state.position);
+    }
   }
 
   public boolean atGoal() {
@@ -61,11 +63,13 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setSetpoint(double setPoint) {
+    this.closedLoopMode = true;
     this.setPointMeters = setPoint;
     // elevatorIO.setPositionMeters(setPoint);
   }
 
   public void setVoltage(double voltage) {
+    this.closedLoopMode = false;
     elevatorIO.setVoltage(voltage);
   }
 

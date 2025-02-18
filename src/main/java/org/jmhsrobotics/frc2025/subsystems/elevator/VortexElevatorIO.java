@@ -17,8 +17,6 @@ public class VortexElevatorIO implements ElevatorIO {
       new SparkFlex(Constants.CAN.kElevatorMotorLeftID, MotorType.kBrushless);
   private SparkFlex vortexRight =
       new SparkFlex(Constants.CAN.kElevatorMotorRightID, MotorType.kBrushless);
-  // private AbsoluteEncoder leftEncoder = vortexLeft.getAbsoluteEncoder();
-  // private AbsoluteEncoder rightEncoder = vortexRight.getAbsoluteEncoder();
   private RelativeEncoder leftEncoder = vortexLeft.getEncoder();
   private RelativeEncoder rightEncoder = vortexRight.getEncoder();
 
@@ -83,14 +81,15 @@ public class VortexElevatorIO implements ElevatorIO {
     SparkUtil.ifOk(
         vortexRight, vortexRight::getOutputCurrent, (value) -> inputs.motorAmps[1] = value);
 
-    // inputs.motorVolts = new double[2];
     SparkUtil.ifOk(vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value);
+
+    SparkUtil.ifOk(vortexLeft, leftEncoder::getVelocity, (value) -> inputs.velocityMPS = value);
 
     inputs.isOpenLoop = this.isOpenLoop;
 
     if (isOpenLoop) {
-      this.vortexLeft.setVoltage(this.controlVoltage);
-      this.vortexRight.setVoltage(this.controlVoltage);
+      this.vortexLeft.set(this.controlVoltage);
+      this.vortexRight.set(this.controlVoltage);
     } else {
       pidController.setReference(this.goalMeters, ControlType.kPosition);
     }
@@ -105,7 +104,7 @@ public class VortexElevatorIO implements ElevatorIO {
   public void setVoltage(double voltage) {
     isOpenLoop = true;
     this.controlVoltage = voltage;
-    this.vortexLeft.setVoltage(voltage);
+    this.vortexLeft.set(voltage);
   }
 
   public void setZero() {

@@ -1,5 +1,8 @@
 package org.jmhsrobotics.frc2025.subsystems.elevator;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,11 +21,24 @@ public class Elevator extends SubsystemBase {
   Mechanism2d elevatorMech = new Mechanism2d(4, 4);
   private double setPointMeters;
 
+  private TrapezoidProfile trapezoidProfile =
+      new TrapezoidProfile(
+          new TrapezoidProfile.Constraints(
+              Constants.ElevatorConstants.kProfiledPIDMaxVelocity,
+              Constants.ElevatorConstants.kProfiledPIDMaxAcceleration));
+  private Constraints constraints =
+      new Constraints(
+          Constants.ElevatorConstants.kProfiledPIDMaxVelocity,
+          Constants.ElevatorConstants.kProfiledPIDMaxAcceleration);
+  private ProfiledPIDController profiledPIDController;
+
   public Elevator(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;
     var root = elevatorMech.getRoot("base", 1, 0);
     root.append(stage1).append(carriage);
     SmartDashboard.putData("Elevator", elevatorMech);
+
+    profiledPIDController = new ProfiledPIDController(0.1, 0.0, 0.0, constraints);
   }
 
   @Override
@@ -34,6 +50,9 @@ public class Elevator extends SubsystemBase {
     Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
     Logger.recordOutput("Elevator/Height", inputs.heightMeters);
     Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
+
+    double nextSetpoint = profiledPIDController.calculate(inputs.heightMeters, setPointMeters);
+    elevatorIO.setPositionMeters(nextSetpoint);
   }
 
   public boolean atGoal() {
@@ -43,7 +62,7 @@ public class Elevator extends SubsystemBase {
 
   public void setSetpoint(double setPoint) {
     this.setPointMeters = setPoint;
-    elevatorIO.setPositionMeters(setPoint);
+    // elevatorIO.setPositionMeters(setPoint);
   }
 
   public void setVoltage(double voltage) {

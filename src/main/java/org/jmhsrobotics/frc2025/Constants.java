@@ -107,6 +107,7 @@ public final class Constants {
     public static final double kCoralDefaultCommandSpeed = -0.03;
 
     public static final double kIntakeCoralSpeedDutyCycle = 0.3;
+    public static final double kIntakeCoralAdjustedSpeedDutyCycle = 0.5;
   }
 
   public static final class IndexerConstants {

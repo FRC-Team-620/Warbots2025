@@ -29,12 +29,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
+import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
+import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
-import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
+import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
@@ -52,6 +54,7 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
+import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.intake.IntakeIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.NeoIntakeIO;
@@ -119,7 +122,7 @@ public class RobotContainer {
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
         climber = new Climber(new NeoClimberIO(), new NeoIndexerIO());
-        intake = new Intake(new NeoIntakeIO(), new SimTimeOfFlightIO());
+        intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -167,13 +170,14 @@ public class RobotContainer {
         break;
     }
 
-    this.control = new DoubleControl(intake);
+    this.control = new SingleControl(intake, elevator);
 
     led = new LED();
     led.setDefaultCommand(new RainbowLEDCommand(this.led));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    autoChooser.addDefaultOption("BaseLineAuto", new DriveTimeCommand(2.2, 0.3, drive));
 
     // Set up SysId routines
     autoChooser.addOption(
@@ -300,7 +304,7 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kCoralIntakeMeters,
-                Constants.WristConstants.kRotationIntakeCoralDegrees));
+                Constants.WristConstants.kSafeAngleDegrees));
 
     control
         .takeAlgaeLevel2()
@@ -327,9 +331,12 @@ public class RobotContainer {
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
-                Constants.WristConstants.kRotationQTipDegrees));
+                Constants.WristConstants.kRotationAlgaeDegrees));
 
-    intake.setDefaultCommand(new IntakeMove(intake, control.intakeCoral(), control.extakeCoral()));
+    intake.setDefaultCommand(
+        new IntakeMove(intake, wrist, control.intakeCoral(), control.extakeCoral()));
+
+    control.intakeCoralFromIndexer().whileTrue(new IntakeFromIndexer(wrist, intake));
 
     control
         .climbUp()

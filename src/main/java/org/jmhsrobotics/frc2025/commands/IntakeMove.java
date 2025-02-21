@@ -2,16 +2,23 @@ package org.jmhsrobotics.frc2025.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.DoubleSupplier;
+import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
+import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 
 public class IntakeMove extends Command {
   private Intake intake;
+  private Wrist wrist;
   private DoubleSupplier leftTriggerAxis;
   private DoubleSupplier rightTriggerAxis;
 
+  // helps determine which way the intake should move
+  private boolean isInAlgaeMode;
+
   public IntakeMove(
-      Intake intake, DoubleSupplier leftTriggerAxis, DoubleSupplier rightTriggerAxis) {
+      Intake intake, Wrist wrist, DoubleSupplier leftTriggerAxis, DoubleSupplier rightTriggerAxis) {
     this.intake = intake;
+    this.wrist = wrist;
     this.leftTriggerAxis = leftTriggerAxis;
     this.rightTriggerAxis = rightTriggerAxis;
 
@@ -20,10 +27,46 @@ public class IntakeMove extends Command {
 
   @Override
   public void execute() {
+    if (wrist.getSetpoint() == Constants.WristConstants.kRotationAlgaeDegrees
+        || wrist.getSetpoint() == Constants.WristConstants.kRotationBargeDegrees
+        || wrist.getSetpoint() == Constants.WristConstants.kRotationProcesserDegrees) {
+      isInAlgaeMode = true;
+    } else isInAlgaeMode = false;
+
     double rightTrigger = rightTriggerAxis.getAsDouble();
     double leftTrigger = leftTriggerAxis.getAsDouble();
-    if (rightTrigger >= leftTrigger) this.intake.set(-(Math.pow(rightTrigger, 4)));
-    else this.intake.set(Math.pow(leftTrigger, 4));
+
+    // chooses which trigger to use based on which input is greater
+    // Makes it so the intake moves a different direction based on the angle of the wrist so that
+    // the right trigger is always intake
+    if (rightTrigger >= leftTrigger) {
+      if (isInAlgaeMode)
+        this.intake.set(-rightTrigger * Constants.IntakeConstants.kMaxSpeedDutyCycle);
+      else this.intake.set(rightTrigger * Constants.IntakeConstants.kMaxSpeedDutyCycle);
+    } else {
+      if (isInAlgaeMode)
+        this.intake.set(leftTrigger * Constants.IntakeConstants.kMaxSpeedDutyCycle);
+      else this.intake.set(-leftTrigger * Constants.IntakeConstants.kMaxSpeedDutyCycle);
+    }
+
+    if (rightTrigger + leftTrigger == 0) {
+      if (isInAlgaeMode) {
+        algaeDefaultCommand();
+      } else if (wrist.getSetpoint() == Constants.WristConstants.kSafeAngleDegrees) {
+      } else {
+        coralDefaultCommand();
+      }
+    }
+  }
+
+  private void algaeDefaultCommand() {
+    intake.set(Constants.IntakeConstants.kAlgaeDefaultCommandSpeed);
+  }
+
+  private void coralDefaultCommand() {
+    if (intake.getCoralDistance() > 30) {
+      intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed);
+    }
   }
 
   @Override
@@ -33,7 +76,6 @@ public class IntakeMove extends Command {
 
   @Override
   public boolean isFinished() {
-    // TODO Auto-generated method stub
     return false;
   }
 

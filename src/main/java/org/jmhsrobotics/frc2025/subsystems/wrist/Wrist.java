@@ -40,4 +40,8 @@ public class Wrist extends SubsystemBase {
   public void setBrakeMode(boolean enable) {
     wristIO.setBrakeMode(enable);
   }
+
+  public double getSetpoint() {
+    return this.setPointDegrees;
+  }
 }

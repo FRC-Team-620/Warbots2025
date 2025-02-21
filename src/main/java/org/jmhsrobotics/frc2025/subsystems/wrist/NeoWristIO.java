@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator.ElevatorHeights;
 import org.jmhsrobotics.frc2025.util.SparkUtil;
 
 public class NeoWristIO implements WristIO {
@@ -48,7 +49,6 @@ public class NeoWristIO implements WristIO {
         .outputRange(-0.5, 0.5)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     motorConfig.absoluteEncoder.apply(encoderConfig);
-
     SparkUtil.tryUntilOk(
         motor,
         5,
@@ -73,6 +73,38 @@ public class NeoWristIO implements WristIO {
   @Override
   public void setPositionDegrees(double positionDegrees) {
     this.setPointDegrees = positionDegrees;
+  }
+
+  public void setWristLimits(ElevatorHeights height) {
+    double topLimitDegrees;
+    double bottomLimitDegrees;
+    switch (height) {
+      case BOTTOM:
+        topLimitDegrees = 195;
+        bottomLimitDegrees = 20;
+        break;
+      case TOP:
+        topLimitDegrees = 205;
+        bottomLimitDegrees = 35;
+        break;
+      default:
+        topLimitDegrees = 205;
+        bottomLimitDegrees = 35;
+        break;
+    }
+    motorConfig
+        .softLimit
+        .forwardSoftLimit(topLimitDegrees)
+        .reverseSoftLimit(bottomLimitDegrees)
+        .forwardSoftLimitEnabled(Constants.WristConstants.kWristLimitsEnabled)
+        .reverseSoftLimitEnabled(Constants.WristConstants.kWristLimitsEnabled);
+
+    SparkUtil.tryUntilOk(
+        motor,
+        5,
+        () ->
+            motor.configure(
+                motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
   }
 
   @Override

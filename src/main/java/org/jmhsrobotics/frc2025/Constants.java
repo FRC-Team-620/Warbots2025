@@ -101,6 +101,7 @@ public final class Constants {
     public static final double kAngleTolerance = 5;
 
     public static final double kSafeAngleDegrees = 40;
+    public static final boolean kWristLimitsEnabled = true;
   }
 
   public static class IntakeConstants {

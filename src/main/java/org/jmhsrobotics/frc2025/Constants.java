@@ -74,6 +74,10 @@ public final class Constants {
     public static final double kI = .00;
     public static final double kD = .005;
     public static final double kHeightTolerance = 0.1;
+
+    public static final double kElevatorTopSoftLimit = 1.8;
+    public static final double kElevatorBottomSoftLimit = 0;
+    public static final boolean kElevatorLimitsEnabled = true;
   }
 
   public static class WristConstants {

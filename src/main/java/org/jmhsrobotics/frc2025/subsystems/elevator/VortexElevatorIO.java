@@ -45,6 +45,12 @@ public class VortexElevatorIO implements ElevatorIO {
         Constants.ElevatorConstants.kP,
         Constants.ElevatorConstants.kI,
         Constants.ElevatorConstants.kD);
+    vortexLeftConfig
+        .softLimit // TODO double check elevator limit directions
+        .forwardSoftLimit(Constants.ElevatorConstants.kElevatorTopSoftLimit)
+        .reverseSoftLimit(Constants.ElevatorConstants.kElevatorBottomSoftLimit)
+        .forwardSoftLimitEnabled(Constants.ElevatorConstants.kElevatorLimitsEnabled)
+        .reverseSoftLimitEnabled(Constants.ElevatorConstants.kElevatorLimitsEnabled);
 
     vortexRightConfig = new SparkFlexConfig();
     vortexRightConfig

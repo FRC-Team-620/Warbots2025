@@ -3,6 +3,7 @@ package org.jmhsrobotics.frc2025.subsystems.wrist;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2025.Constants;
 import org.littletonrobotics.junction.Logger;
+import org.jmhsrobotics.frc2025.util.GoalTolerance;
 
 public class Wrist extends SubsystemBase {
   private WristIO wristIO;

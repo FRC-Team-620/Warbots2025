@@ -124,6 +124,9 @@ public final class Constants {
     public static final int kLength = 30;
     // Density of the LED Strip - currently set at 120 LEDs per meter
     public static final Distance kSpacing = Meters.of(1 / 120.0);
+
+    // number of times the flashcommand will change color per second
+    public static final double kFlashFrequency = 4;
   }
 
   public static enum Mode {

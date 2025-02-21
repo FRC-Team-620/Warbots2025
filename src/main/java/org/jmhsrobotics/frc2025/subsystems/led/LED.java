@@ -9,6 +9,7 @@ import org.jmhsrobotics.frc2025.Constants;
 public class LED extends SubsystemBase {
   private AddressableLED led;
   private AddressableLEDBuffer ledBuffer;
+  private LEDPattern pattern;
 
   public LED() {
     led = new AddressableLED(Constants.LEDConstants.kPWMHeader);
@@ -18,8 +19,17 @@ public class LED extends SubsystemBase {
     led.start();
   }
 
-  public void setPattern(LEDPattern pattern) {
+  @Override
+  public void periodic() {
     pattern.applyTo(ledBuffer);
     led.setData(ledBuffer);
+  }
+
+  public LEDPattern getCurrentPattern() {
+    return this.pattern;
+  }
+
+  public void setPattern(LEDPattern pattern) {
+    this.pattern = pattern;
   }
 }

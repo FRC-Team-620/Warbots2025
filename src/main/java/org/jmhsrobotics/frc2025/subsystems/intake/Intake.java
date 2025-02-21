@@ -74,4 +74,8 @@ public class Intake extends SubsystemBase {
   public double getAlgaeDistance() {
     return sensorInputs.algaeDistance;
   }
+
+  public boolean isControlModeOverridden() {
+    return override;
+  }
 }

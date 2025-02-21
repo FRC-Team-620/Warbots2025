@@ -11,8 +11,8 @@ public class LED extends SubsystemBase {
   private AddressableLEDBuffer ledBuffer;
 
   public LED() {
-    led = new AddressableLED(Constants.ledPWMHeader);
-    ledBuffer = new AddressableLEDBuffer(Constants.ledLength);
+    led = new AddressableLED(Constants.LEDConstants.kPWMHeader);
+    ledBuffer = new AddressableLEDBuffer(Constants.LEDConstants.kLength);
     led.setLength(ledBuffer.getLength());
     led.setData(ledBuffer);
     led.start();

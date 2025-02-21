@@ -29,12 +29,6 @@ public final class Constants {
   public static final double krealTimeStep = ksimTimestep;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
-  public static final int ledPWMHeader = 5;
-  // led length in pixels
-  public static final int ledLength = 10;
-  // Density of the LED Strip - currently set at 120 LEDs per meter
-  public static final Distance ledSpacing = Meters.of(1 / 120.0);
-
   public static class CAN {
     public static final int kElevatorMotorLeftID = 30;
     public static final int kElevatorMotorRightID = 31;
@@ -122,6 +116,14 @@ public final class Constants {
     public static final int kAlgae = 1;
     public static final int kSearch = 2;
     public static final int kCoral = 3;
+  }
+
+  public static final class LEDConstants {
+    public static final int kPWMHeader = 5;
+    // led length in pixels
+    public static final int kLength = 30;
+    // Density of the LED Strip - currently set at 120 LEDs per meter
+    public static final Distance kSpacing = Meters.of(1 / 120.0);
   }
 
   public static enum Mode {

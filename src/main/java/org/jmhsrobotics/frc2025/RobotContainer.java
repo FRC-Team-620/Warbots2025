@@ -34,6 +34,7 @@ import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
+import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
@@ -61,7 +62,6 @@ import org.jmhsrobotics.frc2025.subsystems.intake.NeoIntakeIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.SimTimeOfFlightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.TimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
-import org.jmhsrobotics.frc2025.subsystems.led.RainbowLEDCommand;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionIO;
@@ -173,7 +173,6 @@ public class RobotContainer {
     this.control = new SingleControl(intake, elevator);
 
     led = new LED();
-    led.setDefaultCommand(new RainbowLEDCommand(this.led));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -209,6 +208,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    intake.setDefaultCommand(
+        new IntakeMove(intake, wrist, control.intakeCoral(), control.extakeCoral()));
+
+    led.setDefaultCommand(new LEDToControlMode(this.led, this.intake));
+
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -332,9 +336,6 @@ public class RobotContainer {
                 wrist,
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
-
-    intake.setDefaultCommand(
-        new IntakeMove(intake, wrist, control.intakeCoral(), control.extakeCoral()));
 
     control.intakeCoralFromIndexer().whileTrue(new IntakeFromIndexer(wrist, intake));
 

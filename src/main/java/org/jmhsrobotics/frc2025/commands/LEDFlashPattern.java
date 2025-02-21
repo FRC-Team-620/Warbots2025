@@ -22,6 +22,8 @@ public class LEDFlashPattern extends Command {
     this.duration = duration;
     this.firstPattern = firstPattern;
     this.secondPattern = secondPattern;
+
+    addRequirements(led);
   }
 
   @Override

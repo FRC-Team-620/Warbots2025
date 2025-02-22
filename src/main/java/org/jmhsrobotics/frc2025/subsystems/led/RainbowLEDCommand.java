@@ -22,6 +22,11 @@ public class RainbowLEDCommand extends Command {
     led.setPattern(scrollingRainbow);
   }
 
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
+
   // isFinished() and end() methods will need to be set to any pattern as driver feedback
   //   @Override
   //   public boolean isFinished() {

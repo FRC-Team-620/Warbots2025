@@ -32,4 +32,9 @@ public class LEDToControlMode extends Command {
     else if (intake.getMode() == Constants.ModeConstants.kAlgae) led.setPattern(algaeModePattern);
     else led.setPattern(coralModePattern);
   }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
 }

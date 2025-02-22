@@ -1,5 +1,6 @@
 package org.jmhsrobotics.frc2025.subsystems.wrist;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2025.Constants;
 import org.littletonrobotics.junction.Logger;
@@ -8,6 +9,9 @@ public class Wrist extends SubsystemBase {
   private WristIO wristIO;
   private WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
   private double setPointDegrees = Constants.WristConstants.kSafeAngleDegrees;
+
+  private TrapezoidProfile trapezoidProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
+      Constants.WristConstants.kMaxSpeedDPS, Constants.WristConstants.kMaxAccellerationDPSPS));
 
   public Wrist(WristIO wristIO) {
     this.wristIO = wristIO;
@@ -19,11 +23,13 @@ public class Wrist extends SubsystemBase {
     Logger.recordOutput("Wrist/AngleDegrees", inputs.positionDegrees);
     Logger.recordOutput("Wrist/OutputCurrent", inputs.motorAmps);
     Logger.recordOutput("Wrist/GoalAngle", setPointDegrees);
+
+    TrapezoidProfile.State calculatedState = trapezoidProfile.calculate(0.02, new TrapezoidProfile.State(inputs.positionDegrees, inputs.velocityDPS), new TrapezoidProfile.State(this.setPointDegrees, 0));
+    wristIO.setPositionDegrees(calculatedState.position);
   }
 
   public boolean atGoal() {
-    return Math.abs(this.setPointDegrees - inputs.positionDegrees)
-        < Constants.WristConstants.kAngleTolerance;
+    return Math.abs(this.setPointDegrees - inputs.positionDegrees) < Constants.WristConstants.kAngleTolerance;
   }
 
   public double getPositionDegrees() {
@@ -36,7 +42,6 @@ public class Wrist extends SubsystemBase {
 
   public void setSetpoint(double setPoint) {
     this.setPointDegrees = setPoint;
-    wristIO.setPositionDegrees(setPoint);
   }
 
   public void setBrakeMode(boolean enable) {

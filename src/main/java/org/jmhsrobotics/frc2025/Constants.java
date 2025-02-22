@@ -97,6 +97,9 @@ public final class Constants {
     public static final double kAngleTolerance = 5;
 
     public static final double kSafeAngleDegrees = 40;
+
+    public static final double kMaxSpeedDPS = 100;
+    public static final double kMaxAccellerationDPSPS = 100;
   }
 
   public static class IntakeConstants {

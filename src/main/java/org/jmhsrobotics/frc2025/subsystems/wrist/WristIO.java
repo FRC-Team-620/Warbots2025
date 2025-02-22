@@ -6,8 +6,10 @@ public interface WristIO {
   @AutoLog
   public static class WristIOInputs {
     public double positionDegrees;
-    public double motorRPM;
+    public double wristDPS;
     public double motorAmps;
+    public double velocityDPS;
+    public double accellerationDPSPS;
   }
 
   public default void updateInputs(WristIOInputs inputs) {}

@@ -3,6 +3,7 @@ package org.jmhsrobotics.frc2025.commands;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
 
@@ -15,6 +16,7 @@ public class LEDFlashPattern extends Command {
   private final LEDPattern secondPattern;
 
   private Timer timer = new Timer();
+  private Timer lightTimer = new Timer();
 
   public LEDFlashPattern(
       LED led, LEDPattern firstPattern, LEDPattern secondPattern, double duration) {
@@ -29,6 +31,7 @@ public class LEDFlashPattern extends Command {
   @Override
   public void initialize() {
     timer.restart();
+    lightTimer.restart();
     led.setPattern(firstPattern);
   }
 
@@ -36,9 +39,10 @@ public class LEDFlashPattern extends Command {
   public void execute() {
     // Changes the pattern applied if the timer value is divisible by time that one pattern stays,
     // and then changes the pattern to the other color
-    if (timer.get() % interval == 0) {
+    if (lightTimer.get() >= interval) {
       if (led.getCurrentPattern() == firstPattern) led.setPattern(secondPattern);
       else led.setPattern(firstPattern);
+      lightTimer.restart();
     }
   }
 

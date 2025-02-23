@@ -126,7 +126,7 @@ public final class Constants {
     public static final Distance kSpacing = Meters.of(1 / 120.0);
 
     // number of times the flashcommand will change color per second
-    public static final double kFlashFrequency = 4;
+    public static final double kFlashFrequency = 5;
   }
 
   public static enum Mode {

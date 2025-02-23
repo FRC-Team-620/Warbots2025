@@ -375,13 +375,13 @@ public class RobotContainer {
     new Trigger(intake::isControlModeOverridden)
         .onTrue(
             new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kRed), LEDPattern.solid(Color.kLightGreen), 1.5));
+                led, LEDPattern.solid(Color.kWhite), LEDPattern.solid(Color.kRed), 1.5));
 
     // if control mode is un-overridden, lights will flash gold and white
     new Trigger(intake::isControlModeOverridden)
         .onFalse(
             new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite), 1.5));
+                led, LEDPattern.solid(Color.kWhite), LEDPattern.solid(Color.kGold), 1.5));
   }
 
   private void setupSmartDashbaord() {

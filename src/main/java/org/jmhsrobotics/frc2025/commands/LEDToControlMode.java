@@ -23,6 +23,7 @@ public class LEDToControlMode extends Command {
 
   public LEDToControlMode(LED led, Intake intake) {
     this.led = led;
+    this.intake = intake;
     addRequirements(led);
   }
 

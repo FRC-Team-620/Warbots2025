@@ -38,8 +38,9 @@ public class Intake extends SubsystemBase {
     if (override) {
       return mode;
     }
-    if (sensorInputs.algaeDistance <= 30 && sensorInputs.algaeDistance != 0) return 1;
-    else if (sensorInputs.coralDistance <= 20 && sensorInputs.coralDistance != 0) return 3;
+    if (this.getAveragedAlgaeDistance() <= 30 && this.getAveragedAlgaeDistance() != 0) return 1;
+    else if (this.getAveragedCoralDistance() <= 20 && this.getAveragedCoralDistance() != 0)
+      return 3;
     return 2;
   }
 
@@ -59,6 +60,11 @@ public class Intake extends SubsystemBase {
     }
   }
 
+  /**
+   * sets the duty cycle speed of the intake motor
+   *
+   * @param speedDutyCycle
+   */
   public void set(double speedDutyCycle) {
     intakeIO.set(speedDutyCycle);
   }
@@ -67,11 +73,47 @@ public class Intake extends SubsystemBase {
     intakeIO.setBrakeMode(enable);
   }
 
+  /**
+   * gets the instantaneous coral distance
+   *
+   * @return
+   */
   public double getCoralDistance() {
     return sensorInputs.coralDistance;
   }
 
+  /**
+   * gets the instantaneous coral distance
+   *
+   * @return
+   */
   public double getAlgaeDistance() {
     return sensorInputs.algaeDistance;
+  }
+
+  /**
+   * Returns the average coral distance over the last several measurements, removing noise
+   *
+   * @return
+   */
+  public double getAveragedCoralDistance() {
+    double totalDistance = 0;
+    for (int distance : sensorInputs.pastCoralDistance) {
+      totalDistance += distance;
+    }
+    return totalDistance / sensorInputs.pastCoralDistance.length;
+  }
+
+  /**
+   * Returns the average algae distance over the last several measurements, removing noise
+   *
+   * @return
+   */
+  public double getAveragedAlgaeDistance() {
+    double totalDistance = 0;
+    for (int distance : sensorInputs.pastAlgaeDistance) {
+      totalDistance += distance;
+    }
+    return totalDistance / sensorInputs.pastAlgaeDistance.length;
   }
 }

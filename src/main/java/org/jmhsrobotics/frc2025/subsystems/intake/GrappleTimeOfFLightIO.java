@@ -1,6 +1,8 @@
 package org.jmhsrobotics.frc2025.subsystems.intake;
 
+import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.interfaces.LaserCanInterface.RangingMode;
 import org.jmhsrobotics.frc2025.Constants;
 
 public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
@@ -10,6 +12,15 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
   public GrappleTimeOfFLightIO() {
     coralSensor = new LaserCan(Constants.CAN.kCoralSensorID);
     algaeSensor = new LaserCan(Constants.CAN.kAlgaeSensorID);
+
+    try {
+      coralSensor.setRangingMode(RangingMode.SHORT);
+      algaeSensor.setRangingMode(RangingMode.SHORT);
+      // TODO: set timing budget for sensors and find what is ideal
+      // coralSensor.setTimingBudget(TimingBudget.TIMING_BUDGET_20MS);
+    } catch (ConfigurationFailedException e) {
+      System.out.println("Configuration Failed: " + e);
+    }
   }
 
   @Override
@@ -19,14 +30,25 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
     if (coralMeasure != null) {
       inputs.coralDistance = coralMeasure.distance_mm;
     } else {
-      inputs.coralDistance = -1; // TODO: include a better missing measure value
+      inputs.coralDistance = 100; // TODO: include a better missing measure value
     }
 
     var algaeMeasure = algaeSensor.getMeasurement();
     if (coralMeasure != null) {
       inputs.algaeDistance = algaeMeasure.distance_mm;
     } else {
-      inputs.algaeDistance = -1; // TODO: include a better missing measure value
+      inputs.algaeDistance = -100; // TODO: include a better missing measure value
     }
+
+    // adds the current sensor value to the array, and moves all other values back by one index
+    for (int i = 1; i < inputs.pastCoralDistance.length; i++) {
+      inputs.pastCoralDistance[i] = inputs.pastCoralDistance[i - 1];
+    }
+    inputs.pastCoralDistance[0] = coralMeasure.distance_mm;
+
+    for (int i = 1; i < inputs.pastAlgaeDistance.length; i++) {
+      inputs.pastAlgaeDistance[i] = inputs.pastAlgaeDistance[i - 1];
+    }
+    inputs.pastAlgaeDistance[0] = algaeMeasure.distance_mm;
   }
 }

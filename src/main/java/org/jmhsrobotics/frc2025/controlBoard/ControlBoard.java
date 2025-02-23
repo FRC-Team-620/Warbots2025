@@ -56,5 +56,7 @@ public interface ControlBoard {
 
   public Trigger changeModeRight();
 
+  public Trigger UnOverrideControlMode();
+
   public Trigger resetIndexer();
 }

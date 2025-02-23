@@ -355,9 +355,6 @@ public class RobotContainer {
         .onTrue(
             new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
 
-    // control.indexerUp().onTrue(down);
-    // control.indexerDown().onTrue(down);
-
     control
         .changeModeLeft()
         .onTrue(Commands.runOnce(() -> intake.setMode(-1), intake).ignoringDisable(true));
@@ -365,6 +362,8 @@ public class RobotContainer {
     control
         .changeModeRight()
         .onTrue(Commands.runOnce(() -> intake.setMode(1), intake).ignoringDisable(true));
+
+    control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));
   }
 
   private void configureDriverFeedback() {
@@ -375,13 +374,13 @@ public class RobotContainer {
     new Trigger(intake::isControlModeOverridden)
         .onTrue(
             new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kWhite), LEDPattern.solid(Color.kRed), 1.5));
+                led, LEDPattern.solid(Color.kRed), LEDPattern.solid(Color.kWhite), 1.5));
 
     // if control mode is un-overridden, lights will flash gold and white
     new Trigger(intake::isControlModeOverridden)
         .onFalse(
             new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kWhite), LEDPattern.solid(Color.kGold), 1.5));
+                led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite), 1.5));
   }
 
   private void setupSmartDashbaord() {

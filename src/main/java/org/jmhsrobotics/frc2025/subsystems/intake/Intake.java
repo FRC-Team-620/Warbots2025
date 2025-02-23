@@ -59,6 +59,11 @@ public class Intake extends SubsystemBase {
     }
   }
 
+  /** Turns off manual override of control mode in the event of an accidental activation */
+  public void unOverrideControlMode() {
+    this.override = false;
+  }
+
   public void set(double speedDutyCycle) {
     intakeIO.set(speedDutyCycle);
   }

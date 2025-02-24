@@ -18,21 +18,6 @@ public class Elevator extends SubsystemBase {
   Mechanism2d elevatorMech = new Mechanism2d(4, 4);
   private double setPointMeters;
 
-  public enum ElevatorHeights {
-    TOP(Constants.ElevatorConstants.kLevel4Meters),
-    BOTTOM(Constants.ElevatorConstants.kCoralIntakeMeters);
-
-    private final double value;
-
-    private ElevatorHeights(double value) {
-      this.value = value;
-    }
-
-    public double getValue() {
-      return value;
-    }
-  }
-
   public Elevator(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;
     var root = elevatorMech.getRoot("base", 1, 0);
@@ -50,7 +35,7 @@ public class Elevator extends SubsystemBase {
     Logger.recordOutput("Elevator/Height", inputs.heightMeters);
     Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
 
-    SmartDashboard.putNumber("Elevator/Setpoint Value", setPointMeters);
+    SmartDashboard.putNumber("Elevator/Raw Height Meters", inputs.heightMeters);
   }
 
   public boolean atGoal() {

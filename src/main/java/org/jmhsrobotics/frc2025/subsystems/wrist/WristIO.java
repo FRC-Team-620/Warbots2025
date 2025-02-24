@@ -1,6 +1,5 @@
 package org.jmhsrobotics.frc2025.subsystems.wrist;
 
-import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator.ElevatorHeights;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface WristIO {
@@ -17,5 +16,5 @@ public interface WristIO {
 
   public default void setBrakeMode(boolean enable) {}
 
-  public default void setWristLimits(ElevatorHeights heights) {}
+  public default void setWristLimits(double height) {}
 }

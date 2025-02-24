@@ -8,7 +8,6 @@ public interface IndexerIO {
     public double motorAmps;
     public double positionDegrees;
     public double motorRPM;
-    public double setPointDegrees;
   }
 
   public default void updateInputs(IndexerIOInputs inputs) {}

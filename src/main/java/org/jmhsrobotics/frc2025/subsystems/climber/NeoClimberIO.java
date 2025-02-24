@@ -5,6 +5,8 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import org.jmhsrobotics.frc2025.Constants;
@@ -13,15 +15,27 @@ import org.jmhsrobotics.frc2025.util.SparkUtil;
 public class NeoClimberIO implements ClimberIO {
   private SparkMax motor = new SparkMax(Constants.CAN.kClimberMotorID, MotorType.kBrushless);
   private RelativeEncoder encoder;
-  private SparkMaxConfig motorConfig;
+  private SparkMaxConfig motorConfig = new SparkMaxConfig();
+
+  private AbsoluteEncoderConfig encoderConfig = new AbsoluteEncoderConfig();
 
   public NeoClimberIO() {
-    motorConfig = new SparkMaxConfig();
+    encoderConfig.positionConversionFactor(360);
+
     motorConfig
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(40)
+        .smartCurrentLimit(20)
         .voltageCompensation(12)
-        .inverted(false);
+        .inverted(false)
+        .signals
+        .absoluteEncoderVelocityAlwaysOn(true)
+        .absoluteEncoderPositionAlwaysOn(true)
+        .absoluteEncoderPositionPeriodMs(20)
+        .absoluteEncoderVelocityPeriodMs(20)
+        .appliedOutputPeriodMs(20)
+        .busVoltagePeriodMs(20)
+        .outputCurrentPeriodMs(20);
+    motorConfig.absoluteEncoder.apply(encoderConfig);
 
     SparkUtil.tryUntilOk(
         motor,

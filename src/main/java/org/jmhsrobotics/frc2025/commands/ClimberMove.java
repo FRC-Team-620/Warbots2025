@@ -7,8 +7,7 @@ public class ClimberMove extends Command {
   private Climber climber;
   private double climberSpeedDutyCycle;
 
-  public ClimberMove(
-      Climber climber, double climberSpeedDutyCycle) {
+  public ClimberMove(Climber climber, double climberSpeedDutyCycle) {
     this.climber = climber;
     this.climberSpeedDutyCycle = climberSpeedDutyCycle;
 

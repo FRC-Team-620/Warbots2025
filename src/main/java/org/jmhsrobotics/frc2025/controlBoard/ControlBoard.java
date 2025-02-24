@@ -48,13 +48,9 @@ public interface ControlBoard {
 
   public Trigger climbDown();
 
-  public Trigger indexerUp();
-
-  public Trigger indexerDown();
+  public Trigger moveIndexer();
 
   public Trigger changeModeLeft();
 
   public Trigger changeModeRight();
-
-  public Trigger resetIndexer();
 }

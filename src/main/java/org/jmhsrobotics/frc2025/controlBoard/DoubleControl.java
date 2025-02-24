@@ -173,12 +173,9 @@ public class DoubleControl implements ControlBoard {
     return operator.povDown();
   }
 
-  public Trigger indexerUp() {
-    return operator.leftStick();
-  }
-
-  public Trigger indexerDown() {
-    return operator.rightStick();
+  @Override
+  public Trigger moveIndexer() {
+    return operator.povLeft();
   }
 
   public Trigger changeModeLeft() {
@@ -187,9 +184,5 @@ public class DoubleControl implements ControlBoard {
 
   public Trigger changeModeRight() {
     return operator.rightBumper();
-  }
-
-  public Trigger resetIndexer() {
-    return operator.povLeft();
   }
 }

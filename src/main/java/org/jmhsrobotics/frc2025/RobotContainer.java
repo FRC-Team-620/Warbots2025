@@ -32,6 +32,7 @@ import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
+import org.jmhsrobotics.frc2025.commands.IndexerMove;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
@@ -41,9 +42,6 @@ import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.SimClimberIO;
-import org.jmhsrobotics.frc2025.subsystems.indexer.IndexerIO;
-import org.jmhsrobotics.frc2025.subsystems.indexer.NeoIndexerIO;
-import org.jmhsrobotics.frc2025.subsystems.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOBoron;
@@ -55,6 +53,9 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
+import org.jmhsrobotics.frc2025.subsystems.indexer.IndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.NeoIndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.intake.IntakeIO;
@@ -343,23 +344,11 @@ public class RobotContainer {
 
     control.intakeCoralFromIndexer().whileTrue(new IntakeFromIndexer(wrist, intake));
 
-    control
-        .climbUp()
-        .whileTrue(
-            new ClimberMove(climber, -1));
+    control.climbUp().whileTrue(new ClimberMove(climber, -1));
 
-    control
-        .climbDown()
-        .whileTrue(
-            new ClimberMove(climber, 1));
+    control.climbDown().whileTrue(new ClimberMove(climber, 1));
 
-    control
-        .resetIndexer()
-        .onTrue(
-            new ClimberMove(climber, 0));
-
-    // control.indexerUp().onTrue(down);
-    // control.indexerDown().onTrue(down);
+    control.moveIndexer().onTrue(new IndexerMove(indexer));
 
     control
         .changeModeLeft()
@@ -389,6 +378,9 @@ public class RobotContainer {
         "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
+    SmartDashboard.putData("cmd/MoveIndexerCommand", new IndexerMove(indexer));
+    SmartDashboard.putData("cmd/MoveClimberUp", new ClimberMove(climber, 1));
+    SmartDashboard.putData("cmd/MoveClimberDown", new ClimberMove(climber, -1));
   }
 
   public Command getToggleBrakeCommand() {

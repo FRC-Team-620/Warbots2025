@@ -1,4 +1,4 @@
-package org.jmhsrobotics.frc2025.subsystems.climber.indexer;
+package org.jmhsrobotics.frc2025.subsystems.indexer;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;

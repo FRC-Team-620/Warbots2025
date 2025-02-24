@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
+import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
@@ -41,9 +41,9 @@ import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.SimClimberIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.IndexerIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.NeoIndexerIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.SimIndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.IndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.NeoIndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOBoron;
@@ -54,6 +54,7 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
 import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.intake.IntakeIO;
@@ -89,6 +90,7 @@ public class RobotContainer {
   private final LED led;
   private final Intake intake;
   public final Climber climber;
+  public final Indexer indexer;
   private boolean isBrakeMode = true;
 
   // Controller
@@ -121,8 +123,9 @@ public class RobotContainer {
 
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
-        climber = new Climber(new NeoClimberIO(), new NeoIndexerIO());
+        climber = new Climber(new NeoClimberIO());
         intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
+        indexer = new Indexer(new NeoIndexerIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -145,7 +148,8 @@ public class RobotContainer {
                     VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
         elevator = new Elevator(new SimElevatorIO());
         wrist = new Wrist(new SimWristIO());
-        climber = new Climber(new SimClimberIO(), new SimIndexerIO());
+        climber = new Climber(new SimClimberIO());
+        indexer = new Indexer(new SimIndexerIO());
         intake = new Intake(new IntakeIO() {}, new SimTimeOfFlightIO() {});
 
         System.out.println("Mode: SIM");
@@ -164,7 +168,8 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
-        climber = new Climber(new ClimberIO() {}, new IndexerIO() {});
+        climber = new Climber(new ClimberIO() {});
+        indexer = new Indexer(new IndexerIO() {});
 
         System.out.println("Mode: DEFAULT");
         break;
@@ -341,17 +346,17 @@ public class RobotContainer {
     control
         .climbUp()
         .whileTrue(
-            new ClimberAndIndexerMove(climber, -1, Constants.IndexerConstants.kRotationUpDegrees));
+            new ClimberMove(climber, -1));
 
     control
         .climbDown()
         .whileTrue(
-            new ClimberAndIndexerMove(climber, 1, Constants.IndexerConstants.kRotationUpDegrees));
+            new ClimberMove(climber, 1));
 
     control
         .resetIndexer()
         .onTrue(
-            new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
+            new ClimberMove(climber, 0));
 
     // control.indexerUp().onTrue(down);
     // control.indexerDown().onTrue(down);

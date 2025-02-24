@@ -120,6 +120,11 @@ public final class Constants {
     public static final double kRotationToleranceDegrees = 5;
   }
 
+  public static final class ClimberConstants {
+    public static final double kTopRotationLimit = 10;
+    public static final double kBottomRotationLimit = 60;
+  }
+
   public static class ModeConstants {
     public static final int kAlgae = 1;
     public static final int kSearch = 2;

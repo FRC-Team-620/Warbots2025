@@ -344,9 +344,9 @@ public class RobotContainer {
 
     control.intakeCoralFromIndexer().whileTrue(new IntakeFromIndexer(wrist, intake));
 
-    control.climbUp().whileTrue(new ClimberMove(climber, -1));
+    control.climbUp().whileTrue(new ClimberMove(climber, 1));
 
-    control.climbDown().whileTrue(new ClimberMove(climber, 1));
+    control.climbDown().whileTrue(new ClimberMove(climber, -1));
 
     control.moveIndexer().onTrue(new IndexerMove(indexer));
 

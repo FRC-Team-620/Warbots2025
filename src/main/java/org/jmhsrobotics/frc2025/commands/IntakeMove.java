@@ -41,12 +41,12 @@ public class IntakeMove extends Command {
     // the right trigger is always intake
     if (rightTrigger >= leftTrigger) {
       if (isInAlgaeMode)
-        this.intake.set(-rightTrigger * Constants.IntakeConstants.kMaxSpeedDutyCycle);
-      else this.intake.set(rightTrigger * Constants.IntakeConstants.kMaxSpeedDutyCycle);
+        this.intake.set(-rightTrigger * Constants.IntakeConstants.kAlgaeIntakeSpeedDutyCycle);
+      else this.intake.set(rightTrigger * Constants.IntakeConstants.kCoralIntakeSpeedDutyCycle);
     } else {
       if (isInAlgaeMode)
-        this.intake.set(leftTrigger * Constants.IntakeConstants.kMaxSpeedDutyCycle);
-      else this.intake.set(-leftTrigger * Constants.IntakeConstants.kMaxSpeedDutyCycle);
+        this.intake.set(leftTrigger * Constants.IntakeConstants.kAlgaeExtakeSpeedDutyCycle);
+      else this.intake.set(-leftTrigger * Constants.IntakeConstants.kCoralExtakeSpeedDutyCycle);
     }
 
     if (rightTrigger + leftTrigger == 0) {

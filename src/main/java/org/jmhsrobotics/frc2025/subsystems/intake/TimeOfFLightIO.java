@@ -1,6 +1,5 @@
 package org.jmhsrobotics.frc2025.subsystems.intake;
 
-import org.jmhsrobotics.frc2025.Constants;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface TimeOfFLightIO {
@@ -9,10 +8,10 @@ public interface TimeOfFLightIO {
     // distance in millimeters
     public int coralDistance = -1;
     public int algaeDistance = -1;
-    public int[] pastCoralDistance =
-        new int[Constants.IntakeConstants.kCoralSensorAveragerQuantity];
-    public int[] pastAlgaeDistance =
-        new int[Constants.IntakeConstants.kAlgaeSensorAveragerQuantity];
+    // public int[] pastCoralDistance =
+    //     new int[Constants.IntakeConstants.kCoralSensorAveragerQuantity];
+    // public int[] pastAlgaeDistance =
+    //     new int[Constants.IntakeConstants.kAlgaeSensorAveragerQuantity];
   }
 
   public default void updateInputs(TimeOfFLightIOInputs inputs) {}

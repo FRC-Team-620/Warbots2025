@@ -1,6 +1,8 @@
 package org.jmhsrobotics.frc2025.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.warcore.math.DiminishingAverageHandler;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -13,10 +15,10 @@ public class Intake extends SubsystemBase {
   private int mode = 2;
   private boolean override = false;
 
-  // private DiminishingAverageHandler coralAverageHandler = new
-  // DiminishingAverageHandler(Constants.IntakeConstants.kCoralAverageHandlerWeight);
-  // private DiminishingAverageHandler algaeAverageHandler = new
-  // DiminishingAverageHandler(Constants.IntakeConstants.kAlgaeAverageHandlerWeight);
+  private DiminishingAverageHandler coralAverageHandler =
+      new DiminishingAverageHandler(Constants.IntakeConstants.kCoralAverageHandlerWeight);
+  private DiminishingAverageHandler algaeAverageHandler =
+      new DiminishingAverageHandler(Constants.IntakeConstants.kAlgaeAverageHandlerWeight);
 
   public Intake(IntakeIO intakeIO, TimeOfFLightIO timeOfFLightIO) {
     this.intakeIO = intakeIO;
@@ -28,12 +30,14 @@ public class Intake extends SubsystemBase {
     this.mode = getMode();
     intakeIO.updateInputs(intakeInputs);
     timeOfFLightIO.updateInputs(sensorInputs);
+    coralAverageHandler.feed(sensorInputs.coralDistance);
+    algaeAverageHandler.feed(sensorInputs.algaeDistance);
+
     Logger.recordOutput("Current Control Mode", this.mode);
     Logger.recordOutput("Intake/Coral Sensor Distance", sensorInputs.coralDistance);
     Logger.recordOutput("Intake/Algae Sensor Distance", sensorInputs.algaeDistance);
-
-    // coralAverageHandler.feed(sensorInputs.coralDistance);
-    // algaeAverageHandler.feed(sensorInputs.algaeDistance);
+    Logger.recordOutput("Intake/Average Coral Distance", coralAverageHandler.get());
+    Logger.recordOutput("Intake/Average Algae Distance", algaeAverageHandler.get());
   }
 
   /**
@@ -82,7 +86,7 @@ public class Intake extends SubsystemBase {
   }
 
   /**
-   * gets the instantaneous coral distance
+   * returns the instantaneous coral distance
    *
    * @return
    */
@@ -91,7 +95,7 @@ public class Intake extends SubsystemBase {
   }
 
   /**
-   * gets the instantaneous coral distance
+   * returns the instantaneous coral distance
    *
    * @return
    */
@@ -100,32 +104,30 @@ public class Intake extends SubsystemBase {
   }
 
   /**
-   * Returns the average coral distance over the last several measurements, removing noise
+   * Returns the average coral distance from the diminishing weight average handler
    *
    * @return
    */
   public double getAveragedCoralDistance() {
-    double totalDistance = 0;
-    for (int distance : sensorInputs.pastCoralDistance) {
-      totalDistance += distance;
-    }
-    return totalDistance / sensorInputs.pastCoralDistance.length;
-
-    // return coralAverageHandler.get();
+    // double totalDistance = 0;
+    // for (int distance : sensorInputs.pastCoralDistance) {
+    //   totalDistance += distance;
+    // }
+    // return totalDistance / sensorInputs.pastCoralDistance.length;
+    return coralAverageHandler.get();
   }
 
   /**
-   * Returns the average algae distance over the last several measurements, removing noise
+   * Returns the average algae distance from the diminishing weight average handler
    *
    * @return
    */
   public double getAveragedAlgaeDistance() {
-    double totalDistance = 0;
-    for (int distance : sensorInputs.pastAlgaeDistance) {
-      totalDistance += distance;
-    }
-    return totalDistance / sensorInputs.pastAlgaeDistance.length;
-
-    // return algaeAverageHandler.get();
+    // double totalDistance = 0;
+    // for (int distance : sensorInputs.pastAlgaeDistance) {
+    //   totalDistance += distance;
+    // }
+    // return totalDistance / sensorInputs.pastAlgaeDistance.length;
+    return algaeAverageHandler.get();
   }
 }

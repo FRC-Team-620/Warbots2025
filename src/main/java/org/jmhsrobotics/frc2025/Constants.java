@@ -114,8 +114,8 @@ public final class Constants {
     public static final int kCoralSensorAveragerQuantity = 3;
     public static final int kAlgaeSensorAveragerQuantity = 5;
 
-    public static final double kAlgaeAverageHandlerWeight = 0.75;
-    public static final double kCoralAverageHandlerWeight = 0.75;
+    public static final double kCoralAverageHandlerWeight = 0.3;
+    public static final double kAlgaeAverageHandlerWeight = 0.6;
   }
 
   public static final class IndexerConstants {

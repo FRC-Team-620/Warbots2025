@@ -10,14 +10,14 @@ public class SimTimeOfFlightIO implements TimeOfFLightIO {
     inputs.coralDistance = 60; // TODO: replace with actual sensor reading
     inputs.algaeDistance = 60; // TODO: replace with actual sensor reading
 
-    for (int i = 1; i < inputs.pastCoralDistance.length; i++) {
-      inputs.pastCoralDistance[i] = inputs.pastCoralDistance[i - 1];
-    }
-    inputs.pastCoralDistance[0] = 60;
+    // for (int i = 1; i < inputs.pastCoralDistance.length; i++) {
+    //   inputs.pastCoralDistance[i] = inputs.pastCoralDistance[i - 1];
+    // }
+    // inputs.pastCoralDistance[0] = 60;
 
-    for (int i = 1; i < inputs.pastAlgaeDistance.length; i++) {
-      inputs.pastAlgaeDistance[i] = inputs.pastAlgaeDistance[i - 1];
-    }
-    inputs.pastAlgaeDistance[0] = 60;
+    // for (int i = 1; i < inputs.pastAlgaeDistance.length; i++) {
+    //   inputs.pastAlgaeDistance[i] = inputs.pastAlgaeDistance[i - 1];
+    // }
+    // inputs.pastAlgaeDistance[0] = 60;
   }
 }

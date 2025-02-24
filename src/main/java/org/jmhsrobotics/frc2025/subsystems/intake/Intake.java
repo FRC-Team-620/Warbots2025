@@ -1,8 +1,9 @@
 package org.jmhsrobotics.frc2025.subsystems.intake;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2025.Constants;
-import org.jmhsrobotics.warcore.math.DiminishingAverageHandler;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -15,10 +16,12 @@ public class Intake extends SubsystemBase {
   private int mode = 2;
   private boolean override = false;
 
-  private DiminishingAverageHandler coralAverageHandler =
-      new DiminishingAverageHandler(Constants.IntakeConstants.kCoralAverageHandlerWeight);
-  private DiminishingAverageHandler algaeAverageHandler =
-      new DiminishingAverageHandler(Constants.IntakeConstants.kAlgaeAverageHandlerWeight);
+  private Debouncer coralDebouncer =
+      new Debouncer(Constants.IntakeConstants.kCoralDebounceTime, DebounceType.kFalling);
+  private Debouncer algaeDebouncer =
+      new Debouncer(Constants.IntakeConstants.kAlgaeDebounceTime, DebounceType.kFalling);
+  private boolean coralInIntake = false;
+  private boolean algaeInIntake = false;
 
   public Intake(IntakeIO intakeIO, TimeOfFLightIO timeOfFLightIO) {
     this.intakeIO = intakeIO;
@@ -30,14 +33,20 @@ public class Intake extends SubsystemBase {
     this.mode = getMode();
     intakeIO.updateInputs(intakeInputs);
     timeOfFLightIO.updateInputs(sensorInputs);
-    coralAverageHandler.feed(sensorInputs.coralDistance);
-    algaeAverageHandler.feed(sensorInputs.algaeDistance);
+    coralInIntake =
+        coralDebouncer.calculate(
+            sensorInputs.coralDistance <= Constants.IntakeConstants.kCoralInIntakeDistanceMm
+                && sensorInputs.coralDistance > 0);
+    algaeInIntake =
+        algaeDebouncer.calculate(
+            sensorInputs.algaeDistance <= Constants.IntakeConstants.kAlgaeInIntakeDistanceMm
+                && sensorInputs.algaeDistance > 0);
 
     Logger.recordOutput("Current Control Mode", this.mode);
     Logger.recordOutput("Intake/Coral Sensor Distance", sensorInputs.coralDistance);
     Logger.recordOutput("Intake/Algae Sensor Distance", sensorInputs.algaeDistance);
-    Logger.recordOutput("Intake/Average Coral Distance", coralAverageHandler.get());
-    Logger.recordOutput("Intake/Average Algae Distance", algaeAverageHandler.get());
+    Logger.recordOutput("Intake/Coral In Intake", coralInIntake);
+    Logger.recordOutput("Intake/Algae In Intake", algaeInIntake);
   }
 
   /**
@@ -50,10 +59,15 @@ public class Intake extends SubsystemBase {
     if (override) {
       return mode;
     }
-    if (this.getAveragedAlgaeDistance() <= 30 && this.getAveragedAlgaeDistance() != 0) return 1;
-    else if (this.getAveragedCoralDistance() <= 20 && this.getAveragedCoralDistance() != 0)
-      return 3;
-    return 2;
+    if (coralInIntake) {
+      this.mode = 1;
+      return this.mode;
+    } else if (algaeInIntake) {
+      this.mode = 3;
+      return this.mode;
+    }
+    this.mode = 2;
+    return this.mode;
   }
 
   /**
@@ -101,33 +115,5 @@ public class Intake extends SubsystemBase {
    */
   public double getAlgaeDistance() {
     return sensorInputs.algaeDistance;
-  }
-
-  /**
-   * Returns the average coral distance from the diminishing weight average handler
-   *
-   * @return
-   */
-  public double getAveragedCoralDistance() {
-    // double totalDistance = 0;
-    // for (int distance : sensorInputs.pastCoralDistance) {
-    //   totalDistance += distance;
-    // }
-    // return totalDistance / sensorInputs.pastCoralDistance.length;
-    return coralAverageHandler.get();
-  }
-
-  /**
-   * Returns the average algae distance from the diminishing weight average handler
-   *
-   * @return
-   */
-  public double getAveragedAlgaeDistance() {
-    // double totalDistance = 0;
-    // for (int distance : sensorInputs.pastAlgaeDistance) {
-    //   totalDistance += distance;
-    // }
-    // return totalDistance / sensorInputs.pastAlgaeDistance.length;
-    return algaeAverageHandler.get();
   }
 }

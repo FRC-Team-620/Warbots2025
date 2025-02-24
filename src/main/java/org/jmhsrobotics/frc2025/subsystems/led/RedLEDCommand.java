@@ -17,4 +17,9 @@ public class RedLEDCommand extends Command {
   public void execute() {
     led.setPattern(red);
   }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
 }

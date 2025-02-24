@@ -37,7 +37,7 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
     if (coralMeasure != null) {
       inputs.algaeDistance = algaeMeasure.distance_mm;
     } else {
-      inputs.algaeDistance = -100; // TODO: include a better missing measure value
+      inputs.algaeDistance = 100; // TODO: include a better missing measure value
     }
 
     // adds the current sensor value to the array, and moves all other values back by one index

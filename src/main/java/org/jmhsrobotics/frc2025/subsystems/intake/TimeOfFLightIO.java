@@ -12,7 +12,7 @@ public interface TimeOfFLightIO {
     public int[] pastCoralDistance =
         new int[Constants.IntakeConstants.kCoralSensorAveragerQuantity];
     public int[] pastAlgaeDistance =
-        new int[Constants.IntakeConstants.kCoralSensorAveragerQuantity];
+        new int[Constants.IntakeConstants.kAlgaeSensorAveragerQuantity];
   }
 
   public default void updateInputs(TimeOfFLightIOInputs inputs) {}

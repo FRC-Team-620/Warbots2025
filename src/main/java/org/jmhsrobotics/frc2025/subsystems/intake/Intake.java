@@ -13,6 +13,11 @@ public class Intake extends SubsystemBase {
   private int mode = 2;
   private boolean override = false;
 
+  // private DiminishingAverageHandler coralAverageHandler = new
+  // DiminishingAverageHandler(Constants.IntakeConstants.kCoralAverageHandlerWeight);
+  // private DiminishingAverageHandler algaeAverageHandler = new
+  // DiminishingAverageHandler(Constants.IntakeConstants.kAlgaeAverageHandlerWeight);
+
   public Intake(IntakeIO intakeIO, TimeOfFLightIO timeOfFLightIO) {
     this.intakeIO = intakeIO;
     this.timeOfFLightIO = timeOfFLightIO;
@@ -26,6 +31,9 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Current Control Mode", this.mode);
     Logger.recordOutput("Intake/Coral Sensor Distance", sensorInputs.coralDistance);
     Logger.recordOutput("Intake/Algae Sensor Distance", sensorInputs.algaeDistance);
+
+    // coralAverageHandler.feed(sensorInputs.coralDistance);
+    // algaeAverageHandler.feed(sensorInputs.algaeDistance);
   }
 
   /**
@@ -102,6 +110,8 @@ public class Intake extends SubsystemBase {
       totalDistance += distance;
     }
     return totalDistance / sensorInputs.pastCoralDistance.length;
+
+    // return coralAverageHandler.get();
   }
 
   /**
@@ -115,5 +125,7 @@ public class Intake extends SubsystemBase {
       totalDistance += distance;
     }
     return totalDistance / sensorInputs.pastAlgaeDistance.length;
+
+    // return algaeAverageHandler.get();
   }
 }

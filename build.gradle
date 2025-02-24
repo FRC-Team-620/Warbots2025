@@ -12,6 +12,10 @@ java {
 
 def ROBOT_MAIN_CLASS = "org.jmhsrobotics.frc2025.Main"
 
+// repositories {
+//     mavenCentral()
+//     maven { url 'https://jitpack.io' }
+// }
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
 deploy {
@@ -84,6 +88,8 @@ task(replayWatch, type: JavaExec) {
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
+    // implementation 'com.github.FRC-Team-620:WarCore:V1.3'
+
     annotationProcessor wpi.java.deps.wpilibAnnotations()
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
@@ -102,8 +108,8 @@ dependencies {
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
 
+
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
-    // implementation 'com.github.FRC-Team-620:WarCore:V1.3'
     // testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)

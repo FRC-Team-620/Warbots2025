@@ -41,12 +41,12 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
     }
 
     // adds the current sensor value to the array, and moves all other values back by one index
-    for (int i = 1; i < inputs.pastCoralDistance.length; i++) {
+    for (int i = inputs.pastCoralDistance.length - 1; i > 0; i--) {
       inputs.pastCoralDistance[i] = inputs.pastCoralDistance[i - 1];
     }
     inputs.pastCoralDistance[0] = coralMeasure.distance_mm;
 
-    for (int i = 1; i < inputs.pastAlgaeDistance.length; i++) {
+    for (int i = inputs.pastAlgaeDistance.length - 1; i > 0; i--) {
       inputs.pastAlgaeDistance[i] = inputs.pastAlgaeDistance[i - 1];
     }
     inputs.pastAlgaeDistance[0] = algaeMeasure.distance_mm;

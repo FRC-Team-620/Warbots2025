@@ -113,6 +113,9 @@ public final class Constants {
     // succeptable to noise, and the delay will not cause issues
     public static final int kCoralSensorAveragerQuantity = 3;
     public static final int kAlgaeSensorAveragerQuantity = 5;
+
+    public static final double kAlgaeAverageHandlerWeight = 0.75;
+    public static final double kCoralAverageHandlerWeight = 0.75;
   }
 
   public static final class IndexerConstants {

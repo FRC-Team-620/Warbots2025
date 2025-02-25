@@ -18,9 +18,11 @@ import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -34,6 +36,8 @@ import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
+import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
+import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
@@ -61,7 +65,6 @@ import org.jmhsrobotics.frc2025.subsystems.intake.NeoIntakeIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.SimTimeOfFlightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.TimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
-import org.jmhsrobotics.frc2025.subsystems.led.RainbowLEDCommand;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionIO;
@@ -173,7 +176,6 @@ public class RobotContainer {
     this.control = new SingleControl(intake, elevator);
 
     led = new LED();
-    led.setDefaultCommand(new RainbowLEDCommand(this.led));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -209,6 +211,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    intake.setDefaultCommand(
+        new IntakeMove(intake, wrist, control.intakeCoral(), control.extakeCoral()));
+
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -333,9 +338,6 @@ public class RobotContainer {
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
 
-    intake.setDefaultCommand(
-        new IntakeMove(intake, wrist, control.intakeCoral(), control.extakeCoral()));
-
     control.intakeCoralFromIndexer().whileTrue(new IntakeFromIndexer(wrist, intake));
 
     control
@@ -353,9 +355,6 @@ public class RobotContainer {
         .onTrue(
             new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
 
-    // control.indexerUp().onTrue(down);
-    // control.indexerDown().onTrue(down);
-
     control
         .changeModeLeft()
         .onTrue(Commands.runOnce(() -> intake.setMode(-1), intake).ignoringDisable(true));
@@ -363,10 +362,25 @@ public class RobotContainer {
     control
         .changeModeRight()
         .onTrue(Commands.runOnce(() -> intake.setMode(1), intake).ignoringDisable(true));
+
+    control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));
   }
 
   private void configureDriverFeedback() {
     // Changes LED light status and controller rumble
+    led.setDefaultCommand(new LEDToControlMode(this.led, this.intake));
+
+    // If control mode is manually overridden, lights flash red and green(Christmas!)
+    new Trigger(intake::isControlModeOverridden)
+        .onTrue(
+            new LEDFlashPattern(
+                led, LEDPattern.solid(Color.kRed), LEDPattern.solid(Color.kWhite), 1.5));
+
+    // if control mode is un-overridden, lights will flash gold and white
+    new Trigger(intake::isControlModeOverridden)
+        .onFalse(
+            new LEDFlashPattern(
+                led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite), 1.5));
   }
 
   private void setupSmartDashbaord() {

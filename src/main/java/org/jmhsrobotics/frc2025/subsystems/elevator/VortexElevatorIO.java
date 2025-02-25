@@ -119,10 +119,8 @@ public class VortexElevatorIO implements ElevatorIO {
     rightEncoder.setPosition(0);
   }
 
-  public void disableSoftLimits(){
-    vortexLeftConfig.softLimit
-      .forwardSoftLimitEnabled(false)
-      .reverseSoftLimitEnabled(false);
+  public void disableSoftLimits() {
+    vortexLeftConfig.softLimit.forwardSoftLimitEnabled(false).reverseSoftLimitEnabled(false);
     SparkUtil.tryUntilOk(
         vortexLeft,
         5,
@@ -131,10 +129,11 @@ public class VortexElevatorIO implements ElevatorIO {
                 vortexLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
   }
 
-  public void enableSoftLimits(){
-    vortexLeftConfig.softLimit
-      .forwardSoftLimitEnabled(Constants.ElevatorConstants.kElevatorLimitsEnabled)
-      .reverseSoftLimitEnabled(Constants.ElevatorConstants.kElevatorLimitsEnabled);
+  public void enableSoftLimits() {
+    vortexLeftConfig
+        .softLimit
+        .forwardSoftLimitEnabled(Constants.ElevatorConstants.kElevatorLimitsEnabled)
+        .reverseSoftLimitEnabled(Constants.ElevatorConstants.kElevatorLimitsEnabled);
     SparkUtil.tryUntilOk(
         vortexLeft,
         5,

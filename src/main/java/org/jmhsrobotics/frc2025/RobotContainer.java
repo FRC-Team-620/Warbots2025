@@ -387,7 +387,8 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData("cmd/TestElevatorTopLimitCommand", new ElevatorMoveTo(elevator, 2.05));
-    SmartDashboard.putData("cmd/TestElevatorBottomLimitCommand", new ElevatorMoveTo(elevator, -0.1));
+    SmartDashboard.putData(
+        "cmd/TestElevatorBottomLimitCommand", new ElevatorMoveTo(elevator, -0.1));
     SmartDashboard.putData("cmd/TestWristTopLimitCommand", new WristMoveTo(wrist, 230));
     SmartDashboard.putData("cmd/TestWristBottomLimitCommand", new WristMoveTo(wrist, -1));
   }

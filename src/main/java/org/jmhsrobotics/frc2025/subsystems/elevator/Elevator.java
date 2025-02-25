@@ -80,11 +80,11 @@ public class Elevator extends SubsystemBase {
     return setPointMeters;
   }
 
-  public void disableSoftLimits(){
+  public void disableSoftLimits() {
     elevatorIO.disableSoftLimits();
   }
 
-  public void enableSoftLimits(){
+  public void enableSoftLimits() {
     elevatorIO.enableSoftLimits();
   }
 }

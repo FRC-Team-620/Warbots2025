@@ -23,7 +23,7 @@ public interface ElevatorIO {
 
   public default void setBrakeMode(boolean enable) {}
 
-  public default void disableSoftLimits();
+  public default void disableSoftLimits() {}
 
-  public default void enableSoftLimits();
+  public default void enableSoftLimits() {}
 }

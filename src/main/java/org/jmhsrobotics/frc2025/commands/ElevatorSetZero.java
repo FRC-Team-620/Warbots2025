@@ -17,6 +17,7 @@ public class ElevatorSetZero extends Command {
   @Override
   public void initialize() {
     timer.reset();
+    elevator.disableSoftLimits();
     elevator.setVoltage(-0.5);
   }
 
@@ -35,7 +36,9 @@ public class ElevatorSetZero extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    
     elevator.setVoltage(0);
     if (!interrupted) elevator.setZero();
+    elevator.enableSoftLimits();
   }
 }

@@ -79,4 +79,12 @@ public class Elevator extends SubsystemBase {
   public double getSetpoint() {
     return setPointMeters;
   }
+
+  public void disableSoftLimits(){
+    elevatorIO.disableSoftLimits();
+  }
+
+  public void enableSoftLimits(){
+    elevatorIO.enableSoftLimits();
+  }
 }

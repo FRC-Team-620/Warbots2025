@@ -31,10 +31,12 @@ import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
+import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
+import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
@@ -384,6 +386,10 @@ public class RobotContainer {
         "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
+    SmartDashboard.putData("cmd/TestElevatorTopLimitCommand", new ElevatorMoveTo(elevator, 2.05));
+    SmartDashboard.putData("cmd/TestElevatorBottomLimitCommand", new ElevatorMoveTo(elevator, -0.1));
+    SmartDashboard.putData("cmd/TestWristTopLimitCommand", new WristMoveTo(wrist, 230));
+    SmartDashboard.putData("cmd/TestWristBottomLimitCommand", new WristMoveTo(wrist, -1));
   }
 
   public Command getToggleBrakeCommand() {

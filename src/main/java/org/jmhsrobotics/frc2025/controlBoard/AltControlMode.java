@@ -112,69 +112,73 @@ public class AltControlMode implements ControlBoard {
     return () -> driver.getRightTriggerAxis();
   }
 
+  @Override
   public Trigger placeCoralLevel1() {
     // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
-
     return driver.a().and(coralMode);
   }
 
+  @Override
   public Trigger placeCoralLevel2() {
     // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
-
     return driver.b().and(coralMode);
   }
 
+  @Override
   public Trigger placeCoralLevel3() {
     // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
 
     return driver.x().and(coralMode);
   }
 
+  @Override
   public Trigger placeCoralLevel4() {
     // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
     return driver.y().and(coralMode);
   }
 
+  @Override
   public Trigger scoreAlgaeProcesser() {
     // if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
-
     return (driver.a().or(driver.b())).and(algaeMode);
   }
 
+  @Override
   public Trigger scoreAlgaeBarge() {
     // if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
-
     return (driver.y().or(driver.x())).and(algaeMode);
   }
 
+  @Override
   public Trigger elevatorIntakeCoral() {
     // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
-
     return driver.a().and(searchMode);
   }
 
+  @Override
   public Trigger takeAlgaeLevel2() {
     // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
-
     return driver.b().and(searchMode);
   }
 
+  @Override
   public Trigger takeAlgaeLevel3() {
     // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
-
     return driver.x().and(searchMode);
   }
 
+  @Override
   public Trigger takeAlgaeQTip() {
     // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
-
     return driver.y().and(searchMode);
   }
 
+  @Override
   public Trigger climbUp() {
     return driver.povUp();
   }
 
+  @Override
   public Trigger climbDown() {
     return driver.povDown();
   }
@@ -187,7 +191,13 @@ public class AltControlMode implements ControlBoard {
     return driver.back();
   }
 
+  @Override
   public Trigger changeModeRight() {
     return driver.start();
+  }
+
+  @Override
+  public Trigger UnOverrideControlMode() {
+    return driver.start().and(driver.back());
   }
 }

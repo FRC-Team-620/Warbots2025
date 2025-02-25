@@ -29,12 +29,6 @@ public final class Constants {
   public static final double krealTimeStep = ksimTimestep;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
-  public static final int ledPWMHeader = 5;
-  // led length in pixels
-  public static final int ledLength = 10;
-  // Density of the LED Strip - currently set at 120 LEDs per meter
-  public static final Distance ledSpacing = Meters.of(1 / 120.0);
-
   public static class CAN {
     public static final int kElevatorMotorLeftID = 30;
     public static final int kElevatorMotorRightID = 31;
@@ -60,10 +54,10 @@ public final class Constants {
     public static final double kLevel1Meters = 0.05;
     public static final double kLevel2Meters = 0.28;
     public static final double kLevel3Meters = 0.75;
-    public static final double kLevel4Meters = 1.8;
+    public static final double kLevel4Meters = 1.78;
 
     public static final double kProcesserMeters = .15;
-    public static final double kBargeMeters = 1.8;
+    public static final double kBargeMeters = 1.78;
 
     public static final double kAlgaeQTipMeters = 0.125;
     public static final double kCoralIntakeMeters = 0;
@@ -80,7 +74,7 @@ public final class Constants {
 
     // TODO: When absolute encoder conversion is fixed, remove  / 360, recalibrate PID and change
     // tolerance to 1 degree;
-    public static final double kRotationIntakeCoralDegrees = 20;
+    public static final double kRotationIntakeCoralDegrees = 16;
 
     public static final double kLevel1Degrees = 30.0;
     public static final double kLevel2Degrees = 40.5;
@@ -104,9 +98,15 @@ public final class Constants {
     public static final double kMaxReverseSpeedDutyCycle = -0.2;
 
     public static final double kAlgaeDefaultCommandSpeed = -0.05;
-    public static final double kCoralDefaultCommandSpeed = -0.03;
+    public static final double kCoralDefaultCommandSpeed = -0.08;
 
     public static final double kIntakeCoralSpeedDutyCycle = 0.3;
+
+    public static final int kCoralInIntakeDistanceMm = 20;
+    public static final int kAlgaeInIntakeDistanceMm = 30;
+
+    public static final double kCoralDebounceTime = 0.2;
+    public static final double kAlgaeDebounceTime = 0.3;
   }
 
   public static final class IndexerConstants {
@@ -129,6 +129,17 @@ public final class Constants {
     public static final int kAlgae = 1;
     public static final int kSearch = 2;
     public static final int kCoral = 3;
+  }
+
+  public static final class LEDConstants {
+    public static final int kPWMHeader = 5;
+    // led length in pixels
+    public static final int kLength = 30;
+    // Density of the LED Strip - currently set at 120 LEDs per meter
+    public static final Distance kSpacing = Meters.of(1 / 120.0);
+
+    // number of times the flashcommand will change color per second
+    public static final double kFlashFrequency = 5;
   }
 
   public static enum Mode {

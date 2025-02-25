@@ -45,6 +45,12 @@ public class VortexElevatorIO implements ElevatorIO {
         Constants.ElevatorConstants.kP,
         Constants.ElevatorConstants.kI,
         Constants.ElevatorConstants.kD);
+    vortexLeftConfig
+        .softLimit // TODO double check elevator limit directions
+        .forwardSoftLimit(Constants.ElevatorConstants.kElevatorTopSoftLimit)
+        .reverseSoftLimit(Constants.ElevatorConstants.kElevatorBottomSoftLimit)
+        .forwardSoftLimitEnabled(Constants.ElevatorConstants.kElevatorLimitsEnabled)
+        .reverseSoftLimitEnabled(Constants.ElevatorConstants.kElevatorLimitsEnabled);
 
     vortexRightConfig = new SparkFlexConfig();
     vortexRightConfig
@@ -111,6 +117,29 @@ public class VortexElevatorIO implements ElevatorIO {
   public void setZero() {
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
+  }
+
+  public void disableSoftLimits() {
+    vortexLeftConfig.softLimit.forwardSoftLimitEnabled(false).reverseSoftLimitEnabled(false);
+    SparkUtil.tryUntilOk(
+        vortexLeft,
+        5,
+        () ->
+            vortexLeft.configure(
+                vortexLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+  }
+
+  public void enableSoftLimits() {
+    vortexLeftConfig
+        .softLimit
+        .forwardSoftLimitEnabled(Constants.ElevatorConstants.kElevatorLimitsEnabled)
+        .reverseSoftLimitEnabled(Constants.ElevatorConstants.kElevatorLimitsEnabled);
+    SparkUtil.tryUntilOk(
+        vortexLeft,
+        5,
+        () ->
+            vortexLeft.configure(
+                vortexLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
   }
 
   @Override

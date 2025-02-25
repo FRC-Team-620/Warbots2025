@@ -15,4 +15,6 @@ public interface WristIO {
   public default void setPositionDegrees(double angle) {}
 
   public default void setBrakeMode(boolean enable) {}
+
+  public default void setWristLimits(double height) {}
 }

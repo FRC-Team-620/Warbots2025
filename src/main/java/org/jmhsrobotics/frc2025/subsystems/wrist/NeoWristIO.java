@@ -48,7 +48,6 @@ public class NeoWristIO implements WristIO {
         .outputRange(-0.5, 0.5)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     motorConfig.absoluteEncoder.apply(encoderConfig);
-
     SparkUtil.tryUntilOk(
         motor,
         5,
@@ -73,6 +72,31 @@ public class NeoWristIO implements WristIO {
   @Override
   public void setPositionDegrees(double positionDegrees) {
     this.setPointDegrees = positionDegrees;
+  }
+
+  public void setWristLimits(double height) {
+    double topLimitDegrees;
+    double bottomLimitDegrees;
+    if (height < 0.1) {
+      topLimitDegrees = 195;
+      bottomLimitDegrees = 20;
+    } else {
+      topLimitDegrees = 205;
+      bottomLimitDegrees = 35;
+    }
+    motorConfig
+        .softLimit
+        .forwardSoftLimit(topLimitDegrees)
+        .reverseSoftLimit(bottomLimitDegrees)
+        .forwardSoftLimitEnabled(Constants.WristConstants.kWristLimitsEnabled)
+        .reverseSoftLimitEnabled(Constants.WristConstants.kWristLimitsEnabled);
+
+    SparkUtil.tryUntilOk(
+        motor,
+        5,
+        () ->
+            motor.configure(
+                motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
   }
 
   @Override

@@ -1,5 +1,6 @@
 package org.jmhsrobotics.frc2025.subsystems.wrist;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2025.Constants;
 import org.littletonrobotics.junction.Logger;
@@ -19,6 +20,12 @@ public class Wrist extends SubsystemBase {
     Logger.recordOutput("Wrist/AngleDegrees", inputs.positionDegrees);
     Logger.recordOutput("Wrist/OutputCurrent", inputs.motorAmps);
     Logger.recordOutput("Wrist/GoalAngle", setPointDegrees);
+
+    double rawElevatorHeights =
+        SmartDashboard.getNumber(
+            "Elevator/Raw Height Meters",
+            0); // put in a value as the default when Elevator setpoint doesn't work
+    wristIO.setWristLimits(rawElevatorHeights);
   }
 
   public boolean atGoal() {

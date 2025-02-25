@@ -34,6 +34,8 @@ public class Elevator extends SubsystemBase {
     Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
     Logger.recordOutput("Elevator/Height", inputs.heightMeters);
     Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
+
+    SmartDashboard.putNumber("Elevator/Raw Height Meters", inputs.heightMeters);
   }
 
   public boolean atGoal() {
@@ -76,5 +78,13 @@ public class Elevator extends SubsystemBase {
 
   public double getSetpoint() {
     return setPointMeters;
+  }
+
+  public void disableSoftLimits() {
+    elevatorIO.disableSoftLimits();
+  }
+
+  public void enableSoftLimits() {
+    elevatorIO.enableSoftLimits();
   }
 }

@@ -105,8 +105,8 @@ public final class Constants {
     public static final int kCoralInIntakeDistanceMm = 20;
     public static final int kAlgaeInIntakeDistanceMm = 30;
 
-    public static final double kCoralDebounceTime = 0.1;
-    public static final double kAlgaeDebounceTime = 0.1;
+    public static final double kCoralDebounceTime = 0.2;
+    public static final double kAlgaeDebounceTime = 0.3;
   }
 
   public static final class IndexerConstants {

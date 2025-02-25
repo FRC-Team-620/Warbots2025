@@ -47,6 +47,8 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Algae Sensor Distance", sensorInputs.algaeDistance);
     Logger.recordOutput("Intake/Coral In Intake", coralInIntake);
     Logger.recordOutput("Intake/Algae In Intake", algaeInIntake);
+    Logger.recordOutput("Intake/Coral Sensor Is Long", sensorInputs.coralSensorIsLong);
+    Logger.recordOutput("Intake/Algae Sensor Is Long", sensorInputs.algaeSensorIsLong);
   }
 
   /**
@@ -60,10 +62,10 @@ public class Intake extends SubsystemBase {
       return mode;
     }
     if (coralInIntake) {
-      this.mode = 1;
+      this.mode = 3;
       return this.mode;
     } else if (algaeInIntake) {
-      this.mode = 3;
+      this.mode = 1;
       return this.mode;
     }
     this.mode = 2;

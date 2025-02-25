@@ -29,6 +29,7 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
     var coralMeasure = coralSensor.getMeasurement();
     if (coralMeasure != null) {
       inputs.coralDistance = coralMeasure.distance_mm;
+      inputs.coralSensorIsLong = coralMeasure.is_long;
     } else {
       inputs.coralDistance = 100; // TODO: include a better missing measure value
     }
@@ -36,6 +37,8 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
     var algaeMeasure = algaeSensor.getMeasurement();
     if (coralMeasure != null) {
       inputs.algaeDistance = algaeMeasure.distance_mm;
+      inputs.algaeSensorIsLong = algaeMeasure.is_long;
+
     } else {
       inputs.algaeDistance = 100; // TODO: include a better missing measure value
     }

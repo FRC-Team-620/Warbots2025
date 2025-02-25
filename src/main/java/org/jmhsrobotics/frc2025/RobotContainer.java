@@ -379,8 +379,8 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData("cmd/MoveIndexerCommand", new IndexerMove(indexer));
-    SmartDashboard.putData("cmd/MoveClimberUp", new ClimberMove(climber, 1));
-    SmartDashboard.putData("cmd/MoveClimberDown", new ClimberMove(climber, -1));
+    SmartDashboard.putData("cmd/MoveClimberUp", new ClimberMove(climber, 0.2));
+    SmartDashboard.putData("cmd/MoveClimberDown", new ClimberMove(climber, -0.2));
   }
 
   public Command getToggleBrakeCommand() {

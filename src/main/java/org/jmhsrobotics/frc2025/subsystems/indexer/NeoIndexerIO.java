@@ -25,7 +25,7 @@ public class NeoIndexerIO implements IndexerIO {
   private double setPointDegrees;
 
   public NeoIndexerIO() {
-    encoderConfig.positionConversionFactor(360);
+    encoderConfig.positionConversionFactor(360).inverted(true);
 
     motorConfig
         .idleMode(IdleMode.kBrake)

@@ -46,7 +46,7 @@ public final class Constants {
     public static final int kAlgaeSensorID = 52;
 
     public static final int kIndexerMotorID = 55;
-    public static final int kClimberMotorID = 65;
+    public static final int kClimberMotorID = 45;
 
     public static final int kCanAndGyroID = 60;
 
@@ -110,10 +110,10 @@ public final class Constants {
   }
 
   public static final class IndexerConstants {
-    public static final double kRotationUpDegrees = 180;
-    public static final double kRotationDownDegrees = 0;
+    public static final double kRotationUpDegrees = 150;
+    public static final double kRotationDownDegrees = 10.5;
 
-    public static final double kP = 0.1;
+    public static final double kP = 0.05;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 

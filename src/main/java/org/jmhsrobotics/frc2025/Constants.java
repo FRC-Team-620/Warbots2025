@@ -54,10 +54,10 @@ public final class Constants {
     public static final double kLevel1Meters = 0.05;
     public static final double kLevel2Meters = 0.28;
     public static final double kLevel3Meters = 0.75;
-    public static final double kLevel4Meters = 1.8;
+    public static final double kLevel4Meters = 1.78;
 
     public static final double kProcesserMeters = .15;
-    public static final double kBargeMeters = 1.8;
+    public static final double kBargeMeters = 1.78;
 
     public static final double kAlgaeQTipMeters = 0.125;
     public static final double kCoralIntakeMeters = 0;
@@ -74,7 +74,7 @@ public final class Constants {
 
     // TODO: When absolute encoder conversion is fixed, remove  / 360, recalibrate PID and change
     // tolerance to 1 degree;
-    public static final double kRotationIntakeCoralDegrees = 20;
+    public static final double kRotationIntakeCoralDegrees = 16;
 
     public static final double kLevel1Degrees = 30.0;
     public static final double kLevel2Degrees = 40.5;
@@ -98,7 +98,7 @@ public final class Constants {
     public static final double kMaxReverseSpeedDutyCycle = -0.2;
 
     public static final double kAlgaeDefaultCommandSpeed = -0.05;
-    public static final double kCoralDefaultCommandSpeed = -0.03;
+    public static final double kCoralDefaultCommandSpeed = -0.08;
 
     public static final double kIntakeCoralSpeedDutyCycle = 0.3;
   }

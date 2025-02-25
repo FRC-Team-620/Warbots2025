@@ -23,7 +23,7 @@ public class ElevatorSetZero extends Command {
   @Override
   public void execute() {
     // if the velocity is at or near zero, the timer starts. otherwise it is reset to 0
-    if (elevator.getCurrentAmps() > 15) timer.start();
+    if (elevator.getCurrentAmps() > 20) timer.start();
     else timer.reset();
   }
 

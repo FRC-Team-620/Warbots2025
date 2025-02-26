@@ -29,7 +29,7 @@ public class IntakeFromIndexer extends Command {
 
   @Override
   public boolean isFinished() {
-    return intake.getCoralDistance() < 20 && intake.getCoralDistance() > 0;
+    return intake.getCoralDistance() < 20 && intake.isCoralMeasureValid();
   }
 
   @Override

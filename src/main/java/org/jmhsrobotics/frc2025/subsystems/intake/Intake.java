@@ -45,8 +45,10 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Algae In Intake", algaeInIntake);
     Logger.recordOutput("Intake/Coral Measurement Valid", sensorInputs.coralMeasurementIsValid);
     Logger.recordOutput("Intake/Algae Measurement Valid", sensorInputs.algaeMeasurementIsValid);
-    Logger.recordOutput("Intake/Coral Measurement Out Of Bounds", sensorInputs.coralMeasurementOutOfBounds);
-    Logger.recordOutput("Intake/Algae Measurement Out Of Bounds", sensorInputs.algaeMeasurementOutOfBounds);
+    Logger.recordOutput(
+        "Intake/Coral Measurement Out Of Bounds", sensorInputs.coralMeasurementOutOfBounds);
+    Logger.recordOutput(
+        "Intake/Algae Measurement Out Of Bounds", sensorInputs.algaeMeasurementOutOfBounds);
   }
 
   /**
@@ -60,17 +62,17 @@ public class Intake extends SubsystemBase {
     coralInIntake =
         coralFallingDebouncer.calculate(
                 sensorInputs.coralDistance <= Constants.IntakeConstants.kCoralInIntakeDistanceMm
-                    && sensorInputs.coralDistance > 0)
+                    && sensorInputs.coralMeasurementIsValid)
             && coralRisingDebouncer.calculate(
                 sensorInputs.coralDistance <= Constants.IntakeConstants.kCoralInIntakeDistanceMm
-                    && sensorInputs.coralDistance > 0);
+                    && sensorInputs.coralMeasurementIsValid);
     algaeInIntake =
         algaeFallingDebouncer.calculate(
                 sensorInputs.algaeDistance <= Constants.IntakeConstants.kAlgaeInIntakeDistanceMm
-                    && sensorInputs.algaeDistance > 0)
+                    && sensorInputs.algaeMeasurementIsValid)
             && algaeRisingDebouncer.calculate(
                 sensorInputs.algaeDistance <= Constants.IntakeConstants.kAlgaeInIntakeDistanceMm
-                    && sensorInputs.algaeDistance > 0);
+                    && sensorInputs.algaeMeasurementIsValid);
 
     if (override) {
       return mode;
@@ -136,6 +138,14 @@ public class Intake extends SubsystemBase {
    */
   public double getAlgaeDistance() {
     return sensorInputs.algaeDistance;
+  }
+
+  public boolean isCoralMeasureValid() {
+    return sensorInputs.coralMeasurementIsValid;
+  }
+
+  public boolean isAlgaeMeasureValid() {
+    return sensorInputs.algaeMeasurementIsValid;
   }
 
   public boolean isControlModeOverridden() {

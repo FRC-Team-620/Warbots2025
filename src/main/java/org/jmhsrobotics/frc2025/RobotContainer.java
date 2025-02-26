@@ -235,14 +235,7 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive));
-    // control.turboMode().onTrue(down);
 
-    // Operator Control Bindings //
-    // control.intakeCoral().onTrue(down);
-    // control.intakeAlgae().onTrue(down);
-    // control
-    //     .placeCoralL1()
-    //     .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel1Meters));
     control
         .placeCoralLevel1()
         .onTrue(
@@ -344,7 +337,7 @@ public class RobotContainer {
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
 
-    control.intakeCoralFromIndexer().whileTrue(new IntakeFromIndexer(wrist, intake));
+    control.intakeCoralFromIndexer().onTrue(new IntakeFromIndexer(wrist, intake));
 
     control.climbUp().whileTrue(new ClimberMove(climber, 1));
 

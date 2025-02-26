@@ -27,6 +27,7 @@ public class IntakeMove extends Command {
 
   @Override
   public void execute() {
+    // determines if the bot is in algae or coral mode based on wrist setpoint
     if (wrist.getSetpoint() == Constants.WristConstants.kRotationAlgaeDegrees
         || wrist.getSetpoint() == Constants.WristConstants.kRotationBargeDegrees
         || wrist.getSetpoint() == Constants.WristConstants.kRotationProcesserDegrees) {
@@ -60,11 +61,15 @@ public class IntakeMove extends Command {
   }
 
   private void algaeDefaultCommand() {
-    intake.set(Constants.IntakeConstants.kAlgaeDefaultCommandSpeed);
+    if (intake.getAlgaeDistance() < 30 && intake.getAlgaeDistance() > 0) {
+      intake.set(Constants.IntakeConstants.kAlgaeDefaultCommandSpeed);
+    } else {
+      intake.set(Constants.IntakeConstants.kAlgaeIntakeSpeedDutyCycle);
+    }
   }
 
   private void coralDefaultCommand() {
-    if (intake.getCoralDistance() > 30 && intake.getCoralDistance() != 0) {
+    if (intake.getCoralDistance() > 30 && intake.getCoralDistance() > 0) {
       intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed);
     }
   }

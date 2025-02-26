@@ -16,10 +16,14 @@ public class Intake extends SubsystemBase {
   private int mode = 2;
   private boolean override = false;
 
-  private Debouncer coralDebouncer =
-      new Debouncer(Constants.IntakeConstants.kCoralDebounceTime, DebounceType.kFalling);
-  private Debouncer algaeDebouncer =
-      new Debouncer(Constants.IntakeConstants.kAlgaeDebounceTime, DebounceType.kFalling);
+  private Debouncer coralFallingDebouncer =
+      new Debouncer(Constants.IntakeConstants.kCoralFallingDebounceTime, DebounceType.kFalling);
+  private Debouncer algaeFallingDebouncer =
+      new Debouncer(Constants.IntakeConstants.kAlgaeFallingDebounceTime, DebounceType.kFalling);
+  private Debouncer algaeRisingDebouncer =
+      new Debouncer(Constants.IntakeConstants.kAlgaeRisingDebounceTime, DebounceType.kRising);
+  private Debouncer coralRisingDebouncer =
+      new Debouncer(Constants.IntakeConstants.kCoralRisingDebounceTime, DebounceType.kRising);
   private boolean coralInIntake = false;
   private boolean algaeInIntake = false;
 
@@ -33,22 +37,18 @@ public class Intake extends SubsystemBase {
     this.mode = getMode();
     intakeIO.updateInputs(intakeInputs);
     timeOfFLightIO.updateInputs(sensorInputs);
-    coralInIntake =
-        coralDebouncer.calculate(
-            sensorInputs.coralDistance <= Constants.IntakeConstants.kCoralInIntakeDistanceMm
-                && sensorInputs.coralDistance > 0);
-    algaeInIntake =
-        algaeDebouncer.calculate(
-            sensorInputs.algaeDistance <= Constants.IntakeConstants.kAlgaeInIntakeDistanceMm
-                && sensorInputs.algaeDistance > 0);
 
     Logger.recordOutput("Current Control Mode", this.mode);
     Logger.recordOutput("Intake/Coral Sensor Distance", sensorInputs.coralDistance);
     Logger.recordOutput("Intake/Algae Sensor Distance", sensorInputs.algaeDistance);
     Logger.recordOutput("Intake/Coral In Intake", coralInIntake);
     Logger.recordOutput("Intake/Algae In Intake", algaeInIntake);
-    Logger.recordOutput("Intake/Coral Sensor Is Long", sensorInputs.coralSensorIsLong);
-    Logger.recordOutput("Intake/Algae Sensor Is Long", sensorInputs.algaeSensorIsLong);
+    Logger.recordOutput("Intake/Coral Measurement Valid", sensorInputs.coralMeasurementIsValid);
+    Logger.recordOutput("Intake/Algae Measurement Valid", sensorInputs.algaeMeasurementIsValid);
+    Logger.recordOutput(
+        "Intake/Coral Measurement Out Of Bounds", sensorInputs.coralMeasurementOutOfBounds);
+    Logger.recordOutput(
+        "Intake/Algae Measurement Out Of Bounds", sensorInputs.algaeMeasurementOutOfBounds);
   }
 
   /**
@@ -58,6 +58,22 @@ public class Intake extends SubsystemBase {
    * @return
    */
   public int getMode() {
+    // determines if coral and algae are in the intake based on sensor inputs and debouncers
+    coralInIntake =
+        coralFallingDebouncer.calculate(
+                sensorInputs.coralDistance <= Constants.IntakeConstants.kCoralInIntakeDistanceMm
+                    && sensorInputs.coralMeasurementIsValid)
+            && coralRisingDebouncer.calculate(
+                sensorInputs.coralDistance <= Constants.IntakeConstants.kCoralInIntakeDistanceMm
+                    && sensorInputs.coralMeasurementIsValid);
+    algaeInIntake =
+        algaeFallingDebouncer.calculate(
+                sensorInputs.algaeDistance <= Constants.IntakeConstants.kAlgaeInIntakeDistanceMm
+                    && sensorInputs.algaeMeasurementIsValid)
+            && algaeRisingDebouncer.calculate(
+                sensorInputs.algaeDistance <= Constants.IntakeConstants.kAlgaeInIntakeDistanceMm
+                    && sensorInputs.algaeMeasurementIsValid);
+
     if (override) {
       return mode;
     }
@@ -122,6 +138,14 @@ public class Intake extends SubsystemBase {
    */
   public double getAlgaeDistance() {
     return sensorInputs.algaeDistance;
+  }
+
+  public boolean isCoralMeasureValid() {
+    return sensorInputs.coralMeasurementIsValid;
+  }
+
+  public boolean isAlgaeMeasureValid() {
+    return sensorInputs.algaeMeasurementIsValid;
   }
 
   public boolean isControlModeOverridden() {

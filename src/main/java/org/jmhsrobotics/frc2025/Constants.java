@@ -101,17 +101,19 @@ public final class Constants {
     public static final double kCoralIntakeSpeedDutyCycle = 0.4;
     public static final double kCoralExtakeSpeedDutyCycle = 0.2;
 
-    public static final double kCoralIntakeIndexerSpeedDutyCycle = 0.5;
+    public static final double kCoralIntakeIndexerSpeedDutyCycle = 0.35;
     public static final double kCoralIntakeIndexerSlowSpeedDutyCycle = 0.2;
 
     public static final double kAlgaeExtakeSpeedDutyCycle = 0.8;
-    public static final double kAlgaeIntakeSpeedDutyCycle = 0.5;
+    public static final double kAlgaeIntakeSpeedDutyCycle = 0;
 
     public static final int kCoralInIntakeDistanceMm = 20;
     public static final int kAlgaeInIntakeDistanceMm = 30;
 
-    public static final double kCoralDebounceTime = 0.2;
-    public static final double kAlgaeDebounceTime = 0.3;
+    public static final double kCoralFallingDebounceTime = 0.2;
+    public static final double kAlgaeFallingDebounceTime = 0.3;
+    public static final double kCoralRisingDebounceTime = 0.1;
+    public static final double kAlgaeRisingDebounceTime = 0.1;
   }
 
   public static final class IndexerConstants {
@@ -132,9 +134,9 @@ public final class Constants {
   public static final class LEDConstants {
     public static final int kPWMHeader = 5;
     // led length in pixels
-    public static final int kLength = 30;
+    public static final int kLength = 60;
     // Density of the LED Strip - currently set at 120 LEDs per meter
-    public static final Distance kSpacing = Meters.of(1 / 120.0);
+    public static final Distance kSpacing = Meters.of(1 / 60.0);
 
     // number of times the flashcommand will change color per second
     public static final double kFlashFrequency = 5;

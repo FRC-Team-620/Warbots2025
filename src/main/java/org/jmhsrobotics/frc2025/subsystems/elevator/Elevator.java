@@ -1,5 +1,6 @@
 package org.jmhsrobotics.frc2025.subsystems.elevator;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +19,14 @@ public class Elevator extends SubsystemBase {
   Mechanism2d elevatorMech = new Mechanism2d(4, 4);
   private double setPointMeters;
 
+  private TrapezoidProfile trapezoidProfile =
+      new TrapezoidProfile(
+          new TrapezoidProfile.Constraints(
+              Constants.ElevatorConstants.kTrapezoidalProfileMaxVelocity,
+              Constants.ElevatorConstants.kTrapezoidalProfileMaxAcceleration));
+
+  private boolean closedLoopMode = true;
+
   public Elevator(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;
     var root = elevatorMech.getRoot("base", 1, 0);
@@ -31,9 +40,24 @@ public class Elevator extends SubsystemBase {
     stage1.setLength(inputs.heightMeters / 2);
     carriage.setLength(inputs.heightMeters / 2);
 
+    TrapezoidProfile.State calculatedState =
+        trapezoidProfile.calculate(
+            0.02,
+            new TrapezoidProfile.State(inputs.heightMeters, inputs.velocityMPS),
+            new TrapezoidProfile.State(this.setPointMeters, 0));
+
     Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
     Logger.recordOutput("Elevator/Height", inputs.heightMeters);
-    Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
+    Logger.recordOutput("Elevator/Goal Meters", setPointMeters);
+    Logger.recordOutput("Elevator/SpeedMPS", inputs.velocityMPS);
+    Logger.recordOutput("Elevator/AccelerationMPSS", inputs.accelerationMPSS);
+    Logger.recordOutput("Elevator/Trapezoidal Profile Setpoint", calculatedState.position);
+
+    if (closedLoopMode) {
+      if (calculatedState.position < 1.8 && calculatedState.position > 0) {
+        elevatorIO.setPositionMeters(calculatedState.position);
+      }
+    }
   }
 
   public boolean atGoal() {
@@ -42,11 +66,13 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setSetpoint(double setPoint) {
+    this.closedLoopMode = true;
     this.setPointMeters = setPoint;
-    elevatorIO.setPositionMeters(setPoint);
+    // elevatorIO.setPositionMeters(setPoint);
   }
 
   public void setVoltage(double voltage) {
+    this.closedLoopMode = false;
     elevatorIO.setVoltage(voltage);
   }
 

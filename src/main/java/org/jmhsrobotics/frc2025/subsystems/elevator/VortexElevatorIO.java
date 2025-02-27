@@ -17,8 +17,6 @@ public class VortexElevatorIO implements ElevatorIO {
       new SparkFlex(Constants.CAN.kElevatorMotorLeftID, MotorType.kBrushless);
   private SparkFlex vortexRight =
       new SparkFlex(Constants.CAN.kElevatorMotorRightID, MotorType.kBrushless);
-  // private AbsoluteEncoder leftEncoder = vortexLeft.getAbsoluteEncoder();
-  // private AbsoluteEncoder rightEncoder = vortexRight.getAbsoluteEncoder();
   private RelativeEncoder leftEncoder = vortexLeft.getEncoder();
   private RelativeEncoder rightEncoder = vortexRight.getEncoder();
 
@@ -78,13 +76,25 @@ public class VortexElevatorIO implements ElevatorIO {
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
     inputs.motorAmps = new double[2];
+
+    // Get current speed, subtract from previous tic's speed, divide by time interval
+    SparkUtil.ifOk(
+        vortexLeft,
+        leftEncoder::getVelocity,
+        (value) -> inputs.accelerationMPSS = (((value / 60.0) / 60.0) - inputs.velocityMPS) / 0.02);
+
     SparkUtil.ifOk(
         vortexLeft, vortexLeft::getOutputCurrent, (value) -> inputs.motorAmps[0] = value);
     SparkUtil.ifOk(
         vortexRight, vortexRight::getOutputCurrent, (value) -> inputs.motorAmps[1] = value);
 
-    // inputs.motorVolts = new double[2];
     SparkUtil.ifOk(vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value);
+
+    // divide RPM by 60 for the 1:60 gear ratio, divide by 60 again for minutes to seconds
+    SparkUtil.ifOk(
+        vortexLeft,
+        leftEncoder::getVelocity,
+        (value) -> inputs.velocityMPS = (value / 60.0) / 60.0);
 
     inputs.isOpenLoop = this.isOpenLoop;
 

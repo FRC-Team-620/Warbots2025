@@ -24,7 +24,7 @@ public class SimWristIO implements WristIO {
           false,
           0,
           new double[0]);
-  PIDController pidController = new PIDController(0.1, 0, 0);
+  PIDController pidController = new PIDController(0.7, 0, 0);
 
   public SimWristIO() {
     SmartDashboard.putData("Wrist PID", pidController);

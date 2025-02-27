@@ -22,16 +22,18 @@ public class Wrist extends SubsystemBase {
 
   @Override
   public void periodic() {
-    wristIO.updateInputs(inputs);
-    Logger.recordOutput("Wrist/AngleDegrees", inputs.positionDegrees);
-    Logger.recordOutput("Wrist/OutputCurrent", inputs.motorAmps);
-    Logger.recordOutput("Wrist/GoalAngle", setPointDegrees);
-
     TrapezoidProfile.State calculatedState =
         trapezoidProfile.calculate(
             0.02,
-            new TrapezoidProfile.State(inputs.positionDegrees, inputs.velocityDPS),
+            new TrapezoidProfile.State(inputs.positionDegrees, inputs.wristDPS),
             new TrapezoidProfile.State(this.setPointDegrees, 0));
+
+    wristIO.updateInputs(inputs);
+    Logger.recordOutput("Wrist/Angle Degrees", inputs.positionDegrees);
+    Logger.recordOutput("Wrist/Output Current", inputs.motorAmps);
+    Logger.recordOutput("Wrist/Goal Angle", setPointDegrees);
+    Logger.recordOutput("Wrist/Calculated Setpoint", calculatedState.position);
+
     wristIO.setPositionDegrees(calculatedState.position);
   }
 

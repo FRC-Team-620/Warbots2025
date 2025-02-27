@@ -65,8 +65,7 @@ public class NeoWristIO implements WristIO {
     SparkUtil.ifOk(
         motor,
         encoder::getVelocity,
-        (value) ->
-            inputs.accellerationDPSPS = (((value / 60.0) * 360.0) - inputs.velocityDPS) / 0.02);
+        (value) -> inputs.accellerationDPSPS = (((value / 60.0) * 360.0) - inputs.wristDPS) / 0.02);
 
     SparkUtil.ifOk(motor, encoder::getPosition, (value) -> inputs.positionDegrees = value);
 

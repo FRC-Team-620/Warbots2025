@@ -117,7 +117,7 @@ public final class Constants {
   }
 
   public static final class IndexerConstants {
-    public static final double kRotationUpDegrees = 150;
+    public static final double kRotationUpDegrees = 180;
     public static final double kRotationDownDegrees = 10.5;
 
     public static final double kP = 0.05;

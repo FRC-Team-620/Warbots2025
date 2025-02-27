@@ -10,9 +10,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
-import edu.wpi.first.math.util.Units;
-
 import com.revrobotics.spark.config.SparkMaxConfig;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.util.SparkUtil;
@@ -65,12 +62,17 @@ public class NeoWristIO implements WristIO {
   @Override
   public void updateInputs(WristIOInputs inputs) {
     SparkUtil.sparkStickyFault = false;
-    SparkUtil.ifOk(motor, encoder::getVelocity, (value) -> inputs.accellerationDPSPS = (((value / 60.0) * 360.0) - inputs.velocityDPS) / 0.02);
+    SparkUtil.ifOk(
+        motor,
+        encoder::getVelocity,
+        (value) ->
+            inputs.accellerationDPSPS = (((value / 60.0) * 360.0) - inputs.velocityDPS) / 0.02);
 
     SparkUtil.ifOk(motor, encoder::getPosition, (value) -> inputs.positionDegrees = value);
 
     SparkUtil.ifOk(motor, motor::getOutputCurrent, (value) -> inputs.motorAmps = value);
-    SparkUtil.ifOk(motor, encoder::getVelocity, (value) -> inputs.wristDPS = (value / 60.0) * 360.0);
+    SparkUtil.ifOk(
+        motor, encoder::getVelocity, (value) -> inputs.wristDPS = (value / 60.0) * 360.0);
 
     pidController.setReference(setPointDegrees, ControlType.kPosition);
   }

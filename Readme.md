@@ -25,3 +25,6 @@ TODO: Ascope Custom Assets configurations
 
 # Thrifty Module Azimuth Encoder Zeroing Procedure
 [Google Drive Programming Folder](https://docs.google.com/document/d/1wnJfbLzpVgwjBBD8k-uFfK8kBwKNOHNH9EUZB00zbIM/edit?usp=sharing)
+
+# Driver and Operator Competition Controls
+[Controls Document](https://docs.google.com/document/d/1e-1YQaEzNOAyU3wSqzTnjJ5owFP1VVmeT67x4Rzs9dU/edit?usp=sharing)

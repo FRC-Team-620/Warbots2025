@@ -183,17 +183,10 @@ public class AltControlMode implements ControlBoard {
     return driver.povDown();
   }
 
-  @Override
-  public Trigger indexerUp() {
-    return driver.leftStick();
+  public Trigger moveIndexer() {
+    return driver.povLeft();
   }
 
-  @Override
-  public Trigger indexerDown() {
-    return driver.rightStick();
-  }
-
-  @Override
   public Trigger changeModeLeft() {
     return driver.back();
   }
@@ -206,10 +199,5 @@ public class AltControlMode implements ControlBoard {
   @Override
   public Trigger UnOverrideControlMode() {
     return driver.start().and(driver.back());
-  }
-
-  @Override
-  public Trigger resetIndexer() {
-    return driver.povLeft();
   }
 }

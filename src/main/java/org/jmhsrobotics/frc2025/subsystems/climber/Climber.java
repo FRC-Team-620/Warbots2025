@@ -1,37 +1,31 @@
 package org.jmhsrobotics.frc2025.subsystems.climber;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.IndexerIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.IndexerIOInputsAutoLogged;
+import org.littletonrobotics.junction.Logger;
 
 public class Climber extends SubsystemBase {
   private ClimberIO climberIO;
-  private ClimberIOInputsAutoLogged climberInputs = new ClimberIOInputsAutoLogged();
-  private IndexerIO indexerIO;
-  private IndexerIOInputsAutoLogged indexerInputs = new IndexerIOInputsAutoLogged();
+  private ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
+  private double outputDutyCycle = 0;
 
-  public Climber(ClimberIO climberIO, IndexerIO indexerIO) {
+  public Climber(ClimberIO climberIO) {
     this.climberIO = climberIO;
-    this.indexerIO = indexerIO;
   }
 
   @Override
   public void periodic() {
-    climberIO.updateInputs(climberInputs);
-    indexerIO.updateInputs(indexerInputs);
+    climberIO.updateInputs(inputs);
+    Logger.recordOutput("Climber/Position Degrees", inputs.positionDegrees);
+    Logger.recordOutput("Climber/Output Speed Duty Cycle", this.outputDutyCycle);
   }
 
-  public void set(double climberSpeedDutyCycle, double indexerSetPointDegrees) {
+  public void set(double climberSpeedDutyCycle) {
+    this.outputDutyCycle = climberSpeedDutyCycle;
     climberIO.set(climberSpeedDutyCycle);
-    indexerIO.setPositionDegrees(indexerSetPointDegrees);
   }
 
   public double getClimberPositionDegrees() {
-    return climberInputs.positionDegrees;
-  }
-
-  public double getIndexerPositionDegrees() {
-    return indexerInputs.positionDegrees;
+    return inputs.positionDegrees;
   }
 
   public void setBrakeMode(boolean enable) {

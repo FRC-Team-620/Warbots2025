@@ -1,4 +1,4 @@
-package org.jmhsrobotics.frc2025.subsystems.climber.indexer;
+package org.jmhsrobotics.frc2025.subsystems.indexer;
 
 import org.littletonrobotics.junction.AutoLog;
 
@@ -8,7 +8,6 @@ public interface IndexerIO {
     public double motorAmps;
     public double positionDegrees;
     public double motorRPM;
-    public double setPointDegrees;
   }
 
   public default void updateInputs(IndexerIOInputs inputs) {}

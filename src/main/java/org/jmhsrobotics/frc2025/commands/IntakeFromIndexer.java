@@ -24,12 +24,12 @@ public class IntakeFromIndexer extends Command {
 
   @Override
   public void execute() {
-    intake.set(Constants.IntakeConstants.kIntakeCoralSpeedDutyCycle);
+    intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);
   }
 
   @Override
   public boolean isFinished() {
-    return false;
+    return intake.getCoralDistance() < 20 && intake.isCoralMeasureValid();
   }
 
   @Override

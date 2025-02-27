@@ -1,6 +1,9 @@
 package org.jmhsrobotics.frc2025.subsystems.intake;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.jmhsrobotics.frc2025.Constants;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
@@ -13,6 +16,17 @@ public class Intake extends SubsystemBase {
   private int mode = 2;
   private boolean override = false;
 
+  private Debouncer coralFallingDebouncer =
+      new Debouncer(Constants.IntakeConstants.kCoralFallingDebounceTime, DebounceType.kFalling);
+  private Debouncer algaeFallingDebouncer =
+      new Debouncer(Constants.IntakeConstants.kAlgaeFallingDebounceTime, DebounceType.kFalling);
+  private Debouncer algaeRisingDebouncer =
+      new Debouncer(Constants.IntakeConstants.kAlgaeRisingDebounceTime, DebounceType.kRising);
+  private Debouncer coralRisingDebouncer =
+      new Debouncer(Constants.IntakeConstants.kCoralRisingDebounceTime, DebounceType.kRising);
+  private boolean coralInIntake = false;
+  private boolean algaeInIntake = false;
+
   public Intake(IntakeIO intakeIO, TimeOfFLightIO timeOfFLightIO) {
     this.intakeIO = intakeIO;
     this.timeOfFLightIO = timeOfFLightIO;
@@ -23,9 +37,18 @@ public class Intake extends SubsystemBase {
     this.mode = getMode();
     intakeIO.updateInputs(intakeInputs);
     timeOfFLightIO.updateInputs(sensorInputs);
+
     Logger.recordOutput("Current Control Mode", this.mode);
     Logger.recordOutput("Intake/Coral Sensor Distance", sensorInputs.coralDistance);
     Logger.recordOutput("Intake/Algae Sensor Distance", sensorInputs.algaeDistance);
+    Logger.recordOutput("Intake/Coral In Intake", coralInIntake);
+    Logger.recordOutput("Intake/Algae In Intake", algaeInIntake);
+    Logger.recordOutput("Intake/Coral Measurement Valid", sensorInputs.coralMeasurementIsValid);
+    Logger.recordOutput("Intake/Algae Measurement Valid", sensorInputs.algaeMeasurementIsValid);
+    Logger.recordOutput(
+        "Intake/Coral Measurement Out Of Bounds", sensorInputs.coralMeasurementOutOfBounds);
+    Logger.recordOutput(
+        "Intake/Algae Measurement Out Of Bounds", sensorInputs.algaeMeasurementOutOfBounds);
   }
 
   /**
@@ -35,12 +58,34 @@ public class Intake extends SubsystemBase {
    * @return
    */
   public int getMode() {
+    // determines if coral and algae are in the intake based on sensor inputs and debouncers
+    coralInIntake =
+        coralFallingDebouncer.calculate(
+                sensorInputs.coralDistance <= Constants.IntakeConstants.kCoralInIntakeDistanceMm
+                    && sensorInputs.coralMeasurementIsValid)
+            && coralRisingDebouncer.calculate(
+                sensorInputs.coralDistance <= Constants.IntakeConstants.kCoralInIntakeDistanceMm
+                    && sensorInputs.coralMeasurementIsValid);
+    algaeInIntake =
+        algaeFallingDebouncer.calculate(
+                sensorInputs.algaeDistance <= Constants.IntakeConstants.kAlgaeInIntakeDistanceMm
+                    && sensorInputs.algaeMeasurementIsValid)
+            && algaeRisingDebouncer.calculate(
+                sensorInputs.algaeDistance <= Constants.IntakeConstants.kAlgaeInIntakeDistanceMm
+                    && sensorInputs.algaeMeasurementIsValid);
+
     if (override) {
       return mode;
     }
-    if (sensorInputs.algaeDistance <= 30 && sensorInputs.algaeDistance != 0) return 1;
-    else if (sensorInputs.coralDistance <= 20 && sensorInputs.coralDistance != 0) return 3;
-    return 2;
+    if (coralInIntake) {
+      this.mode = 3;
+      return this.mode;
+    } else if (algaeInIntake) {
+      this.mode = 1;
+      return this.mode;
+    }
+    this.mode = 2;
+    return this.mode;
   }
 
   /**
@@ -59,6 +104,16 @@ public class Intake extends SubsystemBase {
     }
   }
 
+  /** Turns off manual override of control mode in the event of an accidental activation */
+  public void unOverrideControlMode() {
+    this.override = false;
+  }
+
+  /**
+   * sets the duty cycle speed of the intake motor
+   *
+   * @param speedDutyCycle
+   */
   public void set(double speedDutyCycle) {
     intakeIO.set(speedDutyCycle);
   }
@@ -67,11 +122,33 @@ public class Intake extends SubsystemBase {
     intakeIO.setBrakeMode(enable);
   }
 
+  /**
+   * returns the instantaneous coral distance
+   *
+   * @return
+   */
   public double getCoralDistance() {
     return sensorInputs.coralDistance;
   }
 
+  /**
+   * returns the instantaneous coral distance
+   *
+   * @return
+   */
   public double getAlgaeDistance() {
     return sensorInputs.algaeDistance;
+  }
+
+  public boolean isCoralMeasureValid() {
+    return sensorInputs.coralMeasurementIsValid;
+  }
+
+  public boolean isAlgaeMeasureValid() {
+    return sensorInputs.algaeMeasurementIsValid;
+  }
+
+  public boolean isControlModeOverridden() {
+    return override;
   }
 }

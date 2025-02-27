@@ -21,9 +21,7 @@ public class NeoIntakeIO implements IntakeIO {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(20)
         .voltageCompensation(12)
-        .inverted(true)
-        .closedLoop
-        .outputRange(-0.4, 0.4);
+        .inverted(true);
 
     // attempts to burn configuration, throws an error if parameters are not
     // persisting

@@ -156,12 +156,62 @@
                     }
                   },
                   {
+                    "type": "ghost",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Camera0/RobotPosesAccepted",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "model": "KitBot",
+                      "color": "#00ffff"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Camera1/RobotPosesAccepted/0",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {
+                      "model": "KitBot",
+                      "color": "#ff8c00"
+                    }
+                  },
+                  {
                     "type": "aprilTag",
                     "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Summary/TagPoses",
                     "logType": "Pose3d[]",
                     "visible": true,
                     "options": {
                       "family": "36h11"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Odometry/Trajectory",
+                    "logType": "Pose2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:/PathPlanner/activePath",
+                    "logType": "Pose2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Odometry/TrajectorySetpoint",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "KitBot",
+                      "color": "#ff00ff"
                     }
                   }
                 ],

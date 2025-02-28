@@ -29,6 +29,13 @@ public final class Constants {
   public static final double krealTimeStep = ksimTimestep;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
+  public static final int[] kIgnoredAprilTags = new int[] {14, 15, 4, 5};
+  public static final int[] kReefAprilTags = new int[] {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
+  public static final int[] kProcessorAprilTags = new int[] {12, 13, 2, 1};
+  public static final double kReefAngleInc = 60.0;
+  public static final double kProcessorAngle = 90.0;
+  public static final double[] loadingStationAngles = new double[] {-45.0, 45.0}; // Placeholders
+
   public static class CAN {
     public static final int kElevatorMotorLeftID = 30;
     public static final int kElevatorMotorRightID = 31;

@@ -72,6 +72,15 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier) {
+
+    // Create PID controller
+    ProfiledPIDController angleController =
+        new ProfiledPIDController(
+            ANGLE_KP,
+            0.0,
+            ANGLE_KD,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
     return Commands.run(
         () -> {
           // Get linear velocity
@@ -87,6 +96,8 @@ public class DriveCommands {
 
           // Square rotation value for more precise control
           omega = Math.copySign(omega * omega, omega);
+          boolean angleLock = false; // TODO: Add angle lock functionality
+          if (angleLock) {}
 
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =

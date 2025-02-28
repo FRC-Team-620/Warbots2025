@@ -15,17 +15,19 @@ package org.jmhsrobotics.frc2025.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 /** IO implementation for real PhotonVision hardware. */
 public class VisionIOPhotonVision implements VisionIO {
   protected final PhotonCamera camera;
-  protected final Transform3d robotToCamera;
+  protected Transform3d robotToCamera;
 
   /**
    * Creates a new VisionIOPhotonVision.
@@ -45,6 +47,7 @@ public class VisionIOPhotonVision implements VisionIO {
     // Read new camera observations
     Set<Short> tagIds = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();
+    inputs.tagPoses = new TagPose[0];
     for (var result : camera.getAllUnreadResults()) {
       // Update latest target observation
       if (result.hasTargets()) {
@@ -52,6 +55,16 @@ public class VisionIOPhotonVision implements VisionIO {
             new TargetObservation(
                 Rotation2d.fromDegrees(result.getBestTarget().getYaw()),
                 Rotation2d.fromDegrees(result.getBestTarget().getPitch()));
+        inputs.tagPoses = new TagPose[result.targets.size()];
+        for (int i = 0; i < result.targets.size(); i++) {
+          PhotonTrackedTarget target = result.targets.get(i);
+          var tf = robotToCamera.plus(target.bestCameraToTarget);
+          inputs.tagPoses[i] =
+              new TagPose(
+                  target.fiducialId,
+                  new Pose3d(tf.getTranslation(), tf.getRotation()),
+                  target.poseAmbiguity);
+        }
       } else {
         inputs.latestTargetObservation = new TargetObservation(new Rotation2d(), new Rotation2d());
       }

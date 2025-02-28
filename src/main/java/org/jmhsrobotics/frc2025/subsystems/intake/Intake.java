@@ -44,10 +44,6 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Algae In Intake", algaeInIntake);
     Logger.recordOutput("Intake/Coral Measurement Valid", sensorInputs.coralMeasurementIsValid);
     Logger.recordOutput("Intake/Algae Measurement Valid", sensorInputs.algaeMeasurementIsValid);
-    Logger.recordOutput(
-        "Intake/Coral Measurement Out Of Bounds", sensorInputs.coralMeasurementOutOfBounds);
-    Logger.recordOutput(
-        "Intake/Algae Measurement Out Of Bounds", sensorInputs.algaeMeasurementOutOfBounds);
   }
 
   /**

@@ -61,8 +61,8 @@ public final class Constants {
 
     public static final double kAlgaeQTipMeters = 0.125;
     public static final double kCoralIntakeMeters = 0;
-    public static final double kAlgaeIntakeL2Meters = 0.6;
-    public static final double kAlgaeIntakeL3Meters = 1.1;
+    public static final double kAlgaeIntakeL2Meters = 0.54;
+    public static final double kAlgaeIntakeL3Meters = 1.03;
 
     public static final double kP = 1.75;
     public static final double kI = .00;
@@ -74,14 +74,14 @@ public final class Constants {
 
     // TODO: When absolute encoder conversion is fixed, remove  / 360, recalibrate PID and change
     // tolerance to 1 degree;
-    public static final double kRotationIntakeCoralDegrees = 16;
+    public static final double kRotationIntakeCoralDegrees = 14;
 
     public static final double kLevel1Degrees = 30.0;
     public static final double kLevel2Degrees = 40.5;
     public static final double kLevel3Degrees = 40.5;
     public static final double kLevel4Degrees = 105.0;
 
-    public static final double kRotationAlgaeDegrees = 190;
+    public static final double kRotationAlgaeDegrees = 181;
     public static final double kRotationProcesserDegrees = 190;
     public static final double kRotationBargeDegrees = 90;
 
@@ -95,22 +95,22 @@ public final class Constants {
 
   public static class IntakeConstants {
 
-    public static final double kAlgaeDefaultCommandSpeed = -0.05;
+    public static final double kAlgaeDefaultCommandSpeed = -0.1;
     public static final double kCoralDefaultCommandSpeed = 0.1;
 
     public static final double kCoralIntakeSpeedDutyCycle = 0.4;
     public static final double kCoralExtakeSpeedDutyCycle = 0.2;
 
-    public static final double kCoralIntakeIndexerSpeedDutyCycle = 0.35;
+    public static final double kCoralIntakeIndexerSpeedDutyCycle = 0.18;
     public static final double kCoralIntakeIndexerSlowSpeedDutyCycle = 0.2;
 
     public static final double kAlgaeExtakeSpeedDutyCycle = 0.8;
-    public static final double kAlgaeIntakeSpeedDutyCycle = 0.5;
+    public static final double kAlgaeIntakeSpeedDutyCycle = -0.5;
 
     public static final int kCoralInIntakeDistanceMm = 20;
     public static final int kAlgaeInIntakeDistanceMm = 30;
 
-    public static final double kCoralDebounceTime = 0.2;
+    public static final double kCoralDebounceTime = 0.05;
     public static final double kAlgaeFallingDebounceTime = 0.3;
     public static final double kAlgaeRisingDebounceTime = 0.1;
   }

@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
@@ -42,7 +43,7 @@ import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
-import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
+import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
@@ -175,7 +176,7 @@ public class RobotContainer {
         break;
     }
 
-    this.control = new SingleControl(intake, elevator);
+    this.control = new DoubleControl(intake, elevator);
 
     led = new LED();
 
@@ -337,7 +338,9 @@ public class RobotContainer {
         .intakeCoralFromIndexer()
         .onTrue(
             new SequentialCommandGroup(
-                new IntakeFromIndexer(wrist, intake), new FixCoralPlacement(intake, wrist)));
+                new IntakeFromIndexer(wrist, intake),
+                new WaitCommand(0.5),
+                new FixCoralPlacement(intake, wrist)));
 
     control
         .climbUp()
@@ -397,6 +400,7 @@ public class RobotContainer {
         "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
+    SmartDashboard.putData("cmd/Fix Coral Placement", new FixCoralPlacement(intake, wrist));
   }
 
   public Command getToggleBrakeCommand() {

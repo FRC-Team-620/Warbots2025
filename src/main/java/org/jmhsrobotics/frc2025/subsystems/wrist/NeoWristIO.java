@@ -31,7 +31,7 @@ public class NeoWristIO implements WristIO {
 
     motorConfig
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(30)
+        .smartCurrentLimit(15)
         .voltageCompensation(12)
         .inverted(false)
         .signals

@@ -14,6 +14,7 @@
 package org.jmhsrobotics.frc2025;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -39,6 +40,7 @@ import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
+import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
@@ -178,6 +180,8 @@ public class RobotContainer {
     led = new LED();
 
     // Set up auto routines
+    // PathPlanner Named Commands needs to be configured before autochoose is made
+    configurePathPlanner();
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     autoChooser.addDefaultOption("BaseLineAuto", new DriveTimeCommand(2.2, 0.3, drive));
 
@@ -200,7 +204,6 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     configureDriverFeedback();
-
     setupSmartDashbaord();
   }
 
@@ -374,6 +377,45 @@ public class RobotContainer {
         .onFalse(
             new LEDFlashPattern(
                 led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite), 1.5));
+  }
+
+  private void configurePathPlanner() {
+    // Elevator and Wrist Commands
+    NamedCommands.registerCommand(
+        "Elevator And Wrist L4",
+        new ElevatorAndWristMove(
+            elevator,
+            wrist,
+            Constants.ElevatorConstants.kLevel4Meters,
+            Constants.WristConstants.kLevel4Degrees));
+    NamedCommands.registerCommand(
+        "Elevator And Wrist L3",
+        new ElevatorAndWristMove(
+            elevator,
+            wrist,
+            Constants.ElevatorConstants.kLevel3Meters,
+            Constants.WristConstants.kLevel3Degrees));
+    NamedCommands.registerCommand(
+        "Elevator And Wrist L2",
+        new ElevatorAndWristMove(
+            elevator,
+            wrist,
+            Constants.ElevatorConstants.kLevel2Meters,
+            Constants.WristConstants.kLevel2Degrees));
+    NamedCommands.registerCommand(
+        "Elevator And Wrist Coral Intake",
+        new ElevatorAndWristMove(
+            elevator,
+            wrist,
+            Constants.ElevatorConstants.kCoralIntakeMeters,
+            Constants.WristConstants.kSafeAngleDegrees));
+
+    // Intake Commands
+    // TODO: Intake Coral command needs to be updated once updated intake control is merged to
+    // master to also run the fix coral placement command
+    NamedCommands.registerCommand("Intake Coral", new IntakeFromIndexer(wrist, intake));
+
+    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake));
   }
 
   private void setupSmartDashbaord() {

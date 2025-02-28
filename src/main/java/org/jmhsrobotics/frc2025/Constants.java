@@ -96,7 +96,7 @@ public final class Constants {
   public static class IntakeConstants {
 
     public static final double kAlgaeDefaultCommandSpeed = -0.05;
-    public static final double kCoralDefaultCommandSpeed = -0.12;
+    public static final double kCoralDefaultCommandSpeed = 0.1;
 
     public static final double kCoralIntakeSpeedDutyCycle = 0.4;
     public static final double kCoralExtakeSpeedDutyCycle = 0.2;
@@ -105,14 +105,13 @@ public final class Constants {
     public static final double kCoralIntakeIndexerSlowSpeedDutyCycle = 0.2;
 
     public static final double kAlgaeExtakeSpeedDutyCycle = 0.8;
-    public static final double kAlgaeIntakeSpeedDutyCycle = 0;
+    public static final double kAlgaeIntakeSpeedDutyCycle = 0.5;
 
     public static final int kCoralInIntakeDistanceMm = 20;
     public static final int kAlgaeInIntakeDistanceMm = 30;
 
-    public static final double kCoralFallingDebounceTime = 0.2;
+    public static final double kCoralDebounceTime = 0.2;
     public static final double kAlgaeFallingDebounceTime = 0.3;
-    public static final double kCoralRisingDebounceTime = 0.1;
     public static final double kAlgaeRisingDebounceTime = 0.1;
   }
 

@@ -29,12 +29,11 @@ public class IntakeFromIndexer extends Command {
 
   @Override
   public boolean isFinished() {
-    return intake.getCoralDistance() < 20 && intake.isCoralMeasureValid();
+    return intake.getCoralDistance() < 20;
   }
 
   @Override
   public void end(boolean interrupted) {
     intake.set(0);
-    wrist.setSetpoint(Constants.WristConstants.kSafeAngleDegrees);
   }
 }

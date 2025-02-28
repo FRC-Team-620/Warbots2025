@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.jmhsrobotics.frc2025.commands.AlignReef;
 import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
@@ -211,6 +212,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
     intake.setDefaultCommand(
         new IntakeMove(intake, wrist, control.intakeCoral(), control.extakeCoral()));
 
@@ -391,6 +393,7 @@ public class RobotContainer {
         "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
+    SmartDashboard.putData("cmd/AngleLog", new AlignReef(drive, vision));
   }
 
   public Command getToggleBrakeCommand() {

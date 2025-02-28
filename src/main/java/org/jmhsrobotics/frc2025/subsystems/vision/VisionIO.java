@@ -25,10 +25,13 @@ public interface VisionIO {
         new TargetObservation(new Rotation2d(), new Rotation2d());
     public PoseObservation[] poseObservations = new PoseObservation[0];
     public int[] tagIds = new int[0];
+    public TagPose[] tagPoses = new TagPose[0]; // TODO: Dont use photon vision in generic IO
   }
 
   /** Represents the angle to a simple target, not used for pose estimation. */
   public static record TargetObservation(Rotation2d tx, Rotation2d ty) {}
+
+  public static record TagPose(int id, Pose3d pose, double ambiguity) {}
 
   /** Represents a robot pose sample used for pose estimation. */
   public static record PoseObservation(

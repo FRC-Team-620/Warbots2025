@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
@@ -331,7 +332,7 @@ public class RobotContainer {
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
 
-    control.intakeCoralFromIndexer().onTrue(new IntakeFromIndexer(wrist, intake));
+    control.intakeCoralFromIndexer().onTrue(new ParallelRaceGroup(new IntakeFromIndexer(wrist, intake), new LEDFlashPattern(led, LEDPattern.solid(Color.kTurquoise), LEDPattern.solid(Color.kWhite))));
 
     control
         .climbUp()
@@ -367,13 +368,13 @@ public class RobotContainer {
     new Trigger(intake::isControlModeOverridden)
         .onTrue(
             new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kRed), LEDPattern.solid(Color.kWhite), 1.5));
+                led, LEDPattern.solid(Color.kRed), LEDPattern.solid(Color.kWhite)).withTimeout(1.5));
 
     // if control mode is un-overridden, lights will flash gold and white
     new Trigger(intake::isControlModeOverridden)
         .onFalse(
             new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite), 1.5));
+                led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite)).withTimeout(1.5));
   }
 
   private void setupSmartDashbaord() {

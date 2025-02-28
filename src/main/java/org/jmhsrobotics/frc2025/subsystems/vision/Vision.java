@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.LinkedList;
 import java.util.List;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionIO.PoseObservationType;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionIO.TagPose;
 import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
@@ -180,7 +181,9 @@ public class Vision extends SubsystemBase {
         allRobotPosesRejected.toArray(new Pose3d[allRobotPosesRejected.size()]));
   }
 
-  public void getTagPoses() {}
+  public TagPose[] getTagPoses(int camid) { // TODO Return all tag poses
+    return inputs[camid].tagPoses;
+  }
 
   @FunctionalInterface
   public static interface VisionConsumer {

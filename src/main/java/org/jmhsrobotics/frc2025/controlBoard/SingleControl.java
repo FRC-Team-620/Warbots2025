@@ -164,10 +164,10 @@ public class SingleControl implements ControlBoard {
     return driver.povDown();
   }
 
-  //@Override
-  //public Trigger indexerUp() {
+  // @Override
+  // public Trigger indexerUp() {
   //  return driver.leftStick();
-  //}
+  // }
 
   @Override
   public Trigger indexerDown() {
@@ -195,7 +195,7 @@ public class SingleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger zeroElevator(){
+  public Trigger zeroElevator() {
     return driver.leftStick();
   }
 }

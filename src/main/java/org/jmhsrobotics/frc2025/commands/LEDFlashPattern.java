@@ -16,8 +16,7 @@ public class LEDFlashPattern extends Command {
   private Timer timer = new Timer();
   private Timer lightTimer = new Timer();
 
-  public LEDFlashPattern(
-      LED led, LEDPattern firstPattern, LEDPattern secondPattern) {
+  public LEDFlashPattern(LED led, LEDPattern firstPattern, LEDPattern secondPattern) {
     this.led = led;
     this.firstPattern = firstPattern;
     this.secondPattern = secondPattern;

@@ -332,7 +332,13 @@ public class RobotContainer {
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
 
-    control.intakeCoralFromIndexer().onTrue(new ParallelRaceGroup(new IntakeFromIndexer(wrist, intake), new LEDFlashPattern(led, LEDPattern.solid(Color.kTurquoise), LEDPattern.solid(Color.kWhite))));
+    control
+        .intakeCoralFromIndexer()
+        .onTrue(
+            new ParallelRaceGroup(
+                new IntakeFromIndexer(wrist, intake),
+                new LEDFlashPattern(
+                    led, LEDPattern.solid(Color.kTurquoise), LEDPattern.solid(Color.kWhite))));
 
     control
         .climbUp()
@@ -367,14 +373,14 @@ public class RobotContainer {
     // If control mode is manually overridden, lights flash red and green(Christmas!)
     new Trigger(intake::isControlModeOverridden)
         .onTrue(
-            new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kRed), LEDPattern.solid(Color.kWhite)).withTimeout(1.5));
+            new LEDFlashPattern(led, LEDPattern.solid(Color.kRed), LEDPattern.solid(Color.kWhite))
+                .withTimeout(1.5));
 
     // if control mode is un-overridden, lights will flash gold and white
     new Trigger(intake::isControlModeOverridden)
         .onFalse(
-            new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite)).withTimeout(1.5));
+            new LEDFlashPattern(led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite))
+                .withTimeout(1.5));
   }
 
   private void setupSmartDashbaord() {

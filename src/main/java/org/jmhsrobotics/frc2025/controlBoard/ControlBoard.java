@@ -48,7 +48,7 @@ public interface ControlBoard {
 
   public Trigger climbDown();
 
-  //public Trigger indexerUp();
+  // public Trigger indexerUp();
 
   public Trigger indexerDown();
 

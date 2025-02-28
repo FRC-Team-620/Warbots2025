@@ -27,9 +27,7 @@ public class FixCoralPlacement extends Command {
   public void execute() {
     // If the coral is no longer in the in front of the sensor, it has passed and intake direction
     // will switch
-    if (!hasPassedSensor) {
-      if (!intake.isCoralInIntake()) hasPassedSensor = true;
-    }
+    if (!hasPassedSensor && !intake.isCoralInIntake()) hasPassedSensor = true;
 
     if (hasPassedSensor) {
       intake.set(-Constants.IntakeConstants.kCoralDefaultCommandSpeed);

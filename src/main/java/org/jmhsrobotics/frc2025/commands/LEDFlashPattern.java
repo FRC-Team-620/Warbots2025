@@ -13,7 +13,6 @@ public class LEDFlashPattern extends Command {
   private final LEDPattern firstPattern;
   private final LEDPattern secondPattern;
 
-  private Timer timer = new Timer();
   private Timer lightTimer = new Timer();
 
   public LEDFlashPattern(LED led, LEDPattern firstPattern, LEDPattern secondPattern) {
@@ -26,7 +25,6 @@ public class LEDFlashPattern extends Command {
 
   @Override
   public void initialize() {
-    timer.restart();
     lightTimer.restart();
     led.setPattern(firstPattern);
   }

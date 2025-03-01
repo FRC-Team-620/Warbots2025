@@ -446,7 +446,7 @@ public class RobotContainer {
     // master to also run the fix coral placement command
     NamedCommands.registerCommand("Intake Coral", new IntakeFromIndexer(wrist, intake));
 
-    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(4));
+    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(1.5));
   }
 
   public Command getToggleBrakeCommand() {

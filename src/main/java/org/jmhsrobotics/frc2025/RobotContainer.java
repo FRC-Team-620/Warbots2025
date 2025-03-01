@@ -344,9 +344,7 @@ public class RobotContainer {
                 new ParallelRaceGroup(
                         new IntakeFromIndexer(wrist, intake),
                         new LEDFlashPattern(
-                            led,
-                            LEDPattern.solid(Color.kTurquoise),
-                            LEDPattern.solid(Color.kWhite)))
+                            led, LEDPattern.solid(Color.kHotPink), LEDPattern.solid(Color.kNavy)))
                     .withTimeout(5),
                 new FixCoralPlacement(intake, wrist)));
 

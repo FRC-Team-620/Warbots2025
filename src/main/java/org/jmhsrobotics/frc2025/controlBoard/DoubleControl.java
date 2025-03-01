@@ -99,7 +99,7 @@ public class DoubleControl implements ControlBoard {
 
   @Override
   public Trigger intakeCoralFromIndexer() {
-    return operator.rightStick().and(elevatorAtBottom);
+    return operator.rightStick().and(searchMode);
   }
 
   @Override
@@ -114,61 +114,51 @@ public class DoubleControl implements ControlBoard {
 
   @Override
   public Trigger placeCoralLevel1() {
-    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
     return operator.a().and(coralMode);
   }
 
   @Override
   public Trigger placeCoralLevel2() {
-    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
     return operator.b().and(coralMode);
   }
 
   @Override
   public Trigger placeCoralLevel3() {
-    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
     return operator.x().and(coralMode);
   }
 
   @Override
   public Trigger placeCoralLevel4() {
-    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
     return operator.y().and(coralMode);
   }
 
   @Override
   public Trigger scoreAlgaeProcesser() {
-    //  if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
     return (operator.a().or(operator.b())).and(algaeMode);
   }
 
   @Override
   public Trigger scoreAlgaeBarge() {
-    //  if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
     return (operator.y().or(operator.x())).and(algaeMode);
   }
 
   @Override
   public Trigger elevatorIntakeCoral() {
-    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
     return operator.a().and(searchMode);
   }
 
   @Override
   public Trigger takeAlgaeLevel2() {
-    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
     return operator.b().and(searchMode);
   }
 
   @Override
   public Trigger takeAlgaeLevel3() {
-    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
     return operator.x().and(searchMode);
   }
 
   @Override
   public Trigger takeAlgaeQTip() {
-    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
     return operator.y().and(searchMode);
   }
 

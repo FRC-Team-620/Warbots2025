@@ -80,7 +80,7 @@ public class SingleControl implements ControlBoard {
 
   @Override
   public Trigger intakeCoralFromIndexer() {
-    return driver.rightStick().and(elevatorAtBottom);
+    return driver.rightStick().and(searchMode);
   }
 
   @Override

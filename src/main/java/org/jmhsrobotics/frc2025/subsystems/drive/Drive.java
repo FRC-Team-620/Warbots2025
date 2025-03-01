@@ -26,6 +26,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -37,6 +38,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -70,6 +72,9 @@ public class Drive extends SubsystemBase {
       };
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+
+  private InterpolatingDoubleTreeMap maxSpeedCalculator = new InterpolatingDoubleTreeMap();
+  private double elevatorHeight = 0;
 
   public Drive(
       GyroIO gyroIO,
@@ -121,10 +126,16 @@ public class Drive extends SubsystemBase {
                 (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Units.Volts)), null, this));
+
+    maxSpeedCalculator.put(0.0, DriveConstants.maxSpeedLowMetersPerSec);
+    maxSpeedCalculator.put(0.9, DriveConstants.maxSpeedMidMetersPerSec);
+    maxSpeedCalculator.put(1.77, DriveConstants.maxSpeedHighMetersPerSec);
   }
 
   @Override
   public void periodic() {
+    elevatorHeight = SmartDashboard.getNumber("Elevator/Raw Height Meters", 0);
+
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
@@ -200,7 +211,7 @@ public class Drive extends SubsystemBase {
     speeds = ChassisSpeeds.discretize(speeds, Constants.krealTimeStep);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        setpointStates, DriveConstants.maxSpeedMetersPerSec);
+        setpointStates, this.getMaxLinearSpeedMetersPerSec());
 
     // Log unoptimized setpoints
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
@@ -322,12 +333,16 @@ public class Drive extends SubsystemBase {
 
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
-    return DriveConstants.maxSpeedMetersPerSec;
+    // return DriveConstants.maxSpeedLowMetersPerSec;
+    return maxSpeedCalculator.get(elevatorHeight);
   }
 
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
-    return DriveConstants.maxSpeedMetersPerSec / DriveConstants.thriftyConstants.driveBaseRadius;
+
+    // return DriveConstants.maxSpeedLowMetersPerSec /
+    // DriveConstants.thriftyConstants.driveBaseRadius;
+    return maxSpeedCalculator.get(elevatorHeight) / DriveConstants.thriftyConstants.driveBaseRadius;
   }
 
   /** Sets all Motor Controllers to brake or coast mode */

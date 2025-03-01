@@ -70,7 +70,7 @@ public class IntakeMove extends Command {
 
   private void coralDefaultCommand() {
     if (intake.getCoralDistance() > 30 && intake.getCoralDistance() > 0) {
-      intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed);
+      intake.set(-Constants.IntakeConstants.kCoralDefaultCommandSpeed);
     }
   }
 

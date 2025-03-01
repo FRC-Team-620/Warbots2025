@@ -3,6 +3,7 @@ package org.jmhsrobotics.frc2025.subsystems.intake;
 import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.interfaces.LaserCanInterface.RangingMode;
+import au.grapplerobotics.interfaces.LaserCanInterface.TimingBudget;
 import org.jmhsrobotics.frc2025.Constants;
 
 public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
@@ -16,6 +17,8 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
     try {
       coralSensor.setRangingMode(RangingMode.SHORT);
       algaeSensor.setRangingMode(RangingMode.SHORT);
+      algaeSensor.setTimingBudget(TimingBudget.TIMING_BUDGET_50MS);
+      coralSensor.setTimingBudget(TimingBudget.TIMING_BUDGET_50MS);
       // TODO: set timing budget for sensors and find what is ideal
       // coralSensor.setTimingBudget(TimingBudget.TIMING_BUDGET_20MS);
     } catch (ConfigurationFailedException e) {

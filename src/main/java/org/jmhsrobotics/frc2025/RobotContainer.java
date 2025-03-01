@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -44,7 +45,7 @@ import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
-import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
+import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
@@ -177,7 +178,7 @@ public class RobotContainer {
         break;
     }
 
-    this.control = new DoubleControl(intake, elevator);
+    this.control = new SingleControl(intake, elevator);
 
     led = new LED();
 
@@ -340,8 +341,11 @@ public class RobotContainer {
         .intakeCoralFromIndexer()
         .onTrue(
             new SequentialCommandGroup(
-                new IntakeFromIndexer(wrist, intake),
-                // new WaitCommand(0.5),
+                new ParallelRaceGroup(
+                        new IntakeFromIndexer(wrist, intake),
+                        new LEDFlashPattern(
+                            led, LEDPattern.solid(Color.kHotPink), LEDPattern.solid(Color.kNavy)))
+                    .withTimeout(5),
                 new FixCoralPlacement(intake, wrist)));
 
     control
@@ -367,6 +371,8 @@ public class RobotContainer {
         .changeModeRight()
         .onTrue(Commands.runOnce(() -> intake.setMode(1), intake).ignoringDisable(true));
 
+    control.zeroElevator().onTrue(new ElevatorSetZero(elevator));
+
     control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));
   }
 
@@ -377,14 +383,42 @@ public class RobotContainer {
     // If control mode is manually overridden, lights flash red and green(Christmas!)
     new Trigger(intake::isControlModeOverridden)
         .onTrue(
-            new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kRed), LEDPattern.solid(Color.kWhite), 1.5));
+            new LEDFlashPattern(led, LEDPattern.solid(Color.kRed), LEDPattern.solid(Color.kWhite))
+                .withTimeout(1.5));
 
     // if control mode is un-overridden, lights will flash gold and white
     new Trigger(intake::isControlModeOverridden)
         .onFalse(
-            new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite), 1.5));
+            new LEDFlashPattern(led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite))
+                .withTimeout(1.5));
+  }
+
+  private void setupSmartDashbaord() {
+    SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
+    SmartDashboard.putData("toogleBrakeMode", getToggleBrakeCommand());
+    new Trigger(RobotController::getUserButton)
+        .onTrue(getToggleBrakeCommand()); // TODO: disable when in a match?
+
+    SmartDashboard.putData("cmd/Scheduler", CommandScheduler.getInstance());
+    SmartDashboard.putData(
+        "cmd/SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
+    SmartDashboard.putData(
+        "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
+    SmartDashboard.putData(
+        "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
+    SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
+    SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
+    SmartDashboard.putData("cmd/Fix Coral Placement", new FixCoralPlacement(intake, wrist));
+    // TODO: get rid of timeout for real-bot testing
+    SmartDashboard.putData(
+        "cmd/Intake Coal Indexer",
+        new SequentialCommandGroup(
+            new ParallelRaceGroup(
+                    new IntakeFromIndexer(wrist, intake),
+                    new LEDFlashPattern(
+                        led, LEDPattern.solid(Color.kTurquoise), LEDPattern.solid(Color.kWhite)))
+                .withTimeout(5),
+            new FixCoralPlacement(intake, wrist).withTimeout(3)));
   }
 
   private void configurePathPlanner() {
@@ -423,25 +457,7 @@ public class RobotContainer {
     // master to also run the fix coral placement command
     NamedCommands.registerCommand("Intake Coral", new IntakeFromIndexer(wrist, intake));
 
-    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(4));
-  }
-
-  private void setupSmartDashbaord() {
-    SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
-    SmartDashboard.putData("toogleBrakeMode", getToggleBrakeCommand());
-    new Trigger(RobotController::getUserButton)
-        .onTrue(getToggleBrakeCommand()); // TODO: disable when in a match?
-
-    SmartDashboard.putData("cmd/Scheduler", CommandScheduler.getInstance());
-    SmartDashboard.putData(
-        "cmd/SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
-    SmartDashboard.putData(
-        "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
-    SmartDashboard.putData(
-        "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
-    SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
-    SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
-    SmartDashboard.putData("cmd/Fix Coral Placement", new FixCoralPlacement(intake, wrist));
+    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(1.5));
   }
 
   public Command getToggleBrakeCommand() {

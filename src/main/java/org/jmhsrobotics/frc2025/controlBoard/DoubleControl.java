@@ -182,10 +182,10 @@ public class DoubleControl implements ControlBoard {
     return operator.povDown();
   }
 
-  @Override
-  public Trigger indexerUp() {
-    return operator.leftStick();
-  }
+  // @Override
+  // public Trigger indexerUp() {
+  //  return operator.leftStick();
+  // }
 
   @Override
   public Trigger indexerDown() {
@@ -210,5 +210,10 @@ public class DoubleControl implements ControlBoard {
   @Override
   public Trigger resetIndexer() {
     return operator.povLeft();
+  }
+
+  @Override
+  public Trigger zeroElevator() {
+    return operator.leftStick();
   }
 }

@@ -48,7 +48,7 @@ public interface ControlBoard {
 
   public Trigger climbDown();
 
-  public Trigger indexerUp();
+  // public Trigger indexerUp();
 
   public Trigger indexerDown();
 
@@ -59,4 +59,6 @@ public interface ControlBoard {
   public Trigger UnOverrideControlMode();
 
   public Trigger resetIndexer();
+
+  public Trigger zeroElevator();
 }

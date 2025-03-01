@@ -85,9 +85,9 @@ public final class Constants {
     public static final double kRotationProcesserDegrees = 190;
     public static final double kRotationBargeDegrees = 90;
 
-    public static final double kP = 0.005;
+    public static final double kP = 0.008;
     public static final double kI = 0.00;
-    public static final double kD = 0.00;
+    public static final double kD = 0.02;
     public static final double kAngleTolerance = 5;
 
     public static final double kSafeAngleDegrees = 40;
@@ -138,7 +138,7 @@ public final class Constants {
     public static final Distance kSpacing = Meters.of(1 / 60.0);
 
     // number of times the flashcommand will change color per second
-    public static final double kFlashFrequency = 5;
+    public static final double kFlashFrequency = 10;
   }
 
   public static enum Mode {

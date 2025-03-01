@@ -22,9 +22,7 @@ import edu.wpi.first.math.util.Units;
 
 public class DriveConstants {
 
-  public static final double maxSpeedHighMetersPerSec = 4.8768;
-  public static final double maxSpeedMidMetersPerSec = 3.6;
-  public static final double maxSpeedLowMetersPerSec = 2.4;
+  public static final double maxSpeedMetersPerSec = 4.8768 * 0.7;
 
   public static final double odometryFrequency = 100.0; // Hz
 
@@ -113,7 +111,7 @@ public class DriveConstants {
             robotMOI,
             new ModuleConfig(
                 wheelRadiusMeters,
-                maxSpeedHighMetersPerSec,
+                maxSpeedMetersPerSec,
                 wheelCOF,
                 driveGearbox.withReduction(driveMotorReduction),
                 driveMotorCurrentLimit,
@@ -185,7 +183,8 @@ public class DriveConstants {
     public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 
     // Turn PID configuration
-    public static final double turnKp = 0.5;
+    // 14 for p value was too much
+    public static final double turnKp = 3;
     public static final double turnKd = 0.0;
     public static final double turnSimP = 0.2;
     public static final double turnSimD = 0.0;
@@ -202,7 +201,7 @@ public class DriveConstants {
             robotMOI,
             new ModuleConfig(
                 wheelRadiusMeters,
-                maxSpeedHighMetersPerSec,
+                maxSpeedMetersPerSec,
                 wheelCOF,
                 driveGearbox.withReduction(driveMotorReduction),
                 driveMotorCurrentLimit,

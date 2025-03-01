@@ -14,7 +14,7 @@ public class FixCoralPlacement extends Command {
 
   private boolean hasPassedSensor = false;
 
-  private Debouncer debouncer = new Debouncer(0.05, DebounceType.kBoth);
+  private Debouncer debouncer = new Debouncer(0.15, DebounceType.kRising);
   private boolean coralInIntake;
 
   public FixCoralPlacement(Intake intake, Wrist wrist) {
@@ -38,7 +38,7 @@ public class FixCoralPlacement extends Command {
     System.out.println("+++++Running placement Command");
     this.coralInIntake = debouncer.calculate(intake.isCoralInIntake());
     if (this.coralInIntake && !hasPassedSensor) {
-      intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed * 0.9);
+      intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed * 0.75);
     } else {
       hasPassedSensor = true;
       wrist.setSetpoint(Constants.WristConstants.kSafeAngleDegrees);

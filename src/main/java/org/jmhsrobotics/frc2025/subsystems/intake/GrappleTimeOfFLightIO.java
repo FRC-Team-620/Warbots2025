@@ -41,7 +41,7 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
     }
 
     var algaeMeasure = algaeSensor.getMeasurement();
-    if (coralMeasure != null) {
+    if (algaeMeasure != null) {
       inputs.algaeDistance = algaeMeasure.distance_mm;
       inputs.algaeMeasurementOutOfBounds =
           algaeMeasure.status == LaserCan.LASERCAN_STATUS_OUT_OF_BOUNDS;

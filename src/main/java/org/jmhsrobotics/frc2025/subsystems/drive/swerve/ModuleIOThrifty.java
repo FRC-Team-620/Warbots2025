@@ -113,9 +113,7 @@ public class ModuleIOThrifty implements ModuleIO {
     driveConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(
-            thriftyConstants.driveKp, 0.0,
-            thriftyConstants.driveKd, 0.0);
+        .pidf(thriftyConstants.driveKp, 0, thriftyConstants.driveKd, 0.114);
     driveConfig
         .signals
         .primaryEncoderPositionAlwaysOn(true)

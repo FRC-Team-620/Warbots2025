@@ -14,6 +14,7 @@
 package org.jmhsrobotics.frc2025;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -27,8 +28,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
@@ -42,8 +43,9 @@ import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
+import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
-import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
+import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
@@ -176,7 +178,7 @@ public class RobotContainer {
         break;
     }
 
-    this.control = new DoubleControl(intake, elevator);
+    this.control = new SingleControl(intake, elevator);
 
     led = new LED();
 
@@ -338,7 +340,7 @@ public class RobotContainer {
     control
         .intakeCoralFromIndexer()
         .onTrue(
-            new ParallelCommandGroup(
+            new SequentialCommandGroup(
                 new ParallelRaceGroup(
                     new IntakeFromIndexer(wrist, intake),
                     new LEDFlashPattern(
@@ -367,6 +369,8 @@ public class RobotContainer {
     control
         .changeModeRight()
         .onTrue(Commands.runOnce(() -> intake.setMode(1), intake).ignoringDisable(true));
+    
+    control.zeroElevator().onTrue(new ElevatorSetZero(elevator));
 
     control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));
   }
@@ -404,6 +408,45 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData("cmd/Fix Coral Placement", new FixCoralPlacement(intake, wrist));
+  }
+
+  private void configurePathPlanner() {
+    // Elevator and Wrist Commands
+    NamedCommands.registerCommand(
+        "Elevator And Wrist L4",
+        new ElevatorAndWristMove(
+            elevator,
+            wrist,
+            Constants.ElevatorConstants.kLevel4Meters,
+            Constants.WristConstants.kLevel4Degrees));
+    NamedCommands.registerCommand(
+        "Elevator And Wrist L3",
+        new ElevatorAndWristMove(
+            elevator,
+            wrist,
+            Constants.ElevatorConstants.kLevel3Meters,
+            Constants.WristConstants.kLevel3Degrees));
+    NamedCommands.registerCommand(
+        "Elevator And Wrist L2",
+        new ElevatorAndWristMove(
+            elevator,
+            wrist,
+            Constants.ElevatorConstants.kLevel2Meters,
+            Constants.WristConstants.kLevel2Degrees));
+    NamedCommands.registerCommand(
+        "Elevator And Wrist Coral Intake",
+        new ElevatorAndWristMove(
+            elevator,
+            wrist,
+            Constants.ElevatorConstants.kCoralIntakeMeters,
+            Constants.WristConstants.kSafeAngleDegrees));
+
+    // Intake Commands
+    // TODO: Intake Coral command needs to be updated once updated intake control is merged to
+    // master to also run the fix coral placement command
+    NamedCommands.registerCommand("Intake Coral", new IntakeFromIndexer(wrist, intake));
+
+    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(4));
   }
 
   public Command getToggleBrakeCommand() {

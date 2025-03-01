@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
@@ -339,7 +338,7 @@ public class RobotContainer {
         .onTrue(
             new SequentialCommandGroup(
                 new IntakeFromIndexer(wrist, intake),
-                new WaitCommand(0.5),
+                // new WaitCommand(0.5),
                 new FixCoralPlacement(intake, wrist)));
 
     control

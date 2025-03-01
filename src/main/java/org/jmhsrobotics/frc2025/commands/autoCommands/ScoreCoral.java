@@ -16,7 +16,7 @@ public class ScoreCoral extends Command {
 
   @Override
   public void initialize() {
-    timer.reset();
+    timer.restart();
     intake.set(Constants.IntakeConstants.kCoralIntakeSpeedDutyCycle / 2.0);
   }
 
@@ -24,15 +24,13 @@ public class ScoreCoral extends Command {
   public void execute() {
     // Once branch 178 is merged into master, use the isCoralInIntake method instead of distance.
     // this will not work perfectly consistently
-    if (intake.getCoralDistance() > 20) {
-      timer.start();
-    }
+    intake.set(Constants.IntakeConstants.kCoralIntakeSpeedDutyCycle / 2.0);
   }
 
   @Override
   public boolean isFinished() {
     // TODO Auto-generated method stub
-    return timer.get() > 0.4;
+    return false;
   }
 
   @Override

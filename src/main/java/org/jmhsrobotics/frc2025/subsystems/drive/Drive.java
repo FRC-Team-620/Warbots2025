@@ -128,6 +128,8 @@ public class Drive extends SubsystemBase {
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
+    Logger.recordOutput("Gyro/Gyro Connected", gyroInputs.connected);
+    Logger.recordOutput("Gyro/Gyro Heading", gyroInputs.yawPosition);
     for (var module : modules) {
       module.periodic();
     }

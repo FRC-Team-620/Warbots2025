@@ -16,14 +16,13 @@ public class Intake extends SubsystemBase {
   private int mode = 2;
   private boolean override = false;
 
-  private Debouncer coralFallingDebouncer =
-      new Debouncer(Constants.IntakeConstants.kCoralFallingDebounceTime, DebounceType.kFalling);
+  private Debouncer coralDebouncer =
+      new Debouncer(Constants.IntakeConstants.kCoralDebounceTime, DebounceType.kBoth);
   private Debouncer algaeFallingDebouncer =
       new Debouncer(Constants.IntakeConstants.kAlgaeFallingDebounceTime, DebounceType.kFalling);
   private Debouncer algaeRisingDebouncer =
       new Debouncer(Constants.IntakeConstants.kAlgaeRisingDebounceTime, DebounceType.kRising);
-  private Debouncer coralRisingDebouncer =
-      new Debouncer(Constants.IntakeConstants.kCoralRisingDebounceTime, DebounceType.kRising);
+
   private boolean coralInIntake = false;
   private boolean algaeInIntake = false;
 
@@ -45,10 +44,6 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Algae In Intake", algaeInIntake);
     Logger.recordOutput("Intake/Coral Measurement Valid", sensorInputs.coralMeasurementIsValid);
     Logger.recordOutput("Intake/Algae Measurement Valid", sensorInputs.algaeMeasurementIsValid);
-    Logger.recordOutput(
-        "Intake/Coral Measurement Out Of Bounds", sensorInputs.coralMeasurementOutOfBounds);
-    Logger.recordOutput(
-        "Intake/Algae Measurement Out Of Bounds", sensorInputs.algaeMeasurementOutOfBounds);
   }
 
   /**
@@ -60,12 +55,9 @@ public class Intake extends SubsystemBase {
   public int getMode() {
     // determines if coral and algae are in the intake based on sensor inputs and debouncers
     coralInIntake =
-        coralFallingDebouncer.calculate(
-                sensorInputs.coralDistance <= Constants.IntakeConstants.kCoralInIntakeDistanceMm
-                    && sensorInputs.coralMeasurementIsValid)
-            && coralRisingDebouncer.calculate(
-                sensorInputs.coralDistance <= Constants.IntakeConstants.kCoralInIntakeDistanceMm
-                    && sensorInputs.coralMeasurementIsValid);
+        coralDebouncer.calculate(
+            sensorInputs.coralDistance <= Constants.IntakeConstants.kCoralInIntakeDistanceMm
+                && sensorInputs.coralMeasurementIsValid);
     algaeInIntake =
         algaeFallingDebouncer.calculate(
                 sensorInputs.algaeDistance <= Constants.IntakeConstants.kAlgaeInIntakeDistanceMm
@@ -128,7 +120,8 @@ public class Intake extends SubsystemBase {
    * @return
    */
   public double getCoralDistance() {
-    return sensorInputs.coralDistance;
+    if (sensorInputs.coralMeasurementIsValid) return sensorInputs.coralDistance;
+    return 1000;
   }
 
   /**
@@ -137,7 +130,8 @@ public class Intake extends SubsystemBase {
    * @return
    */
   public double getAlgaeDistance() {
-    return sensorInputs.algaeDistance;
+    if (sensorInputs.algaeMeasurementIsValid) return sensorInputs.algaeDistance;
+    return 1000;
   }
 
   public boolean isCoralMeasureValid() {
@@ -150,5 +144,13 @@ public class Intake extends SubsystemBase {
 
   public boolean isControlModeOverridden() {
     return override;
+  }
+
+  public boolean isCoralInIntake() {
+    return this.coralInIntake;
+  }
+
+  public boolean isAlgaeInintake() {
+    return this.algaeInIntake;
   }
 }

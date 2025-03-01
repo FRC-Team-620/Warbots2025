@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -35,13 +36,14 @@ import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
+import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
-import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
+import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
@@ -174,11 +176,13 @@ public class RobotContainer {
         break;
     }
 
-    this.control = new SingleControl(intake, elevator);
+    this.control = new DoubleControl(intake, elevator);
 
     led = new LED();
 
     // Set up auto routines
+    // PathPlanner Named Commands needs to be configured before autochoose is made
+    configurePathPlanner();
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     autoChooser.addDefaultOption("BaseLineAuto", new DriveTimeCommand(2.2, 0.3, drive));
 
@@ -201,7 +205,6 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     configureDriverFeedback();
-
     setupSmartDashbaord();
   }
 
@@ -335,10 +338,12 @@ public class RobotContainer {
     control
         .intakeCoralFromIndexer()
         .onTrue(
-            new ParallelRaceGroup(
-                new IntakeFromIndexer(wrist, intake),
-                new LEDFlashPattern(
-                    led, LEDPattern.solid(Color.kTurquoise), LEDPattern.solid(Color.kWhite))));
+            new ParallelCommandGroup(
+                new ParallelRaceGroup(
+                    new IntakeFromIndexer(wrist, intake),
+                    new LEDFlashPattern(
+                        led, LEDPattern.solid(Color.kTurquoise), LEDPattern.solid(Color.kWhite))),
+                new FixCoralPlacement(intake, wrist)));
 
     control
         .climbUp()
@@ -398,6 +403,7 @@ public class RobotContainer {
         "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
+    SmartDashboard.putData("cmd/Fix Coral Placement", new FixCoralPlacement(intake, wrist));
   }
 
   public Command getToggleBrakeCommand() {

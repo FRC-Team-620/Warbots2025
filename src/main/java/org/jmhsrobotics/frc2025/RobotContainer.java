@@ -369,7 +369,7 @@ public class RobotContainer {
     control
         .changeModeRight()
         .onTrue(Commands.runOnce(() -> intake.setMode(1), intake).ignoringDisable(true));
-    
+
     control.zeroElevator().onTrue(new ElevatorSetZero(elevator));
 
     control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));

@@ -19,13 +19,13 @@ public class FixCoralPlacement extends Command {
   public FixCoralPlacement(Intake intake, Wrist wrist) {
     this.intake = intake;
     this.wrist = wrist;
-    System.out.println("========Starting Intake Placement Command");
 
     addRequirements(intake, wrist);
   }
 
   @Override
   public void initialize() {
+    System.out.println("========Starting Intake Placement Command");
     intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed);
   }
 

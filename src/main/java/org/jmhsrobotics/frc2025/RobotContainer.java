@@ -342,9 +342,12 @@ public class RobotContainer {
         .onTrue(
             new SequentialCommandGroup(
                 new ParallelRaceGroup(
-                    new IntakeFromIndexer(wrist, intake),
-                    new LEDFlashPattern(
-                        led, LEDPattern.solid(Color.kTurquoise), LEDPattern.solid(Color.kWhite))),
+                        new IntakeFromIndexer(wrist, intake),
+                        new LEDFlashPattern(
+                            led,
+                            LEDPattern.solid(Color.kTurquoise),
+                            LEDPattern.solid(Color.kWhite)))
+                    .withTimeout(5),
                 new FixCoralPlacement(intake, wrist)));
 
     control
@@ -408,6 +411,16 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData("cmd/Fix Coral Placement", new FixCoralPlacement(intake, wrist));
+    // TODO: get rid of timeout for real-bot testing
+    SmartDashboard.putData(
+        "cmd/Intake Coal Indexer",
+        new SequentialCommandGroup(
+            new ParallelRaceGroup(
+                    new IntakeFromIndexer(wrist, intake),
+                    new LEDFlashPattern(
+                        led, LEDPattern.solid(Color.kTurquoise), LEDPattern.solid(Color.kWhite)))
+                .withTimeout(5),
+            new FixCoralPlacement(intake, wrist).withTimeout(3)));
   }
 
   private void configurePathPlanner() {

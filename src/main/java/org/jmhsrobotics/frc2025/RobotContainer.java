@@ -43,6 +43,7 @@ import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
+import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
@@ -408,11 +409,11 @@ public class RobotContainer {
         "cmd/SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
     SmartDashboard.putData(
         "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
-    SmartDashboard.putData(
-        "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
-    SmartDashboard.putData("cmd/Fix Coral Placement", new FixCoralPlacement(intake, wrist));
+    SmartDashboard.putData("cmd/Wrist Down", new WristMoveTo(wrist, 150));
+    SmartDashboard.putData(
+        "cmd/Wrist Up", new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees));
   }
 
   private void configurePathPlanner() {

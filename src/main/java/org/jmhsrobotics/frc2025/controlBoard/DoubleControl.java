@@ -163,12 +163,12 @@ public class DoubleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger climbUp() {
+  public Trigger climberUp() {
     return operator.povUp();
   }
 
   @Override
-  public Trigger climbDown() {
+  public Trigger climberDown() {
     return operator.povDown();
   }
 

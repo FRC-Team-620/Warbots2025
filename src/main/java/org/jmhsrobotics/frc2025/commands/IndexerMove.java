@@ -8,15 +8,19 @@ public class IndexerMove extends Command {
   private Indexer indexer;
   private double setPointDegrees;
 
-  public IndexerMove(Indexer indexer, double setPointDegrees) {
+  public IndexerMove(Indexer indexer) {
     this.indexer = indexer;
-    this.setPointDegrees = setPointDegrees;
 
     addRequirements(indexer);
   }
 
   @Override
   public void initialize() {
+    if (this.indexer.getSetPointDegrees() == Constants.IndexerConstants.kRotationDownDegrees) {
+      this.setPointDegrees = Constants.IndexerConstants.kRotationUpDegrees;
+    } else {
+      this.setPointDegrees = Constants.IndexerConstants.kRotationDownDegrees;
+    }
     indexer.setSetpoint(setPointDegrees);
   }
 

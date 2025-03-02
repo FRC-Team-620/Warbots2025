@@ -30,4 +30,8 @@ public class Indexer extends SubsystemBase {
   public double getPositionDegrees() {
     return inputs.positionDegrees;
   }
+
+  public double getSetPointDegrees() {
+    return this.setPointDegrees;
+  }
 }

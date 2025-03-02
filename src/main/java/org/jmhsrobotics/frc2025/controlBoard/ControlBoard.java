@@ -44,9 +44,9 @@ public interface ControlBoard {
 
   public Trigger takeAlgaeQTip();
 
-  public Trigger climbUp();
+  public Trigger climberUp();
 
-  public Trigger climbDown();
+  public Trigger climberDown();
 
   public Trigger moveIndexer();
 

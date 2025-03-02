@@ -161,12 +161,12 @@ public class AltControlMode implements ControlBoard {
   }
 
   @Override
-  public Trigger climbUp() {
+  public Trigger climberUp() {
     return driver.povUp();
   }
 
   @Override
-  public Trigger climbDown() {
+  public Trigger climberDown() {
     return driver.povDown();
   }
 

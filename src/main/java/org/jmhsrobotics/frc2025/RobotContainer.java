@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
@@ -380,6 +381,12 @@ public class RobotContainer {
     control.zeroElevator().onTrue(new ElevatorSetZero(elevator));
 
     control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));
+
+    control.moveIndexer().onTrue(new IndexerMove(indexer));
+
+    control.climberDown().whileTrue(new ClimberMove(climber, -0.5));
+
+    control.climberUp().whileTrue(new ClimberMove(climber, 0.5));
   }
 
   private void configureDriverFeedback() {
@@ -415,11 +422,7 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/Wrist Down", new WristMoveTo(wrist, 150));
     SmartDashboard.putData(
         "cmd/Wrist Up", new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees));
-    SmartDashboard.putData(
-        "cmd/Indexer Up", new IndexerMove(indexer, Constants.IndexerConstants.kRotationUpDegrees));
-    SmartDashboard.putData(
-        "cmd/Indexer Down",
-        new IndexerMove(indexer, Constants.IndexerConstants.kRotationDownDegrees));
+    SmartDashboard.putData("cmd/Move Indexer", new IndexerMove(indexer));
   }
 
   private void configurePathPlanner() {

@@ -21,7 +21,9 @@ public class NeoClimberIO implements ClimberIO {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(40)
         .voltageCompensation(12)
-        .inverted(false);
+        .inverted(false)
+        .encoder
+        .positionConversionFactor(0.01);
 
     SparkUtil.tryUntilOk(
         motor,
@@ -40,7 +42,8 @@ public class NeoClimberIO implements ClimberIO {
 
     // TODO: Figure out Conversion gearing conversion factor to change from relative encoder output
     // to angle of climber
-    SparkUtil.ifOk(motor, encoder::getPosition, (value) -> inputs.positionDegrees = value);
+    SparkUtil.ifOk(
+        motor, motor.getEncoder()::getPosition, (value) -> inputs.positionDegrees = value);
   }
 
   @Override

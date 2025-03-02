@@ -172,7 +172,6 @@ public class AltControlMode implements ControlBoard {
 
   @Override
   public Trigger moveIndexer() {
-    // TODO Auto-generated method stub
     return driver.povLeft();
   }
 

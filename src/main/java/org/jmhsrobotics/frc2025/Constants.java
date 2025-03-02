@@ -45,6 +45,9 @@ public final class Constants {
     public static final int kCanAndGyroID = 60;
 
     public static final int kMitoCANdriaID = 57;
+
+    public static final int kLinearActuatorMotorLeftID = 61;
+    public static final int kLinearActuatorMotorRightID = 62;
   }
 
   public static class ElevatorConstants {

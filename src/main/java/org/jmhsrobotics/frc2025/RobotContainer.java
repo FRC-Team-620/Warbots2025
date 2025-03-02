@@ -243,6 +243,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kLevel1Meters,
                 Constants.WristConstants.kLevel1Degrees));
     control
@@ -251,6 +252,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kLevel2Meters,
                 Constants.WristConstants.kLevel2Degrees));
     control
@@ -273,6 +275,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kLevel3Meters,
                 Constants.WristConstants.kLevel3Degrees));
     control
@@ -281,6 +284,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kLevel4Meters,
                 Constants.WristConstants.kLevel4Degrees));
 
@@ -290,6 +294,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kProcesserMeters,
                 Constants.WristConstants.kRotationProcesserDegrees));
 
@@ -299,6 +304,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kBargeMeters,
                 Constants.WristConstants.kRotationBargeDegrees));
 
@@ -308,6 +314,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kCoralIntakeMeters,
                 Constants.WristConstants.kSafeAngleDegrees));
 
@@ -317,6 +324,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kAlgaeIntakeL2Meters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
 
@@ -326,6 +334,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kAlgaeIntakeL3Meters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
 
@@ -335,6 +344,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
 
@@ -345,6 +355,7 @@ public class RobotContainer {
                 new ElevatorAndWristMove(
                     elevator,
                     wrist,
+                    intake,
                     Constants.ElevatorConstants.kCoralIntakeMeters,
                     Constants.WristConstants.kRotationIntakeCoralDegrees),
                 new ParallelRaceGroup(
@@ -423,6 +434,7 @@ public class RobotContainer {
         new ElevatorAndWristMove(
             elevator,
             wrist,
+            intake,
             Constants.ElevatorConstants.kLevel4Meters,
             Constants.WristConstants.kLevel4Degrees));
     NamedCommands.registerCommand(
@@ -430,6 +442,7 @@ public class RobotContainer {
         new ElevatorAndWristMove(
             elevator,
             wrist,
+            intake,
             Constants.ElevatorConstants.kLevel3Meters,
             Constants.WristConstants.kLevel3Degrees));
     NamedCommands.registerCommand(
@@ -437,6 +450,7 @@ public class RobotContainer {
         new ElevatorAndWristMove(
             elevator,
             wrist,
+            intake,
             Constants.ElevatorConstants.kLevel2Meters,
             Constants.WristConstants.kLevel2Degrees));
     NamedCommands.registerCommand(
@@ -444,6 +458,7 @@ public class RobotContainer {
         new ElevatorAndWristMove(
             elevator,
             wrist,
+            intake,
             Constants.ElevatorConstants.kCoralIntakeMeters,
             Constants.WristConstants.kSafeAngleDegrees));
 

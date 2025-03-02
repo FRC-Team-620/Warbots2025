@@ -32,12 +32,12 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
+import org.jmhsrobotics.frc2025.commands.IndexerMove;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
@@ -51,9 +51,6 @@ import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.SimClimberIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.IndexerIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.NeoIndexerIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOBoron;
@@ -64,6 +61,10 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
+import org.jmhsrobotics.frc2025.subsystems.indexer.IndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.NeoIndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.intake.IntakeIO;
@@ -98,6 +99,7 @@ public class RobotContainer {
   private final LED led;
   private final Intake intake;
   public final Climber climber;
+  public final Indexer indexer;
   private boolean isBrakeMode = true;
 
   // Controller
@@ -130,8 +132,9 @@ public class RobotContainer {
 
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
-        climber = new Climber(new NeoClimberIO(), new NeoIndexerIO());
+        climber = new Climber(new NeoClimberIO());
         intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
+        indexer = new Indexer(new NeoIndexerIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -154,8 +157,9 @@ public class RobotContainer {
                     VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
         elevator = new Elevator(new SimElevatorIO());
         wrist = new Wrist(new SimWristIO());
-        climber = new Climber(new SimClimberIO(), new SimIndexerIO());
+        climber = new Climber(new SimClimberIO());
         intake = new Intake(new IntakeIO() {}, new SimTimeOfFlightIO() {});
+        indexer = new Indexer(new SimIndexerIO());
 
         System.out.println("Mode: SIM");
         break;
@@ -173,7 +177,8 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
-        climber = new Climber(new ClimberIO() {}, new IndexerIO() {});
+        climber = new Climber(new ClimberIO() {});
+        indexer = new Indexer(new IndexerIO() {});
 
         System.out.println("Mode: DEFAULT");
         break;
@@ -365,21 +370,6 @@ public class RobotContainer {
                 new FixCoralPlacement(intake, wrist)));
 
     control
-        .climbUp()
-        .whileTrue(
-            new ClimberAndIndexerMove(climber, -1, Constants.IndexerConstants.kRotationUpDegrees));
-
-    control
-        .climbDown()
-        .whileTrue(
-            new ClimberAndIndexerMove(climber, 1, Constants.IndexerConstants.kRotationUpDegrees));
-
-    control
-        .resetIndexer()
-        .onTrue(
-            new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
-
-    control
         .changeModeLeft()
         .onTrue(Commands.runOnce(() -> intake.setMode(-1), intake).ignoringDisable(true));
 
@@ -425,6 +415,11 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/Wrist Down", new WristMoveTo(wrist, 150));
     SmartDashboard.putData(
         "cmd/Wrist Up", new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees));
+    SmartDashboard.putData(
+        "cmd/Indexer Up", new IndexerMove(indexer, Constants.IndexerConstants.kRotationUpDegrees));
+    SmartDashboard.putData(
+        "cmd/Indexer Down",
+        new IndexerMove(indexer, Constants.IndexerConstants.kRotationDownDegrees));
   }
 
   private void configurePathPlanner() {

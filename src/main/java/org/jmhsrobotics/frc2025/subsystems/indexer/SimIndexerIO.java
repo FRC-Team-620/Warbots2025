@@ -1,4 +1,4 @@
-package org.jmhsrobotics.frc2025.subsystems.climber.indexer;
+package org.jmhsrobotics.frc2025.subsystems.indexer;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;

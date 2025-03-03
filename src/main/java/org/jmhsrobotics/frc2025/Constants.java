@@ -54,10 +54,10 @@ public final class Constants {
     public static final double kLevel1Meters = 0.05;
     public static final double kLevel2Meters = 0.28;
     public static final double kLevel3Meters = 0.75;
-    public static final double kLevel4Meters = 1.78;
-
-    public static final double kProcesserMeters = .15;
+    // BARGE AND L4 SETPOINT CANNOT BE THE EXACT SAME
+    public static final double kLevel4Meters = 1.775;
     public static final double kBargeMeters = 1.78;
+    public static final double kProcesserMeters = .15;
 
     public static final double kAlgaeQTipMeters = 0.125;
     public static final double kCoralIntakeMeters = 0;
@@ -83,7 +83,7 @@ public final class Constants {
 
     public static final double kRotationAlgaeDegrees = 181;
     public static final double kRotationProcesserDegrees = 190;
-    public static final double kRotationBargeDegrees = 90;
+    public static final double kRotationBargeDegrees = 70;
 
     public static final double kP = 0.008;
     public static final double kI = 0.00;
@@ -95,7 +95,7 @@ public final class Constants {
 
   public static class IntakeConstants {
 
-    public static final double kAlgaeDefaultCommandSpeed = -0.1;
+    public static final double kAlgaeDefaultCommandSpeed = -0.13;
     public static final double kCoralDefaultCommandSpeed = 0.1;
 
     public static final double kCoralIntakeSpeedDutyCycle = 0.4;
@@ -104,7 +104,7 @@ public final class Constants {
     public static final double kCoralIntakeIndexerSpeedDutyCycle = 0.18;
     public static final double kCoralIntakeIndexerSlowSpeedDutyCycle = 0.2;
 
-    public static final double kAlgaeExtakeSpeedDutyCycle = 0.8;
+    public static final double kAlgaeExtakeSpeedDutyCycle = 0.9;
     public static final double kAlgaeIntakeSpeedDutyCycle = -0.5;
 
     public static final int kCoralInIntakeDistanceMm = 20;
@@ -136,7 +136,6 @@ public final class Constants {
     public static final int kLength = 60;
     // Density of the LED Strip - currently set at 120 LEDs per meter
     public static final Distance kSpacing = Meters.of(1 / 60.0);
-
     // number of times the flashcommand will change color per second
     public static final double kFlashFrequency = 10;
   }

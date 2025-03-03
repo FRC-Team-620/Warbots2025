@@ -12,7 +12,7 @@ public class SimClimberIO implements ClimberIO {
 
   SingleJointedArmSim climberSim =
       new SingleJointedArmSim(
-          DCMotor.getNEO(1), 100, .07318977, 0.27, -.8, 0, false, 0, new double[0]);
+          DCMotor.getNEO(1), 100, .07318977, 0.27, -0.2, 0.8, false, 0, new double[0]);
 
   public SimClimberIO() {}
 
@@ -28,6 +28,6 @@ public class SimClimberIO implements ClimberIO {
 
   @Override
   public void set(double speedDutyCycle) {
-    this.motorVolts = MathUtil.clamp(speedDutyCycle, -1, 1) * RobotController.getBatteryVoltage();
+    this.motorVolts = -MathUtil.clamp(speedDutyCycle, -1, 1) * RobotController.getBatteryVoltage();
   }
 }

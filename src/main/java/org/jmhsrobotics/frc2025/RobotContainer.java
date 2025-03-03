@@ -201,7 +201,7 @@ public class RobotContainer {
     // PathPlanner Named Commands needs to be configured before autochoose is made
     configurePathPlanner();
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    autoChooser.addDefaultOption("BaseLineAuto", new DriveTimeCommand(2.2, 0.3, drive));
+    autoChooser.addDefaultOption("BaseLineAuto", new DriveTimeCommand(1.5, 0.3, drive));
 
     // Set up SysId routines
     autoChooser.addOption(

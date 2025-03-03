@@ -28,7 +28,6 @@ public class FixCoralPlacement extends Command {
   public void initialize() {
     this.hasPassedSensor = false;
     this.coralInIntake = true;
-    // this.timer.reset();
     intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed * 0.9);
   }
 
@@ -42,14 +41,12 @@ public class FixCoralPlacement extends Command {
       wrist.setSetpoint(Constants.WristConstants.kSafeAngleDegrees);
       intake.set(-Constants.IntakeConstants.kCoralDefaultCommandSpeed);
     }
-    // if (hasPassedSensor && coralInIntake) timer.start();
   }
 
   @Override
   public boolean isFinished() {
     // once coral comes back in from of sensor after passing
     return hasPassedSensor && coralInIntake;
-    // return timer.get() > 0.1;
   }
 
   @Override

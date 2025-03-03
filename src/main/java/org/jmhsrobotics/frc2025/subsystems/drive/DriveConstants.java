@@ -22,7 +22,9 @@ import edu.wpi.first.math.util.Units;
 
 public class DriveConstants {
 
-  public static final double maxSpeedMetersPerSec = 4.8768 * 0.7;
+  public static final double maxSpeedMetersPerSec = 4.8768 * 0.8;
+  public static final double alignSpeedMetersPerSec = 1.8;
+
   public static final double odometryFrequency = 100.0; // Hz
 
   public static final Rotation2d frontLeftZeroRotation = new Rotation2d(0.0);

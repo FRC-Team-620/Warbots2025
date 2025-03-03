@@ -46,7 +46,6 @@ import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.LinearActuatorMove;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
-import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
@@ -252,6 +251,8 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive));
 
+    control.alignMode().onTrue(Commands.runOnce(() -> drive.changeMaxSpeedMetersPerSec()));
+
     control
         .placeCoralLevel1()
         .onTrue(
@@ -432,12 +433,8 @@ public class RobotContainer {
         "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
-
     SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, 0.5));
     SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, -0.5));
-    SmartDashboard.putData("cmd/Wrist Down", new WristMoveTo(wrist, 150));
-    SmartDashboard.putData(
-        "cmd/Wrist Up", new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees));
     SmartDashboard.putData("cmd/Move Indexer", new IndexerMove(indexer));
     SmartDashboard.putData("cmd/extend Actuator", new LinearActuatorMove(linearActuator, 1));
     SmartDashboard.putData("cmd/retract Actuator", new LinearActuatorMove(linearActuator, -1));

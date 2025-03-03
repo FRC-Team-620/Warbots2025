@@ -91,7 +91,7 @@ public class DoubleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger turboMode() {
+  public Trigger alignMode() {
     return driver.leftBumper();
   }
 

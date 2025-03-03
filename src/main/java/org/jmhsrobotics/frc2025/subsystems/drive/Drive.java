@@ -71,6 +71,8 @@ public class Drive extends SubsystemBase {
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
 
+  private double maxLinearSpeedMetersPerSec = DriveConstants.maxSpeedMetersPerSec;
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -125,6 +127,7 @@ public class Drive extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
@@ -200,7 +203,7 @@ public class Drive extends SubsystemBase {
     speeds = ChassisSpeeds.discretize(speeds, Constants.krealTimeStep);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        setpointStates, DriveConstants.maxSpeedMetersPerSec);
+        setpointStates, this.getMaxLinearSpeedMetersPerSec());
 
     // Log unoptimized setpoints
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
@@ -322,12 +325,22 @@ public class Drive extends SubsystemBase {
 
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
-    return DriveConstants.maxSpeedMetersPerSec;
+    return this.maxLinearSpeedMetersPerSec;
   }
 
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
-    return DriveConstants.maxSpeedMetersPerSec / DriveConstants.thriftyConstants.driveBaseRadius;
+    return this.maxLinearSpeedMetersPerSec / DriveConstants.thriftyConstants.driveBaseRadius;
+  }
+
+  /**
+   * Sets the maximum speed to either align mode or standard mode based on what the current max
+   * speed is
+   */
+  public void changeMaxSpeedMetersPerSec() {
+    if (this.maxLinearSpeedMetersPerSec == DriveConstants.maxSpeedMetersPerSec)
+      this.maxLinearSpeedMetersPerSec = DriveConstants.alignSpeedMetersPerSec;
+    else this.maxLinearSpeedMetersPerSec = DriveConstants.maxSpeedMetersPerSec;
   }
 
   /** Sets all Motor Controllers to brake or coast mode */

@@ -14,7 +14,7 @@ public interface ControlBoard {
 
   public Trigger resetForward();
 
-  public Trigger turboMode();
+  public Trigger alignMode();
 
   // =======Operator Controls=======
 

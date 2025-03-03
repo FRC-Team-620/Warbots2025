@@ -28,20 +28,23 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
+import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
+import org.jmhsrobotics.frc2025.commands.IndexerMove;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
+import org.jmhsrobotics.frc2025.commands.LinearActuatorMove;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
@@ -50,9 +53,6 @@ import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.SimClimberIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.IndexerIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.NeoIndexerIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOBoron;
@@ -63,6 +63,10 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
+import org.jmhsrobotics.frc2025.subsystems.indexer.IndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.NeoIndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.intake.IntakeIO;
@@ -70,6 +74,9 @@ import org.jmhsrobotics.frc2025.subsystems.intake.NeoIntakeIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.SimTimeOfFlightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.TimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
+import org.jmhsrobotics.frc2025.subsystems.linearActuators.LinearActuator;
+import org.jmhsrobotics.frc2025.subsystems.linearActuators.LinearActuatorIO;
+import org.jmhsrobotics.frc2025.subsystems.linearActuators.RealLinearActuatorIO;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionIO;
@@ -97,6 +104,8 @@ public class RobotContainer {
   private final LED led;
   private final Intake intake;
   public final Climber climber;
+  public final Indexer indexer;
+  public final LinearActuator linearActuator;
   private boolean isBrakeMode = true;
 
   // Controller
@@ -129,8 +138,10 @@ public class RobotContainer {
 
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
-        climber = new Climber(new NeoClimberIO(), new NeoIndexerIO());
+        climber = new Climber(new NeoClimberIO());
         intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
+        indexer = new Indexer(new NeoIndexerIO());
+        linearActuator = new LinearActuator(new RealLinearActuatorIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -153,8 +164,10 @@ public class RobotContainer {
                     VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
         elevator = new Elevator(new SimElevatorIO());
         wrist = new Wrist(new SimWristIO());
-        climber = new Climber(new SimClimberIO(), new SimIndexerIO());
+        climber = new Climber(new SimClimberIO());
         intake = new Intake(new IntakeIO() {}, new SimTimeOfFlightIO() {});
+        indexer = new Indexer(new SimIndexerIO());
+        linearActuator = new LinearActuator(new LinearActuatorIO() {});
 
         System.out.println("Mode: SIM");
         break;
@@ -172,7 +185,9 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
-        climber = new Climber(new ClimberIO() {}, new IndexerIO() {});
+        climber = new Climber(new ClimberIO() {});
+        indexer = new Indexer(new IndexerIO() {});
+        linearActuator = new LinearActuator(new LinearActuatorIO() {});
 
         System.out.println("Mode: DEFAULT");
         break;
@@ -366,21 +381,6 @@ public class RobotContainer {
                 new FixCoralPlacement(intake, wrist)));
 
     control
-        .climbUp()
-        .whileTrue(
-            new ClimberAndIndexerMove(climber, -1, Constants.IndexerConstants.kRotationUpDegrees));
-
-    control
-        .climbDown()
-        .whileTrue(
-            new ClimberAndIndexerMove(climber, 1, Constants.IndexerConstants.kRotationUpDegrees));
-
-    control
-        .resetIndexer()
-        .onTrue(
-            new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
-
-    control
         .changeModeLeft()
         .onTrue(Commands.runOnce(() -> intake.setMode(-1), intake).ignoringDisable(true));
 
@@ -391,6 +391,16 @@ public class RobotContainer {
     control.zeroElevator().onTrue(new ElevatorSetZero(elevator));
 
     control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));
+
+    control
+        .moveIndexer()
+        .onTrue(
+            new ParallelCommandGroup(
+                new IndexerMove(indexer), new LinearActuatorMove(linearActuator, 1)));
+
+    control.climberDown().whileTrue(new ClimberMove(climber, -0.5));
+
+    control.climberUp().whileTrue(new ClimberMove(climber, 0.5));
   }
 
   private void configureDriverFeedback() {
@@ -423,6 +433,11 @@ public class RobotContainer {
         "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
+    SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, 0.5));
+    SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, -0.5));
+    SmartDashboard.putData("cmd/Move Indexer", new IndexerMove(indexer));
+    SmartDashboard.putData("cmd/extend Actuator", new LinearActuatorMove(linearActuator, 1));
+    SmartDashboard.putData("cmd/retract Actuator", new LinearActuatorMove(linearActuator, -1));
   }
 
   private void configurePathPlanner() {

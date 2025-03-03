@@ -155,23 +155,18 @@ public class SingleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger climbUp() {
+  public Trigger climberUp() {
     return driver.povUp();
   }
 
   @Override
-  public Trigger climbDown() {
+  public Trigger climberDown() {
     return driver.povDown();
   }
 
-  // @Override
-  // public Trigger indexerUp() {
-  //  return driver.leftStick();
-  // }
-
   @Override
-  public Trigger indexerDown() {
-    return driver.rightStick();
+  public Trigger moveIndexer() {
+    return driver.povLeft();
   }
 
   @Override
@@ -187,11 +182,6 @@ public class SingleControl implements ControlBoard {
   @Override
   public Trigger UnOverrideControlMode() {
     return driver.start().and(driver.back());
-  }
-
-  @Override
-  public Trigger resetIndexer() {
-    return driver.povLeft();
   }
 
   @Override

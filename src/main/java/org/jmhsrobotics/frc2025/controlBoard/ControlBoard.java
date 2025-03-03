@@ -44,19 +44,17 @@ public interface ControlBoard {
 
   public Trigger takeAlgaeQTip();
 
-  public Trigger climbUp();
+  public Trigger climberUp();
 
-  public Trigger climbDown();
+  public Trigger climberDown();
 
-  public Trigger indexerDown();
+  public Trigger moveIndexer();
 
   public Trigger changeModeLeft();
 
   public Trigger changeModeRight();
 
   public Trigger UnOverrideControlMode();
-
-  public Trigger resetIndexer();
 
   public Trigger zeroElevator();
 }

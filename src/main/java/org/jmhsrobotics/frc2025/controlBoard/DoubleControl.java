@@ -163,23 +163,18 @@ public class DoubleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger climbUp() {
+  public Trigger climberUp() {
     return operator.povUp();
   }
 
   @Override
-  public Trigger climbDown() {
+  public Trigger climberDown() {
     return operator.povDown();
   }
 
-  // @Override
-  // public Trigger indexerUp() {
-  //  return operator.leftStick();
-  // }
-
   @Override
-  public Trigger indexerDown() {
-    return operator.rightStick();
+  public Trigger moveIndexer() {
+    return operator.povLeft();
   }
 
   @Override
@@ -195,11 +190,6 @@ public class DoubleControl implements ControlBoard {
   @Override
   public Trigger UnOverrideControlMode() {
     return operator.rightBumper().and(operator.leftBumper());
-  }
-
-  @Override
-  public Trigger resetIndexer() {
-    return operator.povLeft();
   }
 
   @Override

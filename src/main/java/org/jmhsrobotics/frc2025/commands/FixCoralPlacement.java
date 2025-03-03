@@ -29,13 +29,11 @@ public class FixCoralPlacement extends Command {
     this.hasPassedSensor = false;
     this.coralInIntake = true;
     // this.timer.reset();
-    System.out.println("========Starting Intake Placement Command");
     intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed * 0.9);
   }
 
   @Override
   public void execute() {
-    System.out.println("+++++Running placement Command");
     this.coralInIntake = debouncer.calculate(intake.isCoralInIntake());
     if (this.coralInIntake && !hasPassedSensor) {
       intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed * 0.75);

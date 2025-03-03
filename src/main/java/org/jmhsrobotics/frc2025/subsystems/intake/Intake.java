@@ -18,10 +18,8 @@ public class Intake extends SubsystemBase {
 
   private Debouncer coralDebouncer =
       new Debouncer(Constants.IntakeConstants.kCoralDebounceTime, DebounceType.kBoth);
-  private Debouncer algaeFallingDebouncer =
-      new Debouncer(Constants.IntakeConstants.kAlgaeFallingDebounceTime, DebounceType.kFalling);
-  private Debouncer algaeRisingDebouncer =
-      new Debouncer(Constants.IntakeConstants.kAlgaeRisingDebounceTime, DebounceType.kRising);
+  private Debouncer algaeDebouncer =
+      new Debouncer(Constants.IntakeConstants.kAlgaeFallingDebounceTime, DebounceType.kBoth);
 
   private boolean coralInIntake = false;
   private boolean algaeInIntake = false;
@@ -45,6 +43,8 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Algae In Intake", algaeInIntake);
     Logger.recordOutput("Intake/Coral Measurement Valid", sensorInputs.coralMeasurementIsValid);
     Logger.recordOutput("Intake/Algae Measurement Valid", sensorInputs.algaeMeasurementIsValid);
+    Logger.recordOutput("Intake/Coral Sensor Ambient Light", sensorInputs.coralAmbientLight);
+    Logger.recordOutput("Intake/Algae Sensor Ambient Light", sensorInputs.algaeAmbientLight);
   }
 
   /**
@@ -55,17 +55,8 @@ public class Intake extends SubsystemBase {
    */
   public int getMode() {
     // determines if coral and algae are in the intake based on sensor inputs and debouncers
-    coralInIntake =
-        coralDebouncer.calculate(
-            sensorInputs.coralDistance <= Constants.IntakeConstants.kCoralInIntakeDistanceMm
-                && sensorInputs.coralMeasurementIsValid);
-    algaeInIntake =
-        algaeFallingDebouncer.calculate(
-                sensorInputs.algaeDistance <= Constants.IntakeConstants.kAlgaeInIntakeDistanceMm
-                    && sensorInputs.algaeMeasurementIsValid)
-            && algaeRisingDebouncer.calculate(
-                sensorInputs.algaeDistance <= Constants.IntakeConstants.kAlgaeInIntakeDistanceMm
-                    && sensorInputs.algaeMeasurementIsValid);
+    this.coralInIntake = this.isCoralInIntake();
+    this.algaeInIntake = this.isAlgaeInintake();
 
     if (override) {
       return mode;
@@ -121,7 +112,8 @@ public class Intake extends SubsystemBase {
    * @return
    */
   public double getCoralDistance() {
-    if (sensorInputs.coralMeasurementIsValid) return sensorInputs.coralDistance;
+    if (sensorInputs.coralMeasurementIsValid && sensorInputs.coralAmbientLight < 200)
+      return sensorInputs.coralDistance;
     return 1000;
   }
 
@@ -131,27 +123,56 @@ public class Intake extends SubsystemBase {
    * @return
    */
   public double getAlgaeDistance() {
-    if (sensorInputs.algaeMeasurementIsValid) return sensorInputs.algaeDistance;
+    if (sensorInputs.algaeMeasurementIsValid && sensorInputs.algaeAmbientLight < 200)
+      return sensorInputs.algaeDistance;
     return 1000;
   }
 
+  /**
+   * Tests wether or not the sensor input is valid based on if grapple determines them to be so as
+   * well as ambient light levels
+   *
+   * @return
+   */
   public boolean isCoralMeasureValid() {
-    return sensorInputs.coralMeasurementIsValid;
+    return sensorInputs.coralMeasurementIsValid && sensorInputs.coralAmbientLight < 200;
   }
 
+  /**
+   * Tests wether or not the sensor input is valid based on if grapple determines them to be so as
+   * well as ambient light levels
+   *
+   * @return
+   */
   public boolean isAlgaeMeasureValid() {
-    return sensorInputs.algaeMeasurementIsValid;
+    return sensorInputs.algaeMeasurementIsValid && sensorInputs.algaeAmbientLight < 200;
   }
 
   public boolean isControlModeOverridden() {
     return override;
   }
 
+  /**
+   * determines if coral is in intake based on time of flight sensor distance and measurement
+   * validity
+   *
+   * @return
+   */
   public boolean isCoralInIntake() {
-    return this.coralInIntake;
+    return coralDebouncer.calculate(
+        sensorInputs.coralDistance <= Constants.IntakeConstants.kCoralInIntakeDistanceMm
+            && this.isCoralMeasureValid());
   }
 
+  /**
+   * determines if algae is in intake based on time of flight sensor distance and measurement
+   * validity
+   *
+   * @return
+   */
   public boolean isAlgaeInintake() {
-    return this.algaeInIntake;
+    return algaeDebouncer.calculate(
+        sensorInputs.algaeDistance <= Constants.IntakeConstants.kAlgaeInIntakeDistanceMm
+            && this.isAlgaeMeasureValid());
   }
 }

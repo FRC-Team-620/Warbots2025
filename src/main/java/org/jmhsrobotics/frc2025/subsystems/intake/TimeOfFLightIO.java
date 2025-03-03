@@ -12,6 +12,8 @@ public interface TimeOfFLightIO {
     public boolean coralMeasurementOutOfBounds = false;
     public boolean algaeMeasurementIsValid = false;
     public boolean coralMeasurementIsValid = false;
+    public int coralAmbientLight = 0;
+    public int algaeAmbientLight = 0;
   }
 
   public default void updateInputs(TimeOfFLightIOInputs inputs) {}

@@ -36,4 +36,8 @@ public class Climber extends SubsystemBase {
   public void setBrakeMode(boolean enable) {
     climberIO.setBrakeMode(enable);
   }
+
+  public double getAngleDegrees() {
+    return inputs.positionDegrees;
+  }
 }

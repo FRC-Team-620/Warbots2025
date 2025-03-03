@@ -7,62 +7,45 @@ import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
 
-public class ClimberMove extends Command {
+public class LEDClimber extends Command {
   private Climber climber;
-  private double climberSpeedDutyCycle;
   private LED led;
 
-  private final LEDPattern topPattern = LEDPattern.solid(Color.kRed);
+  private final LEDPattern topPattern = LEDPattern.solid(Color.kOrange);
   private final LEDPattern progressPattern;
-  private final LEDPattern bottomPattern = LEDPattern.solid(Color.kGreen);
+  private LEDPattern bottomPattern = LEDPattern.solid(Color.kWhite);
 
-  public ClimberMove(Climber climber, LED led, double climberSpeedDutyCycle) {
+  // LEDPattern basePattern = gradient(Color.kRed, Color.kBlue);
+  // LEDPattern progressPattern =
+  //   basePattern.mask(progressMaskLayer(() -> elevator.getHeight() / elevator.maxHeight());
+
+  public LEDClimber(Climber climber, LED led) {
     this.climber = climber;
     this.led = led;
-    this.climberSpeedDutyCycle = climberSpeedDutyCycle;
-
-    // creates the progress bar LED pattern
     progressPattern =
         LEDPattern.progressMaskLayer(
             () ->
                 (climber.getAngleDegrees() - Constants.ClimberConstants.kSoftLimitTopDegrees)
                     / Constants.ClimberConstants.kSoftLimitBottomDegrees);
-
-    addRequirements(climber);
+    addRequirements(led);
   }
 
   @Override
   public void initialize() {
-    this.climber.setSpeedDutyCycle(climberSpeedDutyCycle);
-
-    // Sets LED pattern based on climber position
     if (climber.getAngleDegrees() < Constants.ClimberConstants.kSoftLimitTopDegrees + 1)
       this.led.setPattern(topPattern);
-    else if (climber.getAngleDegrees() > Constants.ClimberConstants.kSoftLimitBottomDegrees - 1)
-      this.led.setPattern(bottomPattern);
     else this.led.setPattern(progressPattern);
   }
 
   @Override
   public void execute() {
-    this.climber.setSpeedDutyCycle(climberSpeedDutyCycle);
-
-    // Sets LED pattern based on climber position
     if (climber.getAngleDegrees() < Constants.ClimberConstants.kSoftLimitTopDegrees + 1)
       this.led.setPattern(topPattern);
-    else if (climber.getAngleDegrees() > Constants.ClimberConstants.kSoftLimitBottomDegrees - 1)
-      this.led.setPattern(bottomPattern);
     else this.led.setPattern(progressPattern);
   }
 
   @Override
   public boolean isFinished() {
-    // TODO Auto-generated method stub
     return false;
-  }
-
-  @Override
-  public void end(boolean interrupted) {
-    this.climber.setSpeedDutyCycle(0);
   }
 }

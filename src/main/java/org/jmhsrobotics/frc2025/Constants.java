@@ -134,7 +134,7 @@ public final class Constants {
   public static final class ClimberConstants {
     // TODO: figure out what the real soft limits should be
     public static final double kSoftLimitTopDegrees = -5;
-    public static final double kSoftLimitBottomDegrees = 40;
+    public static final double kSoftLimitBottomDegrees = 60;
   }
 
   public static class ModeConstants {

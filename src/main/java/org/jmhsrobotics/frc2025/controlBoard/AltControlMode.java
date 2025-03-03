@@ -90,8 +90,8 @@ public class AltControlMode implements ControlBoard {
   }
 
   @Override
-  public Trigger turboMode() {
-    return nop;
+  public Trigger alignMode() {
+    return driver.leftBumper();
   }
 
   // =======Operator Controls=======

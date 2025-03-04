@@ -176,6 +176,11 @@ public class AltControlMode implements ControlBoard {
   }
 
   @Override
+  public Trigger retractActuator() {
+    return driver.povRight();
+  }
+
+  @Override
   public Trigger changeModeLeft() {
     return driver.back();
   }

@@ -44,7 +44,8 @@ import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
-import org.jmhsrobotics.frc2025.commands.LinearActuatorMove;
+import org.jmhsrobotics.frc2025.commands.LinearActuatorExtend;
+import org.jmhsrobotics.frc2025.commands.LinearActuatorRetract;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
@@ -396,7 +397,15 @@ public class RobotContainer {
         .moveIndexer()
         .onTrue(
             new ParallelCommandGroup(
-                new IndexerMove(indexer), new LinearActuatorMove(linearActuator, 1)));
+                new IndexerMove(indexer, Constants.IndexerConstants.kRotationUpDegrees),
+                new LinearActuatorExtend(linearActuator, 1)));
+
+    control
+        .retractActuator()
+        .onTrue(
+            new ParallelCommandGroup(
+                new LinearActuatorRetract(linearActuator, -1),
+                new IndexerMove(indexer, Constants.IndexerConstants.kRotationDownDegrees)));
 
     control.climberDown().whileTrue(new ClimberMove(climber, led, -0.5));
 
@@ -435,9 +444,8 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, led, 0.5));
     SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, led, -0.5));
-    SmartDashboard.putData("cmd/Move Indexer", new IndexerMove(indexer));
-    SmartDashboard.putData("cmd/extend Actuator", new LinearActuatorMove(linearActuator, 1));
-    SmartDashboard.putData("cmd/retract Actuator", new LinearActuatorMove(linearActuator, -1));
+    SmartDashboard.putData("cmd/extend Actuator", new LinearActuatorExtend(linearActuator, 1));
+    SmartDashboard.putData("cmd/retract Actuator", new LinearActuatorRetract(linearActuator, -1));
   }
 
   private void configurePathPlanner() {

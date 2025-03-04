@@ -125,9 +125,9 @@ public final class Constants {
     // degrees / rotation (360) times gear ratio (1/20)
     public static final double kConversionFactor = 360.0 * (1.0 / 20.0);
 
-    public static final double kP = 0.005;
+    public static final double kP = 0.00;
     public static final double kI = 0.0;
-    public static final double kD = 0.02;
+    public static final double kD = 0.0;
     public static final double kTolerance = 5;
   }
 
@@ -162,5 +162,10 @@ public final class Constants {
 
     /** Replaying from a log file. */
     REPLAY
+  }
+
+  public static class LinearActuatorConstants {
+    public static final double kExtendTimeout = 12;
+    public static final double kRetractTimeout = 15;
   }
 }

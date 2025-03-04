@@ -178,6 +178,11 @@ public class DoubleControl implements ControlBoard {
   }
 
   @Override
+  public Trigger retractActuator() {
+    return operator.povRight();
+  }
+
+  @Override
   public Trigger changeModeLeft() {
     return operator.leftBumper();
   }

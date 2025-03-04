@@ -50,6 +50,8 @@ public interface ControlBoard {
 
   public Trigger moveIndexer();
 
+  public Trigger retractActuator();
+
   public Trigger changeModeLeft();
 
   public Trigger changeModeRight();

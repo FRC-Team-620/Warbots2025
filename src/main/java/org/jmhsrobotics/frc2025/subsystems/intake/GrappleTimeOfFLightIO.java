@@ -36,6 +36,7 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
           coralMeasure.status == LaserCan.LASERCAN_STATUS_OUT_OF_BOUNDS;
       inputs.coralMeasurementIsValid =
           coralMeasure.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT;
+      inputs.coralAmbientLight = coralMeasure.ambient;
     } else {
       inputs.coralDistance = 100; // TODO: include a better missing measure value
     }
@@ -47,7 +48,7 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
           algaeMeasure.status == LaserCan.LASERCAN_STATUS_OUT_OF_BOUNDS;
       inputs.algaeMeasurementIsValid =
           algaeMeasure.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT;
-
+      inputs.algaeAmbientLight = algaeMeasure.ambient;
     } else {
       inputs.algaeDistance = 100; // TODO: include a better missing measure value
     }

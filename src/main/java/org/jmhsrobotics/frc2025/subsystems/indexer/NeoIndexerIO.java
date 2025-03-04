@@ -25,7 +25,7 @@ public class NeoIndexerIO implements IndexerIO {
   public NeoIndexerIO() {
     motorConfig
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(10)
+        .smartCurrentLimit(8)
         .voltageCompensation(12)
         .inverted(false)
         .closedLoop

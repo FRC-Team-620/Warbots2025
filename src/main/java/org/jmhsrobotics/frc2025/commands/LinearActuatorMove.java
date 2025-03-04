@@ -5,10 +5,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.subsystems.linearActuators.LinearActuator;
 
 public class LinearActuatorMove extends Command {
-  private LinearActuator linearActuator;
-  private double speedDutyCycle;
+  protected LinearActuator linearActuator;
+  protected double speedDutyCycle;
 
-  private Timer timer = new Timer();
+  protected Timer timer = new Timer();
 
   public LinearActuatorMove(LinearActuator linearActuator, double speedDutyCycle) {
     this.linearActuator = linearActuator;
@@ -28,7 +28,7 @@ public class LinearActuatorMove extends Command {
 
   @Override
   public boolean isFinished() {
-    return timer.get() > 15;
+    return false;
   }
 
   @Override

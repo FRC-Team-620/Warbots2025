@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2025.subsystems.indexer;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.util.CheckTolerance;
 import org.littletonrobotics.junction.Logger;
 
 public class Indexer extends SubsystemBase {
@@ -25,6 +26,11 @@ public class Indexer extends SubsystemBase {
   public void setSetpoint(double setPointDegrees) {
     this.setPointDegrees = setPointDegrees;
     indexerIO.setPositionDegrees(setPointDegrees);
+  }
+
+  public boolean atGoal() {
+    return CheckTolerance.atGoalTolerance(
+        setPointDegrees, inputs.positionDegrees, Constants.IndexerConstants.kToleranceDegrees);
   }
 
   public double getPositionDegrees() {

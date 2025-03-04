@@ -1,7 +1,6 @@
 package org.jmhsrobotics.frc2025.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
 
 public class IndexerMove extends Command {
@@ -27,7 +26,6 @@ public class IndexerMove extends Command {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(setPointDegrees - indexer.getPositionDegrees())
-        < Constants.IndexerConstants.kTolerance;
+    return indexer.atGoal();
   }
 }

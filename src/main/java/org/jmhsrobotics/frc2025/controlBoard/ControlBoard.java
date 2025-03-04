@@ -14,7 +14,7 @@ public interface ControlBoard {
 
   public Trigger resetForward();
 
-  public Trigger turboMode();
+  public Trigger alignMode();
 
   // =======Operator Controls=======
 
@@ -44,17 +44,19 @@ public interface ControlBoard {
 
   public Trigger takeAlgaeQTip();
 
-  public Trigger climbUp();
+  public Trigger climberUp();
 
-  public Trigger climbDown();
+  public Trigger climberDown();
 
-  public Trigger indexerUp();
+  public Trigger moveIndexer();
 
-  public Trigger indexerDown();
+  public Trigger retractActuator();
 
   public Trigger changeModeLeft();
 
   public Trigger changeModeRight();
 
-  public Trigger resetIndexer();
+  public Trigger UnOverrideControlMode();
+
+  public Trigger zeroElevator();
 }

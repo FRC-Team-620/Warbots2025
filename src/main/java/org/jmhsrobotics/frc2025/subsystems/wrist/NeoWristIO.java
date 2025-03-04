@@ -31,7 +31,7 @@ public class NeoWristIO implements WristIO {
 
     motorConfig
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(30)
+        .smartCurrentLimit(15)
         .voltageCompensation(12)
         .inverted(false)
         .signals
@@ -45,7 +45,7 @@ public class NeoWristIO implements WristIO {
     motorConfig
         .closedLoop
         .pid(Constants.WristConstants.kP, Constants.WristConstants.kI, Constants.WristConstants.kD)
-        .outputRange(-0.5, 0.5)
+        .outputRange(-0.8, 8)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     motorConfig.absoluteEncoder.apply(encoderConfig);
 

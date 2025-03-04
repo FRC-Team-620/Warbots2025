@@ -8,6 +8,12 @@ public interface TimeOfFLightIO {
     // distance in millimeters
     public int coralDistance = -1;
     public int algaeDistance = -1;
+    public boolean algaeMeasurementOutOfBounds = false;
+    public boolean coralMeasurementOutOfBounds = false;
+    public boolean algaeMeasurementIsValid = false;
+    public boolean coralMeasurementIsValid = false;
+    public int coralAmbientLight = 0;
+    public int algaeAmbientLight = 0;
   }
 
   public default void updateInputs(TimeOfFLightIOInputs inputs) {}

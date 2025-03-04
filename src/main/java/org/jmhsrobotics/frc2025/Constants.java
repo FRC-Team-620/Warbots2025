@@ -29,12 +29,6 @@ public final class Constants {
   public static final double krealTimeStep = ksimTimestep;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
-  public static final int ledPWMHeader = 5;
-  // led length in pixels
-  public static final int ledLength = 10;
-  // Density of the LED Strip - currently set at 120 LEDs per meter
-  public static final Distance ledSpacing = Meters.of(1 / 120.0);
-
   public static class CAN {
     public static final int kElevatorMotorLeftID = 30;
     public static final int kElevatorMotorRightID = 31;
@@ -46,11 +40,14 @@ public final class Constants {
     public static final int kAlgaeSensorID = 52;
 
     public static final int kIndexerMotorID = 55;
-    public static final int kClimberMotorID = 65;
+    public static final int kClimberMotorID = 45;
 
     public static final int kCanAndGyroID = 60;
 
     public static final int kMitoCANdriaID = 57;
+
+    public static final int kLinearActuatorMotorLeftID = 61;
+    public static final int kLinearActuatorMotorRightID = 62;
   }
 
   public static class ElevatorConstants {
@@ -60,15 +57,15 @@ public final class Constants {
     public static final double kLevel1Meters = 0.05;
     public static final double kLevel2Meters = 0.28;
     public static final double kLevel3Meters = 0.75;
-    public static final double kLevel4Meters = 1.8;
-
+    // BARGE AND L4 SETPOINT CANNOT BE THE EXACT SAME
+    public static final double kLevel4Meters = 1.775;
+    public static final double kBargeMeters = 1.78;
     public static final double kProcesserMeters = .15;
-    public static final double kBargeMeters = 1.8;
 
     public static final double kAlgaeQTipMeters = 0.125;
     public static final double kCoralIntakeMeters = 0;
-    public static final double kAlgaeIntakeL2Meters = 0.6;
-    public static final double kAlgaeIntakeL3Meters = 1.1;
+    public static final double kAlgaeIntakeL2Meters = 0.54;
+    public static final double kAlgaeIntakeL3Meters = 1.03;
 
     public static final double kP = 1.75;
     public static final double kI = .00;
@@ -80,48 +77,80 @@ public final class Constants {
 
     // TODO: When absolute encoder conversion is fixed, remove  / 360, recalibrate PID and change
     // tolerance to 1 degree;
-    public static final double kRotationIntakeCoralDegrees = 20;
+    public static final double kRotationIntakeCoralDegrees = 14;
 
     public static final double kLevel1Degrees = 30.0;
     public static final double kLevel2Degrees = 40.5;
     public static final double kLevel3Degrees = 40.5;
     public static final double kLevel4Degrees = 105.0;
 
-    public static final double kRotationAlgaeDegrees = 190;
+    public static final double kRotationAlgaeDegrees = 181;
     public static final double kRotationProcesserDegrees = 190;
-    public static final double kRotationBargeDegrees = 90;
+    public static final double kRotationBargeDegrees = 70;
 
-    public static final double kP = 0.005;
+    public static final double kP = 0.008;
     public static final double kI = 0.00;
-    public static final double kD = 0.00;
+    public static final double kD = 0.02;
     public static final double kAngleTolerance = 5;
 
     public static final double kSafeAngleDegrees = 40;
   }
 
   public static class IntakeConstants {
-    public static final double kMaxSpeedDutyCycle = 0.2;
-    public static final double kMaxReverseSpeedDutyCycle = -0.2;
 
-    public static final double kAlgaeDefaultCommandSpeed = -0.05;
-    public static final double kCoralDefaultCommandSpeed = -0.03;
+    public static final double kAlgaeDefaultCommandSpeed = -0.13;
+    public static final double kCoralDefaultCommandSpeed = 0.1;
 
-    public static final double kIntakeCoralSpeedDutyCycle = 0.3;
+    public static final double kCoralIntakeSpeedDutyCycle = 0.4;
+    public static final double kCoralExtakeSpeedDutyCycle = 0.2;
+
+    public static final double kCoralIntakeIndexerSpeedDutyCycle = 0.18;
+    public static final double kCoralIntakeIndexerSlowSpeedDutyCycle = 0.2;
+
+    public static final double kAlgaeExtakeSpeedDutyCycle = 0.9;
+    public static final double kAlgaeIntakeSpeedDutyCycle = -0.5;
+
+    public static final int kCoralInIntakeDistanceMm = 20;
+    public static final int kAlgaeInIntakeDistanceMm = 30;
+
+    public static final double kCoralDebounceTime = 0.05;
+    public static final double kAlgaeFallingDebounceTime = 0.3;
+    public static final double kAlgaeRisingDebounceTime = 0.1;
   }
 
   public static final class IndexerConstants {
-    public static final double kRotationUpDegrees = 180;
+    public static final double kRotationUpDegrees = 150;
     public static final double kRotationDownDegrees = 0;
 
-    public static final double kP = 0.1;
+    // degrees / rotation (360) times gear ratio (1/20)
+    public static final double kConversionFactor = 360.0 * (1.0 / 20.0);
+
+    public static final double kP = 0.00;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
+    public static final double kTolerance = 5;
+  }
+
+  public static final class ClimberConstants {
+    // TODO: figure out what the real soft limits should be
+    public static final double kSoftLimitTopDegrees = 7;
+    public static final double kSoftLimitBottomDegrees = 70;
   }
 
   public static class ModeConstants {
     public static final int kAlgae = 1;
     public static final int kSearch = 2;
     public static final int kCoral = 3;
+  }
+
+  public static final class LEDConstants {
+    public static final int kPWMHeader = 5;
+    // led length in pixels
+    public static final int kLength = 60;
+    // Density of the LED Strip - currently set at 120 LEDs per meter
+    public static final Distance kSpacing = Meters.of(1 / 60.0);
+    // number of times the flashcommand will change color per second
+    public static final double kFlashFrequency = 10;
   }
 
   public static enum Mode {
@@ -133,5 +162,10 @@ public final class Constants {
 
     /** Replaying from a log file. */
     REPLAY
+  }
+
+  public static class LinearActuatorConstants {
+    public static final double kExtendTimeout = 12;
+    public static final double kRetractTimeout = 15;
   }
 }

@@ -70,23 +70,28 @@ public class DoubleControl implements ControlBoard {
 
   // ========Driver Controls========
 
+  @Override
   public double rotation() {
     return driver.getRightX();
   }
 
+  @Override
   public double translationX() {
     return driver.getLeftX();
   }
 
+  @Override
   public double translationY() {
     return driver.getLeftY();
   }
 
+  @Override
   public Trigger resetForward() {
     return driver.rightBumper();
   }
 
-  public Trigger turboMode() {
+  @Override
+  public Trigger alignMode() {
     return driver.leftBumper();
   }
 
@@ -94,102 +99,106 @@ public class DoubleControl implements ControlBoard {
 
   @Override
   public Trigger intakeCoralFromIndexer() {
-    return operator.rightTrigger().and(elevatorAtBottom);
+    return operator.rightStick().and(searchMode);
   }
 
+  @Override
   public DoubleSupplier intakeCoral() {
-    // return driver.leftTrigger();
     return () -> operator.getLeftTriggerAxis();
   }
 
+  @Override
   public DoubleSupplier extakeCoral() {
     return () -> operator.getRightTriggerAxis();
   }
 
+  @Override
   public Trigger placeCoralLevel1() {
-    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
-
     return operator.a().and(coralMode);
   }
 
+  @Override
   public Trigger placeCoralLevel2() {
-    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
-
     return operator.b().and(coralMode);
   }
 
+  @Override
   public Trigger placeCoralLevel3() {
-    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
-
     return operator.x().and(coralMode);
   }
 
+  @Override
   public Trigger placeCoralLevel4() {
-    //  if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
     return operator.y().and(coralMode);
   }
 
+  @Override
   public Trigger scoreAlgaeProcesser() {
-    //  if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
-
     return (operator.a().or(operator.b())).and(algaeMode);
   }
 
+  @Override
   public Trigger scoreAlgaeBarge() {
-    //  if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
-
     return (operator.y().or(operator.x())).and(algaeMode);
   }
 
+  @Override
   public Trigger elevatorIntakeCoral() {
-    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
-
     return operator.a().and(searchMode);
   }
 
+  @Override
   public Trigger takeAlgaeLevel2() {
-    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
-
     return operator.b().and(searchMode);
   }
 
+  @Override
   public Trigger takeAlgaeLevel3() {
-    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
-
     return operator.x().and(searchMode);
   }
 
+  @Override
   public Trigger takeAlgaeQTip() {
-    //  if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
-
     return operator.y().and(searchMode);
   }
 
-  public Trigger climbUp() {
+  @Override
+  public Trigger climberUp() {
     return operator.povUp();
   }
 
-  public Trigger climbDown() {
+  @Override
+  public Trigger climberDown() {
     return operator.povDown();
   }
 
-  public Trigger indexerUp() {
-    return operator.leftStick();
+  @Override
+  public Trigger moveIndexer() {
+    return operator.povLeft();
   }
 
-  public Trigger indexerDown() {
-    return operator.rightStick();
+  @Override
+  public Trigger retractActuator() {
+    return operator.povRight();
   }
 
+  @Override
   public Trigger changeModeLeft() {
     return operator.leftBumper();
   }
 
+  @Override
   public Trigger changeModeRight() {
     return operator.rightBumper();
   }
 
-  public Trigger resetIndexer() {
-    return operator.povLeft();
+  @Override
+  public Trigger UnOverrideControlMode() {
+    return operator.rightBumper().and(operator.leftBumper());
+  }
+
+  @Override
+  public Trigger zeroElevator() {
+    return operator.leftStick();
   }
 }

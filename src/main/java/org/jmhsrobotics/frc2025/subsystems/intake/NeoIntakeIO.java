@@ -19,11 +19,9 @@ public class NeoIntakeIO implements IntakeIO {
     motorConfig = new SparkMaxConfig();
     motorConfig
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(20)
+        .smartCurrentLimit(25)
         .voltageCompensation(12)
-        .inverted(true)
-        .closedLoop
-        .outputRange(-0.4, 0.4);
+        .inverted(true);
 
     // attempts to burn configuration, throws an error if parameters are not
     // persisting

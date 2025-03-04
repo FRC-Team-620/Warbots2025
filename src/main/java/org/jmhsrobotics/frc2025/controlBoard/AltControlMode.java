@@ -90,20 +90,18 @@ public class AltControlMode implements ControlBoard {
   }
 
   @Override
-  public Trigger turboMode() {
-    return nop;
+  public Trigger alignMode() {
+    return driver.leftBumper();
   }
 
   // =======Operator Controls=======
-
   @Override
   public Trigger intakeCoralFromIndexer() {
-    return driver.rightTrigger().and(elevatorAtBottom);
+    return driver.rightStick().and(searchMode);
   }
 
   @Override
   public DoubleSupplier intakeCoral() {
-    // return driver.leftTrigger();
     return () -> driver.getLeftTriggerAxis();
   }
 
@@ -112,90 +110,93 @@ public class AltControlMode implements ControlBoard {
     return () -> driver.getRightTriggerAxis();
   }
 
+  @Override
   public Trigger placeCoralLevel1() {
-    // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
-
     return driver.a().and(coralMode);
   }
 
+  @Override
   public Trigger placeCoralLevel2() {
-    // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
-
     return driver.b().and(coralMode);
   }
 
+  @Override
   public Trigger placeCoralLevel3() {
-    // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
-
     return driver.x().and(coralMode);
   }
 
+  @Override
   public Trigger placeCoralLevel4() {
-    // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
     return driver.y().and(coralMode);
   }
 
+  @Override
   public Trigger scoreAlgaeProcesser() {
-    // if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
-
     return (driver.a().or(driver.b())).and(algaeMode);
   }
 
+  @Override
   public Trigger scoreAlgaeBarge() {
-    // if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
-
     return (driver.y().or(driver.x())).and(algaeMode);
   }
 
+  @Override
   public Trigger elevatorIntakeCoral() {
-    // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
-
     return driver.a().and(searchMode);
   }
 
+  @Override
   public Trigger takeAlgaeLevel2() {
-    // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
-
     return driver.b().and(searchMode);
   }
 
+  @Override
   public Trigger takeAlgaeLevel3() {
-    // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
-
     return driver.x().and(searchMode);
   }
 
+  @Override
   public Trigger takeAlgaeQTip() {
-    // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
-
     return driver.y().and(searchMode);
   }
 
-  public Trigger climbUp() {
+  @Override
+  public Trigger climberUp() {
     return driver.povUp();
   }
 
-  public Trigger climbDown() {
+  @Override
+  public Trigger climberDown() {
     return driver.povDown();
   }
 
-  public Trigger indexerUp() {
-    return driver.leftStick();
+  @Override
+  public Trigger moveIndexer() {
+    return driver.povLeft();
   }
 
-  public Trigger indexerDown() {
-    return driver.rightStick();
+  @Override
+  public Trigger retractActuator() {
+    return driver.povRight();
   }
 
+  @Override
   public Trigger changeModeLeft() {
     return driver.back();
   }
 
+  @Override
   public Trigger changeModeRight() {
     return driver.start();
   }
 
-  public Trigger resetIndexer() {
-    return driver.povLeft();
+  @Override
+  public Trigger UnOverrideControlMode() {
+    return driver.start().and(driver.back());
+  }
+
+  @Override
+  public Trigger zeroElevator() {
+    return driver.leftStick();
   }
 }

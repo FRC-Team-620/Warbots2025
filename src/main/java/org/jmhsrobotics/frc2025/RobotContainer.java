@@ -14,36 +14,46 @@
 package org.jmhsrobotics.frc2025;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
+import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
+import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
+import org.jmhsrobotics.frc2025.commands.IndexerMove;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
+import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
+import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
+import org.jmhsrobotics.frc2025.commands.LinearActuatorExtend;
+import org.jmhsrobotics.frc2025.commands.LinearActuatorRetract;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
+import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.SimClimberIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.IndexerIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.NeoIndexerIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIOBoron;
@@ -54,6 +64,10 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
+import org.jmhsrobotics.frc2025.subsystems.indexer.IndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.NeoIndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.intake.IntakeIO;
@@ -61,7 +75,9 @@ import org.jmhsrobotics.frc2025.subsystems.intake.NeoIntakeIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.SimTimeOfFlightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.TimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
-import org.jmhsrobotics.frc2025.subsystems.led.RainbowLEDCommand;
+import org.jmhsrobotics.frc2025.subsystems.linearActuators.LinearActuator;
+import org.jmhsrobotics.frc2025.subsystems.linearActuators.LinearActuatorIO;
+import org.jmhsrobotics.frc2025.subsystems.linearActuators.RealLinearActuatorIO;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionIO;
@@ -89,6 +105,8 @@ public class RobotContainer {
   private final LED led;
   private final Intake intake;
   public final Climber climber;
+  public final Indexer indexer;
+  public final LinearActuator linearActuator;
   private boolean isBrakeMode = true;
 
   // Controller
@@ -121,8 +139,10 @@ public class RobotContainer {
 
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
-        climber = new Climber(new NeoClimberIO(), new NeoIndexerIO());
+        climber = new Climber(new NeoClimberIO());
         intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
+        indexer = new Indexer(new NeoIndexerIO());
+        linearActuator = new LinearActuator(new RealLinearActuatorIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -145,8 +165,10 @@ public class RobotContainer {
                     VisionConstants.camera1Name, VisionConstants.robotToCamera1, drive::getPose));
         elevator = new Elevator(new SimElevatorIO());
         wrist = new Wrist(new SimWristIO());
-        climber = new Climber(new SimClimberIO(), new SimIndexerIO());
+        climber = new Climber(new SimClimberIO());
         intake = new Intake(new IntakeIO() {}, new SimTimeOfFlightIO() {});
+        indexer = new Indexer(new SimIndexerIO());
+        linearActuator = new LinearActuator(new LinearActuatorIO() {});
 
         System.out.println("Mode: SIM");
         break;
@@ -164,7 +186,9 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
-        climber = new Climber(new ClimberIO() {}, new IndexerIO() {});
+        climber = new Climber(new ClimberIO() {});
+        indexer = new Indexer(new IndexerIO() {});
+        linearActuator = new LinearActuator(new LinearActuatorIO() {});
 
         System.out.println("Mode: DEFAULT");
         break;
@@ -173,11 +197,12 @@ public class RobotContainer {
     this.control = new SingleControl(intake, elevator);
 
     led = new LED();
-    led.setDefaultCommand(new RainbowLEDCommand(this.led));
 
     // Set up auto routines
+    // PathPlanner Named Commands needs to be configured before autochoose is made
+    configurePathPlanner();
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    autoChooser.addDefaultOption("BaseLineAuto", new DriveTimeCommand(2.2, 0.3, drive));
+    autoChooser.addDefaultOption("BaseLineAuto", new DriveTimeCommand(2.2, 0.1, drive));
 
     // Set up SysId routines
     autoChooser.addOption(
@@ -198,7 +223,6 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     configureDriverFeedback();
-
     setupSmartDashbaord();
   }
 
@@ -209,6 +233,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    intake.setDefaultCommand(
+        new IntakeMove(intake, wrist, control.intakeCoral(), control.extakeCoral()));
+
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -224,20 +251,16 @@ public class RobotContainer {
             Commands.runOnce(
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive));
-    // control.turboMode().onTrue(down);
 
-    // Operator Control Bindings //
-    // control.intakeCoral().onTrue(down);
-    // control.intakeAlgae().onTrue(down);
-    // control
-    //     .placeCoralL1()
-    //     .onTrue(new ElevatorMoveTo(elevator, Constants.ElevatatorConstants.kLevel1Meters));
+    control.alignMode().onTrue(Commands.runOnce(() -> drive.changeMaxSpeedMetersPerSec()));
+
     control
         .placeCoralLevel1()
         .onTrue(
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kLevel1Meters,
                 Constants.WristConstants.kLevel1Degrees));
     control
@@ -246,6 +269,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kLevel2Meters,
                 Constants.WristConstants.kLevel2Degrees));
     control
@@ -268,6 +292,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kLevel3Meters,
                 Constants.WristConstants.kLevel3Degrees));
     control
@@ -276,6 +301,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kLevel4Meters,
                 Constants.WristConstants.kLevel4Degrees));
 
@@ -285,6 +311,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kProcesserMeters,
                 Constants.WristConstants.kRotationProcesserDegrees));
 
@@ -294,6 +321,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kBargeMeters,
                 Constants.WristConstants.kRotationBargeDegrees));
 
@@ -303,6 +331,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kCoralIntakeMeters,
                 Constants.WristConstants.kSafeAngleDegrees));
 
@@ -312,6 +341,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kAlgaeIntakeL2Meters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
 
@@ -321,6 +351,7 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kAlgaeIntakeL3Meters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
 
@@ -330,31 +361,25 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
+                intake,
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
 
-    intake.setDefaultCommand(
-        new IntakeMove(intake, wrist, control.intakeCoral(), control.extakeCoral()));
-
-    control.intakeCoralFromIndexer().whileTrue(new IntakeFromIndexer(wrist, intake));
-
     control
-        .climbUp()
-        .whileTrue(
-            new ClimberAndIndexerMove(climber, -1, Constants.IndexerConstants.kRotationUpDegrees));
-
-    control
-        .climbDown()
-        .whileTrue(
-            new ClimberAndIndexerMove(climber, 1, Constants.IndexerConstants.kRotationUpDegrees));
-
-    control
-        .resetIndexer()
+        .intakeCoralFromIndexer()
         .onTrue(
-            new ClimberAndIndexerMove(climber, 0, Constants.IndexerConstants.kRotationDownDegrees));
-
-    // control.indexerUp().onTrue(down);
-    // control.indexerDown().onTrue(down);
+            new SequentialCommandGroup(
+                new ElevatorAndWristMove(
+                    elevator,
+                    wrist,
+                    intake,
+                    Constants.ElevatorConstants.kCoralIntakeMeters,
+                    Constants.WristConstants.kRotationIntakeCoralDegrees),
+                new ParallelRaceGroup(
+                    new IntakeFromIndexer(wrist, intake),
+                    new LEDFlashPattern(
+                        led, LEDPattern.solid(Color.kHotPink), LEDPattern.solid(Color.kNavy))),
+                new FixCoralPlacement(intake, wrist)));
 
     control
         .changeModeLeft()
@@ -363,10 +388,45 @@ public class RobotContainer {
     control
         .changeModeRight()
         .onTrue(Commands.runOnce(() -> intake.setMode(1), intake).ignoringDisable(true));
+
+    control.zeroElevator().onTrue(new ElevatorSetZero(elevator));
+
+    control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));
+
+    control
+        .moveIndexer()
+        .onTrue(
+            new ParallelCommandGroup(
+                new IndexerMove(indexer, Constants.IndexerConstants.kRotationUpDegrees),
+                new LinearActuatorExtend(linearActuator, 1)));
+
+    control
+        .retractActuator()
+        .onTrue(
+            new ParallelCommandGroup(
+                new LinearActuatorRetract(linearActuator, -1),
+                new IndexerMove(indexer, Constants.IndexerConstants.kRotationDownDegrees)));
+
+    control.climberDown().whileTrue(new ClimberMove(climber, led, -0.5));
+
+    control.climberUp().whileTrue(new ClimberMove(climber, led, 0.5));
   }
 
   private void configureDriverFeedback() {
     // Changes LED light status and controller rumble
+    led.setDefaultCommand(new LEDToControlMode(this.led, this.intake));
+
+    // If control mode is manually overridden, lights flash red and green(Christmas!)
+    new Trigger(intake::isControlModeOverridden)
+        .onTrue(
+            new LEDFlashPattern(led, LEDPattern.solid(Color.kRed), LEDPattern.solid(Color.kWhite))
+                .withTimeout(1.5));
+
+    // if control mode is un-overridden, lights will flash gold and white
+    new Trigger(intake::isControlModeOverridden)
+        .onFalse(
+            new LEDFlashPattern(led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite))
+                .withTimeout(1.5));
   }
 
   private void setupSmartDashbaord() {
@@ -380,10 +440,55 @@ public class RobotContainer {
         "cmd/SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
     SmartDashboard.putData(
         "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
-    SmartDashboard.putData(
-        "cmd/SetElevatorZero", Commands.runOnce(() -> elevator.setZero(), elevator));
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
+    SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, led, 0.5));
+    SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, led, -0.5));
+    SmartDashboard.putData("cmd/extend Actuator", new LinearActuatorExtend(linearActuator, 1));
+    SmartDashboard.putData("cmd/retract Actuator", new LinearActuatorRetract(linearActuator, -1));
+  }
+
+  private void configurePathPlanner() {
+    // Elevator and Wrist Commands
+    NamedCommands.registerCommand(
+        "Elevator And Wrist L4",
+        new ElevatorAndWristMove(
+            elevator,
+            wrist,
+            intake,
+            Constants.ElevatorConstants.kLevel4Meters,
+            Constants.WristConstants.kLevel4Degrees));
+    NamedCommands.registerCommand(
+        "Elevator And Wrist L3",
+        new ElevatorAndWristMove(
+            elevator,
+            wrist,
+            intake,
+            Constants.ElevatorConstants.kLevel3Meters,
+            Constants.WristConstants.kLevel3Degrees));
+    NamedCommands.registerCommand(
+        "Elevator And Wrist L2",
+        new ElevatorAndWristMove(
+            elevator,
+            wrist,
+            intake,
+            Constants.ElevatorConstants.kLevel2Meters,
+            Constants.WristConstants.kLevel2Degrees));
+    NamedCommands.registerCommand(
+        "Elevator And Wrist Coral Intake",
+        new ElevatorAndWristMove(
+            elevator,
+            wrist,
+            intake,
+            Constants.ElevatorConstants.kCoralIntakeMeters,
+            Constants.WristConstants.kSafeAngleDegrees));
+
+    // Intake Commands
+    // TODO: Intake Coral command needs to be updated once updated intake control is merged to
+    // master to also run the fix coral placement command
+    NamedCommands.registerCommand("Intake Coral", new IntakeFromIndexer(wrist, intake));
+
+    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(1.5));
   }
 
   public Command getToggleBrakeCommand() {

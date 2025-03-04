@@ -28,7 +28,7 @@ public class ClimberMove extends Command {
                 (climber.getAngleDegrees() - Constants.ClimberConstants.kSoftLimitTopDegrees)
                     / Constants.ClimberConstants.kSoftLimitBottomDegrees);
 
-    addRequirements(climber);
+    addRequirements(climber, led);
   }
 
   @Override
@@ -38,7 +38,7 @@ public class ClimberMove extends Command {
     // Sets LED pattern based on climber position
     if (climber.getAngleDegrees() < Constants.ClimberConstants.kSoftLimitTopDegrees + 1)
       this.led.setPattern(topPattern);
-    else if (climber.getAngleDegrees() > Constants.ClimberConstants.kSoftLimitBottomDegrees - 1)
+    else if (climber.getAngleDegrees() > Constants.ClimberConstants.kSoftLimitBottomDegrees - 10)
       this.led.setPattern(bottomPattern);
     else this.led.setPattern(progressPattern);
   }

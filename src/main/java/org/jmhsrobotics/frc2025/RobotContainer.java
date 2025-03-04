@@ -402,9 +402,9 @@ public class RobotContainer {
 
     control.retractActuator().onTrue(new LinearActuatorRetract(linearActuator, -1));
 
-    control.climberDown().whileTrue(new ClimberMove(climber, -0.5));
+    control.climberDown().whileTrue(new ClimberMove(climber, led, -0.5));
 
-    control.climberUp().whileTrue(new ClimberMove(climber, 0.5));
+    control.climberUp().whileTrue(new ClimberMove(climber, led, 0.5));
   }
 
   private void configureDriverFeedback() {
@@ -437,8 +437,8 @@ public class RobotContainer {
         "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
-    SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, 0.5));
-    SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, -0.5));
+    SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, led, 0.5));
+    SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, led, -0.5));
     SmartDashboard.putData("cmd/Move Indexer", new IndexerMove(indexer));
     SmartDashboard.putData("cmd/extend Actuator", new LinearActuatorMove(linearActuator, 1));
     SmartDashboard.putData("cmd/retract Actuator", new LinearActuatorMove(linearActuator, -1));

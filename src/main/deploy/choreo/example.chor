@@ -32,12 +32,12 @@
    "val":61.008173765
   },
   "inertia":{
-   "exp":"6 kg m ^ 2",
-   "val":6.0
+   "exp":"3 kg m ^ 2",
+   "val":3.0
   },
   "gearing":{
-   "exp":"6.5",
-   "val":6.5
+   "exp":"6.23",
+   "val":6.23
   },
   "radius":{
    "exp":"4 in",

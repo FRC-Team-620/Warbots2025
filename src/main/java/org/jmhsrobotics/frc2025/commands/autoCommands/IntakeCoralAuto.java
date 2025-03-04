@@ -24,7 +24,7 @@ public class IntakeCoralAuto extends SequentialCommandGroup {
             Constants.ElevatorConstants.kCoralIntakeMeters,
             Constants.WristConstants.kSafeAngleDegrees),
         new ParallelRaceGroup(
-            new IntakeFromIndexer(wrist, intake).withTimeout(4),
+            new IntakeFromIndexer(wrist, intake),
             new LEDFlashPattern(
                 led, LEDPattern.solid(Color.kYellow), LEDPattern.solid(Color.kWhite))),
         new FixCoralPlacement(intake, wrist).withTimeout(4));

@@ -131,6 +131,12 @@ public final class Constants {
     public static final double kTolerance = 5;
   }
 
+  public static final class ClimberConstants {
+    // TODO: figure out what the real soft limits should be
+    public static final double kSoftLimitTopDegrees = 7;
+    public static final double kSoftLimitBottomDegrees = 70;
+  }
+
   public static class ModeConstants {
     public static final int kAlgae = 1;
     public static final int kSearch = 2;

@@ -1,6 +1,6 @@
 package org.jmhsrobotics.frc2025.subsystems.climber;
 
-import com.revrobotics.RelativeEncoder;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -12,7 +12,7 @@ import org.jmhsrobotics.frc2025.util.SparkUtil;
 
 public class NeoClimberIO implements ClimberIO {
   private SparkMax motor = new SparkMax(Constants.CAN.kClimberMotorID, MotorType.kBrushless);
-  private RelativeEncoder encoder;
+  private AbsoluteEncoder encoder = motor.getAbsoluteEncoder();
   private SparkMaxConfig motorConfig;
 
   public NeoClimberIO() {
@@ -22,8 +22,18 @@ public class NeoClimberIO implements ClimberIO {
         .smartCurrentLimit(40)
         .voltageCompensation(12)
         .inverted(false)
-        .encoder
-        .positionConversionFactor(0.01);
+        .absoluteEncoder
+        .positionConversionFactor(360)
+        .inverted(false);
+    motorConfig
+        .signals
+        .absoluteEncoderVelocityAlwaysOn(true)
+        .absoluteEncoderPositionAlwaysOn(true)
+        .absoluteEncoderPositionPeriodMs(20)
+        .absoluteEncoderVelocityPeriodMs(20)
+        .appliedOutputPeriodMs(20)
+        .busVoltagePeriodMs(20)
+        .outputCurrentPeriodMs(20);
 
     SparkUtil.tryUntilOk(
         motor,
@@ -31,8 +41,6 @@ public class NeoClimberIO implements ClimberIO {
         () ->
             motor.configure(
                 motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
-
-    encoder = motor.getEncoder();
   }
 
   @Override
@@ -42,8 +50,7 @@ public class NeoClimberIO implements ClimberIO {
 
     // TODO: Figure out Conversion gearing conversion factor to change from relative encoder output
     // to angle of climber
-    SparkUtil.ifOk(
-        motor, motor.getEncoder()::getPosition, (value) -> inputs.positionDegrees = value);
+    SparkUtil.ifOk(motor, encoder::getPosition, (value) -> inputs.positionDegrees = value);
   }
 
   @Override

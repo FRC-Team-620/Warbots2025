@@ -157,4 +157,9 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+
+  public static class LinearActuatorConstants {
+    public static final double kExtendTimeout = 10;
+    public static final double kRetractTimeout = 14;
+  }
 }

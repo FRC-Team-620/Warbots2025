@@ -44,7 +44,9 @@ import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
+import org.jmhsrobotics.frc2025.commands.LinearActuatorExtend;
 import org.jmhsrobotics.frc2025.commands.LinearActuatorMove;
+import org.jmhsrobotics.frc2025.commands.LinearActuatorRetract;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
@@ -396,7 +398,9 @@ public class RobotContainer {
         .moveIndexer()
         .onTrue(
             new ParallelCommandGroup(
-                new IndexerMove(indexer), new LinearActuatorMove(linearActuator, 1)));
+                new IndexerMove(indexer), new LinearActuatorExtend(linearActuator, 1)));
+
+    control.retractActuator().onTrue(new LinearActuatorRetract(linearActuator, -1));
 
     control.climberDown().whileTrue(new ClimberMove(climber, -0.5));
 

@@ -45,10 +45,9 @@ public class AlignReef extends Command {
   @Override
   public void execute() {
     Pose3d tag = null; // TODO: handle seeing more than one reef tag
-    int targetTag =  this.calculateGoalTargetID();
+    int targetTag = this.calculateGoalTargetID();
     for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
-      if (target.id()
-          == targetTag) { // TODO: janky only work for one tag for now
+      if (target.id() == targetTag) { // TODO: janky only work for one tag for now
         tag = target.pose();
       }
     }

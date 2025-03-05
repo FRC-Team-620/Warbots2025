@@ -3,6 +3,8 @@ package org.jmhsrobotics.frc2025.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
@@ -45,7 +47,8 @@ public class AlignReef extends Command {
     Pose3d tag = null; // TODO: handle seeing more than one reef tag
     for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
       // if(target.id() )
-      if (target.id() == this.calculateGoalTargetID()) { // TODO: janky only work for one tag for now
+      if (target.id()
+          == this.calculateGoalTargetID()) { // TODO: janky only work for one tag for now
         tag = target.pose();
       }
       //   if (Arrays.stream(Constants.kReefAprilTags).anyMatch(elem -> elem == 12)) {
@@ -83,7 +86,29 @@ public class AlignReef extends Command {
     else return -120;
   }
 
+  /**
+   * Determines the target april tag ID based on the goal angle and alliance color. Ignores opposite
+   * team's tags
+   *
+   * @return April tag ID
+   */
   private int calculateGoalTargetID() {
-    return 0;
+    // if current alliance is blue, use the following april tags
+    // default team is blue
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+      if (thetaGoalDegrees == 0) return 18;
+      else if (thetaGoalDegrees == 60) return 17;
+      else if (thetaGoalDegrees == 120) return 22;
+      else if (thetaGoalDegrees == 180) return 21;
+      else if (thetaGoalDegrees == -60) return 19;
+      else return 20;
+    }
+    // if current alliance is red, use the following april tags
+    if (thetaGoalDegrees == 0) return 7;
+    else if (thetaGoalDegrees == 60) return 8;
+    else if (thetaGoalDegrees == 120) return 9;
+    else if (thetaGoalDegrees == 180) return 10;
+    else if (thetaGoalDegrees == -60) return 6;
+    else return 11;
   }
 }

@@ -3,6 +3,7 @@ package org.jmhsrobotics.frc2025.subsystems.intake;
 import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.interfaces.LaserCanInterface.RangingMode;
+import au.grapplerobotics.interfaces.LaserCanInterface.TimingBudget;
 import org.jmhsrobotics.frc2025.Constants;
 
 public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
@@ -16,6 +17,8 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
     try {
       coralSensor.setRangingMode(RangingMode.SHORT);
       algaeSensor.setRangingMode(RangingMode.SHORT);
+      algaeSensor.setTimingBudget(TimingBudget.TIMING_BUDGET_50MS);
+      coralSensor.setTimingBudget(TimingBudget.TIMING_BUDGET_50MS);
       // TODO: set timing budget for sensors and find what is ideal
       // coralSensor.setTimingBudget(TimingBudget.TIMING_BUDGET_20MS);
     } catch (ConfigurationFailedException e) {
@@ -33,18 +36,19 @@ public class GrappleTimeOfFLightIO implements TimeOfFLightIO {
           coralMeasure.status == LaserCan.LASERCAN_STATUS_OUT_OF_BOUNDS;
       inputs.coralMeasurementIsValid =
           coralMeasure.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT;
+      inputs.coralAmbientLight = coralMeasure.ambient;
     } else {
       inputs.coralDistance = 100; // TODO: include a better missing measure value
     }
 
     var algaeMeasure = algaeSensor.getMeasurement();
-    if (coralMeasure != null) {
+    if (algaeMeasure != null) {
       inputs.algaeDistance = algaeMeasure.distance_mm;
       inputs.algaeMeasurementOutOfBounds =
           algaeMeasure.status == LaserCan.LASERCAN_STATUS_OUT_OF_BOUNDS;
       inputs.algaeMeasurementIsValid =
           algaeMeasure.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT;
-
+      inputs.algaeAmbientLight = algaeMeasure.ambient;
     } else {
       inputs.algaeDistance = 100; // TODO: include a better missing measure value
     }

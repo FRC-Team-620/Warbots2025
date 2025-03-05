@@ -38,7 +38,7 @@ import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 
 public class DriveCommands {
-  private static final double DEADBAND = 0.1;
+  private static final double DEADBAND = 0.05;
   private static final double ANGLE_KP = 5.0;
   private static final double ANGLE_KD = 0.4;
   private static final double ANGLE_MAX_VELOCITY = 8.0;
@@ -84,12 +84,10 @@ public class DriveCommands {
                       ySupplier.getAsDouble() * ySupplier.getAsDouble(), ySupplier.getAsDouble()));
 
           // Apply rotation deadband
-          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.6, DEADBAND);
 
           // Square rotation value for more precise control
           omega = Math.copySign(omega * omega, omega);
-          boolean angleLock = false; // TODO: Add angle lock functionality
-          if (angleLock) {}
 
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =

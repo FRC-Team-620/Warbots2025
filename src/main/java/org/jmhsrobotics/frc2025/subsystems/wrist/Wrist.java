@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2025.subsystems.wrist;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.util.CheckTolerance;
 import org.littletonrobotics.junction.Logger;
 
 public class Wrist extends SubsystemBase {
@@ -21,13 +22,13 @@ public class Wrist extends SubsystemBase {
     Logger.recordOutput("Wrist/GoalAngle", setPointDegrees);
   }
 
-  public boolean atGoal() {
-    return Math.abs(this.setPointDegrees - inputs.positionDegrees)
-        < Constants.WristConstants.kAngleTolerance;
-  }
-
   public double getPositionDegrees() {
     return inputs.positionDegrees;
+  }
+
+  public boolean atGoal() {
+    return CheckTolerance.atGoalTolerance(
+        setPointDegrees, inputs.positionDegrees, Constants.WristConstants.kAngleTolerance);
   }
 
   public boolean checkWristSafe() {

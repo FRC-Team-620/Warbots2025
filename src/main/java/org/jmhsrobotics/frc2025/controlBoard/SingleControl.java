@@ -72,25 +72,15 @@ public class SingleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger turboMode() {
+  public Trigger alignMode() {
     return driver.leftBumper();
-  }
-
-  @Override
-  public Trigger reefAlignLeft() {
-    return nop;
-  }
-
-  @Override
-  public Trigger reefAlignRight() {
-    return nop;
   }
 
   // =======Operator Controls=======
 
   @Override
   public Trigger intakeCoralFromIndexer() {
-    return driver.rightStick().and(elevatorAtBottom);
+    return driver.rightStick().and(searchMode);
   }
 
   @Override
@@ -165,23 +155,23 @@ public class SingleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger climbUp() {
+  public Trigger climberUp() {
     return driver.povUp();
   }
 
   @Override
-  public Trigger climbDown() {
+  public Trigger climberDown() {
     return driver.povDown();
   }
 
   @Override
-  public Trigger indexerUp() {
-    return driver.leftStick();
+  public Trigger prepareClimb() {
+    return driver.povLeft();
   }
 
   @Override
-  public Trigger indexerDown() {
-    return driver.rightStick();
+  public Trigger unPrepareClimb() {
+    return driver.povRight();
   }
 
   @Override
@@ -200,7 +190,7 @@ public class SingleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger resetIndexer() {
-    return driver.povLeft();
+  public Trigger zeroElevator() {
+    return driver.leftStick();
   }
 }

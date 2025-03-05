@@ -14,11 +14,7 @@ public interface ControlBoard {
 
   public Trigger resetForward();
 
-  public Trigger turboMode();
-
-  public Trigger reefAlignLeft();
-
-  public Trigger reefAlignRight();
+  public Trigger alignMode();
 
   // =======Operator Controls=======
 
@@ -48,13 +44,13 @@ public interface ControlBoard {
 
   public Trigger takeAlgaeQTip();
 
-  public Trigger climbUp();
+  public Trigger climberUp();
 
-  public Trigger climbDown();
+  public Trigger climberDown();
 
-  public Trigger indexerUp();
+  public Trigger prepareClimb();
 
-  public Trigger indexerDown();
+  public Trigger unPrepareClimb();
 
   public Trigger changeModeLeft();
 
@@ -62,5 +58,5 @@ public interface ControlBoard {
 
   public Trigger UnOverrideControlMode();
 
-  public Trigger resetIndexer();
+  public Trigger zeroElevator();
 }

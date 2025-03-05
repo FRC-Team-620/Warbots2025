@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.ClimberMove;
+import org.jmhsrobotics.frc2025.commands.ClimberToAngle;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
@@ -388,12 +389,15 @@ public class RobotContainer {
         .prepareClimb()
         .onTrue(
             new ParallelCommandGroup(
-                new IndexerMove(indexer, Constants.IndexerConstants.kRotationUpDegrees)));
+                new IndexerMove(indexer, Constants.IndexerConstants.kRotationUpDegrees),
+                new ClimberToAngle(climber, Constants.ClimberConstants.kSoftLimitTopDegrees)));
     control
         .unPrepareClimb()
         .onTrue(
             new ParallelCommandGroup(
-                new IndexerMove(indexer, Constants.IndexerConstants.kRotationDownDegrees)));
+                new IndexerMove(indexer, Constants.IndexerConstants.kRotationDownDegrees),
+                new ClimberToAngle(climber, 20)));
+
     control.climberDown().whileTrue(new ClimberMove(climber, led, -0.5));
 
     control.climberUp().whileTrue(new ClimberMove(climber, led, 0.5));

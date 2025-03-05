@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.util.CheckTolerance;
 
-public class MoveClimberToAngle extends Command {
+public class ClimberToAngle extends Command {
   private Climber climber;
   private Double goalAngle;
   private double speedDutyCycle;
 
-  public MoveClimberToAngle(Climber climber, double angleDegrees) {
+  public ClimberToAngle(Climber climber, double angleDegrees) {
     this.climber = climber;
     this.goalAngle = angleDegrees;
 

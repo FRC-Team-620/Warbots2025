@@ -17,6 +17,8 @@ public class NeoIndexerIO implements IndexerIO {
   private AbsoluteEncoder encoder;
   private SparkMaxConfig motorConfig = new SparkMaxConfig();
 
+  private AbsoluteEncoder absoluteEncoder = motor.getAbsoluteEncoder();
+
   private SparkClosedLoopController pidController;
 
   private double setPointDegrees;
@@ -24,11 +26,27 @@ public class NeoIndexerIO implements IndexerIO {
   public NeoIndexerIO() {
     motorConfig
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(40)
+        .smartCurrentLimit(12)
         .voltageCompensation(12)
         .inverted(false)
         .closedLoop
-        .outputRange(-0.25, 0.25);
+        .outputRange(-0.5, 0.5)
+        .pid(
+            Constants.IndexerConstants.kP,
+            Constants.IndexerConstants.kI,
+            Constants.IndexerConstants.kD)
+        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+    motorConfig.absoluteEncoder.positionConversionFactor(360).inverted(true);
+
+    motorConfig
+        .signals
+        .absoluteEncoderVelocityAlwaysOn(true)
+        .absoluteEncoderPositionAlwaysOn(true)
+        .absoluteEncoderPositionPeriodMs(20)
+        .absoluteEncoderVelocityPeriodMs(20)
+        .appliedOutputPeriodMs(20)
+        .busVoltagePeriodMs(20)
+        .outputCurrentPeriodMs(20);
 
     SparkUtil.tryUntilOk(
         motor,
@@ -43,8 +61,8 @@ public class NeoIndexerIO implements IndexerIO {
 
   @Override
   public void updateInputs(IndexerIOInputs inputs) {
-    SparkUtil.ifOk(motor, encoder::getPosition, (value) -> inputs.positionDegrees = value);
-    SparkUtil.ifOk(motor, encoder::getPosition, (value) -> inputs.positionDegrees = value);
+    SparkUtil.ifOk(motor, absoluteEncoder::getPosition, (value) -> inputs.positionDegrees = value);
+    SparkUtil.ifOk(motor, absoluteEncoder::getVelocity, (value) -> inputs.motorRPM = value);
     SparkUtil.ifOk(motor, motor::getOutputCurrent, (value) -> inputs.motorAmps = value);
 
     pidController.setReference(setPointDegrees, ControlType.kPosition);

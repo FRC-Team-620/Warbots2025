@@ -193,13 +193,13 @@ public class DoubleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger indexerUp() {
-    return operator.leftStick();
+  public Trigger prepareClimb() {
+    return operator.povLeft();
   }
 
   @Override
-  public Trigger indexerDown() {
-    return operator.rightStick();
+  public Trigger unPrepareClimb() {
+    return operator.povRight();
   }
 
   @Override

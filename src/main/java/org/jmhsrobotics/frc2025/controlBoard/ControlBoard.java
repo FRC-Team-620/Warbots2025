@@ -52,9 +52,9 @@ public interface ControlBoard {
 
   public Trigger climbDown();
 
-  public Trigger indexerUp();
+  public Trigger prepareClimb();
 
-  public Trigger indexerDown();
+  public Trigger unPrepareClimb();
 
   public Trigger changeModeLeft();
 

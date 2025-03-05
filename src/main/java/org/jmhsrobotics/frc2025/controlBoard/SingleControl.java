@@ -175,13 +175,13 @@ public class SingleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger indexerUp() {
-    return driver.leftStick();
+  public Trigger prepareClimb() {
+    return driver.povLeft();
   }
 
   @Override
-  public Trigger indexerDown() {
-    return driver.rightStick();
+  public Trigger unPrepareClimb() {
+    return driver.povRight();
   }
 
   @Override

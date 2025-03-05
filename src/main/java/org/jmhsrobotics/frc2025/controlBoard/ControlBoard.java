@@ -48,9 +48,9 @@ public interface ControlBoard {
 
   public Trigger climberDown();
 
-  public Trigger moveIndexer();
+  public Trigger prepareClimb();
 
-  public Trigger retractActuator();
+  public Trigger unPrepareClimb();
 
   public Trigger changeModeLeft();
 

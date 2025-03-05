@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.ClimberMove;
+import org.jmhsrobotics.frc2025.commands.ClimberToAngle;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
@@ -44,8 +45,6 @@ import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
-import org.jmhsrobotics.frc2025.commands.LinearActuatorExtend;
-import org.jmhsrobotics.frc2025.commands.LinearActuatorRetract;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
@@ -75,9 +74,6 @@ import org.jmhsrobotics.frc2025.subsystems.intake.NeoIntakeIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.SimTimeOfFlightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.TimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
-import org.jmhsrobotics.frc2025.subsystems.linearActuators.LinearActuator;
-import org.jmhsrobotics.frc2025.subsystems.linearActuators.LinearActuatorIO;
-import org.jmhsrobotics.frc2025.subsystems.linearActuators.RealLinearActuatorIO;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionIO;
@@ -106,7 +102,6 @@ public class RobotContainer {
   private final Intake intake;
   public final Climber climber;
   public final Indexer indexer;
-  public final LinearActuator linearActuator;
   private boolean isBrakeMode = true;
 
   // Controller
@@ -142,7 +137,6 @@ public class RobotContainer {
         climber = new Climber(new NeoClimberIO());
         intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
         indexer = new Indexer(new NeoIndexerIO());
-        linearActuator = new LinearActuator(new RealLinearActuatorIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -168,7 +162,6 @@ public class RobotContainer {
         climber = new Climber(new SimClimberIO());
         intake = new Intake(new IntakeIO() {}, new SimTimeOfFlightIO() {});
         indexer = new Indexer(new SimIndexerIO());
-        linearActuator = new LinearActuator(new LinearActuatorIO() {});
 
         System.out.println("Mode: SIM");
         break;
@@ -188,7 +181,6 @@ public class RobotContainer {
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
         climber = new Climber(new ClimberIO() {});
         indexer = new Indexer(new IndexerIO() {});
-        linearActuator = new LinearActuator(new LinearActuatorIO() {});
 
         System.out.println("Mode: DEFAULT");
         break;
@@ -394,18 +386,17 @@ public class RobotContainer {
     control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));
 
     control
-        .moveIndexer()
+        .prepareClimb()
         .onTrue(
             new ParallelCommandGroup(
                 new IndexerMove(indexer, Constants.IndexerConstants.kRotationUpDegrees),
-                new LinearActuatorExtend(linearActuator, 1)));
-
+                new ClimberToAngle(climber, Constants.ClimberConstants.kSoftLimitTopDegrees)));
     control
-        .retractActuator()
+        .unPrepareClimb()
         .onTrue(
             new ParallelCommandGroup(
-                new LinearActuatorRetract(linearActuator, -1),
-                new IndexerMove(indexer, Constants.IndexerConstants.kRotationDownDegrees)));
+                new IndexerMove(indexer, Constants.IndexerConstants.kRotationDownDegrees),
+                new ClimberToAngle(climber, 20)));
 
     control.climberDown().whileTrue(new ClimberMove(climber, led, -0.5));
 
@@ -444,8 +435,6 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, led, 0.5));
     SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, led, -0.5));
-    SmartDashboard.putData("cmd/extend Actuator", new LinearActuatorExtend(linearActuator, 1));
-    SmartDashboard.putData("cmd/retract Actuator", new LinearActuatorRetract(linearActuator, -1));
   }
 
   private void configurePathPlanner() {

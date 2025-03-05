@@ -165,12 +165,12 @@ public class SingleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger moveIndexer() {
+  public Trigger prepareClimb() {
     return driver.povLeft();
   }
 
   @Override
-  public Trigger retractActuator() {
+  public Trigger unPrepareClimb() {
     return driver.povRight();
   }
 

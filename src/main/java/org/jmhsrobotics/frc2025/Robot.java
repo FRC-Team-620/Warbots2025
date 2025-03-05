@@ -152,8 +152,30 @@ public class Robot extends LoggedRobot {
                 0.192,
                 new Rotation3d(
                     Units.degreesToRadians(0),
-                    Units.degreesToRadians(-10),
+                    Units.degreesToRadians(-15),
                     Units.degreesToRadians(35)))));
+    Logger.recordOutput(
+        "left cam test",
+        robotpos.plus(
+            new Transform3d(
+                0.2794,
+                0.2032,
+                0.2,
+                new Rotation3d(
+                    Units.degreesToRadians(0),
+                    Units.degreesToRadians(-15),
+                    Units.degreesToRadians(-18)))));
+    Logger.recordOutput(
+        "right cam test",
+        robotpos.plus(
+            new Transform3d(
+                0.2794,
+                -0.2032,
+                0.2,
+                new Rotation3d(
+                    Units.degreesToRadians(0),
+                    Units.degreesToRadians(-15),
+                    Units.degreesToRadians(25)))));
   }
 
   /** This function is called once when the robot is disabled. */

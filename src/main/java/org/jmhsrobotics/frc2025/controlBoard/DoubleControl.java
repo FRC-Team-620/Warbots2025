@@ -95,6 +95,16 @@ public class DoubleControl implements ControlBoard {
     return driver.leftBumper();
   }
 
+  @Override
+  public Trigger reefAlignLeft() {
+    return driver.rightTrigger();
+  }
+
+  @Override
+  public Trigger reefAlignRight() {
+    return driver.leftTrigger();
+  }
+
   // =======Operator Controls=======
 
   @Override

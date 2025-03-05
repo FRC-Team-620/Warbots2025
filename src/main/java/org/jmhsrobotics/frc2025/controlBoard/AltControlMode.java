@@ -83,6 +83,8 @@ public class AltControlMode implements ControlBoard {
     return translationVector.get(isX ? 0 : 1) * driver.getRightTriggerAxis();
   }
 
+  // ========Driver Controls========
+
   @Override
   public Trigger resetForward() {
     // return new JoystickButton(driver, XboxController.Button.kRightBumper.value);
@@ -91,6 +93,16 @@ public class AltControlMode implements ControlBoard {
 
   @Override
   public Trigger turboMode() {
+    return driver.leftBumper();
+  }
+
+  @Override
+  public Trigger reefAlignLeft() {
+    return nop;
+  }
+
+  @Override
+  public Trigger reefAlignRight() {
     return nop;
   }
 

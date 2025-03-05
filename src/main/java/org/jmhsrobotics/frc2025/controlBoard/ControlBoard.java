@@ -16,6 +16,10 @@ public interface ControlBoard {
 
   public Trigger turboMode();
 
+  public Trigger reefAlignLeft();
+
+  public Trigger reefAlignRight();
+
   // =======Operator Controls=======
 
   public DoubleSupplier intakeCoral();

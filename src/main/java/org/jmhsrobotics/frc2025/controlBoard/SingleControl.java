@@ -73,6 +73,16 @@ public class SingleControl implements ControlBoard {
 
   @Override
   public Trigger turboMode() {
+    return driver.leftBumper();
+  }
+
+  @Override
+  public Trigger reefAlignLeft() {
+    return nop;
+  }
+
+  @Override
+  public Trigger reefAlignRight() {
     return nop;
   }
 

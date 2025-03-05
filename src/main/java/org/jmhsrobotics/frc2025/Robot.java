@@ -120,7 +120,7 @@ public class Robot extends LoggedRobot {
     double height = robotContainer.elevator.getHeight();
     double gripperDegrees = robotContainer.wrist.getPositionDegrees();
     double climberDegrees = robotContainer.climber.getClimberPositionDegrees();
-    double indexerDegrees = robotContainer.climber.getIndexerPositionDegrees();
+    double indexerDegrees = robotContainer.indexer.getPositionDegrees();
     Logger.recordOutput(
         "stage1",
         new Pose3d(new Translation3d(0, 0, height / 2), new Rotation3d(Rotation2d.fromDegrees(0))));
@@ -152,7 +152,7 @@ public class Robot extends LoggedRobot {
                 0.192,
                 new Rotation3d(
                     Units.degreesToRadians(0),
-                    Units.degreesToRadians(-15),
+                    Units.degreesToRadians(-10),
                     Units.degreesToRadians(35)))));
     Logger.recordOutput(
         "left cam test",

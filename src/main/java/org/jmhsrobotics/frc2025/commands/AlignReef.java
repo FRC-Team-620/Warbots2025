@@ -45,16 +45,21 @@ public class AlignReef extends Command {
   @Override
   public void execute() {
     Pose3d tag = null; // TODO: handle seeing more than one reef tag
+    int targetTag =  this.calculateGoalTargetID();
     for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
-      // if(target.id() )
       if (target.id()
-          == this.calculateGoalTargetID()) { // TODO: janky only work for one tag for now
+          == targetTag) { // TODO: janky only work for one tag for now
         tag = target.pose();
       }
-      //   if (Arrays.stream(Constants.kReefAprilTags).anyMatch(elem -> elem == 12)) {
-      //     tag = target.pose();
-      //   }
     }
+    // if(tag == null) { // Janky way to use second camera :todo enable after basic testing
+    //   for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
+    //     if (target.id()
+    //         == targetTag) { // TODO: janky only work for one tag for now
+    //       tag = target.pose();
+    //     }
+    //   }
+    // }
     System.out.println(tag);
     if (tag != null) {
       double theta = -Math.toDegrees(Math.atan2(tag.getY(), tag.getX()));

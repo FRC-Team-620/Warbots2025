@@ -196,13 +196,13 @@ public class AltControlMode implements ControlBoard {
   }
 
   @Override
-  public Trigger prepareClimb() {
-    return driver.povLeft();
+  public Trigger indexerUp() {
+    return driver.leftStick();
   }
 
   @Override
-  public Trigger unPrepareClimb() {
-    return driver.povRight();
+  public Trigger indexerDown() {
+    return driver.rightStick();
   }
 
   @Override

@@ -14,7 +14,6 @@
 package org.jmhsrobotics.frc2025;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,13 +27,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.AlignReef;
 import org.jmhsrobotics.frc2025.commands.ClimberAndIndexerMove;
-import org.jmhsrobotics.frc2025.commands.ClimberMove;
-import org.jmhsrobotics.frc2025.commands.ClimberToAngle;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
@@ -97,7 +93,6 @@ public class RobotContainer {
   private final LED led;
   private final Intake intake;
   public final Climber climber;
-  public final Indexer indexer;
   private boolean isBrakeMode = true;
 
   // Controller
@@ -132,7 +127,6 @@ public class RobotContainer {
         wrist = new Wrist(new NeoWristIO());
         climber = new Climber(new NeoClimberIO(), new NeoIndexerIO());
         intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
-        indexer = new Indexer(new NeoIndexerIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -157,7 +151,6 @@ public class RobotContainer {
         wrist = new Wrist(new SimWristIO());
         climber = new Climber(new SimClimberIO(), new SimIndexerIO());
         intake = new Intake(new IntakeIO() {}, new SimTimeOfFlightIO() {});
-        indexer = new Indexer(new SimIndexerIO());
 
         System.out.println("Mode: SIM");
         break;
@@ -176,8 +169,6 @@ public class RobotContainer {
         wrist = new Wrist(new WristIO() {});
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
         climber = new Climber(new ClimberIO() {}, new IndexerIO() {});
-        climber = new Climber(new ClimberIO() {});
-        indexer = new Indexer(new IndexerIO() {});
 
         System.out.println("Mode: DEFAULT");
         break;
@@ -368,23 +359,6 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> intake.setMode(1), intake).ignoringDisable(true));
 
     control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));
-
-    control
-        .prepareClimb()
-        .onTrue(
-            new ParallelCommandGroup(
-                new IndexerMove(indexer, Constants.IndexerConstants.kRotationUpDegrees),
-                new ClimberToAngle(climber, Constants.ClimberConstants.kSoftLimitTopDegrees)));
-    control
-        .unPrepareClimb()
-        .onTrue(
-            new ParallelCommandGroup(
-                new IndexerMove(indexer, Constants.IndexerConstants.kRotationDownDegrees),
-                new ClimberToAngle(climber, 20)));
-
-    control.climberDown().whileTrue(new ClimberMove(climber, led, -0.5));
-
-    control.climberUp().whileTrue(new ClimberMove(climber, led, 0.5));
   }
 
   private void configureDriverFeedback() {
@@ -420,51 +394,6 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData("cmd/Align Reef", new AlignReef(drive, vision));
-    SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, led, 0.5));
-    SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, led, -0.5));
-  }
-
-  private void configurePathPlanner() {
-    // Elevator and Wrist Commands
-    NamedCommands.registerCommand(
-        "Elevator And Wrist L4",
-        new ElevatorAndWristMove(
-            elevator,
-            wrist,
-            intake,
-            Constants.ElevatorConstants.kLevel4Meters,
-            Constants.WristConstants.kLevel4Degrees));
-    NamedCommands.registerCommand(
-        "Elevator And Wrist L3",
-        new ElevatorAndWristMove(
-            elevator,
-            wrist,
-            intake,
-            Constants.ElevatorConstants.kLevel3Meters,
-            Constants.WristConstants.kLevel3Degrees));
-    NamedCommands.registerCommand(
-        "Elevator And Wrist L2",
-        new ElevatorAndWristMove(
-            elevator,
-            wrist,
-            intake,
-            Constants.ElevatorConstants.kLevel2Meters,
-            Constants.WristConstants.kLevel2Degrees));
-    NamedCommands.registerCommand(
-        "Elevator And Wrist Coral Intake",
-        new ElevatorAndWristMove(
-            elevator,
-            wrist,
-            intake,
-            Constants.ElevatorConstants.kCoralIntakeMeters,
-            Constants.WristConstants.kSafeAngleDegrees));
-
-    // Intake Commands
-    // TODO: Intake Coral command needs to be updated once updated intake control is merged to
-    // master to also run the fix coral placement command
-    NamedCommands.registerCommand("Intake Coral", new IntakeFromIndexer(wrist, intake));
-
-    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(1.5));
   }
 
   public Command getToggleBrakeCommand() {

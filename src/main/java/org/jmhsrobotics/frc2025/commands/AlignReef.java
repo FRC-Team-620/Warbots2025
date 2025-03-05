@@ -16,7 +16,7 @@ public class AlignReef extends Command {
   private final PIDController thetaController = new PIDController(0.05, 0, 0);
   private double xGoalMeters = 0.5;
   private double yGoalMeters = 0;
-  private final double thetaGoalDegrees = 60; // Janky only work for one angle now
+  private double thetaGoalDegrees = 0; // Janky only work for one angle now
 
   public AlignReef(Drive drive, Vision vision) {
     addRequirements(drive);
@@ -32,6 +32,9 @@ public class AlignReef extends Command {
 
     xController.setSetpoint(xGoalMeters);
     yController.setSetpoint(yGoalMeters);
+
+    this.thetaGoalDegrees = this.calculateGoalAngle();
+
     thetaController.setSetpoint(thetaGoalDegrees);
     thetaController.enableContinuousInput(-180, 180);
     drive.stop();
@@ -42,7 +45,7 @@ public class AlignReef extends Command {
     Pose3d tag = null; // TODO: handle seeing more than one reef tag
     for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
       // if(target.id() )
-      if (target.id() == 17) { // TODO: janky only work for one tag for now
+      if (target.id() == this.calculateGoalTargetID()) { // TODO: janky only work for one tag for now
         tag = target.pose();
       }
       //   if (Arrays.stream(Constants.kReefAprilTags).anyMatch(elem -> elem == 12)) {
@@ -68,5 +71,19 @@ public class AlignReef extends Command {
     } else {
       drive.stop();
     }
+  }
+
+  private double calculateGoalAngle() {
+    double driveAngle = drive.getRotation().getDegrees();
+    if (Math.abs(driveAngle) <= 30) return 0;
+    else if (Math.abs(driveAngle) >= 150) return 180;
+    else if (driveAngle >= 30 && driveAngle <= 90) return 60;
+    else if (driveAngle >= 60) return 120;
+    else if (driveAngle <= -30 && driveAngle >= -90) return -60;
+    else return -120;
+  }
+
+  private int calculateGoalTargetID() {
+    return 0;
   }
 }

@@ -128,6 +128,7 @@ public class Drive extends SubsystemBase {
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
+    Logger.recordOutput("Drive/Drivetrain Angle", this.getRotation().getDegrees());
     for (var module : modules) {
       module.periodic();
     }

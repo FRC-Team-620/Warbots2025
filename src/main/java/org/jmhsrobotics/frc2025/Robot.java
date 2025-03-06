@@ -87,7 +87,7 @@ public class Robot extends LoggedRobot {
     }
 
     // Initialize URCL
-    Logger.registerURCL(URCL.startExternal());
+    Logger.registerURCL(URCL.startExternal(Constants.CAN.kCanDeviceMap));
 
     // Start AdvantageKit logger
     Logger.start();

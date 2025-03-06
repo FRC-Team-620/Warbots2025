@@ -337,11 +337,7 @@ public class Drive extends SubsystemBase {
    * Sets the maximum speed to either align mode or standard mode based on what the current max
    * speed is
    */
-  public void changeMaxSpeedMetersPerSec() {
-    if (this.maxLinearSpeedMetersPerSec == DriveConstants.maxSpeedMetersPerSec)
-      this.maxLinearSpeedMetersPerSec = DriveConstants.alignSpeedMetersPerSec;
-    else this.maxLinearSpeedMetersPerSec = DriveConstants.maxSpeedMetersPerSec;
-  }
+  public void changeMaxSpeedMetersPerSec() {}
 
   /** Sets all Motor Controllers to brake or coast mode */
   public void setBrakeMode(boolean enable) {

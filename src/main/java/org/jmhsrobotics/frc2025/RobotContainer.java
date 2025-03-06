@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.jmhsrobotics.frc2025.commands.AlignReef;
 import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.ClimberToAngle;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
@@ -48,7 +49,7 @@ import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
-import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
+import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
@@ -186,7 +187,7 @@ public class RobotContainer {
         break;
     }
 
-    this.control = new SingleControl(intake, elevator);
+    this.control = new DoubleControl(intake, elevator);
 
     led = new LED();
 
@@ -232,9 +233,12 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
+            vision,
             () -> control.translationY(),
             () -> control.translationX(),
-            () -> -control.rotation()));
+            () -> -control.rotation(),
+            () -> control.alignLeft(),
+            () -> control.alignRight()));
 
     // Reset gyro to 0° when right bumper is pressed
     control
@@ -244,7 +248,7 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive));
 
-    control.alignMode().onTrue(Commands.runOnce(() -> drive.changeMaxSpeedMetersPerSec()));
+    control.alignDriveMode().onTrue(Commands.runOnce(() -> drive.changeMaxSpeedMetersPerSec()));
 
     control
         .placeCoralLevel1()
@@ -295,7 +299,7 @@ public class RobotContainer {
                 wrist,
                 intake,
                 Constants.ElevatorConstants.kLevel4Meters,
-                Constants.WristConstants.kLevel4Degrees));
+                Constants.WristConstants.kLevel3Degrees));
 
     control
         .scoreAlgaeProcesser()
@@ -435,6 +439,7 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, led, 0.5));
     SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, led, -0.5));
+    SmartDashboard.putData("cmd/Align Reef", new AlignReef(drive, vision));
   }
 
   private void configurePathPlanner() {

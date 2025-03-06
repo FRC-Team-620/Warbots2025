@@ -65,7 +65,7 @@ public class ModuleIOSimThrifty implements ModuleIO {
     // Run closed-loop control
     if (driveClosedLoop) {
       driveAppliedVolts =
-          driveFFVolts + driveController.calculate(driveSim.getAngularVelocityRadPerSec());
+          (driveFFVolts + driveController.calculate(driveSim.getAngularVelocityRadPerSec()));
     } else {
       driveController.reset();
     }

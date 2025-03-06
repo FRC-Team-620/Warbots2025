@@ -487,6 +487,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Coral", new IntakeFromIndexer(wrist, intake));
 
     NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(1.5));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left", new AlignReef(drive, vision, led, elevator, true));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
   }
 
   public Command getToggleBrakeCommand() {

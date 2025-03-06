@@ -5,32 +5,25 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "1 Coral AA.0"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Translation Test Auto.0"
+                  "name": "Align Reef Right"
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.4
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator And Wrist L3"
-                      }
-                    }
-                  ]
+                  "name": "Elevator And Wrist L3"
                 }
               }
             ]
@@ -52,6 +45,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Mid Start Autos",
   "choreoAuto": true
 }

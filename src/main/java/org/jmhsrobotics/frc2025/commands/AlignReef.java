@@ -90,7 +90,7 @@ public class AlignReef extends Command {
       // if elevator setpoint is at an algae level, stay a little further out and in the center
     } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
         || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) {
-      xGoalMeters = 0.65;
+      xGoalMeters = 0.7;
       yGoalMeters = 0;
     }
     xController.setSetpoint(xGoalMeters);
@@ -185,5 +185,10 @@ public class AlignReef extends Command {
     return Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1.5)
         && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1.5)
         && Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees) < 3;
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    drive.stop();
   }
 }

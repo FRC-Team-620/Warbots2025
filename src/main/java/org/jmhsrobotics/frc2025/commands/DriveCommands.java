@@ -143,7 +143,6 @@ public class DriveCommands {
             xController.setSetpoint(xGoalMeters);
             yController.setSetpoint(yGoalMeters);
           }
-
           // initializing the lock target speeds outside if statement so they are accessable to add
           // onto the joystick drive
           var speed = new ChassisSpeeds();

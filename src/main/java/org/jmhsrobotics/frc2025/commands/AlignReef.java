@@ -3,21 +3,23 @@ package org.jmhsrobotics.frc2025.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
+import org.littletonrobotics.junction.Logger;
 
 public class AlignReef extends Command {
   private final Drive drive;
   private final Vision vision;
 
-  private final PIDController xController = new PIDController(1, 0, 0);
-  private final PIDController yController = new PIDController(1, 0, 0);
+  private final PIDController xController = new PIDController(0.5, 0, 0);
+  private final PIDController yController = new PIDController(0.5, 0, 0);
   private final PIDController thetaController = new PIDController(0.05, 0, 0);
-  private double xGoalMeters = 0.5;
-  private double yGoalMeters = 0;
+  private double xGoalMeters = 0.45;
+  private double yGoalMeters = Units.inchesToMeters(-7.375);
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
 
   public AlignReef(Drive drive, Vision vision) {
@@ -34,8 +36,8 @@ public class AlignReef extends Command {
 
     xController.setSetpoint(xGoalMeters);
     yController.setSetpoint(yGoalMeters);
-
-    this.thetaGoalDegrees = this.calculateGoalAngle();
+    double driveAngle = drive.getRotation().getDegrees();
+    this.thetaGoalDegrees = AlignReef.calculateGoalAngle(driveAngle);
 
     thetaController.setSetpoint(thetaGoalDegrees);
     thetaController.enableContinuousInput(-180, 180);
@@ -45,11 +47,16 @@ public class AlignReef extends Command {
   @Override
   public void execute() {
     Pose3d tag = null; // TODO: handle seeing more than one reef tag
-    int targetTag = this.calculateGoalTargetID();
     for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
-      if (target.id() == targetTag) { // TODO: janky only work for one tag for now
+      // if(target.id() )
+      if (target.id()
+          == AlignReef.calculateGoalTargetID(
+              thetaGoalDegrees)) { // TODO: janky only work for one tag for now
         tag = target.pose();
       }
+      Logger.recordOutput("Align/April Tag Pose3d", tag);
+      Logger.recordOutput("Align/April Tag X", tag.getX());
+      Logger.recordOutput("Align/April Tag Y", tag.getY());
     }
     // if(tag == null) { // Janky way to use second camera :todo enable after basic testing
     //   for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
@@ -80,8 +87,8 @@ public class AlignReef extends Command {
     }
   }
 
-  private double calculateGoalAngle() {
-    double driveAngle = drive.getRotation().getDegrees();
+  public static double calculateGoalAngle(double driveAngle) {
+    // double driveAngle = drive.getRotation().getDegrees();
     if (Math.abs(driveAngle) <= 30) return 0;
     else if (Math.abs(driveAngle) >= 150) return 180;
     else if (driveAngle >= 30 && driveAngle <= 90) return 60;
@@ -96,23 +103,23 @@ public class AlignReef extends Command {
    *
    * @return April tag ID
    */
-  private int calculateGoalTargetID() {
+  public static int calculateGoalTargetID(double angle_deg) {
     // if current alliance is blue, use the following april tags
     // default team is blue
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-      if (thetaGoalDegrees == 0) return 18;
-      else if (thetaGoalDegrees == 60) return 17;
-      else if (thetaGoalDegrees == 120) return 22;
-      else if (thetaGoalDegrees == 180) return 21;
-      else if (thetaGoalDegrees == -60) return 19;
+      if (angle_deg == 0) return 18;
+      else if (angle_deg == 60) return 17;
+      else if (angle_deg == 120) return 22;
+      else if (angle_deg == 180) return 21;
+      else if (angle_deg == -60) return 19;
       else return 20;
     }
     // if current alliance is red, use the following april tags
-    if (thetaGoalDegrees == 0) return 7;
-    else if (thetaGoalDegrees == 60) return 8;
-    else if (thetaGoalDegrees == 120) return 9;
-    else if (thetaGoalDegrees == 180) return 10;
-    else if (thetaGoalDegrees == -60) return 6;
+    if (angle_deg == 0) return 7;
+    else if (angle_deg == 60) return 8;
+    else if (angle_deg == 120) return 9;
+    else if (angle_deg == 180) return 10;
+    else if (angle_deg == -60) return 6;
     else return 11;
   }
 }

@@ -65,6 +65,17 @@ public class AltControlMode implements ControlBoard {
     return calculateTotalTranslation(false);
   }
 
+  // both aligns return 0 because buttoms are available
+  @Override
+  public double alignLeft() {
+    return 0;
+  }
+
+  @Override
+  public double alignRight() {
+    return 0;
+  }
+
   // normalizes the X and Y translations and puts them in a vector
   private double calculateTotalTranslation(boolean isX) {
     double driveX = driver.getLeftX();
@@ -90,7 +101,7 @@ public class AltControlMode implements ControlBoard {
   }
 
   @Override
-  public Trigger alignMode() {
+  public Trigger alignDriveMode() {
     return driver.leftBumper();
   }
 

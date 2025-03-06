@@ -49,7 +49,7 @@ import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
-import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
+import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
@@ -187,7 +187,7 @@ public class RobotContainer {
         break;
     }
 
-    this.control = new SingleControl(intake, elevator);
+    this.control = new DoubleControl(intake, elevator);
 
     led = new LED();
 
@@ -233,9 +233,12 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
+            vision,
             () -> control.translationY(),
             () -> control.translationX(),
-            () -> -control.rotation()));
+            () -> -control.rotation(),
+            () -> control.alignLeft(),
+            () -> control.alignRight()));
 
     // Reset gyro to 0° when right bumper is pressed
     control
@@ -245,7 +248,7 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive));
 
-    control.alignMode().onTrue(Commands.runOnce(() -> drive.changeMaxSpeedMetersPerSec()));
+    control.alignDriveMode().onTrue(Commands.runOnce(() -> drive.changeMaxSpeedMetersPerSec()));
 
     control
         .placeCoralLevel1()
@@ -296,7 +299,7 @@ public class RobotContainer {
                 wrist,
                 intake,
                 Constants.ElevatorConstants.kLevel4Meters,
-                Constants.WristConstants.kLevel4Degrees));
+                Constants.WristConstants.kLevel3Degrees));
 
     control
         .scoreAlgaeProcesser()

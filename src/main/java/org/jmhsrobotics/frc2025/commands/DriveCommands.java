@@ -14,9 +14,11 @@
 package org.jmhsrobotics.frc2025.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -36,6 +38,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
+import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.05;
@@ -69,9 +72,23 @@ public class DriveCommands {
    */
   public static Command joystickDrive(
       Drive drive,
+      Vision vision,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier) {
+      DoubleSupplier omegaSupplier,
+      DoubleSupplier leftTriggerValue,
+      DoubleSupplier rightTriggerValue) {
+    final PIDController xController = new PIDController(0.45, 0, 0);
+    final PIDController yController = new PIDController(0.45, 0, 0);
+    final PIDController thetaController = new PIDController(0.05, 0, 0);
+    double xGoalMeters = 0.48;
+    double yGoalMeters = 0;
+    // double thetaGoalDegrees = 0; // Janky
+    xController.reset();
+    yController.reset();
+    thetaController.reset();
+
+    thetaController.enableContinuousInput(-180, 180);
 
     return Commands.run(
         () -> {
@@ -89,12 +106,71 @@ public class DriveCommands {
           // Square rotation value for more precise control
           omega = Math.copySign(omega * omega, omega);
 
+          boolean lockTarget = false;
+          if (leftTriggerValue.getAsDouble() > 0.5) {
+            lockTarget = true;
+            xController.setSetpoint(xGoalMeters);
+            yController.setSetpoint(Units.inchesToMeters(-7.375));
+          } else if (rightTriggerValue.getAsDouble() > 0.5) {
+            lockTarget = true;
+            xController.setSetpoint(xGoalMeters);
+            yController.setSetpoint(Units.inchesToMeters(7.375));
+          }
+
+          // initializing the lock target speeds outside if statement so they are accessable to add
+          // onto the joystick drive
+          var speed = new ChassisSpeeds();
+          double driveAngle = drive.getRotation().getDegrees();
+          if (lockTarget) {
+            double thetaGoalDegrees = AlignReef.calculateGoalAngle(driveAngle);
+
+            thetaController.setSetpoint(thetaGoalDegrees);
+
+            Pose3d tag = null; // TODO: handle seeing more than one reef tag
+            for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
+              // if(target.id() )
+              if (target.id()
+                  == AlignReef.calculateGoalTargetID(
+                      thetaGoalDegrees)) { // TODO: janky only work for one tag for now
+                System.out.println("Target Tag ID: " + target.id());
+                tag = target.pose();
+              }
+            }
+            // if(tag == null) { // Janky way to use second camera :todo enable after basic testing
+            //   for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
+            //     if (target.id()
+            //         == targetTag) { // TODO: janky only work for one tag for now
+            //       tag = target.pose();
+            //     }
+            //   }
+            // }
+            System.out.println(tag);
+            if (tag != null) {
+              double theta = -Math.toDegrees(Math.atan2(tag.getY(), tag.getX()));
+              double xdist = tag.getX();
+              double ydist = tag.getY();
+              var x = -xController.calculate(xdist);
+              var y = -yController.calculate(ydist);
+              var thetaOut =
+                  thetaController.calculate(drive.getPose().getRotation().getDegrees())
+                      * 0.1; // Janky clamping todo remove
+              speed =
+                  new ChassisSpeeds(
+                      x * drive.getMaxLinearSpeedMetersPerSec(),
+                      y * drive.getMaxLinearSpeedMetersPerSec(),
+                      thetaOut * drive.getMaxAngularSpeedRadPerSec());
+              drive.runVelocity(speed);
+            }
+          }
+
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =
               new ChassisSpeeds(
-                  linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                  linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                  omega * drive.getMaxAngularSpeedRadPerSec());
+                  linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec()
+                      - speed.vxMetersPerSecond,
+                  linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec()
+                      - speed.vyMetersPerSecond,
+                  omega * drive.getMaxAngularSpeedRadPerSec() + speed.omegaRadiansPerSecond);
           boolean isFlipped =
               DriverStation.getAlliance().isPresent()
                   && DriverStation.getAlliance().get() == Alliance.Red;

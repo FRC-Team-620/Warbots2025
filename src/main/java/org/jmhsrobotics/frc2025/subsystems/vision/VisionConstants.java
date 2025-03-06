@@ -26,24 +26,24 @@ public class VisionConstants {
 
   // Camera names, must match names configured on coprocessor
   // TODO: Confirm and Identify which camera is on which side
-  public static String camera0Name = "Overture";
-  public static String camera1Name = "Blackbird";
+  public static String camera0Name = "Blackbird";
+  public static String camera1Name = "Overture";
 
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
   // TODO: Make sure camera transformations are correctx
   public static Transform3d robotToCamera0 =
       new Transform3d(
-          0.2794,
-          0.2032,
-          0.2,
-          new Rotation3d(0.0, Units.degreesToRadians(-15), -Units.degreesToRadians(-18)));
+          Units.inchesToMeters(8),
+          Units.inchesToMeters(11),
+          0.185,
+          new Rotation3d(0.0, Units.degreesToRadians(-10), Units.degreesToRadians(-35)));
 
   public static Transform3d robotToCamera1 =
       new Transform3d(
-          0.2794,
-          -0.2032,
-          0.2,
+          Units.inchesToMeters(8),
+          Units.inchesToMeters(-11),
+          0.185,
           new Rotation3d(0.0, Units.degreesToRadians(-15), Units.degreesToRadians(25)));
 
   // Basic filtering thresholds

@@ -6,14 +6,16 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
+import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
-import org.littletonrobotics.junction.Logger;
 
 public class AlignReef extends Command {
   private final Drive drive;
   private final Vision vision;
+  private final LED led;
 
   private final PIDController xController = new PIDController(0.5, 0, 0);
   private final PIDController yController = new PIDController(0.5, 0, 0);
@@ -22,10 +24,23 @@ public class AlignReef extends Command {
   private double yGoalMeters = Units.inchesToMeters(-7.375);
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
 
-  public AlignReef(Drive drive, Vision vision) {
-    addRequirements(drive);
+  private LEDPattern progressPattern;
+  private double initialDistance = 2;
+  private double currentDistance = 2;
+
+  private double theta = 0;
+  private double xdist = 0;
+  private double ydist = 0;
+
+  public AlignReef(Drive drive, Vision vision, LED led) {
     this.drive = drive;
     this.vision = vision;
+    this.led = led;
+
+    progressPattern =
+        LEDPattern.progressMaskLayer(() -> ((initialDistance - currentDistance) / initialDistance));
+
+    addRequirements(drive, led);
   }
 
   @Override
@@ -42,6 +57,7 @@ public class AlignReef extends Command {
     thetaController.setSetpoint(thetaGoalDegrees);
     thetaController.enableContinuousInput(-180, 180);
     drive.stop();
+    this.led.setPattern(progressPattern);
   }
 
   @Override
@@ -54,23 +70,24 @@ public class AlignReef extends Command {
               thetaGoalDegrees)) { // TODO: janky only work for one tag for now
         tag = target.pose();
       }
-      Logger.recordOutput("Align/April Tag Pose3d", tag);
-      Logger.recordOutput("Align/April Tag X", tag.getX());
-      Logger.recordOutput("Align/April Tag Y", tag.getY());
     }
-    // if(tag == null) { // Janky way to use second camera :todo enable after basic testing
-    //   for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
-    //     if (target.id()
-    //         == targetTag) { // TODO: janky only work for one tag for now
-    //       tag = target.pose();
-    //     }
-    //   }
-    // }
+
+    if (tag == null) { // Janky way to use second camera :todo enable after basic testing
+      for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
+        if (target.id()
+            == AlignReef.calculateGoalTargetID(
+                thetaGoalDegrees)) { // TODO: janky only work for one tag for now
+          tag = target.pose();
+        }
+      }
+    }
+
     System.out.println(tag);
     if (tag != null) {
-      double theta = -Math.toDegrees(Math.atan2(tag.getY(), tag.getX()));
-      double xdist = tag.getX();
-      double ydist = tag.getY();
+      theta = -Math.toDegrees(Math.atan2(tag.getY(), tag.getX()));
+      xdist = tag.getX();
+      ydist = tag.getY();
+      currentDistance = Math.sqrt(xdist * xdist + ydist * ydist);
       var x = -xController.calculate(xdist);
       var y = -yController.calculate(ydist);
       var thetaOut =
@@ -121,5 +138,19 @@ public class AlignReef extends Command {
     else if (angle_deg == 180) return 10;
     else if (angle_deg == -60) return 6;
     else return 11;
+  }
+
+  @Override
+  public boolean isFinished() {
+    System.out.println(
+        "X OFFSET: "
+            + Math.abs(xdist - xGoalMeters)
+            + " | Y OFFSET: "
+            + Math.abs(ydist - yGoalMeters)
+            + " | THETA OFFSET: "
+            + Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees));
+    return Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1.5)
+        && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1.5)
+        && Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees) < 3;
   }
 }

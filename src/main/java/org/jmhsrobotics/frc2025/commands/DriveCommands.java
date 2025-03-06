@@ -139,7 +139,8 @@ public class DriveCommands {
             // if(tag == null) { // Janky way to use second camera :todo enable after basic testing
             //   for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
             //     if (target.id()
-            //         == targetTag) { // TODO: janky only work for one tag for now
+            //         == AlignReef.calculateGoalTargetID(thetaGoalDegrees)) { // TODO: janky only
+            // work for one tag for now
             //       tag = target.pose();
             //     }
             //   }

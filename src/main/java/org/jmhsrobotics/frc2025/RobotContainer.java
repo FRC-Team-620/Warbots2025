@@ -439,7 +439,7 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, led, 0.5));
     SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, led, -0.5));
-    SmartDashboard.putData("cmd/Align Reef", new AlignReef(drive, vision));
+    SmartDashboard.putData("cmd/Align Reef", new AlignReef(drive, vision, led));
   }
 
   private void configurePathPlanner() {

@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
@@ -24,7 +28,7 @@ public class AlignReef extends Command {
   private final PIDController yController = new PIDController(0.5, 0, 0);
   private final PIDController thetaController = new PIDController(0.05, 0, 0);
   private double xGoalMeters = 0.48;
-  private double yGoalMeters = Units.inchesToMeters(-7);
+  private double yGoalMeters = Units.inchesToMeters(-7.375);
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
 
   private LEDPattern progressPattern;
@@ -37,6 +41,9 @@ public class AlignReef extends Command {
 
   // boolean for if bot should align left or right
   private boolean alignLeft = true;
+  private boolean isBlueTeam = false;
+
+  private Map <Integer, Pose3d> aprilTagMap = new HashMap<>();
 
   public AlignReef(Drive drive, Vision vision, LED led, Elevator elevator, boolean alignLeft) {
     this.drive = drive;
@@ -55,8 +62,8 @@ public class AlignReef extends Command {
   @Override
   public void initialize() {
     // Default setpoint: L4 left side(i think)
-    if (alignLeft) yGoalMeters = Units.inchesToMeters(-7);
-    else yGoalMeters = Units.inchesToMeters(7);
+    if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
+    else yGoalMeters = Units.inchesToMeters(7.375);
     xGoalMeters = 0.48;
     xController.reset();
     yController.reset();
@@ -80,13 +87,13 @@ public class AlignReef extends Command {
     if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
         || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) {
       xGoalMeters = 0.45;
-      if (alignLeft) yGoalMeters = Units.inchesToMeters(-7);
-      else yGoalMeters = Units.inchesToMeters(7);
+      if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
+      else yGoalMeters = Units.inchesToMeters(7.375);
       // if elevator setpoint is at L4, stay a little further back
     } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters) {
       xGoalMeters = 0.48;
-      if (alignLeft) yGoalMeters = Units.inchesToMeters(-7);
-      else yGoalMeters = Units.inchesToMeters(7);
+      if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
+      else yGoalMeters = Units.inchesToMeters(7.375);
       // if elevator setpoint is at an algae level, stay a little further out and in the center
     } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
         || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) {
@@ -105,15 +112,15 @@ public class AlignReef extends Command {
       }
     }
 
-    if (tag == null) { // Janky way to use second camera :todo enable after basic testing
-      for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
-        if (target.id()
-            == AlignReef.calculateGoalTargetID(
-                thetaGoalDegrees)) { // TODO: janky only work for one tag for now
-          tag = target.pose();
-        }
-      }
-    }
+    // if (tag == null) { // Janky way to use second camera :todo enable after basic testing
+    //   for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
+    //     if (target.id()
+    //         == AlignReef.calculateGoalTargetID(
+    //             thetaGoalDegrees)) { // TODO: janky only work for one tag for now
+    //       tag = target.pose();
+    //     }
+    //   }
+    // }
 
     System.out.println(tag);
     if (tag != null) {
@@ -171,6 +178,12 @@ public class AlignReef extends Command {
     else if (angle_deg == 180) return 10;
     else if (angle_deg == -60) return 6;
     else return 11;
+  }
+
+  private void initializeMap(){
+    if (isBlueTeam) {
+      
+    }
   }
 
   @Override

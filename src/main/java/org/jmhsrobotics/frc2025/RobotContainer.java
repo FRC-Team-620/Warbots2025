@@ -301,7 +301,7 @@ public class RobotContainer {
                 wrist,
                 intake,
                 Constants.ElevatorConstants.kLevel4Meters,
-                Constants.WristConstants.kLevel3Degrees));
+                Constants.WristConstants.kLevel4Degrees));
 
     control
         .scoreAlgaeProcesser()

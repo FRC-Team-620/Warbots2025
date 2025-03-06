@@ -52,6 +52,9 @@ public class DriveCommands {
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
   private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
   private static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
+  static final PIDController xController = new PIDController(0.6, 0, 0);
+  static final PIDController yController = new PIDController(0.6, 0, 0);
+  static final PIDController thetaController = new PIDController(0.2, 0, 0);
 
   private DriveCommands() {}
 
@@ -81,19 +84,16 @@ public class DriveCommands {
       DoubleSupplier omegaSupplier,
       DoubleSupplier leftTriggerValue,
       DoubleSupplier rightTriggerValue) {
-    final PIDController xController = new PIDController(0.45, 0, 0);
-    final PIDController yController = new PIDController(0.45, 0, 0);
-    final PIDController thetaController = new PIDController(0.05, 0, 0);
 
     // double thetaGoalDegrees = 0; // Janky
     // super janky needs to be cleaned :(
     double xGoal = 0.48;
     double yGoal = 0;
-    xController.setSetpoint(xGoal);
-    yController.setSetpoint(yGoal);
     xController.reset();
     yController.reset();
     thetaController.reset();
+    xController.setSetpoint(xGoal);
+    yController.setSetpoint(yGoal);
 
     thetaController.enableContinuousInput(-180, 180);
 
@@ -114,18 +114,18 @@ public class DriveCommands {
           omega = Math.copySign(omega * omega, omega);
 
           double xGoalMeters = 0.48;
-          double yGoalMeters = 0;
+          double yGoalMeters = Units.inchesToMeters(7.375);
 
           if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
               || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) {
-            xGoalMeters = 0.45;
-            if (leftTriggerValue.getAsDouble() > 0.5) yGoalMeters = Units.inchesToMeters(-7);
-            else yGoalMeters = Units.inchesToMeters(7);
+            xGoalMeters = 0.43;
+            if (leftTriggerValue.getAsDouble() > 0.5) yGoalMeters = Units.inchesToMeters(-7.375);
+            else yGoalMeters = Units.inchesToMeters(7.375);
             // if elevator setpoint is at L4, stay a little further back
           } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters) {
-            xGoalMeters = 0.48;
-            if (leftTriggerValue.getAsDouble() > 0.5) yGoalMeters = Units.inchesToMeters(-7);
-            else yGoalMeters = Units.inchesToMeters(7);
+            xGoalMeters = 0.50;
+            if (leftTriggerValue.getAsDouble() > 0.5) yGoalMeters = Units.inchesToMeters(-7.375);
+            else yGoalMeters = Units.inchesToMeters(7.375);
             // if elevator setpoint is at an algae level, stay a little further out and in the
             // center
           } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters

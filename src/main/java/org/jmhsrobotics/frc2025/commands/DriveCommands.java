@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -52,6 +53,8 @@ public class DriveCommands {
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
   private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
   private static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
+
+  private static Pose3d lastTagPose = null;
   static final PIDController xController = new PIDController(0.6, 0, 0);
   static final PIDController yController = new PIDController(0.6, 0, 0);
   static final PIDController thetaController = new PIDController(0.2, 0, 0);
@@ -173,6 +176,10 @@ public class DriveCommands {
             //   }
             // }
             System.out.println(tag);
+            if (tag == null && lastTagPose != null) {
+              Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
+              tag = new Pose3d(transform.getTranslation(), transform.getRotation());
+            }
             if (tag != null) {
               double theta = -Math.toDegrees(Math.atan2(tag.getY(), tag.getX()));
               double xdist = tag.getX();
@@ -188,6 +195,8 @@ public class DriveCommands {
                       y * drive.getMaxLinearSpeedMetersPerSec(),
                       thetaOut * drive.getMaxAngularSpeedRadPerSec());
               drive.runVelocity(speed);
+            } else {
+              drive.stop();
             }
           }
 

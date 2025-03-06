@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2025.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -13,6 +14,7 @@ import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
+import org.littletonrobotics.junction.Logger;
 
 public class AlignReef extends Command {
   private final Drive drive;
@@ -22,7 +24,7 @@ public class AlignReef extends Command {
 
   private final PIDController xController = new PIDController(0.5, 0, 0);
   private final PIDController yController = new PIDController(0.5, 0, 0);
-  private final PIDController thetaController = new PIDController(0.05, 0, 0);
+  private final PIDController thetaController = new PIDController(0.1, 0, 0);
   private double xGoalMeters = 0.48;
   private double yGoalMeters = Units.inchesToMeters(-7.375);
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
@@ -30,6 +32,8 @@ public class AlignReef extends Command {
   private LEDPattern progressPattern;
   private double initialDistance = 2;
   private double currentDistance = 2;
+
+  private Pose3d lastTagPose = null;
 
   private double theta = 0;
   private double xdist = 0;
@@ -84,13 +88,13 @@ public class AlignReef extends Command {
       else yGoalMeters = Units.inchesToMeters(7.375);
       // if elevator setpoint is at L4, stay a little further back
     } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters) {
-      xGoalMeters = 0.48;
+      xGoalMeters = 0.50;
       if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
       else yGoalMeters = Units.inchesToMeters(7.375);
       // if elevator setpoint is at an algae level, stay a little further out and in the center
     } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
         || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) {
-      xGoalMeters = 0.65;
+      xGoalMeters = 0.7;
       yGoalMeters = 0;
     }
     xController.setSetpoint(xGoalMeters);
@@ -116,7 +120,14 @@ public class AlignReef extends Command {
     // }
 
     System.out.println(tag);
+    if (tag == null && lastTagPose != null) {
+      Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
+      tag = new Pose3d(transform.getTranslation(), transform.getRotation());
+    }
     if (tag != null) {
+      lastTagPose =
+          new Pose3d(drive.getPose())
+              .plus(new Transform3d(tag.getTranslation(), tag.getRotation()));
       theta = -Math.toDegrees(Math.atan2(tag.getY(), tag.getX()));
       xdist = tag.getX();
       ydist = tag.getY();
@@ -135,6 +146,7 @@ public class AlignReef extends Command {
     } else {
       drive.stop();
     }
+    Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
   }
 
   public static double calculateGoalAngle(double driveAngle) {

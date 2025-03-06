@@ -12,9 +12,13 @@ public interface ControlBoard {
 
   public double translationY();
 
+  public double alignLeft();
+
+  public double alignRight();
+
   public Trigger resetForward();
 
-  public Trigger alignMode();
+  public Trigger alignDriveMode();
 
   // =======Operator Controls=======
 

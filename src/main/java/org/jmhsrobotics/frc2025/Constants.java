@@ -17,6 +17,8 @@ import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
+import java.util.Map;
+import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -28,6 +30,13 @@ public final class Constants {
   public static final double ksimTimestep = 0.02;
   public static final double krealTimeStep = ksimTimestep;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+
+  public static final int[] kIgnoredAprilTags = new int[] {14, 15, 4, 5};
+  public static final int[] kReefAprilTags = new int[] {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
+  public static final int[] kProcessorAprilTags = new int[] {12, 13, 2, 1};
+  public static final double kReefAngleInc = 60.0;
+  public static final double kProcessorAngle = 90.0;
+  public static final double[] loadingStationAngles = new double[] {-45.0, 45.0}; // Placeholders
 
   public static class CAN {
     public static final int kElevatorMotorLeftID = 30;
@@ -48,6 +57,29 @@ public final class Constants {
 
     public static final int kLinearActuatorMotorLeftID = 61;
     public static final int kLinearActuatorMotorRightID = 62;
+
+    public static final Map<Integer, String> kCanDeviceMap =
+        Map.ofEntries(
+            Map.entry(kElevatorMotorLeftID, "ElevatorMotorLeft"),
+            Map.entry(kElevatorMotorRightID, "ElevatorMotorRight"),
+            Map.entry(kWristMotorID, "WristMotor"),
+            Map.entry(kIntakeMotorID, "IntakeMotor"),
+            Map.entry(kCoralSensorID, "CoralSensor"),
+            Map.entry(kAlgaeSensorID, "AlgaeSensor"),
+            Map.entry(kIndexerMotorID, "IndexerMotor"),
+            Map.entry(kClimberMotorID, "ClimberMotor"),
+            Map.entry(kCanAndGyroID, "CanAndGyro"),
+            Map.entry(kMitoCANdriaID, "MitoCANdria"),
+            Map.entry(kLinearActuatorMotorLeftID, "LinearActuatorMotorLeft"),
+            Map.entry(kLinearActuatorMotorRightID, "LinearActuatorMotorRight"),
+            Map.entry(DriveConstants.thriftyConstants.frontLeftDriveCanId, "FrontLeftDrive"),
+            Map.entry(DriveConstants.thriftyConstants.backLeftDriveCanId, "BackLeftDrive"),
+            Map.entry(DriveConstants.thriftyConstants.frontRightDriveCanId, "FrontRightDrive"),
+            Map.entry(DriveConstants.thriftyConstants.backRightDriveCanId, "BackRightDrive"),
+            Map.entry(DriveConstants.thriftyConstants.frontLeftTurnCanId, "FrontLeftTurn"),
+            Map.entry(DriveConstants.thriftyConstants.backLeftTurnCanId, "BackLeftTurn"),
+            Map.entry(DriveConstants.thriftyConstants.frontRightTurnCanId, "FrontRightTurn"),
+            Map.entry(DriveConstants.thriftyConstants.backRightTurnCanId, "BackRightTurn"));
   }
 
   public static class ElevatorConstants {

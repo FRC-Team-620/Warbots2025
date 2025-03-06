@@ -86,12 +86,22 @@ public class DoubleControl implements ControlBoard {
   }
 
   @Override
+  public double alignLeft() {
+    return driver.getLeftTriggerAxis();
+  }
+
+  @Override
+  public double alignRight() {
+    return driver.getRightTriggerAxis();
+  }
+
+  @Override
   public Trigger resetForward() {
     return driver.rightBumper();
   }
 
   @Override
-  public Trigger alignMode() {
+  public Trigger alignDriveMode() {
     return driver.leftBumper();
   }
 

@@ -66,13 +66,24 @@ public class SingleControl implements ControlBoard {
     return driver.getLeftY();
   }
 
+  // both aligns return 0 because buttoms are available
+  @Override
+  public double alignLeft() {
+    return 0;
+  }
+
+  @Override
+  public double alignRight() {
+    return 0;
+  }
+
   @Override
   public Trigger resetForward() {
     return driver.rightBumper();
   }
 
   @Override
-  public Trigger alignMode() {
+  public Trigger alignDriveMode() {
     return driver.leftBumper();
   }
 

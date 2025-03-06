@@ -88,7 +88,7 @@ public class Robot extends LoggedRobot {
     }
 
     // Initialize URCL
-    Logger.registerURCL(URCL.startExternal());
+    Logger.registerURCL(URCL.startExternal(Constants.CAN.kCanDeviceMap));
 
     // Start AdvantageKit logger
     Logger.start();
@@ -151,6 +151,28 @@ public class Robot extends LoggedRobot {
                 0.16,
                 -0.29198,
                 0.192,
+                new Rotation3d(
+                    Units.degreesToRadians(0),
+                    Units.degreesToRadians(-10),
+                    Units.degreesToRadians(35)))));
+    Logger.recordOutput(
+        "left cam test",
+        robotpos.plus(
+            new Transform3d(
+                Units.inchesToMeters(8),
+                Units.inchesToMeters(11),
+                0.185,
+                new Rotation3d(
+                    Units.degreesToRadians(0),
+                    Units.degreesToRadians(-10),
+                    Units.degreesToRadians(-35)))));
+    Logger.recordOutput(
+        "right cam test",
+        robotpos.plus(
+            new Transform3d(
+                Units.inchesToMeters(8),
+                Units.inchesToMeters(-11),
+                0.185,
                 new Rotation3d(
                     Units.degreesToRadians(0),
                     Units.degreesToRadians(-10),

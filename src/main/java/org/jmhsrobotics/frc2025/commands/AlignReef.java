@@ -8,10 +8,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.Command;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
@@ -41,9 +37,6 @@ public class AlignReef extends Command {
 
   // boolean for if bot should align left or right
   private boolean alignLeft = true;
-  private boolean isBlueTeam = false;
-
-  private Map <Integer, Pose3d> aprilTagMap = new HashMap<>();
 
   public AlignReef(Drive drive, Vision vision, LED led, Elevator elevator, boolean alignLeft) {
     this.drive = drive;
@@ -178,12 +171,6 @@ public class AlignReef extends Command {
     else if (angle_deg == 180) return 10;
     else if (angle_deg == -60) return 6;
     else return 11;
-  }
-
-  private void initializeMap(){
-    if (isBlueTeam) {
-      
-    }
   }
 
   @Override

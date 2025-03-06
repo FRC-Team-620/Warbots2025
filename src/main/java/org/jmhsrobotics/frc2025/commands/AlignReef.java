@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.Command;
+import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
+import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 
@@ -16,12 +18,13 @@ public class AlignReef extends Command {
   private final Drive drive;
   private final Vision vision;
   private final LED led;
+  private final Elevator elevator;
 
   private final PIDController xController = new PIDController(0.5, 0, 0);
   private final PIDController yController = new PIDController(0.5, 0, 0);
   private final PIDController thetaController = new PIDController(0.05, 0, 0);
-  private double xGoalMeters = 0.45;
-  private double yGoalMeters = Units.inchesToMeters(-7.375);
+  private double xGoalMeters = 0.48;
+  private double yGoalMeters = Units.inchesToMeters(-7);
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
 
   private LEDPattern progressPattern;
@@ -32,10 +35,16 @@ public class AlignReef extends Command {
   private double xdist = 0;
   private double ydist = 0;
 
-  public AlignReef(Drive drive, Vision vision, LED led) {
+  // boolean for if bot should align left or right
+  private boolean alignLeft = true;
+
+  public AlignReef(Drive drive, Vision vision, LED led, Elevator elevator, boolean alignLeft) {
     this.drive = drive;
     this.vision = vision;
     this.led = led;
+    this.elevator = elevator;
+
+    this.alignLeft = alignLeft;
 
     progressPattern =
         LEDPattern.progressMaskLayer(() -> ((initialDistance - currentDistance) / initialDistance));
@@ -45,6 +54,10 @@ public class AlignReef extends Command {
 
   @Override
   public void initialize() {
+    // Default setpoint: L4 left side(i think)
+    if (alignLeft) yGoalMeters = Units.inchesToMeters(-7);
+    else yGoalMeters = Units.inchesToMeters(7);
+    xGoalMeters = 0.48;
     xController.reset();
     yController.reset();
     thetaController.reset();
@@ -62,6 +75,26 @@ public class AlignReef extends Command {
 
   @Override
   public void execute() {
+    // change setpoints if elevator setpoints have changed
+    // if elevator septoint is for L2 or L3
+    if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
+        || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) {
+      xGoalMeters = 0.45;
+      if (alignLeft) yGoalMeters = Units.inchesToMeters(-7);
+      else yGoalMeters = Units.inchesToMeters(7);
+      // if elevator setpoint is at L4, stay a little further back
+    } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters) {
+      xGoalMeters = 0.48;
+      if (alignLeft) yGoalMeters = Units.inchesToMeters(-7);
+      else yGoalMeters = Units.inchesToMeters(7);
+      // if elevator setpoint is at an algae level, stay a little further out and in the center
+    } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
+        || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) {
+      xGoalMeters = 0.65;
+      yGoalMeters = 0;
+    }
+    xController.setSetpoint(xGoalMeters);
+    yController.setSetpoint(yGoalMeters);
     Pose3d tag = null; // TODO: handle seeing more than one reef tag
     for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
       // if(target.id() )

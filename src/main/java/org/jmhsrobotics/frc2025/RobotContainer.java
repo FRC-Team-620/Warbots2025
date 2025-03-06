@@ -47,6 +47,7 @@ import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
+import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeCoralAuto;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
@@ -375,7 +376,7 @@ public class RobotContainer {
                 new ParallelRaceGroup(
                     new IntakeFromIndexer(wrist, intake),
                     new LEDFlashPattern(
-                        led, LEDPattern.solid(Color.kHotPink), LEDPattern.solid(Color.kNavy))),
+                        led, LEDPattern.solid(Color.kOrange), LEDPattern.solid(Color.kWhite))),
                 new FixCoralPlacement(intake, wrist)));
 
     control
@@ -484,7 +485,8 @@ public class RobotContainer {
     // Intake Commands
     // TODO: Intake Coral command needs to be updated once updated intake control is merged to
     // master to also run the fix coral placement command
-    NamedCommands.registerCommand("Intake Coral", new IntakeFromIndexer(wrist, intake));
+    NamedCommands.registerCommand(
+        "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led));
 
     NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(1.5));
   }

@@ -234,6 +234,7 @@ public class RobotContainer {
         DriveCommands.joystickDrive(
             drive,
             vision,
+            elevator,
             () -> control.translationY(),
             () -> control.translationX(),
             () -> -control.rotation(),

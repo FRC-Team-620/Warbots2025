@@ -36,8 +36,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
+import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 
 public class DriveCommands {
@@ -73,6 +75,7 @@ public class DriveCommands {
   public static Command joystickDrive(
       Drive drive,
       Vision vision,
+      Elevator elevator,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
@@ -81,9 +84,13 @@ public class DriveCommands {
     final PIDController xController = new PIDController(0.45, 0, 0);
     final PIDController yController = new PIDController(0.45, 0, 0);
     final PIDController thetaController = new PIDController(0.05, 0, 0);
-    double xGoalMeters = 0.48;
-    double yGoalMeters = 0;
+
     // double thetaGoalDegrees = 0; // Janky
+    // super janky needs to be cleaned :(
+    double xGoal = 0.48;
+    double yGoal = 0;
+    xController.setSetpoint(xGoal);
+    yController.setSetpoint(yGoal);
     xController.reset();
     yController.reset();
     thetaController.reset();
@@ -106,15 +113,35 @@ public class DriveCommands {
           // Square rotation value for more precise control
           omega = Math.copySign(omega * omega, omega);
 
+          double xGoalMeters = 0.48;
+          double yGoalMeters = 0;
+
+          if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
+              || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) {
+            xGoalMeters = 0.45;
+            if (leftTriggerValue.getAsDouble() > 0.5) yGoalMeters = Units.inchesToMeters(-7);
+            else yGoalMeters = Units.inchesToMeters(7);
+            // if elevator setpoint is at L4, stay a little further back
+          } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters) {
+            xGoalMeters = 0.48;
+            if (leftTriggerValue.getAsDouble() > 0.5) yGoalMeters = Units.inchesToMeters(-7);
+            else yGoalMeters = Units.inchesToMeters(7);
+            // if elevator setpoint is at an algae level, stay a little further out and in the
+            // center
+          } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
+              || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) {
+            xGoalMeters = 0.65;
+            yGoalMeters = 0;
+          }
           boolean lockTarget = false;
           if (leftTriggerValue.getAsDouble() > 0.5) {
             lockTarget = true;
             xController.setSetpoint(xGoalMeters);
-            yController.setSetpoint(Units.inchesToMeters(-7.375));
+            yController.setSetpoint(yGoalMeters);
           } else if (rightTriggerValue.getAsDouble() > 0.5) {
             lockTarget = true;
             xController.setSetpoint(xGoalMeters);
-            yController.setSetpoint(Units.inchesToMeters(7.375));
+            yController.setSetpoint(yGoalMeters);
           }
 
           // initializing the lock target speeds outside if statement so they are accessable to add

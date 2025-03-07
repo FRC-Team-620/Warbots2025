@@ -1,8 +1,11 @@
 package org.jmhsrobotics.frc2025.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -11,13 +14,14 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.DoubleSupplier;
 import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.Robot;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.littletonrobotics.junction.Logger;
 
-public class AlignReef extends Command {
+public class DriveMeToTheMoon extends Command {
   private final Drive drive;
   private final Vision vision;
   private final LED led;
@@ -39,12 +43,13 @@ public class AlignReef extends Command {
   private double theta = 0;
   private double xdist = 0;
   private double ydist = 0;
-  private DoubleSupplier xSupplier, ySupplier, omegaSupplier, leftTriggerValue, rightTriggerValue;
+  private static final double DEADBAND = 0.05;
 
+  private DoubleSupplier xSupplier, ySupplier, omegaSupplier, leftTriggerValue, rightTriggerValue;
   // boolean for if bot should align left or right
   private boolean alignLeft = true;
 
-  public AlignReef(
+  public DriveMeToTheMoon(
       Drive drive,
       Vision vision,
       LED led,
@@ -59,10 +64,16 @@ public class AlignReef extends Command {
     this.led = led;
     this.elevator = elevator;
 
+    this.xSupplier = xSupplier;
+    this.ySupplier = ySupplier;
+    this.omegaSupplier = omegaSupplier;
+    this.leftTriggerValue = leftTriggerValue;
+    this.rightTriggerValue = rightTriggerValue;
+
     progressPattern =
         LEDPattern.progressMaskLayer(() -> ((initialDistance - currentDistance) / initialDistance));
 
-    addRequirements(drive, led);
+    addRequirements(drive);
   }
 
   @Override
@@ -83,13 +94,28 @@ public class AlignReef extends Command {
     thetaController.setSetpoint(thetaGoalDegrees);
     thetaController.enableContinuousInput(-180, 180);
     drive.stop();
-    this.led.setPattern(progressPattern);
+    // this.led.setPattern(progressPattern);
   }
 
   @Override
   public void execute() {
     // change setpoints if elevator setpoints have changed
     // if elevator septoint is for L2 or L3
+
+    if (rightTriggerValue.getAsDouble() > leftTriggerValue.getAsDouble()) alignLeft = false;
+    else alignLeft = true;
+    Translation2d linearVelocity =
+        DriveCommands.getLinearVelocityFromJoysticks(
+            Math.copySign(
+                xSupplier.getAsDouble() * xSupplier.getAsDouble(), xSupplier.getAsDouble()),
+            Math.copySign(
+                ySupplier.getAsDouble() * ySupplier.getAsDouble(), ySupplier.getAsDouble()));
+
+    // Apply rotation deadband
+    double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.6, DEADBAND);
+
+    // Square rotation value for more precise control
+    omega = Math.copySign(omega * omega, omega);
     if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
         || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) {
       xGoalMeters = 0.45;
@@ -100,7 +126,8 @@ public class AlignReef extends Command {
       xGoalMeters = 0.50;
       if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
       else yGoalMeters = Units.inchesToMeters(7.375);
-      // if elevator setpoint is at an algae level, stay a little further out and in the center
+      // if elevator setpoint is at an algae level, stay a little further out and in
+      // the center
     } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
         || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) {
       xGoalMeters = 0.7;
@@ -127,14 +154,17 @@ public class AlignReef extends Command {
         }
       }
     }
-
-    System.out.println(tag);
+    var x = 0.0;
+    var y = 0.0;
+    var thetaOut = 0.0;
+    // System.out.println(tag);
     if (tag == null && lastTagPose != null) {
       Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
       tag = new Pose3d(transform.getTranslation(), transform.getRotation());
     }
     Logger.recordOutput("testpos", tag);
-    if (tag != null) {
+    if (tag != null && rightTriggerValue.getAsDouble() > 0.5) {
+      // System.out.println("asdf");
       lastTagPose =
           new Pose3d(drive.getPose())
               .plus(new Transform3d(tag.getTranslation(), tag.getRotation()));
@@ -142,20 +172,42 @@ public class AlignReef extends Command {
       xdist = tag.getX();
       ydist = tag.getY();
       currentDistance = Math.sqrt(xdist * xdist + ydist * ydist);
-      var x = -xController.calculate(xdist);
-      var y = -yController.calculate(ydist);
-      var thetaOut =
+      x = -xController.calculate(xdist);
+      y = -yController.calculate(ydist);
+      thetaOut =
           thetaController.calculate(drive.getPose().getRotation().getDegrees())
-              * 0.1; // Janky clamping todo remove
+              * 0.5; // Janky clamping todo remove
       var speed =
           new ChassisSpeeds(
               x * drive.getMaxLinearSpeedMetersPerSec(),
               y * drive.getMaxLinearSpeedMetersPerSec(),
               thetaOut * drive.getMaxAngularSpeedRadPerSec());
-      drive.runVelocity(speed);
+      // drive.runVelocity(speed);
     } else {
       // drive.stop();
+
     }
+
+    double invert = Robot.isSimulation() ? -1.0 : 1;
+    // Convert to field relative speeds & send command
+    ChassisSpeeds speeds =
+        new ChassisSpeeds(
+            (MathUtil.clamp(linearVelocity.getX() - x, -1, 1)
+                    * drive.getMaxLinearSpeedMetersPerSec())
+                * invert,
+            (MathUtil.clamp(linearVelocity.getY() - y, -1, 1)
+                    * drive.getMaxLinearSpeedMetersPerSec())
+                * invert,
+            omega * drive.getMaxAngularSpeedRadPerSec());
+    boolean isFlipped =
+        DriverStation.getAlliance().isPresent()
+            && DriverStation.getAlliance().get() == Alliance.Red;
+    speeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            speeds,
+            isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation());
+    drive.runVelocity(speeds);
+
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
   }
 
@@ -197,13 +249,13 @@ public class AlignReef extends Command {
 
   @Override
   public boolean isFinished() {
-    System.out.println(
-        "X OFFSET: "
-            + Math.abs(xdist - xGoalMeters)
-            + " | Y OFFSET: "
-            + Math.abs(ydist - yGoalMeters)
-            + " | THETA OFFSET: "
-            + Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees));
+    // System.out.println(
+    //     "X OFFSET: "
+    //         + Math.abs(xdist - xGoalMeters)
+    //         + " | Y OFFSET: "
+    //         + Math.abs(ydist - yGoalMeters)
+    //         + " | THETA OFFSET: "
+    //         + Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees));
     return Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1.5)
         && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1.5)
         && Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees) < 3;

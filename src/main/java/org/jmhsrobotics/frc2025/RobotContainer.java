@@ -33,10 +33,10 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import org.jmhsrobotics.frc2025.commands.AlignReef;
 import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.ClimberToAngle;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
+import org.jmhsrobotics.frc2025.commands.DriveMeToTheMoon;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
@@ -231,10 +231,31 @@ public class RobotContainer {
         new IntakeMove(intake, wrist, control.intakeCoral(), control.extakeCoral()));
 
     // Default command, normal field-relative drive
+    // drive.setDefaultCommand(
+    //     DriveCommands.joystickDrive(
+    //         drive,
+    //         vision,
+    //         elevator,
+    //         () -> control.translationY(),
+    //         () -> control.translationX(),
+    //         () -> -control.rotation(),
+    //         () -> control.alignLeft(),
+    //         () -> control.alignRight()));
+    // new Trigger(
+    //         () -> {
+    //           return control.alignLeft() > 0.5;
+    //         })
+    //     .whileTrue(null);
+    // new Trigger(
+    //         () -> {
+    //           return control.alignRight() > 0.5;
+    //         })
+    //     .whileTrue(null);
     drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
+        new DriveMeToTheMoon(
             drive,
             vision,
+            led,
             elevator,
             () -> control.translationY(),
             () -> control.translationX(),
@@ -441,10 +462,10 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, led, 0.5));
     SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, led, -0.5));
-    SmartDashboard.putData(
-        "cmd/Align Reef Left", new AlignReef(drive, vision, led, elevator, true));
-    SmartDashboard.putData(
-        "cmd/Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
+    // SmartDashboard.putData(
+    //     "cmd/Align Reef Left", new AlignReef(drive, vision, led, elevator, true));
+    // SmartDashboard.putData(
+    //     "cmd/Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
   }
 
   private void configurePathPlanner() {

@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.Command;
-import java.util.function.DoubleSupplier;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
@@ -39,25 +38,16 @@ public class AlignReef extends Command {
   private double theta = 0;
   private double xdist = 0;
   private double ydist = 0;
-  private DoubleSupplier xSupplier, ySupplier, omegaSupplier, leftTriggerValue, rightTriggerValue;
 
   // boolean for if bot should align left or right
   private boolean alignLeft = true;
 
-  public AlignReef(
-      Drive drive,
-      Vision vision,
-      LED led,
-      Elevator elevator,
-      DoubleSupplier xSupplier,
-      DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier,
-      DoubleSupplier leftTriggerValue,
-      DoubleSupplier rightTriggerValue) {
+  public AlignReef(Drive drive, Vision vision, LED led, Elevator elevator, boolean alignLeft) {
     this.drive = drive;
     this.vision = vision;
     this.led = led;
     this.elevator = elevator;
+    this.alignLeft = alignLeft;
 
     progressPattern =
         LEDPattern.progressMaskLayer(() -> ((initialDistance - currentDistance) / initialDistance));
@@ -97,7 +87,7 @@ public class AlignReef extends Command {
       else yGoalMeters = Units.inchesToMeters(7.375);
       // if elevator setpoint is at L4, stay a little further back
     } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters) {
-      xGoalMeters = 0.50;
+      xGoalMeters = 0.52;
       if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
       else yGoalMeters = Units.inchesToMeters(7.375);
       // if elevator setpoint is at an algae level, stay a little further out and in the center
@@ -159,6 +149,12 @@ public class AlignReef extends Command {
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
   }
 
+  /**
+   * Determines the goal angle based on the current angle by choosing the closest one
+   *
+   * @param driveAngle
+   * @return
+   */
   public static double calculateGoalAngle(double driveAngle) {
     // double driveAngle = drive.getRotation().getDegrees();
     if (Math.abs(driveAngle) <= 30) return 0;

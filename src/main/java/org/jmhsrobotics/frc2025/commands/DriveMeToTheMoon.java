@@ -29,7 +29,7 @@ public class DriveMeToTheMoon extends Command {
 
   private final PIDController xController = new PIDController(0.5, 0, 0);
   private final PIDController yController = new PIDController(0.5, 0, 0);
-  private final PIDController thetaController = new PIDController(0.1, 0, 0);
+  private final PIDController thetaController = new PIDController(0.02, 0, 0);
   private double xGoalMeters = 0.48;
   private double yGoalMeters = Units.inchesToMeters(-7.375);
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
@@ -81,7 +81,7 @@ public class DriveMeToTheMoon extends Command {
     // Default setpoint: L4 left side(i think)
     if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
     else yGoalMeters = Units.inchesToMeters(7.375);
-    xGoalMeters = 0.48;
+    xGoalMeters = 0.52;
     xController.reset();
     yController.reset();
     thetaController.reset();
@@ -101,6 +101,7 @@ public class DriveMeToTheMoon extends Command {
   public void execute() {
     // change setpoints if elevator setpoints have changed
     // if elevator septoint is for L2 or L3
+    this.thetaGoalDegrees = AlignReef.calculateGoalAngle(drive.getRotation().getDegrees());
 
     if (rightTriggerValue.getAsDouble() > leftTriggerValue.getAsDouble()) alignLeft = false;
     else alignLeft = true;
@@ -116,6 +117,7 @@ public class DriveMeToTheMoon extends Command {
 
     // Square rotation value for more precise control
     omega = Math.copySign(omega * omega, omega);
+
     if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
         || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) {
       xGoalMeters = 0.45;
@@ -123,7 +125,7 @@ public class DriveMeToTheMoon extends Command {
       else yGoalMeters = Units.inchesToMeters(7.375);
       // if elevator setpoint is at L4, stay a little further back
     } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters) {
-      xGoalMeters = 0.50;
+      xGoalMeters = 0.52;
       if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
       else yGoalMeters = Units.inchesToMeters(7.375);
       // if elevator setpoint is at an algae level, stay a little further out and in
@@ -135,6 +137,8 @@ public class DriveMeToTheMoon extends Command {
     }
     xController.setSetpoint(xGoalMeters);
     yController.setSetpoint(yGoalMeters);
+    thetaController.setSetpoint(thetaGoalDegrees);
+
     Pose3d tag = null; // TODO: handle seeing more than one reef tag
     for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
       // if(target.id() )
@@ -185,7 +189,6 @@ public class DriveMeToTheMoon extends Command {
       // drive.runVelocity(speed);
     } else {
       // drive.stop();
-
     }
 
     double invert = Robot.isSimulation() ? -1.0 : 1;
@@ -198,7 +201,7 @@ public class DriveMeToTheMoon extends Command {
             (MathUtil.clamp(linearVelocity.getY() - y, -1, 1)
                     * drive.getMaxLinearSpeedMetersPerSec())
                 * invert,
-            omega * drive.getMaxAngularSpeedRadPerSec());
+            (MathUtil.clamp(omega + thetaOut, -1, 1) * drive.getMaxAngularSpeedRadPerSec()));
     boolean isFlipped =
         DriverStation.getAlliance().isPresent()
             && DriverStation.getAlliance().get() == Alliance.Red;
@@ -245,19 +248,5 @@ public class DriveMeToTheMoon extends Command {
     else if (angle_deg == 180) return 10;
     else if (angle_deg == -60) return 6;
     else return 11;
-  }
-
-  @Override
-  public boolean isFinished() {
-    // System.out.println(
-    //     "X OFFSET: "
-    //         + Math.abs(xdist - xGoalMeters)
-    //         + " | Y OFFSET: "
-    //         + Math.abs(ydist - yGoalMeters)
-    //         + " | THETA OFFSET: "
-    //         + Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees));
-    return Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1.5)
-        && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1.5)
-        && Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees) < 3;
   }
 }

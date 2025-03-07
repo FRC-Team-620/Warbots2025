@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.jmhsrobotics.frc2025.commands.AlignReef;
 import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.ClimberToAngle;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
@@ -271,7 +272,7 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive));
 
-    control.alignDriveMode().onTrue(Commands.runOnce(() -> drive.changeMaxSpeedMetersPerSec()));
+    // control.alignDriveMode().onTrue(Commands.runOnce(() -> drive.changeMaxSpeedMetersPerSec()));
 
     control
         .placeCoralLevel1()
@@ -462,10 +463,10 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, led, 0.5));
     SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, led, -0.5));
-    // SmartDashboard.putData(
-    //     "cmd/Align Reef Left", new AlignReef(drive, vision, led, elevator, true));
-    // SmartDashboard.putData(
-    //     "cmd/Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
+    SmartDashboard.putData(
+        "cmd/Align Reef Left", new AlignReef(drive, vision, led, elevator, true));
+    SmartDashboard.putData(
+        "cmd/Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
   }
 
   private void configurePathPlanner() {

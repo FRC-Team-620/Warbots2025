@@ -59,7 +59,7 @@ public class DriveCommands {
   private static Pose3d lastTagPose = null;
   static final PIDController xController = new PIDController(0.6, 0, 0);
   static final PIDController yController = new PIDController(0.6, 0, 0);
-  static final PIDController thetaController = new PIDController(0.2, 0, 0);
+  static final PIDController thetaController = new PIDController(0.1, 0, 0);
 
   private DriveCommands() {}
 

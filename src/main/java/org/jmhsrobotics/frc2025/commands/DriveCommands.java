@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.Robot;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
@@ -166,18 +167,18 @@ public class DriveCommands {
                 tag = target.pose();
               }
             }
-            // if(tag == null) { // Janky way to use second camera :todo enable after basic testing
-            //   for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
-            //     if (target.id()
-            //         == AlignReef.calculateGoalTargetID(thetaGoalDegrees)) { // TODO: janky only
-            // work for one tag for now
-            //       tag = target.pose();
-            //     }
-            //   }
-            // }
+            if (tag == null) { // Janky way to use second camera :todo enable after basic testing
+              for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
+                if (target.id()
+                    == AlignReef.calculateGoalTargetID(thetaGoalDegrees)) { // TODO: janky only
+                  // work for one tag for now
+                  tag = target.pose();
+                }
+              }
+            }
             System.out.println(tag);
-            if (tag == null && lastTagPose != null) {
-              Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
+            if (tag == null && DriveCommands.lastTagPose != null) {
+              Transform3d transform = new Pose3d(drive.getPose()).minus(DriveCommands.lastTagPose);
               tag = new Pose3d(transform.getTranslation(), transform.getRotation());
             }
             if (tag != null) {
@@ -194,12 +195,11 @@ public class DriveCommands {
                       x * drive.getMaxLinearSpeedMetersPerSec(),
                       y * drive.getMaxLinearSpeedMetersPerSec(),
                       thetaOut * drive.getMaxAngularSpeedRadPerSec());
-              drive.runVelocity(speed);
             } else {
-              drive.stop();
+              // drive.stop();
             }
           }
-
+          double invert = Robot.isSimulation() ? -1.0 : 1;
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =
               new ChassisSpeeds(

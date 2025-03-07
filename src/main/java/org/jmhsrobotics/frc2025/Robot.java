@@ -13,24 +13,6 @@
 
 package org.jmhsrobotics.frc2025;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Comparator;
-import java.util.Optional;
-
-import org.jmhsrobotics.frc2025.util.ControllerMonitor;
-import org.jmhsrobotics.frc2025.util.Elastic;
-import org.littletonrobotics.junction.LogFileUtil;
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-import org.littletonrobotics.urcl.URCL;
-
 import au.grapplerobotics.CanBridge;
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -46,6 +28,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
+import java.util.Optional;
+import org.jmhsrobotics.frc2025.util.ControllerMonitor;
+import org.jmhsrobotics.frc2025.util.Elastic;
+import org.littletonrobotics.junction.LogFileUtil;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import org.littletonrobotics.urcl.URCL;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -121,10 +119,10 @@ public class Robot extends LoggedRobot {
                     lastModifiedFile.ifPresentOrElse(
                         file -> {
                           try {
-                            var filename = SmartDashboard.getData("logsavefile");
+                            var filename = SmartDashboard.getString("logsavefile", "unamed");
                             Files.move(
                                 file,
-                                file.getParent().resolve("test" + file.getFileName()),
+                                file.getParent().resolve(filename + " " + file.getFileName()),
                                 StandardCopyOption.REPLACE_EXISTING);
                           } catch (IOException e) {
                             e.printStackTrace();
@@ -136,7 +134,8 @@ public class Robot extends LoggedRobot {
                   }
                   // Logger.addDataReceiver(new WPILOGWriter());
                   // Logger.addDataReceiver(new NT4Publisher());
-                  //For some reason starting the logger again crashes so just kill the code anway and let it restart. XD
+                  // For some reason starting the logger again crashes so just kill the code anway
+                  // and let it restart. XD
                   System.exit(0);
                 })
             .ignoringDisable(true));

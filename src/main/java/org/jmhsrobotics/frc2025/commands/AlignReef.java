@@ -109,15 +109,15 @@ public class AlignReef extends Command {
       }
     }
 
-    // if (tag == null) { // Janky way to use second camera :todo enable after basic testing
-    //   for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
-    //     if (target.id()
-    //         == AlignReef.calculateGoalTargetID(
-    //             thetaGoalDegrees)) { // TODO: janky only work for one tag for now
-    //       tag = target.pose();
-    //     }
-    //   }
-    // }
+    if (tag == null) { // Janky way to use second camera :todo enable after basic testing
+      for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
+        if (target.id()
+            == AlignReef.calculateGoalTargetID(
+                thetaGoalDegrees)) { // TODO: janky only work for one tag for now
+          tag = target.pose();
+        }
+      }
+    }
 
     System.out.println(tag);
     if (tag == null && lastTagPose != null) {
@@ -144,7 +144,7 @@ public class AlignReef extends Command {
               thetaOut * drive.getMaxAngularSpeedRadPerSec());
       drive.runVelocity(speed);
     } else {
-      drive.stop();
+      // drive.stop();
     }
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
   }

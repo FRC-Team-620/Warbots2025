@@ -43,6 +43,7 @@ import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
+import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.05;
@@ -150,7 +151,7 @@ public class DriveCommands {
 
           // initializing the lock target speeds outside if statement so they are accessable to add
           // onto the joystick drive
-          var speed = new ChassisSpeeds();
+          var pidout = new ChassisSpeeds();
           double driveAngle = drive.getRotation().getDegrees();
           if (lockTarget) {
             double thetaGoalDegrees = AlignReef.calculateGoalAngle(driveAngle);
@@ -176,11 +177,12 @@ public class DriveCommands {
                 }
               }
             }
-            System.out.println(tag);
+            // System.out.println(tag);
             if (tag == null && DriveCommands.lastTagPose != null) {
               Transform3d transform = new Pose3d(drive.getPose()).minus(DriveCommands.lastTagPose);
               tag = new Pose3d(transform.getTranslation(), transform.getRotation());
             }
+            Logger.recordOutput("testpos", tag);
             if (tag != null) {
               double theta = -Math.toDegrees(Math.atan2(tag.getY(), tag.getX()));
               double xdist = tag.getX();
@@ -190,7 +192,7 @@ public class DriveCommands {
               var thetaOut =
                   thetaController.calculate(drive.getPose().getRotation().getDegrees())
                       * 0.1; // Janky clamping todo remove
-              speed =
+              pidout =
                   new ChassisSpeeds(
                       x * drive.getMaxLinearSpeedMetersPerSec(),
                       y * drive.getMaxLinearSpeedMetersPerSec(),
@@ -203,11 +205,13 @@ public class DriveCommands {
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =
               new ChassisSpeeds(
-                  linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec()
-                      - speed.vxMetersPerSecond,
-                  linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec()
-                      - speed.vyMetersPerSecond,
-                  omega * drive.getMaxAngularSpeedRadPerSec() + speed.omegaRadiansPerSecond);
+                  (linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec()
+                          - pidout.vxMetersPerSecond)
+                      * invert,
+                  (linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec()
+                          - pidout.vyMetersPerSecond)
+                      * invert,
+                  omega * drive.getMaxAngularSpeedRadPerSec() + pidout.omegaRadiansPerSecond);
           boolean isFlipped =
               DriverStation.getAlliance().isPresent()
                   && DriverStation.getAlliance().get() == Alliance.Red;

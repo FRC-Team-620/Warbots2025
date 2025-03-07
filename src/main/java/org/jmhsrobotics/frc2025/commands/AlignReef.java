@@ -124,6 +124,7 @@ public class AlignReef extends Command {
       Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
       tag = new Pose3d(transform.getTranslation(), transform.getRotation());
     }
+    Logger.recordOutput("testpos", tag);
     if (tag != null) {
       lastTagPose =
           new Pose3d(drive.getPose())

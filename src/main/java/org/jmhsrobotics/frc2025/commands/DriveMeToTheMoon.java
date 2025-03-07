@@ -79,6 +79,8 @@ public class DriveMeToTheMoon extends Command {
   @Override
   public void initialize() {
     // Default setpoint: L4 left side(i think)
+    if (rightTriggerValue.getAsDouble() > leftTriggerValue.getAsDouble()) alignLeft = false;
+    else alignLeft = true;
     if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
     else yGoalMeters = Units.inchesToMeters(7.375);
     xGoalMeters = 0.52;
@@ -118,23 +120,26 @@ public class DriveMeToTheMoon extends Command {
     // Square rotation value for more precise control
     omega = Math.copySign(omega * omega, omega);
 
-    if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
-        || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) {
-      xGoalMeters = 0.45;
-      if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
-      else yGoalMeters = Units.inchesToMeters(7.375);
-      // if elevator setpoint is at L4, stay a little further back
-    } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters) {
-      xGoalMeters = 0.52;
-      if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
-      else yGoalMeters = Units.inchesToMeters(7.375);
-      // if elevator setpoint is at an algae level, stay a little further out and in
-      // the center
-    } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
+    // determines where on the side of the reef to lineup based on if it should be on the left side
+    // and the elevator setpoint
+    if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
         || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) {
       xGoalMeters = 0.7;
       yGoalMeters = 0;
+    } else {
+      if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel1Meters
+          || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
+          || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) {
+        xGoalMeters = 0.45;
+        if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
+        else yGoalMeters = Units.inchesToMeters(7.375);
+      } else {
+        xGoalMeters = 0.52;
+        if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
+        else yGoalMeters = Units.inchesToMeters(7.375);
+      }
     }
+
     xController.setSetpoint(xGoalMeters);
     yController.setSetpoint(yGoalMeters);
     thetaController.setSetpoint(thetaGoalDegrees);

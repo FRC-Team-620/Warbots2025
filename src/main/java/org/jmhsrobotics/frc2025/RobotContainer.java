@@ -508,6 +508,16 @@ public class RobotContainer {
             Constants.ElevatorConstants.kCoralIntakeMeters,
             Constants.WristConstants.kSafeAngleDegrees));
 
+    NamedCommands.registerCommand(
+        "Reset Odometry For Auto",
+        Commands.runOnce(
+            () ->
+                drive.setPose(
+                    new Pose2d(
+                        drive.getPose().getX(),
+                        drive.getPose().getY(),
+                        new Rotation2d(drive.getRotation().getDegrees() + 180)))));
+
     // Intake Commands
     // TODO: Intake Coral command needs to be updated once updated intake control is merged to
     // master to also run the fix coral placement command

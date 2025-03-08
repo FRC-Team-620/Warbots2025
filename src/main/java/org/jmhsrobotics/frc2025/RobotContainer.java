@@ -514,8 +514,7 @@ public class RobotContainer {
             () ->
                 drive.setPose(
                     new Pose2d(
-                        drive.getPose().getX(),
-                        drive.getPose().getY(),
+                        drive.getPose().getTranslation(),
                         new Rotation2d(drive.getRotation().getDegrees() + 180)))));
 
     // Intake Commands

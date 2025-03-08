@@ -198,6 +198,7 @@ public class DriveMeToTheMoon extends Command {
       lastTagPose = null;
 
     double invert = Robot.isSimulation() ? -1.0 : 1;
+    invert = 1.0;
     // Convert to field relative speeds & send command
     ChassisSpeeds speeds =
         new ChassisSpeeds(
@@ -227,6 +228,8 @@ public class DriveMeToTheMoon extends Command {
     } else {
       drive.setAutoAlignComplete(false);
     }
+    Logger.recordOutput("X speed", speeds.vxMetersPerSecond);
+    Logger.recordOutput("Y Speed", speeds.vyMetersPerSecond);
 
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
   }

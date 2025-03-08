@@ -167,6 +167,7 @@ public class DriveMeToTheMoon extends Command {
     var x = 0.0;
     var y = 0.0;
     var thetaOut = 0.0;
+    var speed = new ChassisSpeeds();
     // System.out.println(tag);
     if (tag == null && lastTagPose != null) {
       Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
@@ -187,12 +188,11 @@ public class DriveMeToTheMoon extends Command {
       thetaOut =
           thetaController.calculate(drive.getPose().getRotation().getDegrees())
               * 0.5; // Janky clamping todo remove
-      var speed =
+      speed =
           new ChassisSpeeds(
               x * drive.getMaxLinearSpeedMetersPerSec(),
               y * drive.getMaxLinearSpeedMetersPerSec(),
               thetaOut * drive.getMaxAngularSpeedRadPerSec());
-      // drive.runVelocity(speed);
     } else {
       // drive.stop();
     }
@@ -204,13 +204,11 @@ public class DriveMeToTheMoon extends Command {
     // Convert to field relative speeds & send command
     ChassisSpeeds speeds =
         new ChassisSpeeds(
-            (MathUtil.clamp(linearVelocity.getX() - x, -1, 1)
-                    * drive.getMaxLinearSpeedMetersPerSec())
+            (MathUtil.clamp(linearVelocity.getX(), -1, 1) * drive.getMaxLinearSpeedMetersPerSec())
                 * invert,
-            (MathUtil.clamp(linearVelocity.getY() - y, -1, 1)
-                    * drive.getMaxLinearSpeedMetersPerSec())
+            (MathUtil.clamp(linearVelocity.getY(), -1, 1) * drive.getMaxLinearSpeedMetersPerSec())
                 * invert,
-            (MathUtil.clamp(omega + thetaOut, -1, 1) * drive.getMaxAngularSpeedRadPerSec()));
+            (MathUtil.clamp(omega, -1, 1) * drive.getMaxAngularSpeedRadPerSec()));
     boolean isFlipped =
         DriverStation.getAlliance().isPresent()
             && DriverStation.getAlliance().get() == Alliance.Red;
@@ -218,6 +216,9 @@ public class DriveMeToTheMoon extends Command {
         ChassisSpeeds.fromFieldRelativeSpeeds(
             speeds,
             isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation());
+
+    // TODO: prevent speed from surpassing maximum
+    speeds = speeds.plus(speed);
     drive.runVelocity(speeds);
 
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);

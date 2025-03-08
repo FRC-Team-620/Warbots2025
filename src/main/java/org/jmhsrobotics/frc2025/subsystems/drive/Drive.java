@@ -72,6 +72,7 @@ public class Drive extends SubsystemBase {
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
 
   private double maxLinearSpeedMetersPerSec = DriveConstants.maxSpeedMetersPerSec;
+  private boolean autoAlignComplete = false;
 
   public Drive(
       GyroIO gyroIO,
@@ -343,5 +344,13 @@ public class Drive extends SubsystemBase {
     for (var module : modules) {
       module.setBrakeMode(enable);
     }
+  }
+
+  public void setAutoAlignComplete(boolean isAligned) {
+    this.autoAlignComplete = isAligned;
+  }
+
+  public boolean isAutoAlignComplete() {
+    return autoAlignComplete;
   }
 }

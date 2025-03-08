@@ -182,7 +182,11 @@ public class Vision extends SubsystemBase {
   }
 
   public TagPose[] getTagPoses(int camid) { // TODO Return all tag poses
-    return inputs[camid].tagPoses;
+    if (inputs.length > camid) {
+      return inputs[camid].tagPoses;
+    } else {
+      return new TagPose[0];
+    }
   }
 
   @FunctionalInterface

@@ -73,7 +73,6 @@ public class AlignReef extends Command {
     thetaController.setSetpoint(thetaGoalDegrees);
     thetaController.enableContinuousInput(-180, 180);
     drive.stop();
-    this.led.setPattern(progressPattern);
   }
 
   @Override
@@ -106,18 +105,18 @@ public class AlignReef extends Command {
               thetaGoalDegrees)) { // TODO: janky only work for one tag for now
         tag = target.pose();
       }
+      Logger.recordOutput("Align/April Tag Pose3d", tag);
+      Logger.recordOutput("Align/April Tag X", tag.getX());
+      Logger.recordOutput("Align/April Tag Y", tag.getY());
     }
-
-    if (tag == null) { // Janky way to use second camera :todo enable after basic testing
-      for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
-        if (target.id()
-            == AlignReef.calculateGoalTargetID(
-                thetaGoalDegrees)) { // TODO: janky only work for one tag for now
-          tag = target.pose();
-        }
-      }
-    }
-
+    // if(tag == null) { // Janky way to use second camera :todo enable after basic testing
+    //   for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
+    //     if (target.id()
+    //         == targetTag) { // TODO: janky only work for one tag for now
+    //       tag = target.pose();
+    //     }
+    //   }
+    // }
     System.out.println(tag);
     if (tag == null && lastTagPose != null) {
       Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);

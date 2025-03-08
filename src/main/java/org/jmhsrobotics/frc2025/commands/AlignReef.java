@@ -106,8 +106,8 @@ public class AlignReef extends Command {
         tag = target.pose();
       }
       Logger.recordOutput("Align/April Tag Pose3d", tag);
-      Logger.recordOutput("Align/April Tag X", tag.getX());
-      Logger.recordOutput("Align/April Tag Y", tag.getY());
+      // Logger.recordOutput("Align/April Tag X", tag.getX());
+      // Logger.recordOutput("Align/April Tag Y", tag.getY());
     }
     // if(tag == null) { // Janky way to use second camera :todo enable after basic testing
     //   for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera

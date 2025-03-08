@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1 Coral AA.0"
+            "pathName": "2 Coral AA Top.0"
           }
         },
         {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2 Coral AA.2"
+                  "pathName": "2 Coral AA Top.2"
                 }
               },
               {
@@ -52,16 +52,60 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Elevator And Wrist Coral Intake"
+                        "name": "Intake Coral"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Intake Coral"
+                        "name": "Fix Coral Placement"
                       }
                     }
                   ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Reef Left"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator And Wrist L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "2 Coral AA Top.5"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
                 }
               }
             ]
@@ -71,6 +115,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Mid Start Autos",
+  "folder": "Top Start",
   "choreoAuto": true
 }

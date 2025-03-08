@@ -511,12 +511,32 @@ public class RobotContainer {
     // Intake Commands
     // TODO: Intake Coral command needs to be updated once updated intake control is merged to
     // master to also run the fix coral placement command
-    NamedCommands.registerCommand(
-        "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led));
 
-    NamedCommands.registerCommand("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
+    // timeouts needed for simulation since they will never end without simulated game piece pickup
+    if (Robot.isSimulation()) {
+      NamedCommands.registerCommand(
+          "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led).withTimeout(3));
+      //   NamedCommands.registerCommand(
+      //       "Intake Coral",
+      //       new SequentialCommandGroup(
+      //           new ElevatorAndWristMove(
+      //               elevator,
+      //               wrist,
+      //               intake,
+      //               Constants.ElevatorConstants.kCoralIntakeMeters,
+      //               Constants.WristConstants.kSafeAngleDegrees),
+      //           new IntakeFromIndexer(wrist, intake).withTimeout(3)));
 
-    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(1.5));
+      NamedCommands.registerCommand(
+          "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(2));
+    } else {
+      NamedCommands.registerCommand(
+          "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led));
+
+      NamedCommands.registerCommand("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
+    }
+
+    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(1));
 
     NamedCommands.registerCommand(
         "Align Reef Left", new AlignReef(drive, vision, led, elevator, true));

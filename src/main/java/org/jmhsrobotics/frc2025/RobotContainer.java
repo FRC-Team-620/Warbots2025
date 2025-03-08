@@ -256,7 +256,6 @@ public class RobotContainer {
         new DriveMeToTheMoon(
             drive,
             vision,
-            led,
             elevator,
             () -> control.translationY(),
             () -> control.translationX(),

@@ -10,37 +10,32 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.DoubleSupplier;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.Robot;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
-import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveMeToTheMoon extends Command {
   private final Drive drive;
   private final Vision vision;
-  private final LED led;
   private final Elevator elevator;
 
   private final PIDController xController = new PIDController(0.5, 0, 0);
   private final PIDController yController = new PIDController(0.5, 0, 0);
-  private final PIDController thetaController = new PIDController(0.02, 0, 0);
+  private final PIDController thetaController = new PIDController(0.1, 0, 0);
   private double xGoalMeters = 0.48;
   private double yGoalMeters = Units.inchesToMeters(-7.375);
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
 
-  private LEDPattern progressPattern;
   private double initialDistance = 2;
   private double currentDistance = 2;
 
   private Pose3d lastTagPose = null;
 
-  private double theta = 0;
   private double xdist = 0;
   private double ydist = 0;
   private static final double DEADBAND = 0.05;
@@ -52,7 +47,6 @@ public class DriveMeToTheMoon extends Command {
   public DriveMeToTheMoon(
       Drive drive,
       Vision vision,
-      LED led,
       Elevator elevator,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
@@ -61,7 +55,6 @@ public class DriveMeToTheMoon extends Command {
       DoubleSupplier rightTriggerValue) {
     this.drive = drive;
     this.vision = vision;
-    this.led = led;
     this.elevator = elevator;
 
     this.xSupplier = xSupplier;
@@ -69,9 +62,6 @@ public class DriveMeToTheMoon extends Command {
     this.omegaSupplier = omegaSupplier;
     this.leftTriggerValue = leftTriggerValue;
     this.rightTriggerValue = rightTriggerValue;
-
-    progressPattern =
-        LEDPattern.progressMaskLayer(() -> ((initialDistance - currentDistance) / initialDistance));
 
     addRequirements(drive);
   }
@@ -145,6 +135,17 @@ public class DriveMeToTheMoon extends Command {
     yController.setSetpoint(yGoalMeters);
     thetaController.setSetpoint(thetaGoalDegrees);
 
+    // angle lock should work regardless of vision working
+    ChassisSpeeds thetaSpeeds = new ChassisSpeeds();
+    if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
+      thetaSpeeds =
+          thetaSpeeds.plus(
+              new ChassisSpeeds(
+                  0,
+                  0,
+                  thetaController.calculate(drive.getPose().getRotation().getDegrees()) * 0.5));
+    }
+
     Pose3d tag = null; // TODO: handle seeing more than one reef tag
     for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
       // if(target.id() )
@@ -166,7 +167,6 @@ public class DriveMeToTheMoon extends Command {
     }
     var x = 0.0;
     var y = 0.0;
-    var thetaOut = 0.0;
     var speed = new ChassisSpeeds();
     // System.out.println(tag);
     if (tag == null && lastTagPose != null) {
@@ -179,20 +179,17 @@ public class DriveMeToTheMoon extends Command {
       lastTagPose =
           new Pose3d(drive.getPose())
               .plus(new Transform3d(tag.getTranslation(), tag.getRotation()));
-      theta = -Math.toDegrees(Math.atan2(tag.getY(), tag.getX()));
       xdist = tag.getX();
       ydist = tag.getY();
       currentDistance = Math.sqrt(xdist * xdist + ydist * ydist);
       x = -xController.calculate(xdist);
       y = -yController.calculate(ydist);
-      thetaOut =
-          thetaController.calculate(drive.getPose().getRotation().getDegrees())
-              * 0.5; // Janky clamping todo remove
+
       speed =
           new ChassisSpeeds(
               x * drive.getMaxLinearSpeedMetersPerSec(),
               y * drive.getMaxLinearSpeedMetersPerSec(),
-              thetaOut * drive.getMaxAngularSpeedRadPerSec());
+              0);
     } else {
       // drive.stop();
     }
@@ -219,6 +216,7 @@ public class DriveMeToTheMoon extends Command {
 
     // TODO: prevent speed from surpassing maximum
     speeds = speeds.plus(speed);
+    speeds = speeds.plus(thetaSpeeds);
     drive.runVelocity(speeds);
 
     if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {

@@ -73,7 +73,7 @@ public class DriveMeToTheMoon extends Command {
     else alignLeft = true;
     if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
     else yGoalMeters = Units.inchesToMeters(7.375);
-    xGoalMeters = 0.52;
+    xGoalMeters = 0.50;
     xController.reset();
     yController.reset();
     thetaController.reset();
@@ -121,11 +121,11 @@ public class DriveMeToTheMoon extends Command {
       if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel1Meters
           || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
           || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) {
-        xGoalMeters = 0.45;
+        xGoalMeters = 0.43;
         if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
         else yGoalMeters = Units.inchesToMeters(7.375);
       } else {
-        xGoalMeters = 0.52;
+        xGoalMeters = 0.50;
         if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
         else yGoalMeters = Units.inchesToMeters(7.375);
       }

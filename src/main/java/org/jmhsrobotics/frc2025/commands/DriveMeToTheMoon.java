@@ -221,6 +221,15 @@ public class DriveMeToTheMoon extends Command {
     speeds = speeds.plus(speed);
     drive.runVelocity(speeds);
 
+    if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
+      drive.setAutoAlignComplete(
+          Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1)
+              && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1)
+              && Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees) < 3);
+    } else {
+      drive.setAutoAlignComplete(false);
+    }
+
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
   }
 

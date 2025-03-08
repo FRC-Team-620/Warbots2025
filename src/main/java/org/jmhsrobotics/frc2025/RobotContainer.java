@@ -446,6 +446,11 @@ public class RobotContainer {
         .onFalse(
             new LEDFlashPattern(led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite))
                 .withTimeout(1.5));
+
+    new Trigger(drive::isAutoAlignComplete)
+        .whileTrue(
+            new LEDFlashPattern(
+                led, LEDPattern.solid(Color.kCyan), LEDPattern.solid(Color.kWhite)));
   }
 
   private void setupSmartDashbaord() {

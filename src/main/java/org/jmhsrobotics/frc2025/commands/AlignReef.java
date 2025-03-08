@@ -146,6 +146,9 @@ public class AlignReef extends Command {
       // drive.stop();
     }
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
+    if (tag == null && lastTagPose == null) {
+      drive.runVelocity(new ChassisSpeeds(0.2, 0, 0));
+    }
   }
 
   /**

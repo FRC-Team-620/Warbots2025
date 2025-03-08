@@ -56,8 +56,7 @@ public class VortexElevatorIO implements ElevatorIO {
         Constants.ElevatorConstants.kP,
         Constants.ElevatorConstants.kI,
         Constants.ElevatorConstants.kD,
-        Constants.ElevatorConstants.kF
-        );
+        Constants.ElevatorConstants.kF);
 
     vortexRightConfig = new SparkFlexConfig();
     vortexRightConfig
@@ -71,8 +70,7 @@ public class VortexElevatorIO implements ElevatorIO {
         Constants.ElevatorConstants.kP,
         Constants.ElevatorConstants.kI,
         Constants.ElevatorConstants.kD,
-        Constants.ElevatorConstants.kF
-        );
+        Constants.ElevatorConstants.kF);
 
     SparkUtil.tryUntilOk(
         vortexLeft,

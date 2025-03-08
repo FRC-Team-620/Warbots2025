@@ -74,9 +74,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "2 Coral AA Top.3"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "2 Coral AA Top.3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Fix Coral Placement"
+                }
+              }
+            ]
           }
         },
         {

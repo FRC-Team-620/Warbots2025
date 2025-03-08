@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Reset Odometry For Auto Align"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -39,12 +33,6 @@
           "type": "named",
           "data": {
             "name": "Score Coral"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rest Odometry For Path"
           }
         },
         {
@@ -89,12 +77,6 @@
           "type": "path",
           "data": {
             "pathName": "2 Coral AA Top.3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Reset Odometry For Auto Align"
           }
         },
         {

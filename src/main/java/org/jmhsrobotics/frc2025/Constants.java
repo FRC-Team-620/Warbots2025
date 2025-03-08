@@ -99,9 +99,10 @@ public final class Constants {
     public static final double kAlgaeIntakeL2Meters = 0.54;
     public static final double kAlgaeIntakeL3Meters = 1.03;
 
-    public static final double kP = 1.75;
+    public static final double kP = 3;
     public static final double kI = .00;
     public static final double kD = .005;
+    public static final double kF = 0.25;
     public static final double kHeightTolerance = 0.1;
   }
 

@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 Coral AA Top.0"
+            "pathName": "1 Coral AA Mid.0"
           }
         },
         {
@@ -19,20 +19,8 @@
                 "data": {
                   "name": "Align Reef Right"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Elevator And Wrist L4"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score Coral"
           }
         },
         {
@@ -45,6 +33,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Top Start",
+  "folder": "Mid Start",
   "choreoAuto": true
 }

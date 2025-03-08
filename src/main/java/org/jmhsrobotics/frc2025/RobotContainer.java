@@ -257,8 +257,8 @@ public class RobotContainer {
             drive,
             vision,
             elevator,
-            () -> control.translationY(),
-            () -> control.translationX(),
+            () -> -control.translationY(),
+            () -> -control.translationX(),
             () -> -control.rotation(),
             () -> control.alignLeft(),
             () -> control.alignRight()));
@@ -509,7 +509,6 @@ public class RobotContainer {
             intake,
             Constants.ElevatorConstants.kCoralIntakeMeters,
             Constants.WristConstants.kSafeAngleDegrees));
-
     NamedCommands.registerCommand(
         "Reset Odometry For Auto Align",
         Commands.runOnce(

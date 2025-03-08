@@ -192,8 +192,8 @@ public class AlignReef extends Command {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1.5)
-        && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1.5)
+    return Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1.25)
+        && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1.25)
         && Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees) < 3;
   }
 }

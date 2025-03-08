@@ -107,6 +107,7 @@ public class DriveMeToTheMoon extends Command {
 
     if (rightTriggerValue.getAsDouble() > leftTriggerValue.getAsDouble()) alignLeft = false;
     else alignLeft = true;
+
     Translation2d linearVelocity =
         DriveCommands.getLinearVelocityFromJoysticks(
             Math.copySign(
@@ -172,8 +173,8 @@ public class DriveMeToTheMoon extends Command {
       tag = new Pose3d(transform.getTranslation(), transform.getRotation());
     }
     Logger.recordOutput("testpos", tag);
-    if (tag != null && rightTriggerValue.getAsDouble() > 0.5) {
-      // System.out.println("asdf");
+    if (tag != null
+        && (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5)) {
       lastTagPose =
           new Pose3d(drive.getPose())
               .plus(new Transform3d(tag.getTranslation(), tag.getRotation()));
@@ -195,6 +196,9 @@ public class DriveMeToTheMoon extends Command {
     } else {
       // drive.stop();
     }
+
+    if (rightTriggerValue.getAsDouble() < 0.5 && leftTriggerValue.getAsDouble() < 0.5)
+      lastTagPose = null;
 
     double invert = Robot.isSimulation() ? -1.0 : 1;
     // Convert to field relative speeds & send command

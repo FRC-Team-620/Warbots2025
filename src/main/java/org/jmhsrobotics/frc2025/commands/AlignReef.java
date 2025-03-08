@@ -193,13 +193,6 @@ public class AlignReef extends Command {
 
   @Override
   public boolean isFinished() {
-    System.out.println(
-        "X OFFSET: "
-            + Math.abs(xdist - xGoalMeters)
-            + " | Y OFFSET: "
-            + Math.abs(ydist - yGoalMeters)
-            + " | THETA OFFSET: "
-            + Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees));
     return Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1.5)
         && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1.5)
         && Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees) < 3;

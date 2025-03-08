@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
-import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
@@ -26,7 +25,6 @@ public class IntakeCoralAuto extends SequentialCommandGroup {
         new ParallelRaceGroup(
             new IntakeFromIndexer(wrist, intake),
             new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kYellow), LEDPattern.solid(Color.kWhite))),
-        new FixCoralPlacement(intake, wrist).withTimeout(4));
+                led, LEDPattern.solid(Color.kOrange), LEDPattern.solid(Color.kWhite))));
   }
 }

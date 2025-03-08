@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Reset Odometry For Auto Align"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [

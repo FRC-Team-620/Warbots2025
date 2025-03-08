@@ -92,7 +92,7 @@ public final class Constants {
     // BARGE AND L4 SETPOINT CANNOT BE THE EXACT SAME
     public static final double kLevel4Meters = 1.775;
     public static final double kBargeMeters = 1.78;
-    public static final double kProcesserMeters = .15;
+    public static final double kProcesserMeters = .10;
 
     public static final double kAlgaeQTipMeters = 0.125;
     public static final double kCoralIntakeMeters = 0;

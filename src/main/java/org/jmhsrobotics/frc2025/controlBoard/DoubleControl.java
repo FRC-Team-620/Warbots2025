@@ -109,7 +109,7 @@ public class DoubleControl implements ControlBoard {
 
   @Override
   public Trigger intakeCoralFromIndexer() {
-    return operator.rightStick().and(searchMode);
+    return operator.rightStick();
   }
 
   @Override

@@ -5,15 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Reset Odometry For Auto"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "1 Coral AA Mid.0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Reset Odometry For Auto Align"
           }
         },
         {
@@ -29,7 +29,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Elevator And Wrist L3"
+                  "name": "Elevator And Wrist L4"
                 }
               }
             ]

@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Reset Odometry For Auto Align"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -36,6 +42,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Rest Odometry For Path"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -49,6 +61,12 @@
                 "type": "sequential",
                 "data": {
                   "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevator And Wrist Coral Intake"
+                      }
+                    },
                     {
                       "type": "named",
                       "data": {
@@ -71,6 +89,12 @@
           "type": "path",
           "data": {
             "pathName": "2 Coral AA Top.3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Reset Odometry For Auto Align"
           }
         },
         {

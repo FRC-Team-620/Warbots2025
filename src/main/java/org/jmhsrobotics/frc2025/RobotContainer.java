@@ -383,7 +383,6 @@ public class RobotContainer {
                 intake,
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
-
     control
         .intakeCoralFromIndexer()
         .onTrue(
@@ -471,10 +470,13 @@ public class RobotContainer {
         "cmd/Align Reef Left", new AlignReef(drive, vision, led, elevator, true));
     SmartDashboard.putData(
         "cmd/Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
+    SmartDashboard.putData("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
+
+    SmartDashboard.putData("Scheduler2", CommandScheduler.getInstance());
   }
 
   private void configurePathPlanner() {
-    // Elevator and Wrist Commands
+    // Elevator and Wrist Command
     NamedCommands.registerCommand(
         "Elevator And Wrist L4",
         new ElevatorAndWristMove(
@@ -509,14 +511,22 @@ public class RobotContainer {
             Constants.WristConstants.kSafeAngleDegrees));
 
     NamedCommands.registerCommand(
-        "Reset Odometry For Auto",
+        "Reset Odometry For Auto Align",
         Commands.runOnce(
             () ->
                 drive.setPose(
                     new Pose2d(
                         drive.getPose().getTranslation(),
-                        new Rotation2d(drive.getRotation().getDegrees() + 180)))));
+                        Rotation2d.fromDegrees(drive.getRotation().getDegrees() + 180)))));
 
+    NamedCommands.registerCommand(
+        "Reset Odometry For Path",
+        Commands.runOnce(
+            () ->
+                drive.setPose(
+                    new Pose2d(
+                        drive.getPose().getTranslation(),
+                        Rotation2d.fromDegrees(drive.getRotation().getDegrees() + 180)))));
     // Intake Commands
     // TODO: Intake Coral command needs to be updated once updated intake control is merged to
     // master to also run the fix coral placement command

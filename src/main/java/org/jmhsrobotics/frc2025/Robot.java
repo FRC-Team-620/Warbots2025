@@ -21,10 +21,20 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
+import java.util.Optional;
 import org.jmhsrobotics.frc2025.util.ControllerMonitor;
 import org.jmhsrobotics.frc2025.util.Elastic;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -92,6 +102,43 @@ public class Robot extends LoggedRobot {
 
     // Start AdvantageKit logger
     Logger.start();
+    SmartDashboard.putString("logsavefile", "");
+    SmartDashboard.putData(
+        "saveLog",
+        new InstantCommand(
+                () -> {
+                  Logger.end();
+                  Logger.end();
+                  var path = Paths.get(RobotBase.isSimulation() ? "logs" : "/U/logs");
+                  try {
+                    Optional<Path> lastModifiedFile =
+                        Files.list(path)
+                            .filter(Files::isRegularFile)
+                            .max(Comparator.comparingLong(f -> f.toFile().lastModified()));
+
+                    lastModifiedFile.ifPresentOrElse(
+                        file -> {
+                          try {
+                            var filename = SmartDashboard.getString("logsavefile", "unamed");
+                            Files.move(
+                                file,
+                                file.getParent().resolve(filename + " " + file.getFileName()),
+                                StandardCopyOption.REPLACE_EXISTING);
+                          } catch (IOException e) {
+                            e.printStackTrace();
+                          }
+                        },
+                        () -> System.out.println("No files found in the directory."));
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                  }
+                  // Logger.addDataReceiver(new WPILOGWriter());
+                  // Logger.addDataReceiver(new NT4Publisher());
+                  // For some reason starting the logger again crashes so just kill the code anway
+                  // and let it restart. XD
+                  System.exit(0);
+                })
+            .ignoringDisable(true));
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.

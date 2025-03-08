@@ -37,6 +37,7 @@ import org.jmhsrobotics.frc2025.commands.AlignReef;
 import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.ClimberToAngle;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
+import org.jmhsrobotics.frc2025.commands.DriveMeToTheMoon;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
@@ -47,6 +48,7 @@ import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
+import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeCoralAuto;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
@@ -230,10 +232,32 @@ public class RobotContainer {
         new IntakeMove(intake, wrist, control.intakeCoral(), control.extakeCoral()));
 
     // Default command, normal field-relative drive
+    // drive.setDefaultCommand(
+    //     DriveCommands.joystickDrive(
+    //         drive,
+    //         vision,
+    //         elevator,
+    //         () -> control.translationY(),
+    //         () -> control.translationX(),
+    //         () -> -control.rotation(),
+    //         () -> control.alignLeft(),
+    //         () -> control.alignRight()));
+    // new Trigger(
+    //         () -> {
+    //           return control.alignLeft() > 0.5;
+    //         })
+    //     .whileTrue(null);
+    // new Trigger(
+    //         () -> {
+    //           return control.alignRight() > 0.5;
+    //         })
+    //     .whileTrue(null);
     drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
+        new DriveMeToTheMoon(
             drive,
             vision,
+            led,
+            elevator,
             () -> control.translationY(),
             () -> control.translationX(),
             () -> -control.rotation(),
@@ -248,7 +272,7 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                 drive));
 
-    control.alignDriveMode().onTrue(Commands.runOnce(() -> drive.changeMaxSpeedMetersPerSec()));
+    // control.alignDriveMode().onTrue(Commands.runOnce(() -> drive.changeMaxSpeedMetersPerSec()));
 
     control
         .placeCoralLevel1()
@@ -299,7 +323,7 @@ public class RobotContainer {
                 wrist,
                 intake,
                 Constants.ElevatorConstants.kLevel4Meters,
-                Constants.WristConstants.kLevel3Degrees));
+                Constants.WristConstants.kLevel4Degrees));
 
     control
         .scoreAlgaeProcesser()
@@ -374,7 +398,7 @@ public class RobotContainer {
                 new ParallelRaceGroup(
                     new IntakeFromIndexer(wrist, intake),
                     new LEDFlashPattern(
-                        led, LEDPattern.solid(Color.kHotPink), LEDPattern.solid(Color.kNavy))),
+                        led, LEDPattern.solid(Color.kOrange), LEDPattern.solid(Color.kWhite))),
                 new FixCoralPlacement(intake, wrist)));
 
     control
@@ -439,7 +463,10 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, led, 0.5));
     SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, led, -0.5));
-    SmartDashboard.putData("cmd/Align Reef", new AlignReef(drive, vision));
+    SmartDashboard.putData(
+        "cmd/Align Reef Left", new AlignReef(drive, vision, led, elevator, true));
+    SmartDashboard.putData(
+        "cmd/Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
   }
 
   private void configurePathPlanner() {
@@ -480,7 +507,8 @@ public class RobotContainer {
     // Intake Commands
     // TODO: Intake Coral command needs to be updated once updated intake control is merged to
     // master to also run the fix coral placement command
-    NamedCommands.registerCommand("Intake Coral", new IntakeFromIndexer(wrist, intake));
+    NamedCommands.registerCommand(
+        "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led));
 
     NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(1.5));
   }

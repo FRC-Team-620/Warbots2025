@@ -10,7 +10,7 @@ public class SimTimeOfFlightIO implements TimeOfFLightIO {
 
   @Override
   public void updateInputs(TimeOfFLightIOInputs inputs) {
-    
+
     inputs.algaeMeasurementIsValid = true;
     inputs.coralMeasurementIsValid = true;
     // distance is in millimeters

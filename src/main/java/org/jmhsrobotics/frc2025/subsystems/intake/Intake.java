@@ -13,7 +13,7 @@ public class Intake extends SubsystemBase {
   private TimeOfFLightIO timeOfFLightIO;
   private TimeOfFLightIOInputsAutoLogged sensorInputs = new TimeOfFLightIOInputsAutoLogged();
 
-  private int mode = 2;
+  private IntakeMode mode = IntakeMode.IDLE;
   private boolean override = false;
 
   private Debouncer coralDebouncer =
@@ -53,7 +53,7 @@ public class Intake extends SubsystemBase {
    *
    * @return
    */
-  public int getMode() {
+  public IntakeMode getMode() {
     // determines if coral and algae are in the intake based on sensor inputs and debouncers
     this.coralInIntake = this.isCoralInIntake();
     this.algaeInIntake = this.isAlgaeInintake();
@@ -62,13 +62,13 @@ public class Intake extends SubsystemBase {
       return mode;
     }
     if (coralInIntake) {
-      this.mode = 3;
+      this.mode = IntakeMode.CORAL;
       return this.mode;
     } else if (algaeInIntake) {
-      this.mode = 1;
+      this.mode = IntakeMode.ALGAE;
       return this.mode;
     }
-    this.mode = 2;
+    this.mode = IntakeMode.IDLE;
     return this.mode;
   }
 
@@ -80,12 +80,13 @@ public class Intake extends SubsystemBase {
    */
   public void setMode(int increment) {
     this.override = true;
-    this.mode += increment;
-    if (this.mode < 1) {
-      this.mode = 1;
-    } else if (this.mode > 3) {
-      this.mode = 3;
-    }
+    int desiredMode = this.mode.getValue() + increment;
+    this.mode = IntakeMode.fromInt(desiredMode);
+    // if (this.mode < 1) {
+    //   this.mode = 1;
+    // } else if (this.mode > 3) {
+    //   this.mode = 3;
+    // }
   }
 
   /** Turns off manual override of control mode in the event of an accidental activation */

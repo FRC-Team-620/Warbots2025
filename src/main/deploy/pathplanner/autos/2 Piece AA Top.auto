@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 Coral AA Top.0"
+            "pathName": "3 Coral AA Top.0"
           }
         },
         {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2 Coral AA Top.2"
+                  "pathName": "3 Coral AA Top.2"
                 }
               },
               {
@@ -60,12 +60,6 @@
                       "data": {
                         "name": "Intake Coral"
                       }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Fix Coral Placement"
-                      }
                     }
                   ]
                 }
@@ -80,7 +74,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2 Coral AA Top.3"
+                  "pathName": "3 Coral AA Top.3"
                 }
               },
               {

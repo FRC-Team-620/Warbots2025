@@ -76,6 +76,7 @@ import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.intake.IntakeIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.NeoIntakeIO;
+import org.jmhsrobotics.frc2025.subsystems.intake.SimIntakeIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.SimTimeOfFlightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.TimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
@@ -165,7 +166,7 @@ public class RobotContainer {
         elevator = new Elevator(new SimElevatorIO());
         wrist = new Wrist(new SimWristIO());
         climber = new Climber(new SimClimberIO());
-        intake = new Intake(new IntakeIO() {}, new SimTimeOfFlightIO() {});
+        intake = new Intake(new SimIntakeIO() {}, new SimTimeOfFlightIO() {});
         indexer = new Indexer(new SimIndexerIO());
 
         System.out.println("Mode: SIM");

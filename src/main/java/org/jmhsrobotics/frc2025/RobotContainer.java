@@ -105,7 +105,7 @@ public class RobotContainer {
   public final Wrist wrist;
   private final ControlBoard control;
   private final LED led;
-  private final Intake intake;
+  public final Intake intake;
   public final Climber climber;
   public final Indexer indexer;
   private boolean isBrakeMode = true;

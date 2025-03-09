@@ -224,6 +224,18 @@ public class Robot extends LoggedRobot {
                     Units.degreesToRadians(0),
                     Units.degreesToRadians(-10),
                     Units.degreesToRadians(35)))));
+    if(robotContainer.intake.isCoralInIntake()){
+      Logger.recordOutput("hasPipe", robotpos.plus(new Transform3d(0.0, 0.0, 1.2, new Rotation3d())));
+    } else {
+      Logger.recordOutput("hasPipe", robotpos.plus(new Transform3d(90, 0.0, 4, new Rotation3d())));
+    }
+    if(robotContainer.intake.isAlgaeInintake()){
+      Logger.recordOutput("hasball", robotpos.plus(new Transform3d(0.0, 0.0, 1.5, new Rotation3d())));
+    } else {
+      Logger.recordOutput("hasball", robotpos.plus(new Transform3d(90, 0.0, 4, new Rotation3d())));
+    }
+    // Logger.recordOutput("hasball", robotpos.plus(new Transform3d(0.0, 0.0, 3, new Rotation3d())));
+    // Logger.recordOutput("hasPipe", robotpos.plus(new Transform3d(0.0, 0.0, 2, new Rotation3d())));
   }
 
   /** This function is called once when the robot is disabled. */

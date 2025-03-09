@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 Coral AA Top.0"
+            "pathName": "3 Coral AA Top.0"
           }
         },
         {
@@ -40,9 +40,16 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "2 Coral AA Top.2"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevator And Wrist Coral Intake"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -50,18 +57,56 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "path",
                       "data": {
-                        "name": "Intake Coral"
+                        "pathName": "3 Coral AA Top.2"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Fix Coral Placement"
+                        "name": "Stop Drivetrain"
                       }
                     }
                   ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Drive Backwards"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "3 Coral AA Top.3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Fix Coral Placement"
                 }
               }
             ]
@@ -97,18 +142,107 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "2 Coral AA Top.5"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevator And Wrist Coral Intake"
+                      }
+                    }
+                  ]
                 }
               },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "3 Coral AA Top.5"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Stop Drivetrain"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
               {
                 "type": "named",
                 "data": {
                   "name": "Intake Coral"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Drive Backwards"
+                }
               }
             ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "3 Coral AA Top.6"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Fix Coral Placement"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Reef Right"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator And Wrist L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Elevator And Wrist Coral Intake"
           }
         }
       ]

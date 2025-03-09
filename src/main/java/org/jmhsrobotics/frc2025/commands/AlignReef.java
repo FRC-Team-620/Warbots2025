@@ -22,8 +22,8 @@ public class AlignReef extends Command {
   private final LED led;
   private final Elevator elevator;
 
-  private final PIDController xController = new PIDController(0.5, 0, 0);
-  private final PIDController yController = new PIDController(0.5, 0, 0);
+  private final PIDController xController = new PIDController(0.6, 0, 0);
+  private final PIDController yController = new PIDController(0.6, 0, 0);
   private final PIDController thetaController = new PIDController(0.1, 0, 0);
   private double xGoalMeters = 0.48;
   private double yGoalMeters = Units.inchesToMeters(-7.375);
@@ -86,7 +86,7 @@ public class AlignReef extends Command {
       else yGoalMeters = Units.inchesToMeters(7.375);
       // if elevator setpoint is at L4, stay a little further back
     } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters) {
-      xGoalMeters = 0.52;
+      xGoalMeters = 0.50;
       if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
       else yGoalMeters = Units.inchesToMeters(7.375);
       // if elevator setpoint is at an algae level, stay a little further out and in the center
@@ -206,8 +206,8 @@ public class AlignReef extends Command {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1.25)
-        && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1.25)
+    return Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1)
+        && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1)
         && Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees) < 3;
   }
 

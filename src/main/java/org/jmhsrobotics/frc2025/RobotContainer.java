@@ -50,6 +50,7 @@ import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
+import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeCoralAuto;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
@@ -573,6 +574,10 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
+
+    NamedCommands.registerCommand("Stop Drivetrain", Commands.runOnce(() -> drive.stop(), drive));
+
+    NamedCommands.registerCommand("Drive Backwards", new DriveBackwards(drive));
   }
 
   public Command getToggleBrakeCommand() {

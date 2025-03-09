@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Rotation Test Auto.0"
+            "name": "Intake Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Fix Coral Placement"
           }
         }
       ]

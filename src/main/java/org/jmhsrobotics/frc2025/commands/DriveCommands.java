@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.jmhsrobotics.frc2025.Constants;
-import org.jmhsrobotics.frc2025.Robot;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
@@ -148,7 +147,6 @@ public class DriveCommands {
             xController.setSetpoint(xGoalMeters);
             yController.setSetpoint(yGoalMeters);
           }
-
           // initializing the lock target speeds outside if statement so they are accessable to add
           // onto the joystick drive
           var pidout = new ChassisSpeeds();
@@ -201,7 +199,10 @@ public class DriveCommands {
               // drive.stop();
             }
           }
-          double invert = Robot.isSimulation() ? -1.0 : 1;
+          boolean isFlipped =
+              DriverStation.getAlliance().isPresent()
+                  && DriverStation.getAlliance().get() == Alliance.Red;
+          double invert = -1;
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =
               new ChassisSpeeds(
@@ -212,9 +213,7 @@ public class DriveCommands {
                           - pidout.vyMetersPerSecond)
                       * invert,
                   omega * drive.getMaxAngularSpeedRadPerSec() + pidout.omegaRadiansPerSecond);
-          boolean isFlipped =
-              DriverStation.getAlliance().isPresent()
-                  && DriverStation.getAlliance().get() == Alliance.Red;
+
           speeds =
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   speeds,

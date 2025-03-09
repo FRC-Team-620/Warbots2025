@@ -24,6 +24,7 @@ public class IntakeFromIndexer extends Command {
     intake.set(0);
     wrist.setSetpoint(Constants.WristConstants.kRotationIntakeCoralDegrees);
     timer.reset();
+    System.out.println("Starting Intake from indexer");
   }
 
   @Override
@@ -39,6 +40,6 @@ public class IntakeFromIndexer extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.set(0);
-    System.out.println("Intake From Indexer Complete");
+    System.out.println("Intake From Indexer Complete: " + interrupted);
   }
 }

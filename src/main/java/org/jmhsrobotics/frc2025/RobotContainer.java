@@ -18,6 +18,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.RobotController;
@@ -257,18 +259,27 @@ public class RobotContainer {
             drive,
             vision,
             elevator,
-            () -> control.translationY(),
-            () -> control.translationX(),
+            () -> -control.translationY(),
+            () -> -control.translationX(),
             () -> -control.rotation(),
             () -> control.alignLeft(),
             () -> control.alignRight()));
 
     // Reset gyro to 0° when right bumper is pressed
+
     control
         .resetForward()
         .onTrue(
             Commands.runOnce(
-                () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+                () -> {
+                  boolean isRed =
+                      DriverStation.getAlliance().isPresent()
+                          && DriverStation.getAlliance().get() == Alliance.Red;
+                  drive.setPose(
+                      new Pose2d(
+                          drive.getPose().getTranslation(),
+                          Rotation2d.fromDegrees(isRed ? 180 : 0)));
+                },
                 drive));
 
     // control.alignDriveMode().onTrue(Commands.runOnce(() -> drive.changeMaxSpeedMetersPerSec()));
@@ -383,7 +394,6 @@ public class RobotContainer {
                 intake,
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
-
     control
         .intakeCoralFromIndexer()
         .onTrue(
@@ -468,13 +478,16 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, led, 0.5));
     SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, led, -0.5));
     SmartDashboard.putData(
-        "cmd/Align Reef Left", new AlignReef(drive, vision, led, elevator, true));
+        "cmd/Align Reef Left", new AlignReef(drive, vision, led, elevator, true).withTimeout(5));
     SmartDashboard.putData(
-        "cmd/Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
+        "cmd/Align Reef Right", new AlignReef(drive, vision, led, elevator, false).withTimeout(5));
+    SmartDashboard.putData("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
+
+    SmartDashboard.putData("Scheduler2", CommandScheduler.getInstance());
   }
 
   private void configurePathPlanner() {
-    // Elevator and Wrist Commands
+    // Elevator and Wrist Command
     NamedCommands.registerCommand(
         "Elevator And Wrist L4",
         new ElevatorAndWristMove(
@@ -507,16 +520,58 @@ public class RobotContainer {
             intake,
             Constants.ElevatorConstants.kCoralIntakeMeters,
             Constants.WristConstants.kSafeAngleDegrees));
+    NamedCommands.registerCommand(
+        "Reset Odometry For Auto Align",
+        Commands.runOnce(
+            () ->
+                drive.setPose(
+                    new Pose2d(
+                        drive.getPose().getTranslation(),
+                        Rotation2d.fromDegrees(drive.getRotation().getDegrees() + 180)))));
 
+    NamedCommands.registerCommand(
+        "Reset Odometry For Path",
+        Commands.runOnce(
+            () ->
+                drive.setPose(
+                    new Pose2d(
+                        drive.getPose().getTranslation(),
+                        Rotation2d.fromDegrees(drive.getRotation().getDegrees() + 180)))));
     // Intake Commands
     // TODO: Intake Coral command needs to be updated once updated intake control is merged to
     // master to also run the fix coral placement command
+
+    // timeouts needed for simulation since they will never end without simulated game piece pickup
+    if (Robot.isSimulation()) {
+      NamedCommands.registerCommand(
+          "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led).withTimeout(3));
+      //   NamedCommands.registerCommand(
+      //       "Intake Coral",
+      //       new SequentialCommandGroup(
+      //           new ElevatorAndWristMove(
+      //               elevator,
+      //               wrist,
+      //               intake,
+      //               Constants.ElevatorConstants.kCoralIntakeMeters,
+      //               Constants.WristConstants.kSafeAngleDegrees),
+      //           new IntakeFromIndexer(wrist, intake).withTimeout(3)));
+
+      NamedCommands.registerCommand(
+          "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(2));
+    } else {
+      NamedCommands.registerCommand(
+          "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led));
+
+      NamedCommands.registerCommand("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
+    }
+
+    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(1));
+
     NamedCommands.registerCommand(
-        "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led));
+        "Align Reef Left", new AlignReef(drive, vision, led, elevator, true));
 
-    NamedCommands.registerCommand("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
-
-    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(1.5));
+    NamedCommands.registerCommand(
+        "Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
   }
 
   public Command getToggleBrakeCommand() {

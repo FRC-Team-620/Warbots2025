@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Rotation Test Auto.0"
+            "pathName": "New Path.0"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Test Autos",
+  "folder": null,
   "choreoAuto": true
 }

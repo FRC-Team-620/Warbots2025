@@ -27,7 +27,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Elevator And Wrist L3"
+                        "name": "Elevator And Wrist L4"
                       }
                     }
                   ]
@@ -52,6 +52,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Mid Start",
   "choreoAuto": true
 }

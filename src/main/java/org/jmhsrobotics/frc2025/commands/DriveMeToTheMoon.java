@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.DoubleSupplier;
 import org.jmhsrobotics.frc2025.Constants;
-import org.jmhsrobotics.frc2025.Robot;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
@@ -73,7 +72,7 @@ public class DriveMeToTheMoon extends Command {
     else alignLeft = true;
     if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
     else yGoalMeters = Units.inchesToMeters(7.375);
-    xGoalMeters = 0.52;
+    xGoalMeters = 0.50;
     xController.reset();
     yController.reset();
     thetaController.reset();
@@ -121,11 +120,11 @@ public class DriveMeToTheMoon extends Command {
       if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel1Meters
           || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
           || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) {
-        xGoalMeters = 0.45;
+        xGoalMeters = 0.43;
         if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
         else yGoalMeters = Units.inchesToMeters(7.375);
       } else {
-        xGoalMeters = 0.52;
+        xGoalMeters = 0.50;
         if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
         else yGoalMeters = Units.inchesToMeters(7.375);
       }
@@ -196,8 +195,12 @@ public class DriveMeToTheMoon extends Command {
 
     if (rightTriggerValue.getAsDouble() < 0.5 && leftTriggerValue.getAsDouble() < 0.5)
       lastTagPose = null;
+    boolean isFlipped =
+        DriverStation.getAlliance().isPresent()
+            && DriverStation.getAlliance().get() == Alliance.Red;
 
-    double invert = Robot.isSimulation() ? -1.0 : 1;
+    double invert = isFlipped ? -1.0 : 1;
+    invert = 1;
     // Convert to field relative speeds & send command
     ChassisSpeeds speeds =
         new ChassisSpeeds(
@@ -206,9 +209,7 @@ public class DriveMeToTheMoon extends Command {
             (MathUtil.clamp(linearVelocity.getY(), -1, 1) * drive.getMaxLinearSpeedMetersPerSec())
                 * invert,
             (MathUtil.clamp(omega, -1, 1) * drive.getMaxAngularSpeedRadPerSec()));
-    boolean isFlipped =
-        DriverStation.getAlliance().isPresent()
-            && DriverStation.getAlliance().get() == Alliance.Red;
+
     speeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
             speeds,
@@ -227,7 +228,10 @@ public class DriveMeToTheMoon extends Command {
     } else {
       drive.setAutoAlignComplete(false);
     }
-
+    Logger.recordOutput("X speed", speeds.vxMetersPerSecond);
+    Logger.recordOutput("Y Speed", speeds.vyMetersPerSecond);
+    Logger.recordOutput("Align/Target Tag ID: ", AlignReef.calculateGoalTargetID(thetaGoalDegrees));
+    Logger.recordOutput("Align/Drive Angle: ", drive.getPose().getRotation().getDegrees());
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
   }
 

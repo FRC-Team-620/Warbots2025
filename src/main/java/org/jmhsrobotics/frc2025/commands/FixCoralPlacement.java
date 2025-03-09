@@ -10,7 +10,6 @@ import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 public class FixCoralPlacement extends Command {
   private Intake intake;
   private Wrist wrist;
-  // private Timer timer = new Timer();
 
   private boolean hasPassedSensor = false;
 
@@ -26,6 +25,7 @@ public class FixCoralPlacement extends Command {
 
   @Override
   public void initialize() {
+    System.out.println("=====Starting to fix coral placement");
     this.hasPassedSensor = false;
     this.coralInIntake = true;
     intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed * 0.9);
@@ -50,7 +50,13 @@ public class FixCoralPlacement extends Command {
   }
 
   @Override
+  public InterruptionBehavior getInterruptionBehavior() {
+    return InterruptionBehavior.kCancelIncoming;
+  }
+
+  @Override
   public void end(boolean interrupted) {
     intake.set(0);
+    System.out.println("Starting Intake from indexer");
   }
 }

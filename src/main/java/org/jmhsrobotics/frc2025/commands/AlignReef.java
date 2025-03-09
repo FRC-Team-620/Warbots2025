@@ -105,18 +105,24 @@ public class AlignReef extends Command {
               thetaGoalDegrees)) { // TODO: janky only work for one tag for now
         tag = target.pose();
       }
+
+      int targetID = AlignReef.calculateGoalTargetID(thetaGoalDegrees);
       Logger.recordOutput("Align/April Tag Pose3d", tag);
-      Logger.recordOutput("Align/April Tag X", tag.getX());
-      Logger.recordOutput("Align/April Tag Y", tag.getY());
+      Logger.recordOutput(
+          "Align/Target Tag ID: ", AlignReef.calculateGoalTargetID(thetaGoalDegrees));
+      Logger.recordOutput("Align/Drive Angle: ", drive.getPose().getRotation().getDegrees());
+      // Logger.recordOutput("Align/April Tag X", tag.getX());
+      // Logger.recordOutput("Align/April Tag Y", tag.getY());
     }
-    // if(tag == null) { // Janky way to use second camera :todo enable after basic testing
-    //   for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
-    //     if (target.id()
-    //         == targetTag) { // TODO: janky only work for one tag for now
-    //       tag = target.pose();
-    //     }
-    //   }
-    // }
+    if (tag == null) { // Janky way to use second camera :todo enable after basic testing
+      for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
+        if (target.id()
+            == AlignReef.calculateGoalTargetID(
+                thetaGoalDegrees)) { // TODO: janky only work for one tag for now
+          tag = target.pose();
+        }
+      }
+    }
     System.out.println(tag);
     if (tag == null && lastTagPose != null) {
       Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
@@ -146,6 +152,9 @@ public class AlignReef extends Command {
       // drive.stop();
     }
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
+    if (tag == null && lastTagPose == null) {
+      drive.runVelocity(new ChassisSpeeds(0.2, 0, 0));
+    }
   }
 
   /**
@@ -171,6 +180,10 @@ public class AlignReef extends Command {
    * @return April tag ID
    */
   public static int calculateGoalTargetID(double angle_deg) {
+    // red side tags
+    // back - 10
+    // front 7
+    // blue side tags
     // if current alliance is blue, use the following april tags
     // default team is blue
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
@@ -182,11 +195,12 @@ public class AlignReef extends Command {
       else return 20;
     }
     // if current alliance is red, use the following april tags
-    if (angle_deg == 0) return 7;
-    else if (angle_deg == 60) return 8;
-    else if (angle_deg == 120) return 9;
-    else if (angle_deg == 180) return 10;
-    else if (angle_deg == -60) return 6;
+    int invert = 180;
+    if (angle_deg == 0 + invert) return 7;
+    else if (angle_deg == -120) return 8;
+    else if (angle_deg == 0) return 10;
+    else if (angle_deg == 120) return 6;
+    else if (angle_deg == -60) return 9;
     else return 11;
   }
 
@@ -195,5 +209,10 @@ public class AlignReef extends Command {
     return Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1.25)
         && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1.25)
         && Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees) < 3;
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    drive.stop();
   }
 }

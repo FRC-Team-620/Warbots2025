@@ -48,12 +48,6 @@
                       "data": {
                         "name": "Elevator And Wrist Coral Intake"
                       }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake Coral"
-                      }
                     }
                   ]
                 }
@@ -75,6 +69,25 @@
                       }
                     }
                   ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Drive Backwards"
                 }
               }
             ]
@@ -137,12 +150,6 @@
                       "data": {
                         "name": "Elevator And Wrist Coral Intake"
                       }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake Coral"
-                      }
                     }
                   ]
                 }
@@ -164,6 +171,25 @@
                       }
                     }
                   ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Drive Backwards"
                 }
               }
             ]

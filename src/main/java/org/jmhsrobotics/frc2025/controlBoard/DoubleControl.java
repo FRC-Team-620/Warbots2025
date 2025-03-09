@@ -25,22 +25,19 @@ public class DoubleControl implements ControlBoard {
         new InstantCommand(
                 () -> {
                   Logger.recordOutput("ctlMode", "coral");
-                },
-                intake)
+                })
             .ignoringDisable(true));
     algaeMode.whileTrue(
         new InstantCommand(
                 () -> {
                   Logger.recordOutput("ctlMode", "algae");
-                },
-                intake)
+                })
             .ignoringDisable(true));
     searchMode.whileTrue(
         new InstantCommand(
                 () -> {
                   Logger.recordOutput("ctlMode", "search");
-                },
-                intake)
+                })
             .ignoringDisable(true));
   }
 

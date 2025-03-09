@@ -40,12 +40,6 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "3 Coral AA Top.2"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
@@ -59,6 +53,25 @@
                       "type": "named",
                       "data": {
                         "name": "Intake Coral"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "3 Coral AA Top.2"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Stop Drivetrain"
                       }
                     }
                   ]

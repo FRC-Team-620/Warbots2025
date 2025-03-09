@@ -572,6 +572,8 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
+
+    NamedCommands.registerCommand("Stop Drivetrain", Commands.runOnce(() -> drive.stop(), drive));
   }
 
   public Command getToggleBrakeCommand() {

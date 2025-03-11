@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2025.commands;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
@@ -12,6 +13,7 @@ public class FixCoralPlacement extends Command {
   private Wrist wrist;
 
   private boolean hasPassedSensor = false;
+  private Timer timer = new Timer();
 
   private Debouncer debouncer = new Debouncer(0.15, DebounceType.kRising);
   private boolean coralInIntake;
@@ -25,9 +27,13 @@ public class FixCoralPlacement extends Command {
 
   @Override
   public void initialize() {
-    System.out.println("=====Starting to fix coral placement");
+    this.timer.reset();
     this.hasPassedSensor = false;
     this.coralInIntake = true;
+
+    // tells intake that command is running which keeps it in coral mode without coral in front of
+    // sensor
+    intake.setFixIntakeCommandStatus(true);
     intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed * 0.9);
   }
 
@@ -38,6 +44,7 @@ public class FixCoralPlacement extends Command {
       intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed * 0.75);
     } else {
       hasPassedSensor = true;
+      timer.start();
       wrist.setSetpoint(Constants.WristConstants.kSafeAngleDegrees);
       intake.set(-Constants.IntakeConstants.kCoralDefaultCommandSpeed);
     }
@@ -46,16 +53,18 @@ public class FixCoralPlacement extends Command {
   @Override
   public boolean isFinished() {
     // once coral comes back in from of sensor after passing
-    return hasPassedSensor && coralInIntake;
+    // TODO: make the threshold for the time cancel accurate
+    return (hasPassedSensor && coralInIntake) || timer.hasElapsed(3);
   }
 
-  @Override
-  public InterruptionBehavior getInterruptionBehavior() {
-    return InterruptionBehavior.kCancelIncoming;
-  }
+  // @Override
+  // public InterruptionBehavior getInterruptionBehavior() {
+  //   return InterruptionBehavior.kCancelIncoming;
+  // }
 
   @Override
   public void end(boolean interrupted) {
+    intake.setFixIntakeCommandStatus(false);
     intake.set(0);
     System.out.println("Starting Intake from indexer");
   }

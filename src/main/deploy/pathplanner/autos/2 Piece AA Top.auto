@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 Coral AA Top.0"
+            "pathName": "3 Coral AA Top.0"
           }
         },
         {
@@ -40,12 +40,6 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "2 Coral AA Top.2"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
@@ -60,11 +54,24 @@
                       "data": {
                         "name": "Intake Coral"
                       }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "3 Coral AA Top.2"
+                      }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Fix Coral Placement"
+                        "name": "Stop Drivetrain"
                       }
                     }
                   ]
@@ -80,7 +87,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "2 Coral AA Top.3"
+                  "pathName": "3 Coral AA Top.3"
                 }
               },
               {

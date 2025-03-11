@@ -23,6 +23,7 @@ public class Intake extends SubsystemBase {
 
   private boolean coralInIntake = false;
   private boolean algaeInIntake = false;
+  private boolean fixCoralPlacementRunning = false;
 
   public Intake(IntakeIO intakeIO, TimeOfFLightIO timeOfFLightIO) {
     this.intakeIO = intakeIO;
@@ -61,7 +62,7 @@ public class Intake extends SubsystemBase {
     if (override) {
       return mode;
     }
-    if (coralInIntake) {
+    if (coralInIntake || this.fixCoralPlacementRunning) {
       this.mode = 3;
       return this.mode;
     } else if (algaeInIntake) {
@@ -148,8 +149,13 @@ public class Intake extends SubsystemBase {
     return sensorInputs.algaeMeasurementIsValid && sensorInputs.algaeAmbientLight < 200;
   }
 
+  /**
+   * Returns boolean representing if control mode is currently overridden
+   *
+   * @return
+   */
   public boolean isControlModeOverridden() {
-    return override;
+    return this.override;
   }
 
   /**
@@ -174,5 +180,9 @@ public class Intake extends SubsystemBase {
     return algaeDebouncer.calculate(
         sensorInputs.algaeDistance <= Constants.IntakeConstants.kAlgaeInIntakeDistanceMm
             && this.isAlgaeMeasureValid());
+  }
+
+  public void setFixIntakeCommandStatus(boolean isRunning) {
+    this.fixCoralPlacementRunning = isRunning;
   }
 }

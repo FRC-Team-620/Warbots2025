@@ -58,7 +58,6 @@ public class VortexElevatorIO implements ElevatorIO {
         Constants.ElevatorConstants.kD,
         Constants.ElevatorConstants.kF);
 
-    
     vortexRightConfig = new SparkFlexConfig();
     vortexRightConfig
         .idleMode(IdleMode.kBrake)

@@ -123,17 +123,16 @@ public class DriveMeToTheMoon extends Command {
    * @return ChassisSpeed Object
    */
   private ChassisSpeeds calculateAutoAlignTranslationSpeeds() {
+    // Does all calculations only if triggers are pressed
     if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
-      double xGoalMeters = this.getXSetpoint();
-      double yGoalMeters = this.getYSetpoint();
-      // System.out.println("X Setpoint: " + xSetpoint + " | Y Setpoint: " + ySetpoint);
+      // calculate and update PID loop setpoints relative to tag based on robot state
+      xGoalMeters = this.getXSetpoint();
+      yGoalMeters = this.getYSetpoint();
       xController.setSetpoint(xGoalMeters);
       yController.setSetpoint(yGoalMeters);
 
-      double xdist = 0;
-      double ydist = 0;
-
       Pose3d tag = null; // TODO: handle seeing more than one reef tag
+      // Looks through each cameras inputs and gets the tag position if it matches the target ID
       for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
         // if(target.id() )
         if (target.id()
@@ -152,20 +151,23 @@ public class DriveMeToTheMoon extends Command {
           }
         }
       }
-      double xOutput = 0.0;
-      double yOutput = 0.0;
+
+      double xOutput, yOutput, xdist, ydist = 0.0;
+      // calculates the estimated tag position if a tag is not seen, but it was seen previously
+      // allowing for smooth control
       if (tag == null && lastTagPose != null) {
         Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
         tag = new Pose3d(transform.getTranslation(), transform.getRotation());
       }
       Logger.recordOutput("testpos", tag);
+
+      // if there is a tag position, calculates the PID outputs
       if (tag != null) {
         lastTagPose =
             new Pose3d(drive.getPose())
                 .plus(new Transform3d(tag.getTranslation(), tag.getRotation()));
         xdist = tag.getX();
         ydist = tag.getY();
-        System.out.println("X Distance: " + xdist + " | Y Distance: " + ydist);
         xOutput = -xController.calculate(xdist);
         yOutput = -yController.calculate(ydist);
 
@@ -175,6 +177,8 @@ public class DriveMeToTheMoon extends Command {
                 yOutput * drive.getMaxLinearSpeedMetersPerSec(),
                 0);
 
+        // updates the status for auto align being complete in the drive subsystem - needed for LED
+        // feedback
         drive.setAutoAlignComplete(
             Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1.25)
                 && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1.25)
@@ -182,10 +186,11 @@ public class DriveMeToTheMoon extends Command {
 
         return translationSpeeds;
       } else {
-        drive.setAutoAlignComplete(false);
         // drive.stop();
       }
     }
+    // sets last tag position to null, auto align completion to false, and returns an empty chassis
+    // speeds object if auto align is not being attempted
     drive.setAutoAlignComplete(false);
     this.lastTagPose = null;
     return new ChassisSpeeds();

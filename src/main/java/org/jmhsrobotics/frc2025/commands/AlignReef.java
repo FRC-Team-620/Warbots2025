@@ -111,8 +111,6 @@ public class AlignReef extends Command {
       Logger.recordOutput(
           "Align/Target Tag ID: ", AlignReef.calculateGoalTargetID(thetaGoalDegrees));
       Logger.recordOutput("Align/Drive Angle: ", drive.getPose().getRotation().getDegrees());
-      // Logger.recordOutput("Align/April Tag X", tag.getX());
-      // Logger.recordOutput("Align/April Tag Y", tag.getY());
     }
     if (tag == null) { // Janky way to use second camera :todo enable after basic testing
       for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera

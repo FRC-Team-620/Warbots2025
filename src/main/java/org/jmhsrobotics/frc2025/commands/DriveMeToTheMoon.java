@@ -28,12 +28,10 @@ public class DriveMeToTheMoon extends Command {
   private final PIDController thetaController = new PIDController(0.1, 0, 0);
   private double xGoalMeters = 0.48;
   private double yGoalMeters = Units.inchesToMeters(-7.375);
-  private double thetaGoalDegrees = 0; // Janky only work for one angle now
+  private double thetaGoalDegrees = 0;
 
   private Pose3d lastTagPose = null;
 
-  private double xdist = 0;
-  private double ydist = 0;
   private static final double DEADBAND = 0.05;
 
   private DoubleSupplier xSupplier, ySupplier, omegaSupplier, leftTriggerValue, rightTriggerValue;
@@ -126,9 +124,14 @@ public class DriveMeToTheMoon extends Command {
    */
   private ChassisSpeeds calculateAutoAlignTranslationSpeeds() {
     if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
-      ChassisSpeeds translationSpeeds = new ChassisSpeeds();
-      xController.setSetpoint(this.getXSetpoint());
-      yController.setSetpoint(this.getYSetpoint());
+      double xGoalMeters = this.getXSetpoint();
+      double yGoalMeters = this.getYSetpoint();
+      // System.out.println("X Setpoint: " + xSetpoint + " | Y Setpoint: " + ySetpoint);
+      xController.setSetpoint(xGoalMeters);
+      yController.setSetpoint(yGoalMeters);
+
+      double xdist = 0;
+      double ydist = 0;
 
       Pose3d tag = null; // TODO: handle seeing more than one reef tag
       for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
@@ -149,27 +152,27 @@ public class DriveMeToTheMoon extends Command {
           }
         }
       }
-      double x = 0.0;
-      double y = 0.0;
+      double xOutput = 0.0;
+      double yOutput = 0.0;
       if (tag == null && lastTagPose != null) {
         Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
         tag = new Pose3d(transform.getTranslation(), transform.getRotation());
       }
       Logger.recordOutput("testpos", tag);
-      if (tag != null
-          && (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5)) {
+      if (tag != null) {
         lastTagPose =
             new Pose3d(drive.getPose())
                 .plus(new Transform3d(tag.getTranslation(), tag.getRotation()));
         xdist = tag.getX();
         ydist = tag.getY();
-        x = -xController.calculate(xdist);
-        y = -yController.calculate(ydist);
+        System.out.println("X Distance: " + xdist + " | Y Distance: " + ydist);
+        xOutput = -xController.calculate(xdist);
+        yOutput = -yController.calculate(ydist);
 
-        translationSpeeds =
+        ChassisSpeeds translationSpeeds =
             new ChassisSpeeds(
-                x * drive.getMaxLinearSpeedMetersPerSec(),
-                y * drive.getMaxLinearSpeedMetersPerSec(),
+                xOutput * drive.getMaxLinearSpeedMetersPerSec(),
+                yOutput * drive.getMaxLinearSpeedMetersPerSec(),
                 0);
 
         drive.setAutoAlignComplete(
@@ -183,6 +186,7 @@ public class DriveMeToTheMoon extends Command {
         // drive.stop();
       }
     }
+    drive.setAutoAlignComplete(false);
     this.lastTagPose = null;
     return new ChassisSpeeds();
   }
@@ -244,8 +248,9 @@ public class DriveMeToTheMoon extends Command {
         || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) return 0;
     else {
       // positive for right side of april tag, negative for left side
-      if (rightTriggerValue.getAsDouble() >= rightTriggerValue.getAsDouble()) return 7.375;
-      return -7.375;
+      if (rightTriggerValue.getAsDouble() >= leftTriggerValue.getAsDouble())
+        return Units.inchesToMeters(7.375);
+      return Units.inchesToMeters(-7.375);
     }
   }
 }

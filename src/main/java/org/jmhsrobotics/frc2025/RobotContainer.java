@@ -284,8 +284,6 @@ public class RobotContainer {
                 },
                 drive));
 
-    // control.alignDriveMode().onTrue(Commands.runOnce(() -> drive.changeMaxSpeedMetersPerSec()));
-
     control
         .placeCoralLevel1()
         .onTrue(

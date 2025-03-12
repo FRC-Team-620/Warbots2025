@@ -63,6 +63,9 @@ public class Elevator extends SubsystemBase {
 
   public double getCurrentAmps() {
     double totalAmps = 0;
+    if (inputs.motorAmps == null) {
+      return 0;
+    }
     for (int i = 0; i < inputs.motorAmps.length; i++) {
       totalAmps += inputs.motorAmps[i];
     }

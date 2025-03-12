@@ -55,7 +55,7 @@ public class ElevatorAndWristMove extends SequentialCommandGroup {
                                 == Constants.ElevatorConstants.kAlgaeIntakeL3Meters)
                         && elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters),
 
-        // runs both parallel for fastest speed if extraneous conditions are not met
+        // base case: runs both parallel for fastest speed if extraneous conditions are not met
         new ParallelCommandGroup(
             new WristMoveTo(wrist, wristGoalDegrees),
             new ElevatorMoveTo(elevator, elevatorGoalMeters)));

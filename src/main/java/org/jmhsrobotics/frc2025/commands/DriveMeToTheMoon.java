@@ -30,9 +30,6 @@ public class DriveMeToTheMoon extends Command {
   private double yGoalMeters = Units.inchesToMeters(-7.375);
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
 
-  private double initialDistance = 2;
-  private double currentDistance = 2;
-
   private Pose3d lastTagPose = null;
 
   private double xdist = 0;
@@ -40,8 +37,8 @@ public class DriveMeToTheMoon extends Command {
   private static final double DEADBAND = 0.05;
 
   private DoubleSupplier xSupplier, ySupplier, omegaSupplier, leftTriggerValue, rightTriggerValue;
+
   // boolean for if bot should align left or right
-  private boolean alignLeft = true;
 
   public DriveMeToTheMoon(
       Drive drive,
@@ -67,36 +64,19 @@ public class DriveMeToTheMoon extends Command {
 
   @Override
   public void initialize() {
-    // Default setpoint: L4 left side(i think)
-    if (rightTriggerValue.getAsDouble() > leftTriggerValue.getAsDouble()) alignLeft = false;
-    else alignLeft = true;
-    if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
-    else yGoalMeters = Units.inchesToMeters(7.375);
-    xGoalMeters = 0.50;
     xController.reset();
     yController.reset();
     thetaController.reset();
 
-    xController.setSetpoint(xGoalMeters);
-    yController.setSetpoint(yGoalMeters);
     double driveAngle = drive.getRotation().getDegrees();
     this.thetaGoalDegrees = AlignReef.calculateGoalAngle(driveAngle);
 
-    thetaController.setSetpoint(thetaGoalDegrees);
     thetaController.enableContinuousInput(-180, 180);
     drive.stop();
-    // this.led.setPattern(progressPattern);
   }
 
   @Override
   public void execute() {
-    // change setpoints if elevator setpoints have changed
-    // if elevator septoint is for L2 or L3
-    this.thetaGoalDegrees = AlignReef.calculateGoalAngle(drive.getRotation().getDegrees());
-
-    if (rightTriggerValue.getAsDouble() > leftTriggerValue.getAsDouble()) alignLeft = false;
-    else alignLeft = true;
-
     Translation2d linearVelocity =
         DriveCommands.getLinearVelocityFromJoysticks(
             Math.copySign(
@@ -110,104 +90,15 @@ public class DriveMeToTheMoon extends Command {
     // Square rotation value for more precise control
     omega = Math.copySign(omega * omega, omega);
 
-    // determines where on the side of the reef to lineup based on if it should be on the left side
-    // and the elevator setpoint
-    if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
-        || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) {
-      xGoalMeters = 0.7;
-      yGoalMeters = 0;
-    } else {
-      if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel1Meters
-          || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
-          || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) {
-        xGoalMeters = 0.43;
-        if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
-        else yGoalMeters = Units.inchesToMeters(7.375);
-      } else {
-        xGoalMeters = 0.50;
-        if (alignLeft) yGoalMeters = Units.inchesToMeters(-7.375);
-        else yGoalMeters = Units.inchesToMeters(7.375);
-      }
-    }
-
-    xController.setSetpoint(xGoalMeters);
-    yController.setSetpoint(yGoalMeters);
-    thetaController.setSetpoint(thetaGoalDegrees);
-
-    // angle lock should work regardless of vision working
-    ChassisSpeeds thetaSpeeds = new ChassisSpeeds();
-    if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
-      thetaSpeeds =
-          thetaSpeeds.plus(
-              new ChassisSpeeds(
-                  0,
-                  0,
-                  thetaController.calculate(drive.getPose().getRotation().getDegrees()) * 0.5));
-    }
-
-    Pose3d tag = null; // TODO: handle seeing more than one reef tag
-    for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
-      // if(target.id() )
-      if (target.id()
-          == AlignReef.calculateGoalTargetID(
-              thetaGoalDegrees)) { // TODO: janky only work for one tag for now
-        tag = target.pose();
-      }
-    }
-
-    if (tag == null) { // Janky way to use second camera :todo enable after basic testing
-      for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
-        if (target.id()
-            == AlignReef.calculateGoalTargetID(
-                thetaGoalDegrees)) { // TODO: janky only work for one tag for now
-          tag = target.pose();
-        }
-      }
-    }
-    var x = 0.0;
-    var y = 0.0;
-    var speed = new ChassisSpeeds();
-    // System.out.println(tag);
-    if (tag == null && lastTagPose != null) {
-      Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
-      tag = new Pose3d(transform.getTranslation(), transform.getRotation());
-    }
-    Logger.recordOutput("testpos", tag);
-    if (tag != null
-        && (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5)) {
-      lastTagPose =
-          new Pose3d(drive.getPose())
-              .plus(new Transform3d(tag.getTranslation(), tag.getRotation()));
-      xdist = tag.getX();
-      ydist = tag.getY();
-      currentDistance = Math.sqrt(xdist * xdist + ydist * ydist);
-      x = -xController.calculate(xdist);
-      y = -yController.calculate(ydist);
-
-      speed =
-          new ChassisSpeeds(
-              x * drive.getMaxLinearSpeedMetersPerSec(),
-              y * drive.getMaxLinearSpeedMetersPerSec(),
-              0);
-    } else {
-      // drive.stop();
-    }
-
-    if (rightTriggerValue.getAsDouble() < 0.5 && leftTriggerValue.getAsDouble() < 0.5)
-      lastTagPose = null;
     boolean isFlipped =
         DriverStation.getAlliance().isPresent()
             && DriverStation.getAlliance().get() == Alliance.Red;
 
-    double invert = isFlipped ? -1.0 : 1;
-    invert = 1;
     // Convert to field relative speeds & send command
     ChassisSpeeds speeds =
         new ChassisSpeeds(
-            (MathUtil.clamp(linearVelocity.getX(), -1, 1) * drive.getMaxLinearSpeedMetersPerSec())
-                * invert,
-            (MathUtil.clamp(linearVelocity.getY(), -1, 1) * drive.getMaxLinearSpeedMetersPerSec())
-                * invert,
+            (MathUtil.clamp(linearVelocity.getX(), -1, 1) * drive.getMaxLinearSpeedMetersPerSec()),
+            (MathUtil.clamp(linearVelocity.getY(), -1, 1) * drive.getMaxLinearSpeedMetersPerSec()),
             (MathUtil.clamp(omega, -1, 1) * drive.getMaxAngularSpeedRadPerSec()));
 
     speeds =
@@ -216,18 +107,10 @@ public class DriveMeToTheMoon extends Command {
             isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation());
 
     // TODO: prevent speed from surpassing maximum
-    speeds = speeds.plus(speed);
-    speeds = speeds.plus(thetaSpeeds);
+    speeds = speeds.plus(calculateAutoAlignThetaSpeeds());
+    speeds = speeds.plus(calculateAutoAlignTranslationSpeeds());
     drive.runVelocity(speeds);
 
-    if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
-      drive.setAutoAlignComplete(
-          Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1)
-              && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1)
-              && Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees) < 3);
-    } else {
-      drive.setAutoAlignComplete(false);
-    }
     Logger.recordOutput("X speed", speeds.vxMetersPerSecond);
     Logger.recordOutput("Y Speed", speeds.vyMetersPerSecond);
     Logger.recordOutput("Align/Target Tag ID: ", AlignReef.calculateGoalTargetID(thetaGoalDegrees));
@@ -235,39 +118,134 @@ public class DriveMeToTheMoon extends Command {
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
   }
 
-  public static double calculateGoalAngle(double driveAngle) {
-    // double driveAngle = drive.getRotation().getDegrees();
-    if (Math.abs(driveAngle) <= 30) return 0;
-    else if (Math.abs(driveAngle) >= 150) return 180;
-    else if (driveAngle >= 30 && driveAngle <= 90) return 60;
-    else if (driveAngle >= 60) return 120;
-    else if (driveAngle <= -30 && driveAngle >= -90) return -60;
-    else return -120;
+  /**
+   * Calculates and returns a chassis speed with the translation output needed to auto align with a
+   * part of the field
+   *
+   * @return ChassisSpeed Object
+   */
+  private ChassisSpeeds calculateAutoAlignTranslationSpeeds() {
+    if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
+      ChassisSpeeds translationSpeeds = new ChassisSpeeds();
+      xController.setSetpoint(this.getXSetpoint());
+      yController.setSetpoint(this.getYSetpoint());
+
+      Pose3d tag = null; // TODO: handle seeing more than one reef tag
+      for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
+        // if(target.id() )
+        if (target.id()
+            == AlignReef.calculateGoalTargetID(
+                thetaGoalDegrees)) { // TODO: janky only work for one tag for now
+          tag = target.pose();
+        }
+      }
+
+      if (tag == null) { // Janky way to use second camera :todo enable after basic testing
+        for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
+          if (target.id()
+              == AlignReef.calculateGoalTargetID(
+                  thetaGoalDegrees)) { // TODO: janky only work for one tag for now
+            tag = target.pose();
+          }
+        }
+      }
+      double x = 0.0;
+      double y = 0.0;
+      if (tag == null && lastTagPose != null) {
+        Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
+        tag = new Pose3d(transform.getTranslation(), transform.getRotation());
+      }
+      Logger.recordOutput("testpos", tag);
+      if (tag != null
+          && (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5)) {
+        lastTagPose =
+            new Pose3d(drive.getPose())
+                .plus(new Transform3d(tag.getTranslation(), tag.getRotation()));
+        xdist = tag.getX();
+        ydist = tag.getY();
+        x = -xController.calculate(xdist);
+        y = -yController.calculate(ydist);
+
+        translationSpeeds =
+            new ChassisSpeeds(
+                x * drive.getMaxLinearSpeedMetersPerSec(),
+                y * drive.getMaxLinearSpeedMetersPerSec(),
+                0);
+
+        drive.setAutoAlignComplete(
+            Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1.25)
+                && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1.25)
+                && Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees) < 3);
+
+        return translationSpeeds;
+      } else {
+        drive.setAutoAlignComplete(false);
+        // drive.stop();
+      }
+    }
+    this.lastTagPose = null;
+    return new ChassisSpeeds();
   }
 
   /**
-   * Determines the target april tag ID based on the goal angle and alliance color. Ignores opposite
-   * team's tags
+   * Calculates and Returns a chassis speed with rotational speed for auto align. This method is
+   * separate from the translation auto align calculation to allow it to work even without an april
+   * tag being seen
    *
-   * @return April tag ID
+   * @return
    */
-  public static int calculateGoalTargetID(double angle_deg) {
-    // if current alliance is blue, use the following april tags
-    // default team is blue
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-      if (angle_deg == 0) return 18;
-      else if (angle_deg == 60) return 17;
-      else if (angle_deg == 120) return 22;
-      else if (angle_deg == 180) return 21;
-      else if (angle_deg == -60) return 19;
-      else return 20;
+  private ChassisSpeeds calculateAutoAlignThetaSpeeds() {
+    if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
+      ChassisSpeeds thetaSpeed = new ChassisSpeeds();
+      this.thetaGoalDegrees = AlignReef.calculateGoalAngle(drive.getRotation().getDegrees());
+
+      thetaController.setSetpoint(thetaGoalDegrees);
+
+      if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
+        thetaSpeed =
+            thetaSpeed.plus(
+                new ChassisSpeeds(
+                    0,
+                    0,
+                    thetaController.calculate(drive.getPose().getRotation().getDegrees()) * 0.5));
+      }
+      return thetaSpeed;
     }
-    // if current alliance is red, use the following april tags
-    if (angle_deg == 0) return 7;
-    else if (angle_deg == 60) return 8;
-    else if (angle_deg == 120) return 9;
-    else if (angle_deg == 180) return 10;
-    else if (angle_deg == -60) return 6;
-    else return 11;
+    return new ChassisSpeeds();
+  }
+
+  /**
+   * Returns the X setpoint for auto align based on elevator setpoint
+   *
+   * @return
+   */
+  private double getXSetpoint() {
+    // Algae Setpoint
+    if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
+        || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) return 0.7;
+    else {
+      // L1, 2, and 3 setpoint
+      if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel1Meters
+          || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
+          || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) return 0.43;
+      // L4 Setpoint
+      return 0.5;
+    }
+  }
+
+  /**
+   * Returns the Y setpoint for auto align based on elevator setpoints and trigger values
+   *
+   * @return
+   */
+  private double getYSetpoint() {
+    // Centered for algae pickup
+    if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
+        || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) return 0;
+    else {
+      // positive for right side of april tag, negative for left side
+      if (rightTriggerValue.getAsDouble() >= rightTriggerValue.getAsDouble()) return 7.375;
+      return -7.375;
+    }
   }
 }

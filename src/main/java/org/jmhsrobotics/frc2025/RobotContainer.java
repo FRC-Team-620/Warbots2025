@@ -567,7 +567,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
     }
 
-    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(1));
+    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(0.25));
 
     NamedCommands.registerCommand(
         "Align Reef Left", new AlignReef(drive, vision, led, elevator, true));

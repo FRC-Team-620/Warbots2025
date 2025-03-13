@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.DoubleSupplier;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
+import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.littletonrobotics.junction.Logger;
@@ -42,6 +43,8 @@ public class DriveMeToTheMoon extends Command {
   private DoubleSupplier xSupplier, ySupplier, omegaSupplier, leftTriggerValue, rightTriggerValue;
   // boolean for if bot should align left or right
   private boolean alignLeft = true;
+  // boolean for turbo mode
+  private boolean turboMode = false;
 
   public DriveMeToTheMoon(
       Drive drive,
@@ -51,7 +54,7 @@ public class DriveMeToTheMoon extends Command {
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
       DoubleSupplier leftTriggerValue,
-      DoubleSupplier rightTriggerValue) {
+      DoubleSupplier rightTriggerValuer) {
     this.drive = drive;
     this.vision = vision;
     this.elevator = elevator;
@@ -97,12 +100,19 @@ public class DriveMeToTheMoon extends Command {
     if (rightTriggerValue.getAsDouble() > leftTriggerValue.getAsDouble()) alignLeft = false;
     else alignLeft = true;
 
+    double xValue, yValue;
+
+    if (drive.getTurboMode()) {
+      xValue = xSupplier.getAsDouble() * DriveConstants.turboCoefficient;
+      yValue = ySupplier.getAsDouble() * DriveConstants.turboCoefficient;
+    } else {
+      xValue = xSupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
+      yValue = ySupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
+    }
+
     Translation2d linearVelocity =
         DriveCommands.getLinearVelocityFromJoysticks(
-            Math.copySign(
-                xSupplier.getAsDouble() * xSupplier.getAsDouble(), xSupplier.getAsDouble()),
-            Math.copySign(
-                ySupplier.getAsDouble() * ySupplier.getAsDouble(), ySupplier.getAsDouble()));
+            Math.copySign(xValue * xValue, xValue), Math.copySign(yValue * yValue, yValue));
 
     // Apply rotation deadband
     double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.6, DEADBAND);

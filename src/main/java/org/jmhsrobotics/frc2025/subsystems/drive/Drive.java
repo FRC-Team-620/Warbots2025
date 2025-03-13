@@ -73,6 +73,7 @@ public class Drive extends SubsystemBase {
 
   private double maxLinearSpeedMetersPerSec = DriveConstants.maxSpeedMetersPerSec;
   private boolean autoAlignComplete = false;
+  private boolean turboMode = false;
 
   public Drive(
       GyroIO gyroIO,
@@ -352,5 +353,13 @@ public class Drive extends SubsystemBase {
 
   public boolean isAutoAlignComplete() {
     return autoAlignComplete;
+  }
+
+  public void setTurboMode(boolean turboMode) {
+    this.turboMode = turboMode;
+  }
+
+  public boolean getTurboMode() {
+    return turboMode;
   }
 }

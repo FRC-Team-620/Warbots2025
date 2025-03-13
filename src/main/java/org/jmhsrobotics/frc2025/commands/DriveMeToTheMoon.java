@@ -43,8 +43,6 @@ public class DriveMeToTheMoon extends Command {
   private DoubleSupplier xSupplier, ySupplier, omegaSupplier, leftTriggerValue, rightTriggerValue;
   // boolean for if bot should align left or right
   private boolean alignLeft = true;
-  // boolean for turbo mode
-  private boolean turboMode = false;
 
   public DriveMeToTheMoon(
       Drive drive,

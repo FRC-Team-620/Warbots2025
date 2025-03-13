@@ -442,7 +442,7 @@ public class RobotContainer {
     control.climberUp().whileTrue(new ClimberMove(climber, led, 0.5));
 
     control.turboMode().onTrue(Commands.runOnce(() -> drive.setTurboMode(true), drive));
-    control.turboMode().onTrue(Commands.runOnce(() -> drive.setTurboMode(false), drive));
+    control.turboMode().onFalse(Commands.runOnce(() -> drive.setTurboMode(false), drive));
   }
 
   private void configureDriverFeedback() {

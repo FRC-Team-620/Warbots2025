@@ -54,7 +54,7 @@ public class DriveMeToTheMoon extends Command {
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
       DoubleSupplier leftTriggerValue,
-      DoubleSupplier rightTriggerValuer) {
+      DoubleSupplier rightTriggerValue) {
     this.drive = drive;
     this.vision = vision;
     this.elevator = elevator;

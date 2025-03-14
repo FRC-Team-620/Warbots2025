@@ -6,7 +6,8 @@ public interface WristIO {
   @AutoLog
   public static class WristIOInputs {
     public double positionDegrees;
-    public double motorRPM;
+    public double wristRPM;
+    public double wristAccelerationRPMPerSec;
     public double motorAmps;
   }
 

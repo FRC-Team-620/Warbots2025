@@ -84,7 +84,7 @@ public final class Constants {
 
   public static class ElevatorConstants {
 
-    //converts motor rotations to elevator height in centimeters
+    // converts motor rotations to elevator height in centimeters
     public static final double conversionFactor = (((1.0 / 3.0) / 12.0) * 100);
 
     public static final double kLevel1Meters = 5.0;
@@ -100,7 +100,7 @@ public final class Constants {
     public static final double kAlgaeIntakeL2Meters = 54.0;
     public static final double kAlgaeIntakeL3Meters = 103.0;
 
-    public static final double kP = 0.5;
+    public static final double kP = 0.005;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kF = 0.0;

@@ -22,6 +22,8 @@ public class NeoWristIO implements WristIO {
   private AbsoluteEncoderConfig encoderConfig = new AbsoluteEncoderConfig();
 
   private SparkClosedLoopController pidController;
+
+  private double previousRPM;
   // P:0.02
 
   private double setPointDegrees = Constants.WristConstants.kSafeAngleDegrees;
@@ -31,7 +33,7 @@ public class NeoWristIO implements WristIO {
 
     motorConfig
         .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(15)
+        .smartCurrentLimit(30)
         .voltageCompensation(12)
         .inverted(false)
         .signals
@@ -44,9 +46,16 @@ public class NeoWristIO implements WristIO {
         .outputCurrentPeriodMs(20);
     motorConfig
         .closedLoop
-        .pid(Constants.WristConstants.kP, Constants.WristConstants.kI, Constants.WristConstants.kD)
+        .pidf(
+            Constants.WristConstants.kP,
+            Constants.WristConstants.kI,
+            Constants.WristConstants.kD,
+            Constants.WristConstants.kF)
         .outputRange(-0.8, 8)
-        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+        .maxMotion
+        .maxAcceleration(12)
+        .maxVelocity(2);
     motorConfig.absoluteEncoder.apply(encoderConfig);
 
     SparkUtil.tryUntilOk(
@@ -62,12 +71,20 @@ public class NeoWristIO implements WristIO {
   @Override
   public void updateInputs(WristIOInputs inputs) {
     SparkUtil.sparkStickyFault = false;
+
+    SparkUtil.ifOk(
+        motor,
+        encoder::getVelocity,
+        (value) -> inputs.wristAccelerationRPMPerSec = (value - previousRPM) / 0.02);
     SparkUtil.ifOk(motor, encoder::getPosition, (value) -> inputs.positionDegrees = value);
 
     SparkUtil.ifOk(motor, motor::getOutputCurrent, (value) -> inputs.motorAmps = value);
-    SparkUtil.ifOk(motor, encoder::getVelocity, (value) -> inputs.motorRPM = value);
+
+    SparkUtil.ifOk(motor, encoder::getVelocity, (value) -> previousRPM = value);
+    inputs.wristRPM = previousRPM;
 
     pidController.setReference(setPointDegrees, ControlType.kPosition);
+    // pidController.setReference(setPointDegrees, ControlType.kMAXMotionPositionControl);
   }
 
   @Override

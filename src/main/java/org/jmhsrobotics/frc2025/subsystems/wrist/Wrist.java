@@ -20,6 +20,9 @@ public class Wrist extends SubsystemBase {
     Logger.recordOutput("Wrist/AngleDegrees", inputs.positionDegrees);
     Logger.recordOutput("Wrist/OutputCurrent", inputs.motorAmps);
     Logger.recordOutput("Wrist/GoalAngle", setPointDegrees);
+
+    Logger.recordOutput("Wrist/VelocityRPM", inputs.wristRPM);
+    Logger.recordOutput("Wrist/AccelerationRPM/S", inputs.wristAccelerationRPMPerSec);
   }
 
   public double getPositionDegrees() {

@@ -122,9 +122,10 @@ public final class Constants {
     public static final double kRotationProcesserDegrees = 190;
     public static final double kRotationBargeDegrees = 70;
 
-    public static final double kP = 0.008;
+    public static final double kP = 0.02;
     public static final double kI = 0.00;
-    public static final double kD = 0.02;
+    public static final double kD = 0.01;
+    public static final double kF = 0.0;
     public static final double kAngleTolerance = 5;
 
     public static final double kSafeAngleDegrees = 40;
@@ -138,7 +139,7 @@ public final class Constants {
     public static final double kCoralIntakeSpeedDutyCycle = 0.4;
     public static final double kCoralExtakeSpeedDutyCycle = 0.2;
 
-    public static final double kCoralIntakeIndexerSpeedDutyCycle = 0.27;
+    public static final double kCoralIntakeIndexerSpeedDutyCycle = 0.23;
     public static final double kCoralIntakeIndexerSlowSpeedDutyCycle = 0.2;
 
     public static final double kAlgaeExtakeSpeedDutyCycle = 0.9;
@@ -147,7 +148,7 @@ public final class Constants {
     public static final int kCoralInIntakeDistanceMm = 20;
     public static final int kAlgaeInIntakeDistanceMm = 30;
 
-    public static final double kCoralDebounceTime = 0.05;
+    public static final double kCoralDebounceTime = 0.03;
     public static final double kAlgaeFallingDebounceTime = 0.3;
     public static final double kAlgaeRisingDebounceTime = 0.1;
   }

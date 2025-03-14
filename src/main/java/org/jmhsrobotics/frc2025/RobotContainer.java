@@ -50,6 +50,7 @@ import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
+import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeCoralAuto;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
@@ -484,6 +485,9 @@ public class RobotContainer {
     SmartDashboard.putData("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
 
     SmartDashboard.putData("Scheduler2", CommandScheduler.getInstance());
+    SmartDashboard.putData("cmd/Move Wrist Out", new WristMoveTo(wrist, 150));
+    SmartDashboard.putData(
+        "cmd/Move Wrist In", new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees));
   }
 
   private void configurePathPlanner() {

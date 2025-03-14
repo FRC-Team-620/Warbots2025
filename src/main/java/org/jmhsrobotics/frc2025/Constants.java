@@ -100,11 +100,11 @@ public final class Constants {
     public static final double kAlgaeIntakeL2Meters = 54.0;
     public static final double kAlgaeIntakeL3Meters = 103.0;
 
-    public static final double kP = 0.005;
+    public static final double kP = 0.03;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-    public static final double kF = 0.0;
-    public static final double kHeightTolerance = 0.1;
+    public static final double kF = 0.0001;
+    public static final double kHeightTolerance = 10;
   }
 
   public static class WristConstants {

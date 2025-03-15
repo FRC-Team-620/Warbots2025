@@ -488,6 +488,7 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/Move Wrist Out", new WristMoveTo(wrist, 150));
     SmartDashboard.putData(
         "cmd/Move Wrist In", new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees));
+    SmartDashboard.putData("cmd/Score Coral", new ScoreCoral(intake).withTimeout(0.15));
   }
 
   private void configurePathPlanner() {

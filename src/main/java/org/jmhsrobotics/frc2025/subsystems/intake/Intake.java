@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2025.subsystems.intake;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2025.Constants;
 import org.littletonrobotics.junction.Logger;
@@ -23,11 +24,14 @@ public class Intake extends SubsystemBase {
 
   private boolean coralInIntake = false;
   private boolean algaeInIntake = false;
-  private boolean fixCoralPlacementRunning = false;
+
+  private Timer timer = new Timer();
 
   public Intake(IntakeIO intakeIO, TimeOfFLightIO timeOfFLightIO) {
     this.intakeIO = intakeIO;
     this.timeOfFLightIO = timeOfFLightIO;
+
+    timer.start();
   }
 
   @Override
@@ -46,6 +50,7 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/Algae Measurement Valid", sensorInputs.algaeMeasurementIsValid);
     Logger.recordOutput("Intake/Coral Sensor Ambient Light", sensorInputs.coralAmbientLight);
     Logger.recordOutput("Intake/Algae Sensor Ambient Light", sensorInputs.algaeAmbientLight);
+    Logger.recordOutput("Intake/Placement Command Timer Time Elapsed", timer.get());
   }
 
   /**
@@ -62,7 +67,7 @@ public class Intake extends SubsystemBase {
     if (override) {
       return mode;
     }
-    if (coralInIntake || this.fixCoralPlacementRunning) {
+    if (coralInIntake || !timer.hasElapsed(0.6)) {
       this.mode = 3;
       return this.mode;
     } else if (algaeInIntake) {
@@ -182,7 +187,11 @@ public class Intake extends SubsystemBase {
             && this.isAlgaeMeasureValid());
   }
 
-  public void setFixIntakeCommandStatus(boolean isRunning) {
-    this.fixCoralPlacementRunning = isRunning;
+  public void startPlacementCommandTimer() {
+    this.timer.restart();
+  }
+
+  public void printTimerValue() {
+    System.out.println("Timer Value: " + timer.get());
   }
 }

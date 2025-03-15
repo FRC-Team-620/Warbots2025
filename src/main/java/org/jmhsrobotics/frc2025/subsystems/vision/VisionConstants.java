@@ -15,6 +15,7 @@ package org.jmhsrobotics.frc2025.subsystems.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
@@ -34,17 +35,18 @@ public class VisionConstants {
   // TODO: Make sure camera transformations are correctx
   public static Transform3d robotToCamera0 =
       new Transform3d(
-          Units.inchesToMeters(8),
+          Units.inchesToMeters(10.05),
           Units.inchesToMeters(11),
-          0.185,
-          new Rotation3d(0.0, Units.degreesToRadians(-10), Units.degreesToRadians(-35)));
+          Units.inchesToMeters(13),
+          new Rotation3d(new Quaternion(0.949, -0.014, -0.041, -0.311)));
 
   public static Transform3d robotToCamera1 =
       new Transform3d(
           Units.inchesToMeters(8.5),
           Units.inchesToMeters(-11),
-          0.185,
-          new Rotation3d(0.0, Units.degreesToRadians(-10), Units.degreesToRadians(35)));
+          Units.inchesToMeters(12.2),
+          new Rotation3d(new Quaternion(0.947, 0.027, -0.083, 0.31)));
+  //   new Rotation3d(0.0, Units.degreesToRadians(-10), Units.degreesToRadians(35)));
 
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.DoubleSupplier;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
+import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.littletonrobotics.junction.Logger;
@@ -75,12 +76,19 @@ public class DriveMeToTheMoon extends Command {
 
   @Override
   public void execute() {
+    double xValue, yValue;
+
+    if (drive.getTurboMode()) {
+      xValue = xSupplier.getAsDouble() * DriveConstants.turboCoefficient;
+      yValue = ySupplier.getAsDouble() * DriveConstants.turboCoefficient;
+    } else {
+      xValue = xSupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
+      yValue = ySupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
+    }
+
     Translation2d linearVelocity =
         DriveCommands.getLinearVelocityFromJoysticks(
-            Math.copySign(
-                xSupplier.getAsDouble() * xSupplier.getAsDouble(), xSupplier.getAsDouble()),
-            Math.copySign(
-                ySupplier.getAsDouble() * ySupplier.getAsDouble(), ySupplier.getAsDouble()));
+            Math.copySign(xValue * xValue, xValue), Math.copySign(yValue * yValue, yValue));
 
     // Apply rotation deadband
     double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.6, DEADBAND);

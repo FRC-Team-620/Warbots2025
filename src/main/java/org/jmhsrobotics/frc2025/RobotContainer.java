@@ -439,6 +439,9 @@ public class RobotContainer {
     control.climberDown().whileTrue(new ClimberMove(climber, led, -0.5));
 
     control.climberUp().whileTrue(new ClimberMove(climber, led, 0.5));
+
+    control.turboMode().onTrue(Commands.runOnce(() -> drive.setTurboMode(true), drive));
+    control.turboMode().onFalse(Commands.runOnce(() -> drive.setTurboMode(false), drive));
   }
 
   private void configureDriverFeedback() {
@@ -489,6 +492,10 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Move Wrist In", new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees));
     SmartDashboard.putData("cmd/Score Coral", new ScoreCoral(intake).withTimeout(0.15));
+    SmartDashboard.putData(
+        "cmd/activate turbo mode", Commands.runOnce(() -> drive.setTurboMode(true), drive));
+    SmartDashboard.putData(
+        "cmd/deactivate turbo mode", Commands.runOnce(() -> drive.setTurboMode(false), drive));
   }
 
   private void configurePathPlanner() {

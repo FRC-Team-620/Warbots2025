@@ -101,7 +101,7 @@ public class AltControlMode implements ControlBoard {
   }
 
   @Override
-  public Trigger alignDriveMode() {
+  public Trigger turboMode() {
     return driver.leftBumper();
   }
 

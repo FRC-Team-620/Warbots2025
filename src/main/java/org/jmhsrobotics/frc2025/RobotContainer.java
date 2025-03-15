@@ -50,11 +50,12 @@ import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
+import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeCoralAuto;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
-import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
+import org.jmhsrobotics.frc2025.controlBoard.SingleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
@@ -193,7 +194,7 @@ public class RobotContainer {
         break;
     }
 
-    this.control = new DoubleControl(intake, elevator);
+    this.control = new SingleControl(intake, elevator);
 
     led = new LED();
 
@@ -283,8 +284,6 @@ public class RobotContainer {
                           Rotation2d.fromDegrees(isRed ? 180 : 0)));
                 },
                 drive));
-
-    // control.alignDriveMode().onTrue(Commands.runOnce(() -> drive.changeMaxSpeedMetersPerSec()));
 
     control
         .placeCoralLevel1()
@@ -489,6 +488,14 @@ public class RobotContainer {
     SmartDashboard.putData("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
 
     SmartDashboard.putData("Scheduler2", CommandScheduler.getInstance());
+    SmartDashboard.putData("cmd/Move Wrist Out", new WristMoveTo(wrist, 150));
+    SmartDashboard.putData(
+        "cmd/Move Wrist In", new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees));
+    SmartDashboard.putData("cmd/Score Coral", new ScoreCoral(intake).withTimeout(0.15));
+    SmartDashboard.putData(
+        "cmd/activate turbo mode", Commands.runOnce(() -> drive.setTurboMode(true), drive));
+    SmartDashboard.putData(
+        "cmd/deactivate turbo mode", Commands.runOnce(() -> drive.setTurboMode(false), drive));
   }
 
   private void configurePathPlanner() {

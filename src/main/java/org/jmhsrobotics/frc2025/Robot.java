@@ -35,6 +35,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.Optional;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.jmhsrobotics.frc2025.util.ControllerMonitor;
 import org.jmhsrobotics.frc2025.util.Elastic;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -202,28 +203,8 @@ public class Robot extends LoggedRobot {
                     Units.degreesToRadians(0),
                     Units.degreesToRadians(-10),
                     Units.degreesToRadians(35)))));
-    Logger.recordOutput(
-        "left cam test",
-        robotpos.plus(
-            new Transform3d(
-                Units.inchesToMeters(8),
-                Units.inchesToMeters(11),
-                0.185,
-                new Rotation3d(
-                    Units.degreesToRadians(0),
-                    Units.degreesToRadians(-10),
-                    Units.degreesToRadians(-35)))));
-    Logger.recordOutput(
-        "right cam test",
-        robotpos.plus(
-            new Transform3d(
-                Units.inchesToMeters(8),
-                Units.inchesToMeters(-11),
-                0.185,
-                new Rotation3d(
-                    Units.degreesToRadians(0),
-                    Units.degreesToRadians(-10),
-                    Units.degreesToRadians(35)))));
+    Logger.recordOutput("left cam test", robotpos.plus(VisionConstants.robotToCamera0));
+    Logger.recordOutput("right cam test", robotpos.plus(VisionConstants.robotToCamera1));
     if (robotContainer.intake.isCoralInIntake()) {
       Logger.recordOutput(
           "hasPipe", robotpos.plus(new Transform3d(0.0, 0.0, 1.2, new Rotation3d())));

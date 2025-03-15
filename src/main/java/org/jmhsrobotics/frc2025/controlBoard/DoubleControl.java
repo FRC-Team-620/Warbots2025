@@ -106,7 +106,7 @@ public class DoubleControl implements ControlBoard {
 
   @Override
   public Trigger intakeCoralFromIndexer() {
-    return operator.rightStick();
+    return operator.rightBumper();
   }
 
   @Override
@@ -191,21 +191,21 @@ public class DoubleControl implements ControlBoard {
 
   @Override
   public Trigger changeModeLeft() {
-    return operator.leftBumper();
+    return operator.leftStick();
   }
 
   @Override
   public Trigger changeModeRight() {
-    return operator.rightBumper();
+    return operator.rightStick();
   }
 
   @Override
   public Trigger UnOverrideControlMode() {
-    return operator.rightBumper().and(operator.leftBumper());
+    return operator.rightStick().and(operator.leftStick());
   }
 
   @Override
   public Trigger zeroElevator() {
-    return operator.leftStick();
+    return operator.back();
   }
 }

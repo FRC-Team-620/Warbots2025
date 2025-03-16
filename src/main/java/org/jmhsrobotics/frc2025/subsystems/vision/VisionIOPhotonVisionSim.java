@@ -51,7 +51,7 @@ public class VisionIOPhotonVisionSim extends VisionIOPhotonVision {
     cameraProperties.setAvgLatencyMs(50);
     cameraProperties.setLatencyStdDevMs(5);
     cameraProperties.setCalibError(0.25, 0.08);
-    cameraProperties.setCalibration(640, 480, Rotation2d.fromDegrees(100));
+    cameraProperties.setCalibration(640, 480, Rotation2d.fromDegrees(70));
     cameraSim = new PhotonCameraSim(camera, cameraProperties);
     cameraSim.enableRawStream(true);
     cameraSim.enableProcessedStream(true);

@@ -50,7 +50,6 @@ import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
-import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeCoralAuto;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
@@ -434,7 +433,7 @@ public class RobotContainer {
         .onTrue(
             new ParallelCommandGroup(
                 new IndexerMove(indexer, Constants.IndexerConstants.kRotationDownDegrees),
-                new ClimberToAngle(climber, 20)));
+                new ClimberToAngle(climber, Constants.ClimberConstants.kStowAngle)));
 
     control.climberDown().whileTrue(new ClimberMove(climber, led, -0.5));
 
@@ -488,14 +487,13 @@ public class RobotContainer {
     SmartDashboard.putData("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
 
     SmartDashboard.putData("Scheduler2", CommandScheduler.getInstance());
-    SmartDashboard.putData("cmd/Move Wrist Out", new WristMoveTo(wrist, 150));
-    SmartDashboard.putData(
-        "cmd/Move Wrist In", new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees));
     SmartDashboard.putData("cmd/Score Coral", new ScoreCoral(intake).withTimeout(0.15));
     SmartDashboard.putData(
-        "cmd/activate turbo mode", Commands.runOnce(() -> drive.setTurboMode(true), drive));
+        "cmd/Indexer to Mid",
+        new IndexerMove(indexer, Constants.IndexerConstants.kRotationMidDegrees));
     SmartDashboard.putData(
-        "cmd/deactivate turbo mode", Commands.runOnce(() -> drive.setTurboMode(false), drive));
+        "cmd/Indexer to Top",
+        new IndexerMove(indexer, Constants.IndexerConstants.kRotationUpDegrees));
   }
 
   private void configurePathPlanner() {

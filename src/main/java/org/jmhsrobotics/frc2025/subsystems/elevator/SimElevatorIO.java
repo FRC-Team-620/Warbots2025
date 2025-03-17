@@ -58,7 +58,7 @@ public class SimElevatorIO implements ElevatorIO {
   public void setPositionMeters(double positionMeters) {
     this.isOpenLoop = false;
     this.goalMeters = positionMeters;
-    this.pidController.setSetpoint(positionMeters / 100.0);
+    this.pidController.setSetpoint(positionMeters);
   }
 
   @Override

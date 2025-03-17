@@ -116,7 +116,7 @@ public final class Constants {
     public static final double kLevel1Degrees = 30.0;
     public static final double kLevel2Degrees = 40.5;
     public static final double kLevel3Degrees = 40.5;
-    public static final double kLevel4Degrees = 105.0;
+    public static final double kLevel4Degrees = 90.0;
 
     public static final double kRotationAlgaeDegrees = 181;
     public static final double kRotationProcesserDegrees = 190;

@@ -49,6 +49,7 @@ import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
+import org.jmhsrobotics.frc2025.commands.ScoreCoralLevel4;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
@@ -496,6 +497,7 @@ public class RobotContainer {
         "cmd/activate turbo mode", Commands.runOnce(() -> drive.setTurboMode(true), drive));
     SmartDashboard.putData(
         "cmd/deactivate turbo mode", Commands.runOnce(() -> drive.setTurboMode(false), drive));
+    SmartDashboard.putData("cmd/Alternate L4 Score", new ScoreCoralLevel4(elevator, wrist, intake));
   }
 
   private void configurePathPlanner() {

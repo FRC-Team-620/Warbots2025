@@ -111,7 +111,8 @@ public class VortexElevatorIO implements ElevatorIO {
         vortexRight, vortexRight::getOutputCurrent, (value) -> inputs.motorAmps[1] = value);
 
     // inputs.motorVolts = new double[2];
-    SparkUtil.ifOk(vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value);
+    SparkUtil.ifOk(
+        vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value / 100.0);
 
     inputs.isOpenLoop = this.isOpenLoop;
 
@@ -126,7 +127,8 @@ public class VortexElevatorIO implements ElevatorIO {
   @Override
   public void setPositionMeters(double positionMeters) {
     isOpenLoop = false;
-    this.goalMeters = positionMeters;
+    // change the setpoint from meters to centimeters
+    this.goalMeters = positionMeters * 100.0;
   }
 
   public void setVoltage(double voltage) {

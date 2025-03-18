@@ -30,7 +30,7 @@ public class DriveMeToTheMoon extends Command {
   private final PIDController yController = new PIDController(0.5, 0, 0);
   private final PIDController thetaController = new PIDController(0.1, 0, 0);
   private double thetaGoalDegrees = 0;
-  Transform2d goalTransform  = new Transform2d();
+  Transform2d goalTransform = new Transform2d();
 
   private Pose3d lastTagPose = null;
 
@@ -117,7 +117,9 @@ public class DriveMeToTheMoon extends Command {
     speeds = speeds.plus(calculateAutoAlignThetaSpeeds());
     speeds = speeds.plus(calculateAutoAlignTranslationSpeeds());
     drive.runVelocity(speeds);
-    int targetId = AlignReef.calculateGoalTargetID(AlignReef.calculateGoalAngle(drive.getRotation().getDegrees()));
+    int targetId =
+        AlignReef.calculateGoalTargetID(
+            AlignReef.calculateGoalAngle(drive.getRotation().getDegrees()));
     Logger.recordOutput("X speed", speeds.vxMetersPerSecond);
     Logger.recordOutput("Y Speed", speeds.vyMetersPerSecond);
     Logger.recordOutput("Align/Target Tag ID: ", targetId);
@@ -128,8 +130,7 @@ public class DriveMeToTheMoon extends Command {
             .getTagPose(targetId)
             .orElse(new Pose3d()); // TODO: handle null tag pose
     boolean isRight = rightTriggerValue.getAsDouble() >= leftTriggerValue.getAsDouble();
-    goalTransform =
-        getReefOffset(elevator.getSetpoint(), isRight); // TODO: add offset for algae
+    goalTransform = getReefOffset(elevator.getSetpoint(), isRight); // TODO: add offset for algae
     xController.setSetpoint(goalTransform.getX());
     yController.setSetpoint(goalTransform.getY());
     Logger.recordOutput("Align/targetPos", defaultTagPose.plus(new Transform3d(goalTransform)));
@@ -147,8 +148,7 @@ public class DriveMeToTheMoon extends Command {
         getReefOffset(elevator.getSetpoint(), isRight); // TODO: add offset for algae
     xController.setSetpoint(goalTransform.getX());
     yController.setSetpoint(goalTransform.getY());
-    int targetId = AlignReef.calculateGoalTargetID(
-      thetaGoalDegrees);
+    int targetId = AlignReef.calculateGoalTargetID(thetaGoalDegrees);
     // Logger.recordOutput("Align/Goal X", goalTransform.getX());
     // Does all calculations only if triggers are pressed
     if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
@@ -158,16 +158,14 @@ public class DriveMeToTheMoon extends Command {
       // Looks through each cameras inputs and gets the tag position if it matches the target ID
       for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
         // if(target.id() )
-        if (target.id()
-            == targetId) { // TODO: janky only work for one tag for now
+        if (target.id() == targetId) { // TODO: janky only work for one tag for now
           tag = target.pose();
         }
       }
 
       if (tag == null) { // Janky way to use second camera :todo enable after basic testing
         for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
-          if (target.id()
-              == targetId) { // TODO: janky only work for one tag for now
+          if (target.id() == targetId) { // TODO: janky only work for one tag for now
             tag = target.pose();
           }
         }
@@ -181,15 +179,15 @@ public class DriveMeToTheMoon extends Command {
         tag = new Pose3d(transform.getTranslation(), transform.getRotation());
       }
       // Logger.recordOutput("testpos", tag);
-      // If Tag is still Null Use Global ODOM to navigate to Tag/ TODO: We need to filter to make sure this does not happen on the wrong side of the field
-      if(tag == null){
+      // If Tag is still Null Use Global ODOM to navigate to Tag/ TODO: We need to filter to make
+      // sure this does not happen on the wrong side of the field
+      if (tag == null) {
         Pose3d defaultTagPose =
-        VisionConstants.aprilTagLayout
-            .getTagPose(targetId)
-            .orElse(new Pose3d()); // TODO: handle null tag pose
-            var tagtransform = defaultTagPose.minus(new Pose3d(drive.getPose()));
+            VisionConstants.aprilTagLayout
+                .getTagPose(targetId)
+                .orElse(new Pose3d()); // TODO: handle null tag pose
+        var tagtransform = defaultTagPose.minus(new Pose3d(drive.getPose()));
         tag = new Pose3d(tagtransform.getTranslation(), tagtransform.getRotation());
-            
       }
       // if there is a tag position, calculates the PID outputs
       if (tag != null) {

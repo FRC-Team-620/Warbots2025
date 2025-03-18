@@ -120,19 +120,23 @@ public class DriveMeToTheMoon extends Command {
     int targetId =
         AlignReef.calculateGoalTargetID(
             AlignReef.calculateGoalAngle(drive.getRotation().getDegrees()));
+
     Logger.recordOutput("X speed", speeds.vxMetersPerSecond);
     Logger.recordOutput("Y Speed", speeds.vyMetersPerSecond);
     Logger.recordOutput("Align/Target Tag ID: ", targetId);
     Logger.recordOutput("Align/Drive Angle: ", drive.getPose().getRotation().getDegrees());
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
+
     Pose3d defaultTagPose =
         VisionConstants.aprilTagLayout
             .getTagPose(targetId)
             .orElse(new Pose3d()); // TODO: handle null tag pose
     boolean isRight = rightTriggerValue.getAsDouble() >= leftTriggerValue.getAsDouble();
+
     goalTransform = getReefOffset(elevator.getSetpoint(), isRight); // TODO: add offset for algae
     xController.setSetpoint(goalTransform.getX());
     yController.setSetpoint(goalTransform.getY());
+
     Logger.recordOutput("Align/targetPos", defaultTagPose.plus(new Transform3d(goalTransform)));
   }
 
@@ -154,18 +158,18 @@ public class DriveMeToTheMoon extends Command {
     if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
       // calculate and update PID loop setpoints relative to tag based on robot state
 
-      Pose3d tag = null; // TODO: handle seeing more than one reef tag
+      Pose3d tag = null;
       // Looks through each cameras inputs and gets the tag position if it matches the target ID
-      for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
+      for (var target : vision.getTagPoses(0)) {
         // if(target.id() )
-        if (target.id() == targetId) { // TODO: janky only work for one tag for now
+        if (target.id() == targetId) {
           tag = target.pose();
         }
       }
 
-      if (tag == null) { // Janky way to use second camera :todo enable after basic testing
-        for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
-          if (target.id() == targetId) { // TODO: janky only work for one tag for now
+      if (tag == null) {
+        for (var target : vision.getTagPoses(1)) {
+          if (target.id() == targetId) {
             tag = target.pose();
           }
         }
@@ -199,11 +203,17 @@ public class DriveMeToTheMoon extends Command {
         xOutput = -xController.calculate(xdist);
         yOutput = -yController.calculate(ydist);
 
-        ChassisSpeeds translationSpeeds =
-            new ChassisSpeeds(
-                xOutput * drive.getMaxLinearSpeedMetersPerSec(),
-                yOutput * drive.getMaxLinearSpeedMetersPerSec(),
-                0);
+        ChassisSpeeds translationSpeeds = new ChassisSpeeds();
+        //Only applied translational auto align speeds if the tag is in front of the robot
+        if (tag.getX() > 0.35) {
+          translationSpeeds =
+              new ChassisSpeeds(
+                  xOutput * drive.getMaxLinearSpeedMetersPerSec(),
+                  yOutput * drive.getMaxLinearSpeedMetersPerSec(),
+                  0);
+        } else {
+          translationSpeeds = new ChassisSpeeds(0, 0, 0);
+        }
 
         // updates the status for auto align being complete in the drive subsystem - needed for LED
         // feedback

@@ -17,6 +17,7 @@ import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
+import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.littletonrobotics.junction.Logger;
@@ -25,6 +26,7 @@ public class DriveMeToTheMoon extends Command {
   private final Drive drive;
   private final Vision vision;
   private final Elevator elevator;
+  private final Intake intake;
 
   private final PIDController xController = new PIDController(0.5, 0, 0);
   private final PIDController yController = new PIDController(0.5, 0, 0);
@@ -44,6 +46,7 @@ public class DriveMeToTheMoon extends Command {
       Drive drive,
       Vision vision,
       Elevator elevator,
+      Intake intake,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
@@ -52,6 +55,7 @@ public class DriveMeToTheMoon extends Command {
     this.drive = drive;
     this.vision = vision;
     this.elevator = elevator;
+    this.intake = intake;
 
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
@@ -114,8 +118,13 @@ public class DriveMeToTheMoon extends Command {
             isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation());
 
     // TODO: prevent speed from surpassing maximum
-    speeds = speeds.plus(calculateAutoAlignThetaSpeeds());
-    speeds = speeds.plus(calculateAutoAlignTranslationSpeeds());
+    if (elevator.getSetpoint() == 0 && !intake.isCoralInIntake()) {
+      speeds.plus(calculateAutoAlignSourceSpeeds());
+    } else {
+      speeds = speeds.plus(calculateAutoAlignReefTranslationSpeeds());
+      speeds = speeds.plus(calculateAutoAlignThetaSpeeds());
+    }
+
     drive.runVelocity(speeds);
     int targetId =
         AlignReef.calculateGoalTargetID(
@@ -146,7 +155,7 @@ public class DriveMeToTheMoon extends Command {
    *
    * @return ChassisSpeed Object
    */
-  private ChassisSpeeds calculateAutoAlignTranslationSpeeds() {
+  private ChassisSpeeds calculateAutoAlignReefTranslationSpeeds() {
     boolean isRight = rightTriggerValue.getAsDouble() >= leftTriggerValue.getAsDouble();
     Transform2d goalTransform =
         getReefOffset(elevator.getSetpoint(), isRight); // TODO: add offset for algae
@@ -190,6 +199,7 @@ public class DriveMeToTheMoon extends Command {
         var tagtransform = defaultTagPose.minus(new Pose3d(drive.getPose()));
         tag = new Pose3d(tagtransform.getTranslation(), tagtransform.getRotation());
       }
+
       // if there is a tag position, calculates the PID outputs
       if (tag != null) {
         lastTagPose =
@@ -228,6 +238,10 @@ public class DriveMeToTheMoon extends Command {
     // speeds object if auto align is not being attempted
     drive.setAutoAlignComplete(false);
     this.lastTagPose = null;
+    return new ChassisSpeeds();
+  }
+
+  private ChassisSpeeds calculateAutoAlignSourceSpeeds() {
     return new ChassisSpeeds();
   }
 

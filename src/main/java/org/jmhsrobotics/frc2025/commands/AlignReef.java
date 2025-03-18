@@ -72,7 +72,6 @@ public class AlignReef extends Command {
 
     thetaController.setSetpoint(thetaGoalDegrees);
     thetaController.enableContinuousInput(-180, 180);
-    drive.stop();
   }
 
   @Override

@@ -133,7 +133,7 @@ public class DriveMeToTheMoon extends Command {
             .orElse(new Pose3d()); // TODO: handle null tag pose
     boolean isRight = rightTriggerValue.getAsDouble() >= leftTriggerValue.getAsDouble();
 
-    goalTransform = getReefOffset(elevator.getSetpoint(), isRight); 
+    goalTransform = getReefOffset(elevator.getSetpoint(), isRight);
     xController.setSetpoint(goalTransform.getX());
     yController.setSetpoint(goalTransform.getY());
 
@@ -186,9 +186,7 @@ public class DriveMeToTheMoon extends Command {
       // If Tag is still Null Use Global ODOM to navigate to Tag
       if (tag == null) {
         Pose3d defaultTagPose =
-            VisionConstants.aprilTagLayout
-                .getTagPose(targetId)
-                .orElse(new Pose3d()); 
+            VisionConstants.aprilTagLayout.getTagPose(targetId).orElse(new Pose3d());
         var tagtransform = defaultTagPose.minus(new Pose3d(drive.getPose()));
         tag = new Pose3d(tagtransform.getTranslation(), tagtransform.getRotation());
       }

@@ -87,24 +87,24 @@ public final class Constants {
     // converts motor rotations to elevator height in centimeters
     public static final double conversionFactor = (((1.0 / 3.0) / 12.0) * 100);
 
-    public static final double kLevel1Meters = 5.0;
-    public static final double kLevel2Meters = 28.0;
-    public static final double kLevel3Meters = 75.0;
+    public static final double kLevel1Meters = 0.05;
+    public static final double kLevel2Meters = 0.28;
+    public static final double kLevel3Meters = 0.75;
     // BARGE AND L4 SETPOINT CANNOT BE THE EXACT SAME
-    public static final double kLevel4Meters = 177.5;
-    public static final double kBargeMeters = 178.0;
-    public static final double kProcesserMeters = 10;
+    public static final double kLevel4Meters = 1.775;
+    public static final double kBargeMeters = 1.78;
+    public static final double kProcesserMeters = .10;
 
-    public static final double kAlgaeQTipMeters = 12.5;
+    public static final double kAlgaeQTipMeters = .125;
     public static final double kCoralIntakeMeters = 0;
-    public static final double kAlgaeIntakeL2Meters = 54.0;
-    public static final double kAlgaeIntakeL3Meters = 103.0;
+    public static final double kAlgaeIntakeL2Meters = 0.54;
+    public static final double kAlgaeIntakeL3Meters = 1.03;
 
     public static final double kP = 0.03;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kF = 0.0001;
-    public static final double kHeightTolerance = 10;
+    public static final double kHeightTolerance = .10;
   }
 
   public static class WristConstants {

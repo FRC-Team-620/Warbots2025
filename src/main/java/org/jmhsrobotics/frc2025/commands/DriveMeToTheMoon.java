@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -17,6 +18,7 @@ import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveMeToTheMoon extends Command {
@@ -27,9 +29,8 @@ public class DriveMeToTheMoon extends Command {
   private final PIDController xController = new PIDController(0.5, 0, 0);
   private final PIDController yController = new PIDController(0.5, 0, 0);
   private final PIDController thetaController = new PIDController(0.1, 0, 0);
-  private double xGoalMeters = 0.48;
-  private double yGoalMeters = Units.inchesToMeters(-7.375);
   private double thetaGoalDegrees = 0;
+  Transform2d goalTransform = new Transform2d();
 
   private Pose3d lastTagPose = null;
 
@@ -116,12 +117,27 @@ public class DriveMeToTheMoon extends Command {
     speeds = speeds.plus(calculateAutoAlignThetaSpeeds());
     speeds = speeds.plus(calculateAutoAlignTranslationSpeeds());
     drive.runVelocity(speeds);
+    int targetId =
+        AlignReef.calculateGoalTargetID(
+            AlignReef.calculateGoalAngle(drive.getRotation().getDegrees()));
 
     Logger.recordOutput("X speed", speeds.vxMetersPerSecond);
     Logger.recordOutput("Y Speed", speeds.vyMetersPerSecond);
-    Logger.recordOutput("Align/Target Tag ID: ", AlignReef.calculateGoalTargetID(thetaGoalDegrees));
+    Logger.recordOutput("Align/Target Tag ID: ", targetId);
     Logger.recordOutput("Align/Drive Angle: ", drive.getPose().getRotation().getDegrees());
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
+
+    Pose3d defaultTagPose =
+        VisionConstants.aprilTagLayout
+            .getTagPose(targetId)
+            .orElse(new Pose3d()); // TODO: handle null tag pose
+    boolean isRight = rightTriggerValue.getAsDouble() >= leftTriggerValue.getAsDouble();
+
+    goalTransform = getReefOffset(elevator.getSetpoint(), isRight);
+    xController.setSetpoint(goalTransform.getX());
+    yController.setSetpoint(goalTransform.getY());
+
+    Logger.recordOutput("Align/targetPos", defaultTagPose.plus(new Transform3d(goalTransform)));
   }
 
   /**
@@ -131,30 +147,29 @@ public class DriveMeToTheMoon extends Command {
    * @return ChassisSpeed Object
    */
   private ChassisSpeeds calculateAutoAlignTranslationSpeeds() {
+    boolean isRight = rightTriggerValue.getAsDouble() >= leftTriggerValue.getAsDouble();
+    Transform2d goalTransform =
+        getReefOffset(elevator.getSetpoint(), isRight); // TODO: add offset for algae
+    xController.setSetpoint(goalTransform.getX());
+    yController.setSetpoint(goalTransform.getY());
+    int targetId = AlignReef.calculateGoalTargetID(thetaGoalDegrees);
+    // Logger.recordOutput("Align/Goal X", goalTransform.getX());
     // Does all calculations only if triggers are pressed
     if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
       // calculate and update PID loop setpoints relative to tag based on robot state
-      xGoalMeters = this.getXSetpoint();
-      yGoalMeters = this.getYSetpoint();
-      xController.setSetpoint(xGoalMeters);
-      yController.setSetpoint(yGoalMeters);
 
-      Pose3d tag = null; // TODO: handle seeing more than one reef tag
+      Pose3d tag = null;
       // Looks through each cameras inputs and gets the tag position if it matches the target ID
-      for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
+      for (var target : vision.getTagPoses(0)) {
         // if(target.id() )
-        if (target.id()
-            == AlignReef.calculateGoalTargetID(
-                thetaGoalDegrees)) { // TODO: janky only work for one tag for now
+        if (target.id() == targetId) {
           tag = target.pose();
         }
       }
 
-      if (tag == null) { // Janky way to use second camera :todo enable after basic testing
-        for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
-          if (target.id()
-              == AlignReef.calculateGoalTargetID(
-                  thetaGoalDegrees)) { // TODO: janky only work for one tag for now
+      if (tag == null) {
+        for (var target : vision.getTagPoses(1)) {
+          if (target.id() == targetId) {
             tag = target.pose();
           }
         }
@@ -167,8 +182,14 @@ public class DriveMeToTheMoon extends Command {
         Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
         tag = new Pose3d(transform.getTranslation(), transform.getRotation());
       }
-      Logger.recordOutput("testpos", tag);
-
+      // Logger.recordOutput("testpos", tag);
+      // If Tag is still Null Use Global ODOM to navigate to Tag
+      if (tag == null) {
+        Pose3d defaultTagPose =
+            VisionConstants.aprilTagLayout.getTagPose(targetId).orElse(new Pose3d());
+        var tagtransform = defaultTagPose.minus(new Pose3d(drive.getPose()));
+        tag = new Pose3d(tagtransform.getTranslation(), tagtransform.getRotation());
+      }
       // if there is a tag position, calculates the PID outputs
       if (tag != null) {
         lastTagPose =
@@ -179,17 +200,23 @@ public class DriveMeToTheMoon extends Command {
         xOutput = -xController.calculate(xdist);
         yOutput = -yController.calculate(ydist);
 
-        ChassisSpeeds translationSpeeds =
-            new ChassisSpeeds(
-                xOutput * drive.getMaxLinearSpeedMetersPerSec(),
-                yOutput * drive.getMaxLinearSpeedMetersPerSec(),
-                0);
+        ChassisSpeeds translationSpeeds = new ChassisSpeeds();
+        // Only applied translational auto align speeds if the tag is in front of the robot
+        if (tag.getX() > 0.35) {
+          translationSpeeds =
+              new ChassisSpeeds(
+                  xOutput * drive.getMaxLinearSpeedMetersPerSec(),
+                  yOutput * drive.getMaxLinearSpeedMetersPerSec(),
+                  0);
+        } else {
+          translationSpeeds = new ChassisSpeeds(0, 0, 0);
+        }
 
         // updates the status for auto align being complete in the drive subsystem - needed for LED
         // feedback
         drive.setAutoAlignComplete(
-            Math.abs(xdist - xGoalMeters) < Units.inchesToMeters(1.25)
-                && Math.abs(ydist - yGoalMeters) < Units.inchesToMeters(1.25)
+            Math.abs(xdist - goalTransform.getX()) < Units.inchesToMeters(1.25)
+                && Math.abs(ydist - goalTransform.getY()) < Units.inchesToMeters(1.25)
                 && Math.abs(drive.getPose().getRotation().getDegrees() - thetaGoalDegrees) < 3);
 
         return translationSpeeds;
@@ -236,34 +263,44 @@ public class DriveMeToTheMoon extends Command {
    *
    * @return
    */
-  private double getXSetpoint() {
+  private double getXSetpoint(double elevatorSetpointMeters) {
     // Algae Setpoint
-    if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
-        || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) return 0.7;
+    if (elevatorSetpointMeters == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
+        || elevatorSetpointMeters == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) return 0.7;
     else {
       // L1, 2, and 3 setpoint
-      if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel1Meters
-          || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
-          || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) return 0.43;
+      if (elevatorSetpointMeters == Constants.ElevatorConstants.kLevel1Meters
+          || elevatorSetpointMeters == Constants.ElevatorConstants.kLevel2Meters
+          || elevatorSetpointMeters == Constants.ElevatorConstants.kLevel3Meters) return 0.43;
       // L4 Setpoint
       return 0.5;
     }
   }
+
+  // private static final Transform2d algaeOffset = new Transform2d(0.7,0,Rotation2d.kZero);
+  private static final double coralOffsetY = 7.375;
 
   /**
    * Returns the Y setpoint for auto align based on elevator setpoints and trigger values
    *
    * @return
    */
-  private double getYSetpoint() {
+  private double getYSetpoint(double elevatorSetpointMeters, boolean isRight) {
     // Centered for algae pickup
-    if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
-        || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) return 0;
+    if (elevatorSetpointMeters == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
+        || elevatorSetpointMeters == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) return 0;
     else {
       // positive for right side of april tag, negative for left side
-      if (rightTriggerValue.getAsDouble() >= leftTriggerValue.getAsDouble())
-        return Units.inchesToMeters(7.375);
-      return Units.inchesToMeters(-7.375);
+      if (isRight) return Units.inchesToMeters(coralOffsetY);
+      return Units.inchesToMeters(-coralOffsetY);
     }
+  }
+
+  private Transform2d getReefOffset(double elevatorSetpointMeters, boolean isRight) {
+    // if(el)
+    return new Transform2d(
+        this.getXSetpoint(elevatorSetpointMeters),
+        this.getYSetpoint(elevatorSetpointMeters, isRight),
+        Rotation2d.kZero);
   }
 }

@@ -15,9 +15,9 @@ public class AlignSource extends Command {
   private Pose2d goalPose;
   private boolean alignCloseToSource;
 
-  private final PIDController xController = new PIDController(0.3, 0, 0);
-  private final PIDController yController = new PIDController(0.3, 0, 0);
-  private final PIDController thetaController = new PIDController(0.1, 0, 0);
+  private final PIDController xController = new PIDController(0.6, 0, 0);
+  private final PIDController yController = new PIDController(0.6, 0, 0);
+  private final PIDController thetaController = new PIDController(0.005, 0, 0);
 
   public AlignSource(Drive drive, boolean alignCloseToSource) {
     this.drive = drive;
@@ -42,8 +42,16 @@ public class AlignSource extends Command {
   public void execute() {
     this.goalPose = calculateReefSetpoints(drive, alignCloseToSource);
     drive.runVelocity(
-        calculateSourceAutoAlignSpeeds(
-            this.drive, this.goalPose, this.xController, this.yController, this.thetaController));
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            calculateSourceAutoAlignSpeeds(
+                this.drive,
+                this.goalPose,
+                this.xController,
+                this.yController,
+                this.thetaController),
+            this.drive.getRotation()));
+    // calculateSourceAutoAlignSpeeds(
+    //     this.drive, this.goalPose, this.xController, this.yController, this.thetaController));
     Logger.recordOutput("Align Source/Goal Pose", this.goalPose);
   }
 

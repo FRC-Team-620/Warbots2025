@@ -204,7 +204,7 @@ public class DriveMeToTheMoon extends Command {
         yOutput = -yController.calculate(ydist);
 
         ChassisSpeeds translationSpeeds = new ChassisSpeeds();
-        //Only applied translational auto align speeds if the tag is in front of the robot
+        // Only applied translational auto align speeds if the tag is in front of the robot
         if (tag.getX() > 0.35) {
           translationSpeeds =
               new ChassisSpeeds(

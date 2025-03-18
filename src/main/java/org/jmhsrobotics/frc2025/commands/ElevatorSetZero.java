@@ -2,21 +2,29 @@ package org.jmhsrobotics.frc2025.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
+import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 
 public class ElevatorSetZero extends Command {
   private Elevator elevator;
+  private Wrist wrist;
   private Timer timer = new Timer();
 
-  public ElevatorSetZero(Elevator elevator) {
+  public ElevatorSetZero(Elevator elevator, Wrist wrist) {
     this.elevator = elevator;
+    this.wrist = wrist;
 
     addRequirements(elevator);
+    addRequirements(wrist);
   }
 
   @Override
   public void initialize() {
     timer.reset();
+    if (wrist.getPositionDegrees() > Constants.WristConstants.kSafeAngleDegrees) {
+      wrist.runOnce(() -> new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees));
+    }
     elevator.setVoltage(-0.5);
   }
 

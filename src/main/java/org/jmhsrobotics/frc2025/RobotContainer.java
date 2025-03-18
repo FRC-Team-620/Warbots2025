@@ -419,7 +419,7 @@ public class RobotContainer {
         .changeModeRight()
         .onTrue(Commands.runOnce(() -> intake.setMode(1), intake).ignoringDisable(true));
 
-    control.zeroElevator().onTrue(new ElevatorSetZero(elevator));
+    control.zeroElevator().onTrue(new ElevatorSetZero(elevator, wrist));
 
     control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));
 
@@ -477,7 +477,7 @@ public class RobotContainer {
         "cmd/SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
     SmartDashboard.putData(
         "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
-    SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
+    SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator, wrist));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, led, 0.5));
     SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, led, -0.5));

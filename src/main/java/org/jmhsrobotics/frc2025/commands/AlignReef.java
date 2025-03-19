@@ -14,6 +14,7 @@ import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class AlignReef extends Command {
@@ -96,26 +97,21 @@ public class AlignReef extends Command {
     }
     xController.setSetpoint(xGoalMeters);
     yController.setSetpoint(yGoalMeters);
+    int targetId = AlignReef.calculateGoalTargetID(thetaGoalDegrees);
     Pose3d tag = null; // TODO: handle seeing more than one reef tag
     for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
       // if(target.id() )
-      if (target.id()
-          == AlignReef.calculateGoalTargetID(
-              thetaGoalDegrees)) { // TODO: janky only work for one tag for now
+      if (target.id() == targetId) { // TODO: janky only work for one tag for now
         tag = target.pose();
       }
 
-      int targetID = AlignReef.calculateGoalTargetID(thetaGoalDegrees);
-      Logger.recordOutput("Align/April Tag Pose3d", tag);
       Logger.recordOutput(
           "Align/Target Tag ID: ", AlignReef.calculateGoalTargetID(thetaGoalDegrees));
       Logger.recordOutput("Align/Drive Angle: ", drive.getPose().getRotation().getDegrees());
     }
     if (tag == null) { // Janky way to use second camera :todo enable after basic testing
       for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
-        if (target.id()
-            == AlignReef.calculateGoalTargetID(
-                thetaGoalDegrees)) { // TODO: janky only work for one tag for now
+        if (target.id() == targetId) { // TODO: janky only work for one tag for now
           tag = target.pose();
         }
       }
@@ -126,6 +122,13 @@ public class AlignReef extends Command {
       tag = new Pose3d(transform.getTranslation(), transform.getRotation());
     }
     Logger.recordOutput("testpos", tag);
+
+    if (tag == null) {
+      Pose3d defaultTagPose =
+          VisionConstants.aprilTagLayout.getTagPose(targetId).orElse(new Pose3d());
+      var tagtransform = defaultTagPose.minus(new Pose3d(drive.getPose()));
+      tag = new Pose3d(tagtransform.getTranslation(), tagtransform.getRotation());
+    }
     if (tag != null) {
       lastTagPose =
           new Pose3d(drive.getPose())

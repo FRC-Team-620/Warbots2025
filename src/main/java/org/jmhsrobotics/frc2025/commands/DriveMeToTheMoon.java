@@ -124,7 +124,11 @@ public class DriveMeToTheMoon extends Command {
       Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, true);
       speeds.plus(
           AlignSource.calculateSourceAutoAlignSpeeds(
-              this.drive, sourceGoalPose, this.xController, this.yController, this.thetaController));
+              this.drive,
+              sourceGoalPose,
+              this.xController,
+              this.yController,
+              this.thetaController));
     } else {
       System.out.println("Auto Aligning Reef");
       speeds = speeds.plus(calculateAutoAlignReefTranslationSpeeds());

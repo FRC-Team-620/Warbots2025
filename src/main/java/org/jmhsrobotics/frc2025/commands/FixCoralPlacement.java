@@ -46,7 +46,7 @@ public class FixCoralPlacement extends Command {
   public void execute() {
     this.coralInIntake = debouncer.calculate(intake.isCoralInIntake());
     if (intake.isCoralInIntake() && !hasPassedSensor) {
-      intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed * 0.8);
+      intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed * 0.7);
     } else {
       hasPassedSensor = true;
       this.timer.start();

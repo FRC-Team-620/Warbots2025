@@ -83,26 +83,38 @@ public class AlignSource extends Command {
    */
   public static Pose2d calculateSetpoints(Drive drive, boolean alignCloseToSource) {
     Pose2d targetPose = new Pose2d();
+
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
       if (drive.getPose().getY() > 4) {
         Pose2d targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(2).orElse(new Pose3d()).toPose2d();
-        if (alignCloseToSource) {
+
+        if (alignCloseToSource)
           targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
-        } else {
-          targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
-        }
+        else targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
       } else {
         Pose2d targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(1).orElse(new Pose3d()).toPose2d();
+
+        if (alignCloseToSource)
+          targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
+        else targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
       }
     } else {
       if (drive.getPose().getY() > 4) {
         Pose2d targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(13).orElse(new Pose3d()).toPose2d();
+
+        if (alignCloseToSource)
+          targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
+        else targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
       } else {
         Pose2d targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(12).orElse(new Pose3d()).toPose2d();
+
+        if (alignCloseToSource)
+          targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
+        else targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
       }
     }
     // if (alignCloseToSource)

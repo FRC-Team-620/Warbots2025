@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2025.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -119,8 +120,13 @@ public class DriveMeToTheMoon extends Command {
 
     // TODO: prevent speed from surpassing maximum
     if (elevator.getSetpoint() == 0 && !intake.isCoralInIntake()) {
-      speeds.plus(calculateAutoAlignSourceSpeeds());
+      System.out.println("Auto Aligning Source");
+      Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, true);
+      speeds.plus(
+          AlignSource.calculateSourceAutoAlignSpeeds(
+              this.drive, sourceGoalPose, this.xController, this.yController, this.thetaController));
     } else {
+      System.out.println("Auto Aligning Reef");
       speeds = speeds.plus(calculateAutoAlignReefTranslationSpeeds());
       speeds = speeds.plus(calculateAutoAlignThetaSpeeds());
     }
@@ -238,10 +244,6 @@ public class DriveMeToTheMoon extends Command {
     // speeds object if auto align is not being attempted
     drive.setAutoAlignComplete(false);
     this.lastTagPose = null;
-    return new ChassisSpeeds();
-  }
-
-  private ChassisSpeeds calculateAutoAlignSourceSpeeds() {
     return new ChassisSpeeds();
   }
 

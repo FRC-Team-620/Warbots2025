@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2025.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -17,6 +18,7 @@ import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
+import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.littletonrobotics.junction.Logger;
@@ -25,10 +27,11 @@ public class DriveMeToTheMoon extends Command {
   private final Drive drive;
   private final Vision vision;
   private final Elevator elevator;
+  private final Intake intake;
 
-  private final PIDController xController = new PIDController(0.5, 0, 0);
-  private final PIDController yController = new PIDController(0.5, 0, 0);
-  private final PIDController thetaController = new PIDController(0.1, 0, 0);
+  private final PIDController xController = new PIDController(0.6, 0, 0);
+  private final PIDController yController = new PIDController(0.6, 0, 0);
+  private final PIDController thetaController = new PIDController(0.01, 0, 0);
   private double thetaGoalDegrees = 0;
   Transform2d goalTransform = new Transform2d();
 
@@ -44,6 +47,7 @@ public class DriveMeToTheMoon extends Command {
       Drive drive,
       Vision vision,
       Elevator elevator,
+      Intake intake,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
@@ -52,6 +56,7 @@ public class DriveMeToTheMoon extends Command {
     this.drive = drive;
     this.vision = vision;
     this.elevator = elevator;
+    this.intake = intake;
 
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
@@ -114,8 +119,36 @@ public class DriveMeToTheMoon extends Command {
             isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation());
 
     // TODO: prevent speed from surpassing maximum
-    speeds = speeds.plus(calculateAutoAlignThetaSpeeds());
-    speeds = speeds.plus(calculateAutoAlignTranslationSpeeds());
+    if (elevator.getSetpoint() == 0 && !intake.isCoralInIntake()) {
+      System.out.println("Auto Aligning Source");
+      if (rightTriggerValue.getAsDouble() > 0.5) {
+        Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, true);
+        speeds =
+            speeds.plus(
+                AlignSource.calculateSourceAutoAlignSpeeds(
+                    this.drive,
+                    sourceGoalPose,
+                    this.xController,
+                    this.yController,
+                    this.thetaController));
+      }
+      if (leftTriggerValue.getAsDouble() > 0.5) {
+        Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, false);
+        speeds =
+            speeds.plus(
+                AlignSource.calculateSourceAutoAlignSpeeds(
+                    this.drive,
+                    sourceGoalPose,
+                    this.xController,
+                    this.yController,
+                    this.thetaController));
+      }
+    } else {
+      System.out.println("Auto Aligning Reef");
+      speeds = speeds.plus(calculateAutoAlignReefTranslationSpeeds());
+      speeds = speeds.plus(calculateAutoAlignThetaSpeeds());
+    }
+
     drive.runVelocity(speeds);
     int targetId =
         AlignReef.calculateGoalTargetID(
@@ -146,7 +179,7 @@ public class DriveMeToTheMoon extends Command {
    *
    * @return ChassisSpeed Object
    */
-  private ChassisSpeeds calculateAutoAlignTranslationSpeeds() {
+  private ChassisSpeeds calculateAutoAlignReefTranslationSpeeds() {
     boolean isRight = rightTriggerValue.getAsDouble() >= leftTriggerValue.getAsDouble();
     Transform2d goalTransform =
         getReefOffset(elevator.getSetpoint(), isRight); // TODO: add offset for algae
@@ -190,6 +223,7 @@ public class DriveMeToTheMoon extends Command {
         var tagtransform = defaultTagPose.minus(new Pose3d(drive.getPose()));
         tag = new Pose3d(tagtransform.getTranslation(), tagtransform.getRotation());
       }
+
       // if there is a tag position, calculates the PID outputs
       if (tag != null) {
         lastTagPose =

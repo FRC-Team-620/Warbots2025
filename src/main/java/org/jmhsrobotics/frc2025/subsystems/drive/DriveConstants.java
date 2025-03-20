@@ -23,7 +23,6 @@ import edu.wpi.first.math.util.Units;
 public class DriveConstants {
 
   public static final double maxSpeedMetersPerSec = 4.8768;
-  public static final double alignSpeedMetersPerSec = 1.8;
 
   // change coefficients when we want to implement turbo
   public static final double turboCoefficient = 1;

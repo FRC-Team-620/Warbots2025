@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.jmhsrobotics.frc2025.commands.AlignReef;
+import org.jmhsrobotics.frc2025.commands.AlignSource;
 import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.ClimberToAngle;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
@@ -262,6 +263,7 @@ public class RobotContainer {
             drive,
             vision,
             elevator,
+            intake,
             () -> -control.translationY(),
             () -> -control.translationX(),
             () -> -control.rotation(),
@@ -419,7 +421,12 @@ public class RobotContainer {
         .changeModeRight()
         .onTrue(Commands.runOnce(() -> intake.setMode(1), intake).ignoringDisable(true));
 
-    control.zeroElevator().onTrue(new ElevatorSetZero(elevator));
+    control
+        .zeroElevator()
+        .onTrue(
+            new SequentialCommandGroup(
+                new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees),
+                new ElevatorSetZero(elevator)));
 
     control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));
 
@@ -496,6 +503,8 @@ public class RobotContainer {
         "cmd/activate turbo mode", Commands.runOnce(() -> drive.setTurboMode(true), drive));
     SmartDashboard.putData(
         "cmd/deactivate turbo mode", Commands.runOnce(() -> drive.setTurboMode(false), drive));
+    SmartDashboard.putData("cmd/Align Source Close", new AlignSource(drive, true));
+    SmartDashboard.putData("cmd/Align Source Far", new AlignSource(drive, false));
   }
 
   private void configurePathPlanner() {

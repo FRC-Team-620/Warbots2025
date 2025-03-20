@@ -36,7 +36,7 @@ public final class Constants {
   public static final int[] kProcessorAprilTags = new int[] {12, 13, 2, 1};
   public static final double kReefAngleInc = 60.0;
   public static final double kProcessorAngle = 90.0;
-  public static final double[] loadingStationAngles = new double[] {-45.0, 45.0}; // Placeholders
+  public static final double[] loadingStationAngles = new double[] {-54.0, 54.0}; // Placeholders
 
   public static class CAN {
     public static final int kElevatorMotorLeftID = 30;

@@ -16,7 +16,7 @@ public class ControllerMonitor {
               != null) { // Weird Work around, controler.isConnected does not seem to work correctly
         // when reconnecting. See
         // https://github.com/wpilibsuite/allwpilib/issues/7700
-        controllermap.get(control)[0].set((control.getAxisCount() == 6));
+        controllermap.get(control)[0].set(!(control.getButtonCount() == 10));
         controllermap.get(control)[1].set(false);
       } else {
 

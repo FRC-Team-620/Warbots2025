@@ -124,6 +124,7 @@ public class DriveMeToTheMoon extends Command {
       boolean alignCloseToSource =
           (rightTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() > 4)
               || (leftTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() < 4);
+
       if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
         Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, alignCloseToSource);
         speeds =

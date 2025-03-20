@@ -282,15 +282,10 @@ public class DriveMeToTheMoon extends Command {
       this.thetaGoalDegrees = AlignReef.calculateGoalAngle(drive.getRotation().getDegrees());
 
       thetaController.setSetpoint(thetaGoalDegrees);
+      var thetaOut = thetaController.calculate(drive.getPose().getRotation().getDegrees());
 
-      if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
-        thetaSpeed =
-            thetaSpeed.plus(
-                new ChassisSpeeds(
-                    0,
-                    0,
-                    thetaController.calculate(drive.getPose().getRotation().getDegrees()) * 0.5));
-      }
+      thetaSpeed =
+          thetaSpeed.plus(new ChassisSpeeds(0, 0, thetaOut * drive.getMaxAngularSpeedRadPerSec()));
       return thetaSpeed;
     }
     return new ChassisSpeeds();

@@ -83,15 +83,15 @@ public class AlignSource extends Command {
             VisionConstants.aprilTagLayout.getTagPose(2).orElse(new Pose3d()).toPose2d();
 
         if (alignCloseToSource)
-          targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
-        else targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
+          targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
+        else targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
       } else {
         Pose2d targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(1).orElse(new Pose3d()).toPose2d();
 
         if (alignCloseToSource)
-          targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
-        else targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
+          targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
+        else targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
       }
     } else {
       if (drive.getPose().getY() > 4) {

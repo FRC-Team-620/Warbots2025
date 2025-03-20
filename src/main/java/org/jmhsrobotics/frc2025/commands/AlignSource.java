@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
-import org.littletonrobotics.junction.Logger;
 
 public class AlignSource extends Command {
   private Drive drive;
@@ -45,17 +44,11 @@ public class AlignSource extends Command {
   public void execute() {
     this.goalPose = calculateSetpoints(drive, alignCloseToStation);
     drive.runVelocity(
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-            calculateSourceAutoAlignSpeeds(
-                this.drive,
-                this.goalPose,
-                this.xController,
-                this.yController,
-                this.thetaController),
-            this.drive.getRotation()));
+        calculateSourceAutoAlignSpeeds(
+            this.drive, this.goalPose, this.xController, this.yController, this.thetaController));
     // calculateSourceAutoAlignSpeeds(
     //     this.drive, this.goalPose, this.xController, this.yController, this.thetaController));
-    Logger.recordOutput("Align Source/Goal Pose", this.goalPose);
+    // Logger.recordOutput("Align Source/Goal Pose", this.goalPose);
   }
 
   @Override
@@ -152,6 +145,6 @@ public class AlignSource extends Command {
             yOutput * drive.getMaxLinearSpeedMetersPerSec(),
             thetaOutput * drive.getMaxAngularSpeedRadPerSec());
 
-    return outputSpeeds;
+    return ChassisSpeeds.fromFieldRelativeSpeeds(outputSpeeds, drive.getRotation());
   }
 }

@@ -104,10 +104,6 @@ public class AlignReef extends Command {
       if (target.id() == targetId) { // TODO: janky only work for one tag for now
         tag = target.pose();
       }
-
-      Logger.recordOutput(
-          "Align/Target Tag ID: ", AlignReef.calculateGoalTargetID(thetaGoalDegrees));
-      Logger.recordOutput("Align/Drive Angle: ", drive.getPose().getRotation().getDegrees());
     }
     if (tag == null) { // Janky way to use second camera :todo enable after basic testing
       for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
@@ -116,7 +112,10 @@ public class AlignReef extends Command {
         }
       }
     }
+    Logger.recordOutput("Align/Target Tag ID: ", AlignReef.calculateGoalTargetID(thetaGoalDegrees));
+    Logger.recordOutput("Align/Drive Angle: ", drive.getPose().getRotation().getDegrees());
     System.out.println(tag);
+
     if (tag == null && lastTagPose != null) {
       Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
       tag = new Pose3d(transform.getTranslation(), transform.getRotation());
@@ -126,9 +125,12 @@ public class AlignReef extends Command {
     if (tag == null) {
       Pose3d defaultTagPose =
           VisionConstants.aprilTagLayout.getTagPose(targetId).orElse(new Pose3d());
-      var tagtransform = defaultTagPose.minus(new Pose3d(drive.getPose()));
-      tag = new Pose3d(tagtransform.getTranslation(), tagtransform.getRotation());
+      var tagTransform = defaultTagPose.minus(new Pose3d(drive.getPose()));
+      // var tagTransform = new Pose3d(drive.getPose()).minus(defaultTagPose);
+      tag = new Pose3d(tagTransform.getTranslation(), tagTransform.getRotation());
     }
+
+    Logger.recordOutput("AutoAlignReef/Goal Position", tag);
     if (tag != null) {
       lastTagPose =
           new Pose3d(drive.getPose())
@@ -152,9 +154,9 @@ public class AlignReef extends Command {
       // drive.stop();
     }
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
-    if (tag == null && lastTagPose == null) {
-      drive.runVelocity(new ChassisSpeeds(0.2, 0, 0));
-    }
+    // if (tag == null && lastTagPose == null) {
+    //   drive.runVelocity(new ChassisSpeeds(0.2, 0, 0));
+    // }
   }
 
   /**

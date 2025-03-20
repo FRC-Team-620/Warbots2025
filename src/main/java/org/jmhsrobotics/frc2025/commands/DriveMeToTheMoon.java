@@ -121,14 +121,28 @@ public class DriveMeToTheMoon extends Command {
     // TODO: prevent speed from surpassing maximum
     if (elevator.getSetpoint() == 0 && !intake.isCoralInIntake()) {
       System.out.println("Auto Aligning Source");
-      Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, true);
-      speeds.plus(
-          AlignSource.calculateSourceAutoAlignSpeeds(
-              this.drive,
-              sourceGoalPose,
-              this.xController,
-              this.yController,
-              this.thetaController));
+      if (rightTriggerValue.getAsDouble() > 0.5) {
+        Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, true);
+        speeds =
+            speeds.plus(
+                AlignSource.calculateSourceAutoAlignSpeeds(
+                    this.drive,
+                    sourceGoalPose,
+                    this.xController,
+                    this.yController,
+                    this.thetaController));
+      }
+      if (leftTriggerValue.getAsDouble() > 0.5) {
+        Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, false);
+        speeds =
+            speeds.plus(
+                AlignSource.calculateSourceAutoAlignSpeeds(
+                    this.drive,
+                    sourceGoalPose,
+                    this.xController,
+                    this.yController,
+                    this.thetaController));
+      }
     } else {
       System.out.println("Auto Aligning Reef");
       speeds = speeds.plus(calculateAutoAlignReefTranslationSpeeds());

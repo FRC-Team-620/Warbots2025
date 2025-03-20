@@ -25,7 +25,7 @@ public class AlignReef extends Command {
 
   private final PIDController xController = new PIDController(0.6, 0, 0);
   private final PIDController yController = new PIDController(0.6, 0, 0);
-  private final PIDController thetaController = new PIDController(0.1, 0, 0);
+  private final PIDController thetaController = new PIDController(0.01, 0, 0);
   private double xGoalMeters = 0.48;
   private double yGoalMeters = Units.inchesToMeters(-7.375);
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
@@ -142,8 +142,8 @@ public class AlignReef extends Command {
       var x = -xController.calculate(xdist);
       var y = -yController.calculate(ydist);
       var thetaOut =
-          thetaController.calculate(drive.getPose().getRotation().getDegrees())
-              * 0.1; // Janky clamping todo remove
+          thetaController.calculate(
+              drive.getPose().getRotation().getDegrees()); // Janky clamping todo remove
       var speed =
           new ChassisSpeeds(
               x * drive.getMaxLinearSpeedMetersPerSec(),

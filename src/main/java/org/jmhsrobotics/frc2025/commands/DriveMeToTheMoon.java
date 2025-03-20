@@ -29,9 +29,9 @@ public class DriveMeToTheMoon extends Command {
   private final Elevator elevator;
   private final Intake intake;
 
-  private final PIDController xController = new PIDController(0.5, 0, 0);
-  private final PIDController yController = new PIDController(0.5, 0, 0);
-  private final PIDController thetaController = new PIDController(0.1, 0, 0);
+  private final PIDController xController = new PIDController(0.6, 0, 0);
+  private final PIDController yController = new PIDController(0.6, 0, 0);
+  private final PIDController thetaController = new PIDController(0.01, 0, 0);
   private double thetaGoalDegrees = 0;
   Transform2d goalTransform = new Transform2d();
 

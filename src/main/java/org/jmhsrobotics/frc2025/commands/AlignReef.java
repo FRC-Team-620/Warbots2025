@@ -14,6 +14,7 @@ import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class AlignReef extends Command {
@@ -24,7 +25,7 @@ public class AlignReef extends Command {
 
   private final PIDController xController = new PIDController(0.6, 0, 0);
   private final PIDController yController = new PIDController(0.6, 0, 0);
-  private final PIDController thetaController = new PIDController(0.1, 0, 0);
+  private final PIDController thetaController = new PIDController(0.01, 0, 0);
   private double xGoalMeters = 0.48;
   private double yGoalMeters = Units.inchesToMeters(-7.375);
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
@@ -72,7 +73,6 @@ public class AlignReef extends Command {
 
     thetaController.setSetpoint(thetaGoalDegrees);
     thetaController.enableContinuousInput(-180, 180);
-    drive.stop();
   }
 
   @Override
@@ -97,36 +97,40 @@ public class AlignReef extends Command {
     }
     xController.setSetpoint(xGoalMeters);
     yController.setSetpoint(yGoalMeters);
+    int targetId = AlignReef.calculateGoalTargetID(thetaGoalDegrees);
     Pose3d tag = null; // TODO: handle seeing more than one reef tag
     for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
       // if(target.id() )
-      if (target.id()
-          == AlignReef.calculateGoalTargetID(
-              thetaGoalDegrees)) { // TODO: janky only work for one tag for now
+      if (target.id() == targetId) { // TODO: janky only work for one tag for now
         tag = target.pose();
       }
-
-      int targetID = AlignReef.calculateGoalTargetID(thetaGoalDegrees);
-      Logger.recordOutput("Align/April Tag Pose3d", tag);
-      Logger.recordOutput(
-          "Align/Target Tag ID: ", AlignReef.calculateGoalTargetID(thetaGoalDegrees));
-      Logger.recordOutput("Align/Drive Angle: ", drive.getPose().getRotation().getDegrees());
     }
     if (tag == null) { // Janky way to use second camera :todo enable after basic testing
       for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
-        if (target.id()
-            == AlignReef.calculateGoalTargetID(
-                thetaGoalDegrees)) { // TODO: janky only work for one tag for now
+        if (target.id() == targetId) { // TODO: janky only work for one tag for now
           tag = target.pose();
         }
       }
     }
+    Logger.recordOutput("Align/Target Tag ID: ", AlignReef.calculateGoalTargetID(thetaGoalDegrees));
+    Logger.recordOutput("Align/Drive Angle: ", drive.getPose().getRotation().getDegrees());
     System.out.println(tag);
+
     if (tag == null && lastTagPose != null) {
       Transform3d transform = new Pose3d(drive.getPose()).minus(lastTagPose);
       tag = new Pose3d(transform.getTranslation(), transform.getRotation());
     }
     Logger.recordOutput("testpos", tag);
+
+    if (tag == null) {
+      Pose3d defaultTagPose =
+          VisionConstants.aprilTagLayout.getTagPose(targetId).orElse(new Pose3d());
+      var tagTransform = defaultTagPose.minus(new Pose3d(drive.getPose()));
+      // var tagTransform = new Pose3d(drive.getPose()).minus(defaultTagPose);
+      tag = new Pose3d(tagTransform.getTranslation(), tagTransform.getRotation());
+    }
+
+    Logger.recordOutput("AutoAlignReef/Goal Position", tag);
     if (tag != null) {
       lastTagPose =
           new Pose3d(drive.getPose())
@@ -138,8 +142,8 @@ public class AlignReef extends Command {
       var x = -xController.calculate(xdist);
       var y = -yController.calculate(ydist);
       var thetaOut =
-          thetaController.calculate(drive.getPose().getRotation().getDegrees())
-              * 0.1; // Janky clamping todo remove
+          thetaController.calculate(
+              drive.getPose().getRotation().getDegrees()); // Janky clamping todo remove
       var speed =
           new ChassisSpeeds(
               x * drive.getMaxLinearSpeedMetersPerSec(),
@@ -150,9 +154,9 @@ public class AlignReef extends Command {
       // drive.stop();
     }
     Logger.recordOutput("Align/Last Tag Pose", lastTagPose);
-    if (tag == null && lastTagPose == null) {
-      drive.runVelocity(new ChassisSpeeds(0.2, 0, 0));
-    }
+    // if (tag == null && lastTagPose == null) {
+    //   drive.runVelocity(new ChassisSpeeds(0.2, 0, 0));
+    // }
   }
 
   /**

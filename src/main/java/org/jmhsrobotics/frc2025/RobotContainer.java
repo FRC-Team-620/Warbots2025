@@ -578,7 +578,7 @@ public class RobotContainer {
       //           new IntakeFromIndexer(wrist, intake).withTimeout(3)));
 
       NamedCommands.registerCommand(
-          "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(2));
+          "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(1.2));
     } else {
       NamedCommands.registerCommand(
           "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led));
@@ -597,6 +597,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Drivetrain", Commands.runOnce(() -> drive.stop(), drive));
 
     NamedCommands.registerCommand("Drive Backwards", new DriveBackwards(drive));
+
+    NamedCommands.registerCommand("Align Source", new AlignSource(drive, false));
   }
 
   public Command getToggleBrakeCommand() {

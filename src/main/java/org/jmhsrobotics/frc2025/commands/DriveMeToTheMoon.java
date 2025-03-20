@@ -121,8 +121,11 @@ public class DriveMeToTheMoon extends Command {
     // TODO: prevent speed from surpassing maximum
     if (elevator.getSetpoint() == 0 && !intake.isCoralInIntake()) {
       System.out.println("Auto Aligning Source");
-      if (rightTriggerValue.getAsDouble() > 0.5) {
-        Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, true);
+      boolean alignCloseToSource =
+          (rightTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() > 4)
+              || (leftTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() < 4);
+      if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
+        Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, alignCloseToSource);
         speeds =
             speeds.plus(
                 AlignSource.calculateSourceAutoAlignSpeeds(
@@ -133,7 +136,7 @@ public class DriveMeToTheMoon extends Command {
                     this.thetaController));
       }
       if (leftTriggerValue.getAsDouble() > 0.5) {
-        Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, false);
+        Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, alignCloseToSource);
         speeds =
             speeds.plus(
                 AlignSource.calculateSourceAutoAlignSpeeds(

@@ -128,7 +128,7 @@ public class DriveMeToTheMoon extends Command {
         Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, alignCloseToSource);
         speeds =
             speeds.plus(
-                AutoAlign.calculateSourceAutoAlignSpeeds(
+                AutoAlign.getSourceAlignSpeeds(
                     this.drive,
                     sourceGoalPose,
                     this.xController,
@@ -139,7 +139,7 @@ public class DriveMeToTheMoon extends Command {
         Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, alignCloseToSource);
         speeds =
             speeds.plus(
-                AutoAlign.calculateSourceAutoAlignSpeeds(
+                AutoAlign.getSourceAlignSpeeds(
                     this.drive,
                     sourceGoalPose,
                     this.xController,
@@ -148,13 +148,18 @@ public class DriveMeToTheMoon extends Command {
       }
     } else {
       speeds = speeds.plus(calculateAutoAlignReefTranslationSpeeds());
-      speeds = speeds.plus(AutoAlign.calculateAutoAlignThetaSpeeds(this.thetaController, AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees()), drive.getRotation()));
+      speeds =
+          speeds.plus(
+              AutoAlign.getAutoAlignThetaSpeeds(
+                  this.thetaController,
+                  AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees()),
+                  drive.getRotation()));
     }
 
     drive.runVelocity(speeds);
     int targetId =
-      AutoAlign.calculateGoalTargetID(
-          AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees()));
+        AutoAlign.calculateGoalTargetID(
+            AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees()));
 
     Logger.recordOutput("X speed", speeds.vxMetersPerSecond);
     Logger.recordOutput("Y Speed", speeds.vyMetersPerSecond);

@@ -1,26 +1,28 @@
 package org.jmhsrobotics.frc2025.commands;
 
-import org.jmhsrobotics.frc2025.Constants;
-import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
-import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
+import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
+import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 
-public class AutoAlign{
-    /**
+public class AutoAlign {
+  /**
    * Determines the target april tag ID based on the goal angle and alliance color. Ignores opposite
    * team's tags
    *
    * @return April tag ID
    */
-  public static int calculateGoalTargetID(double angle_deg) {
+  public static int calculateGoalTargetID(double thetaGoalDegrees) {
     // red side tags
     // back - 10
     // front 7
@@ -28,24 +30,24 @@ public class AutoAlign{
     // if current alliance is blue, use the following april tags
     // default team is blue
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-      if (angle_deg == 0) return 18;
-      else if (angle_deg == 60) return 17;
-      else if (angle_deg == 120) return 22;
-      else if (angle_deg == 180) return 21;
-      else if (angle_deg == -60) return 19;
+      if (thetaGoalDegrees == 0) return 18;
+      else if (thetaGoalDegrees == 60) return 17;
+      else if (thetaGoalDegrees == 120) return 22;
+      else if (thetaGoalDegrees == 180) return 21;
+      else if (thetaGoalDegrees == -60) return 19;
       else return 20;
     }
     // if current alliance is red, use the following april tags
     int invert = 180;
-    if (angle_deg == 0 + invert) return 7;
-    else if (angle_deg == -120) return 8;
-    else if (angle_deg == 0) return 10;
-    else if (angle_deg == 120) return 6;
-    else if (angle_deg == -60) return 9;
+    if (thetaGoalDegrees == 0 + invert) return 7;
+    else if (thetaGoalDegrees == -120) return 8;
+    else if (thetaGoalDegrees == 0) return 10;
+    else if (thetaGoalDegrees == 120) return 6;
+    else if (thetaGoalDegrees == -60) return 9;
     else return 11;
   }
 
-    /**
+  /**
    * Determines the goal angle based on the current angle by choosing the closest one
    *
    * @param driveAngle
@@ -68,19 +70,22 @@ public class AutoAlign{
    *
    * @return
    */
-  public static ChassisSpeeds calculateAutoAlignThetaSpeeds(PIDController thetaController, double thetaGoalDegrees, Rotation2d rotation) {
-      ChassisSpeeds thetaSpeed = new ChassisSpeeds();
-      thetaGoalDegrees = AutoAlign.calculateGoalAngle(rotation.getDegrees());
+  public static ChassisSpeeds getAutoAlignThetaSpeeds(
+      PIDController thetaController, double thetaGoalDegrees, Rotation2d currentRotation) {
+    ChassisSpeeds thetaSpeed = new ChassisSpeeds();
+    thetaGoalDegrees = AutoAlign.calculateGoalAngle(currentRotation.getDegrees());
 
-      thetaController.setSetpoint(thetaGoalDegrees);
-      var thetaOut = thetaController.calculate(rotation.getDegrees());
+    thetaController.setSetpoint(thetaGoalDegrees);
+    var thetaOut = thetaController.calculate(currentRotation.getDegrees());
 
-      thetaSpeed =
-          thetaSpeed.plus(new ChassisSpeeds(0, 0, thetaOut * DriveConstants.thriftyConstants.maxAngularSpeedRadPerSec));
-      return thetaSpeed;
+    thetaSpeed =
+        thetaSpeed.plus(
+            new ChassisSpeeds(
+                0, 0, thetaOut * DriveConstants.thriftyConstants.maxAngularSpeedRadPerSec));
+    return thetaSpeed;
   }
 
-    /**
+  /**
    * calculates chassis speeds output for source auto align based on a setpoint and PID controllers
    * passed in
    *
@@ -91,7 +96,7 @@ public class AutoAlign{
    * @param thetaController
    * @return ChassisSpeeds object with x, y, and angular speeds
    */
-  public static ChassisSpeeds calculateSourceAutoAlignSpeeds(
+  public static ChassisSpeeds getSourceAlignSpeeds(
       Drive drive,
       Pose2d setpoint,
       PIDController xController,
@@ -113,18 +118,62 @@ public class AutoAlign{
     return ChassisSpeeds.fromFieldRelativeSpeeds(outputSpeeds, drive.getRotation());
   }
 
-  public static Transform3d calculateReefTransform(double elevatorSetpoint, int controlMode, boolean isRight){
-    Transform3d goalTransform = new Transform3d();
-    if (elevatorSetpoint == Constants.ElevatorConstants.kLevel2Meters || elevatorSetpoint == Constants.ElevatorConstants.kLevel3Meters){
-      // goalTransform.plus(new Transform3d())/
+  /**
+   * Calculates the proper reef transformtion form the april tag based on elevator setpoint and if
+   * aligning left or right
+   *
+   * @param elevatorSetpoint
+   * @param isLeft
+   * @return Transform2d goal from the tag position
+   */
+  public static Transform2d calculateReefTransform(double elevatorSetpoint, boolean isLeft) {
+    double yTransform = 0;
+    double xTransform = 0;
+
+    if (elevatorSetpoint == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
+        || elevatorSetpoint == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) {
+      xTransform = 0.7;
+    } else {
+      yTransform = isLeft ? Units.inchesToMeters(-7.375) : Units.inchesToMeters(7.375);
+      if (elevatorSetpoint == Constants.ElevatorConstants.kLevel2Meters
+          || elevatorSetpoint == Constants.ElevatorConstants.kLevel3Meters) xTransform = 0.45;
+      else xTransform = 0.5;
     }
-    //L2/3
-    //L4
-    //Algae
-    return goalTransform;
+    return new Transform2d(xTransform, yTransform, new Rotation2d());
   }
 
-  public static Pose3d calculateReefSetpoint(int tag, Transform3d transform){
-    return new Pose3d();
+  public static Pose3d getTagPoseRobotRelative(
+      int targetId, Vision vision, Pose3d lastPose, Pose2d drivePose) {
+    Pose3d tagPose = null;
+    // looks at first cam to see if it sees the target tag
+    for (var target : vision.getTagPoses(0)) {
+      if (target.id() == targetId) tagPose = target.pose();
+    }
+    // Checks if other camera can see the tag if pose is still null
+    if (tagPose == null) {
+      for (var target : vision.getTagPoses(1)) {
+        if (target.id() == targetId) tagPose = target.pose();
+      }
+    }
+    // If tag is null estimates its position based on its last known pose
+    if (tagPose == null && lastPose != null) {
+      Transform3d transform = new Pose3d(drivePose).minus(lastPose);
+      tagPose = new Pose3d(transform.getTranslation(), transform.getRotation());
+    }
+    // TODO: Add Odometry tag pose esitmation if tag is out of view
+    return tagPose;
+  }
+
+  public static ChassisSpeeds getReefAlignSpeeds(
+      Pose3d tagPose,
+      Transform2d goalTransform,
+      PIDController xController,
+      PIDController yController) {
+    double xOutput = -xController.calculate(tagPose.getX(), goalTransform.getX());
+    double yOutput = -yController.calculate(tagPose.getY(), goalTransform.getY());
+    return new ChassisSpeeds(
+        xOutput * DriveConstants.maxSpeedMetersPerSec,
+        yOutput * DriveConstants.maxSpeedMetersPerSec,
+        0);
   }
 }

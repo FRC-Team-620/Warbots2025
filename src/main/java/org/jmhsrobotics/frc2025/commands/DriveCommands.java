@@ -21,7 +21,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -37,12 +36,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
-import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
-import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
-import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.05;
@@ -74,155 +69,6 @@ public class DriveCommands {
     return new Pose2d(new Translation2d(), linearDirection)
         .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d()))
         .getTranslation();
-  }
-
-  /**
-   * Field relative drive command using two joysticks (controlling linear and angular velocities).
-   */
-  public static Command joystickDrive(
-      Drive drive,
-      Vision vision,
-      Elevator elevator,
-      DoubleSupplier xSupplier,
-      DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier,
-      DoubleSupplier leftTriggerValue,
-      DoubleSupplier rightTriggerValue) {
-
-    // double thetaGoalDegrees = 0; // Janky
-    // super janky needs to be cleaned :(
-    double xGoal = 0.48;
-    double yGoal = 0;
-    xController.reset();
-    yController.reset();
-    thetaController.reset();
-    xController.setSetpoint(xGoal);
-    yController.setSetpoint(yGoal);
-
-    thetaController.enableContinuousInput(-180, 180);
-
-    return Commands.run(
-        () -> {
-          // Get linear velocity
-          Translation2d linearVelocity =
-              getLinearVelocityFromJoysticks(
-                  Math.copySign(
-                      xSupplier.getAsDouble() * xSupplier.getAsDouble(), xSupplier.getAsDouble()),
-                  Math.copySign(
-                      ySupplier.getAsDouble() * ySupplier.getAsDouble(), ySupplier.getAsDouble()));
-
-          // Apply rotation deadband
-          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.6, DEADBAND);
-
-          // Square rotation value for more precise control
-          omega = Math.copySign(omega * omega, omega);
-
-          double xGoalMeters = 0.48;
-          double yGoalMeters = Units.inchesToMeters(7.375);
-
-          if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
-              || elevator.getSetpoint() == Constants.ElevatorConstants.kLevel3Meters) {
-            xGoalMeters = 0.43;
-            if (leftTriggerValue.getAsDouble() > 0.5) yGoalMeters = Units.inchesToMeters(-7.375);
-            else yGoalMeters = Units.inchesToMeters(7.375);
-            // if elevator setpoint is at L4, stay a little further back
-          } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters) {
-            xGoalMeters = 0.50;
-            if (leftTriggerValue.getAsDouble() > 0.5) yGoalMeters = Units.inchesToMeters(-7.375);
-            else yGoalMeters = Units.inchesToMeters(7.375);
-            // if elevator setpoint is at an algae level, stay a little further out and in the
-            // center
-          } else if (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
-              || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) {
-            xGoalMeters = 0.65;
-            yGoalMeters = 0;
-          }
-          boolean lockTarget = false;
-          if (leftTriggerValue.getAsDouble() > 0.5) {
-            lockTarget = true;
-            xController.setSetpoint(xGoalMeters);
-            yController.setSetpoint(yGoalMeters);
-          } else if (rightTriggerValue.getAsDouble() > 0.5) {
-            lockTarget = true;
-            xController.setSetpoint(xGoalMeters);
-            yController.setSetpoint(yGoalMeters);
-          }
-          // initializing the lock target speeds outside if statement so they are accessable to add
-          // onto the joystick drive
-          var pidout = new ChassisSpeeds();
-          double driveAngle = drive.getRotation().getDegrees();
-          if (lockTarget) {
-            double thetaGoalDegrees = AlignReef.calculateGoalAngle(driveAngle);
-
-            thetaController.setSetpoint(thetaGoalDegrees);
-
-            Pose3d tag = null; // TODO: handle seeing more than one reef tag
-            for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
-              // if(target.id() )
-              if (target.id()
-                  == AlignReef.calculateGoalTargetID(
-                      thetaGoalDegrees)) { // TODO: janky only work for one tag for now
-                System.out.println("Target Tag ID: " + target.id());
-                tag = target.pose();
-              }
-            }
-            if (tag == null) { // Janky way to use second camera :todo enable after basic testing
-              for (var target : vision.getTagPoses(1)) { // TODO: Handle more than one camera
-                if (target.id()
-                    == AlignReef.calculateGoalTargetID(thetaGoalDegrees)) { // TODO: janky only
-                  // work for one tag for now
-                  tag = target.pose();
-                }
-              }
-            }
-            // System.out.println(tag);
-            if (tag == null && DriveCommands.lastTagPose != null) {
-              Transform3d transform = new Pose3d(drive.getPose()).minus(DriveCommands.lastTagPose);
-              tag = new Pose3d(transform.getTranslation(), transform.getRotation());
-            }
-            Logger.recordOutput("testpos", tag);
-            if (tag != null) {
-              double theta = -Math.toDegrees(Math.atan2(tag.getY(), tag.getX()));
-              double xdist = tag.getX();
-              double ydist = tag.getY();
-              var x = -xController.calculate(xdist);
-              var y = -yController.calculate(ydist);
-              var thetaOut =
-                  thetaController.calculate(drive.getPose().getRotation().getDegrees())
-                      * 0.1; // Janky clamping todo remove
-              pidout =
-                  new ChassisSpeeds(
-                      x * drive.getMaxLinearSpeedMetersPerSec(),
-                      y * drive.getMaxLinearSpeedMetersPerSec(),
-                      thetaOut * drive.getMaxAngularSpeedRadPerSec());
-            } else {
-              // drive.stop();
-            }
-          }
-          boolean isFlipped =
-              DriverStation.getAlliance().isPresent()
-                  && DriverStation.getAlliance().get() == Alliance.Red;
-          double invert = -1;
-          // Convert to field relative speeds & send command
-          ChassisSpeeds speeds =
-              new ChassisSpeeds(
-                  (linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec()
-                          - pidout.vxMetersPerSecond)
-                      * invert,
-                  (linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec()
-                          - pidout.vyMetersPerSecond)
-                      * invert,
-                  omega * drive.getMaxAngularSpeedRadPerSec() + pidout.omegaRadiansPerSecond);
-
-          speeds =
-              ChassisSpeeds.fromFieldRelativeSpeeds(
-                  speeds,
-                  isFlipped
-                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                      : drive.getRotation());
-          drive.runVelocity(speeds);
-        },
-        drive);
   }
 
   /**

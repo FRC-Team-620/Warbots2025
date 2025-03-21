@@ -1,5 +1,7 @@
 package org.jmhsrobotics.frc2025.subsystems.led;
 
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -31,6 +33,6 @@ public class LED extends SubsystemBase {
   }
 
   public void setPattern(LEDPattern pattern) {
-    this.pattern = pattern;
+    this.pattern = pattern.atBrightness(Dimensionless.ofRelativeUnits(60, Units.Percent));
   }
 }

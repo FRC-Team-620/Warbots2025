@@ -16,9 +16,9 @@ public class LEDToControlMode extends Command {
   private final LEDPattern searchModePattern = LEDPattern.rainbow(255, 255);
   private final LEDPattern scrollingRainbow =
       searchModePattern.scrollAtAbsoluteSpeed(
-          MetersPerSecond.of(0.1), Constants.LEDConstants.kSpacing);
+          MetersPerSecond.of(0.5), Constants.LEDConstants.kSpacing);
 
-  private final LEDPattern algaeModePattern = LEDPattern.solid(Color.kLightSeaGreen);
+  private final LEDPattern algaeModePattern = LEDPattern.solid(Color.kGreen);
   private final LEDPattern coralModePattern = LEDPattern.solid(Color.kFuchsia);
 
   public LEDToControlMode(LED led, Intake intake) {

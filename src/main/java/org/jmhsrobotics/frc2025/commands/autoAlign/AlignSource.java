@@ -1,11 +1,10 @@
-package org.jmhsrobotics.frc2025.commands;
+package org.jmhsrobotics.frc2025.commands.autoAlign;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -44,7 +43,7 @@ public class AlignSource extends Command {
   public void execute() {
     this.goalPose = calculateSetpoints(drive, alignCloseToStation);
     drive.runVelocity(
-        calculateSourceAutoAlignSpeeds(
+        AutoAlign.getSourceAlignSpeeds(
             this.drive, this.goalPose, this.xController, this.yController, this.thetaController));
     // calculateSourceAutoAlignSpeeds(
     //     this.drive, this.goalPose, this.xController, this.yController, this.thetaController));
@@ -71,80 +70,33 @@ public class AlignSource extends Command {
    *
    * @param drive
    * @param alignCloseToSource
-   * @return double array with index 0 being the x coordinate setpoint and index 1 being the y
-   *     coordinate setpoint
+   * @return Pose2d
    */
   public static Pose2d calculateSetpoints(Drive drive, boolean alignCloseToSource) {
-    Pose2d targetPose = new Pose2d();
-
+    double ySetpoint = 0.5;
+    Pose2d targetTagPose;
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
       if (drive.getPose().getY() > 4) {
-        Pose2d targetTagPose =
+        targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(2).orElse(new Pose3d()).toPose2d();
-
-        if (alignCloseToSource)
-          targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
-        else targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
+        if (alignCloseToSource) ySetpoint = -0.5;
       } else {
-        Pose2d targetTagPose =
+        targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(1).orElse(new Pose3d()).toPose2d();
-
-        if (alignCloseToSource)
-          targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
-        else targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
+        if (!alignCloseToSource) ySetpoint = -0.5;
       }
     } else {
       if (drive.getPose().getY() > 4) {
-        Pose2d targetTagPose =
+        targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(13).orElse(new Pose3d()).toPose2d();
-
-        if (alignCloseToSource)
-          targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
-        else targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
+        if (alignCloseToSource) ySetpoint = -0.5;
       } else {
-        Pose2d targetTagPose =
+        targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(12).orElse(new Pose3d()).toPose2d();
-
-        if (alignCloseToSource)
-          targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
-        else targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
+        if (!alignCloseToSource) ySetpoint = -0.5;
       }
     }
-    // if (alignCloseToSource)
-    //   return targetTagPose.plus(new Transform2d(0.15, 0.61, new Rotation2d()));
-    return targetPose;
-  }
 
-  /**
-   * calculates chassis speeds output for source auto align based on a setpoint and PID controllers
-   * passed in
-   *
-   * @param drive
-   * @param setpoint
-   * @param xController
-   * @param yController
-   * @param thetaController
-   * @return ChassisSpeeds object with x, y, and angular speeds
-   */
-  public static ChassisSpeeds calculateSourceAutoAlignSpeeds(
-      Drive drive,
-      Pose2d setpoint,
-      PIDController xController,
-      PIDController yController,
-      PIDController thetaController) {
-
-    double xOutput = xController.calculate(drive.getPose().getX(), setpoint.getX());
-    double yOutput = yController.calculate(drive.getPose().getY(), setpoint.getY());
-    double thetaOutput =
-        thetaController.calculate(
-            drive.getPose().getRotation().getDegrees(), setpoint.getRotation().getDegrees());
-
-    ChassisSpeeds outputSpeeds =
-        new ChassisSpeeds(
-            xOutput * drive.getMaxLinearSpeedMetersPerSec(),
-            yOutput * drive.getMaxLinearSpeedMetersPerSec(),
-            thetaOutput * drive.getMaxAngularSpeedRadPerSec());
-
-    return ChassisSpeeds.fromFieldRelativeSpeeds(outputSpeeds, drive.getRotation());
+    return targetTagPose.plus(new Transform2d(0.4, ySetpoint, new Rotation2d()));
   }
 }

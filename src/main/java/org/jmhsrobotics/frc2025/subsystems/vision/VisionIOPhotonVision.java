@@ -27,6 +27,8 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class VisionIOPhotonVision implements VisionIO {
   protected final PhotonCamera camera;
   protected Transform3d robotToCamera;
+  public static final boolean DEBUG = true;
+  private final String name;
 
   /**
    * Creates a new VisionIOPhotonVision.
@@ -37,6 +39,7 @@ public class VisionIOPhotonVision implements VisionIO {
   public VisionIOPhotonVision(String name, Transform3d robotToCamera) {
     camera = new PhotonCamera(name);
     this.robotToCamera = robotToCamera;
+    this.name = name;
   }
 
   @Override
@@ -58,6 +61,10 @@ public class VisionIOPhotonVision implements VisionIO {
         for (int i = 0; i < result.targets.size(); i++) {
           PhotonTrackedTarget target = result.targets.get(i);
           var tf = robotToCamera.plus(target.bestCameraToTarget);
+          if (DEBUG) {
+            org.littletonrobotics.junction.Logger.recordOutput(
+                "DEBUG/" + this.name + "/" + i, new Pose3d().plus(target.bestCameraToTarget));
+          }
           inputs.tagPoses[i] =
               new TagPose(
                   target.fiducialId,

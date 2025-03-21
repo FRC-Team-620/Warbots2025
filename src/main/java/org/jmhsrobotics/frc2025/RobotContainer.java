@@ -34,8 +34,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import org.jmhsrobotics.frc2025.commands.AlignReef;
-import org.jmhsrobotics.frc2025.commands.AlignSource;
 import org.jmhsrobotics.frc2025.commands.ClimberMove;
 import org.jmhsrobotics.frc2025.commands.ClimberToAngle;
 import org.jmhsrobotics.frc2025.commands.DriveCommands;
@@ -51,6 +49,8 @@ import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReef;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeCoralAuto;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
@@ -267,7 +267,8 @@ public class RobotContainer {
             () -> -control.translationX(),
             () -> -control.rotation(),
             () -> control.alignLeft(),
-            () -> control.alignRight()));
+            () -> control.alignRight(),
+            control.autoIntakeAlge()));
 
     // Reset gyro to 0° when right bumper is pressed
 
@@ -565,16 +566,6 @@ public class RobotContainer {
     if (Robot.isSimulation()) {
       NamedCommands.registerCommand(
           "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led).withTimeout(3));
-      //   NamedCommands.registerCommand(
-      //       "Intake Coral",
-      //       new SequentialCommandGroup(
-      //           new ElevatorAndWristMove(
-      //               elevator,
-      //               wrist,
-      //               intake,
-      //               Constants.ElevatorConstants.kCoralIntakeMeters,
-      //               Constants.WristConstants.kSafeAngleDegrees),
-      //           new IntakeFromIndexer(wrist, intake).withTimeout(3)));
 
       NamedCommands.registerCommand(
           "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(1.2));
@@ -582,7 +573,8 @@ public class RobotContainer {
       NamedCommands.registerCommand(
           "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led));
 
-      NamedCommands.registerCommand("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
+      NamedCommands.registerCommand(
+          "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(3));
     }
 
     NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(0.25));

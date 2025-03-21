@@ -50,6 +50,9 @@ public class DriveConstants {
           new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0)
         };
 
+    public static final double maxAngularSpeedRadPerSec =
+        DriveConstants.maxSpeedMetersPerSec / DriveConstants.revConstants.driveBaseRadius;
+
     // Zeroed rotation values for each module, see setup instructions
 
     // Device CAN IDs
@@ -130,6 +133,9 @@ public class DriveConstants {
     public static final double trackWidth = Units.inchesToMeters(22.5); // make this a variable?
     public static final double wheelBase = Units.inchesToMeters(22.5); // this too?
     public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
+    public static final double maxAngularSpeedRadPerSec =
+        DriveConstants.maxSpeedMetersPerSec / DriveConstants.revConstants.driveBaseRadius;
+
     public static final Translation2d[] moduleTranslations =
         new Translation2d[] {
           new Translation2d(trackWidth / 2.0, wheelBase / 2.0),

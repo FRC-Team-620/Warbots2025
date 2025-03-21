@@ -137,7 +137,7 @@ public class DriveMeToTheMoon extends Command {
             speeds.plus(
                 AutoAlign.getSourceAlignSpeeds(
                     drive, setpoint, xController, yController, thetaController));
-      }
+      } else drive.setAutoAlignComplete(false);
     } else {
       // reef auto align
       if (rightTriggerValue.getAsDouble() > 0.5

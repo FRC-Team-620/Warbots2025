@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.DoubleSupplier;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AutoAlign;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;

@@ -1,4 +1,4 @@
-package org.jmhsrobotics.frc2025.commands;
+package org.jmhsrobotics.frc2025.commands.autoAlign;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;

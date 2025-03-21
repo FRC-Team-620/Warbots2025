@@ -16,6 +16,8 @@ public interface ControlBoard {
 
   public double alignRight();
 
+  public Trigger autoIntakeAlge();
+
   public Trigger resetForward();
 
   public Trigger turboMode();

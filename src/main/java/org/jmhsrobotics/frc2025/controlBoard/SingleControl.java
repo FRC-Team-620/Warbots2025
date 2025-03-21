@@ -78,6 +78,11 @@ public class SingleControl implements ControlBoard {
   }
 
   @Override
+  public Trigger autoIntakeAlge() {
+    return nop;
+  }
+
+  @Override
   public Trigger resetForward() {
     return driver.rightBumper();
   }

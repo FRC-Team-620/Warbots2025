@@ -76,6 +76,11 @@ public class AltControlMode implements ControlBoard {
     return 0;
   }
 
+  @Override
+  public Trigger autoIntakeAlge() {
+    return nop;
+  }
+
   // normalizes the X and Y translations and puts them in a vector
   private double calculateTotalTranslation(boolean isX) {
     double driveX = driver.getLeftX();

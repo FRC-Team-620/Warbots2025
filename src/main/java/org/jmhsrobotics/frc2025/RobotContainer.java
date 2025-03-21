@@ -267,7 +267,8 @@ public class RobotContainer {
             () -> -control.translationX(),
             () -> -control.rotation(),
             () -> control.alignLeft(),
-            () -> control.alignRight()));
+            () -> control.alignRight(),
+            control.autoIntakeAlge()));
 
     // Reset gyro to 0° when right bumper is pressed
 
@@ -565,16 +566,6 @@ public class RobotContainer {
     if (Robot.isSimulation()) {
       NamedCommands.registerCommand(
           "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led).withTimeout(3));
-      //   NamedCommands.registerCommand(
-      //       "Intake Coral",
-      //       new SequentialCommandGroup(
-      //           new ElevatorAndWristMove(
-      //               elevator,
-      //               wrist,
-      //               intake,
-      //               Constants.ElevatorConstants.kCoralIntakeMeters,
-      //               Constants.WristConstants.kSafeAngleDegrees),
-      //           new IntakeFromIndexer(wrist, intake).withTimeout(3)));
 
       NamedCommands.registerCommand(
           "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(1.2));
@@ -582,7 +573,8 @@ public class RobotContainer {
       NamedCommands.registerCommand(
           "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led));
 
-      NamedCommands.registerCommand("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
+      NamedCommands.registerCommand(
+          "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(3));
     }
 
     NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(0.25));

@@ -31,7 +31,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -407,10 +406,7 @@ public class RobotContainer {
                     intake,
                     Constants.ElevatorConstants.kCoralIntakeMeters,
                     Constants.WristConstants.kRotationIntakeCoralDegrees),
-                new ParallelRaceGroup(
-                    new IntakeFromIndexer(wrist, intake),
-                    new LEDFlashPattern(
-                        led, LEDPattern.solid(Color.kOrange), LEDPattern.solid(Color.kWhite))),
+                new IntakeFromIndexer(wrist, intake, led),
                 new FixCoralPlacement(intake, wrist)));
 
     control
@@ -486,8 +482,6 @@ public class RobotContainer {
         "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
     SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
-    SmartDashboard.putData("cmd/Climber Up", new ClimberMove(climber, led, 0.5));
-    SmartDashboard.putData("cmd/Climber Down", new ClimberMove(climber, led, -0.5));
     SmartDashboard.putData(
         "cmd/Align Reef Left", new AlignReef(drive, vision, led, elevator, true).withTimeout(5));
     SmartDashboard.putData(
@@ -495,16 +489,21 @@ public class RobotContainer {
     SmartDashboard.putData("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
 
     SmartDashboard.putData("Scheduler2", CommandScheduler.getInstance());
-    SmartDashboard.putData("cmd/Move Wrist Out", new WristMoveTo(wrist, 150));
-    SmartDashboard.putData(
-        "cmd/Move Wrist In", new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees));
     SmartDashboard.putData("cmd/Score Coral", new ScoreCoral(intake).withTimeout(0.15));
-    SmartDashboard.putData(
-        "cmd/activate turbo mode", Commands.runOnce(() -> drive.setTurboMode(true), drive));
-    SmartDashboard.putData(
-        "cmd/deactivate turbo mode", Commands.runOnce(() -> drive.setTurboMode(false), drive));
     SmartDashboard.putData("cmd/Align Source Close", new AlignSource(drive, true));
     SmartDashboard.putData("cmd/Align Source Far", new AlignSource(drive, false));
+
+    SmartDashboard.putData(
+        "cmd/Intake Indexer",
+        new SequentialCommandGroup(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                intake,
+                Constants.ElevatorConstants.kCoralIntakeMeters,
+                Constants.WristConstants.kRotationIntakeCoralDegrees),
+            new IntakeFromIndexer(wrist, intake, led),
+            new FixCoralPlacement(intake, wrist)));
   }
 
   private void configurePathPlanner() {

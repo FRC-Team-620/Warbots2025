@@ -116,7 +116,8 @@ public class AlignReefSetAngle extends Command {
   public void execute() {
     // New Reef Auto Align should have:
     // calculates goal transform. recalculated in execute because the elevator height can change
-    // while it is running
+    // while it is running[\]
+
     this.goalTransform = AutoAlign.calculateReefTransform(this.elevator.getSetpoint(), isLeft);
 
     // gets target tag pose relative to bot
@@ -140,8 +141,9 @@ public class AlignReefSetAngle extends Command {
                   thetaController, this.thetaGoalDegrees, drive.getRotation()));
 
       drive.runVelocity(outputSpeeds);
-      Logger.recordOutput("Align Reef/Target Tag Pose", tagPose);
-      Logger.recordOutput("Align Reef/Target Tag ID", this.targetTagId);
+      Logger.recordOutput("Align Reef/Target Tag Pose1", tagPose);
+      Logger.recordOutput("Align Reef/Target Tag ID1", this.targetTagId);
+      Logger.recordOutput("Align Reef/Target Angle1", this.thetaGoalDegrees);
 
       // calculates the distance from target for the LED progress pattern
       this.currentDistance =

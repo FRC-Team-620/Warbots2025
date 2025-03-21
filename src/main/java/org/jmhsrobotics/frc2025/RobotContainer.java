@@ -59,7 +59,6 @@ import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.SimClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
@@ -73,7 +72,6 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
 import org.jmhsrobotics.frc2025.subsystems.indexer.IndexerIO;
-import org.jmhsrobotics.frc2025.subsystems.indexer.NeoIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
@@ -143,9 +141,9 @@ public class RobotContainer {
 
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
-        climber = new Climber(new NeoClimberIO());
+        climber = new Climber(new SimClimberIO());
         intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
-        indexer = new Indexer(new NeoIndexerIO());
+        indexer = new Indexer(new SimIndexerIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -506,6 +504,12 @@ public class RobotContainer {
                 Constants.WristConstants.kRotationIntakeCoralDegrees),
             new IntakeFromIndexer(wrist, intake, led),
             new FixCoralPlacement(intake, wrist)));
+    SmartDashboard.putData(
+        "cmd/Align Preset Southwest",
+        new AlignReefSetAngle(drive, vision, led, elevator, true, 19));
+    SmartDashboard.putData(
+        "cmd/Align Preset Northwest",
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
   }
 
   private void configurePathPlanner() {

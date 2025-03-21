@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4 Coral AA Top.0"
+            "pathName": "Temp Path.0"
           }
         },
         {
@@ -228,12 +228,6 @@
                 "type": "sequential",
                 "data": {
                   "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "4 Coral AA Top.7"
-                      }
-                    },
                     {
                       "type": "named",
                       "data": {

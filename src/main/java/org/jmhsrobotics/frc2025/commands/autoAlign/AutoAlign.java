@@ -14,6 +14,7 @@ import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 
 public class AutoAlign {
   /**
@@ -160,7 +161,14 @@ public class AutoAlign {
       Transform3d transform = new Pose3d(drivePose).minus(lastPose);
       tagPose = new Pose3d(transform.getTranslation(), transform.getRotation());
     }
-    // TODO: Add Odometry tag pose esitmation if tag is out of view
+    // If no tag is seen, estimates tag pos using odometry
+    if (tagPose == null) {
+      Pose3d defaultTagPose =
+          VisionConstants.aprilTagLayout.getTagPose(targetId).orElse(new Pose3d());
+      Transform3d tagTransform = defaultTagPose.minus(new Pose3d(drivePose));
+      // var tagTransform = new Pose3d(drive.getPose()).minus(defaultTagPose);
+      tagPose = new Pose3d(tagTransform.getTranslation(), tagTransform.getRotation());
+    }
     return tagPose;
   }
 

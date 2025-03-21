@@ -117,22 +117,29 @@ public class DriveMeToTheMoon extends Command {
             speeds,
             isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation());
 
+    // if triggers elevator is at bottom and no coral in intake, default for triggers is source auto
+    // align
     if (elevator.getSetpoint() == 0 && !intake.isCoralInIntake()) {
       if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
+        // calculates the field relative setpoint position
         Pose2d setpoint =
             AlignSource.calculateSetpoints(
                 drive,
                 (rightTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() > 4)
                     || (leftTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() < 4));
+        // calculates the source auto align speed and adds it to speeds
         speeds =
             speeds.plus(
                 AutoAlign.getSourceAlignSpeeds(
                     drive, setpoint, xController, yController, thetaController));
       }
     } else {
+      // reef auto align
       if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
+        // calculate angle goal, target tag ID, goal transform from tag and tag position
         double thetaGoalDegrees = AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees());
         targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
+
         Transform2d goalTransform =
             AutoAlign.calculateReefTransform(
                 elevator.getSetpoint(),
@@ -141,10 +148,12 @@ public class DriveMeToTheMoon extends Command {
             AutoAlign.getTagPoseRobotRelative(targetId, vision, lastTagPose, drive.getPose());
 
         if (tagPose != null) {
+          // sets last tag position
           lastTagPose =
               new Pose3d(drive.getPose())
                   .plus(new Transform3d(tagPose.getTranslation(), tagPose.getRotation()));
 
+          // gets reef align translation speeds and theta speeds separately, then adds them together
           ChassisSpeeds reefAlignSpeeds =
               AutoAlign.getReefAlignSpeeds(tagPose, goalTransform, xController, yController);
           reefAlignSpeeds =
@@ -153,10 +162,17 @@ public class DriveMeToTheMoon extends Command {
                       thetaController, thetaGoalDegrees, drive.getRotation()));
           speeds = speeds.plus(reefAlignSpeeds);
 
+          // For LED driver feedback
+          Logger.recordOutput("Align/X Distance", Math.abs(tagPose.getX() - goalTransform.getX()));
+          Logger.recordOutput("Align/Y Distance", Math.abs(tagPose.getY() - goalTransform.getY()));
+          Logger.recordOutput(
+              "Align/Theta Distance",
+              Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees));
+
           drive.setAutoAlignComplete(
               Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
                   && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1)
-                  && Math.abs(tagPose.getRotation().getAngle() - thetaGoalDegrees) < 3);
+                  && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3);
         }
 
       } else {

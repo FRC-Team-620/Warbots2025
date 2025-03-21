@@ -50,6 +50,7 @@ import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReef;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeCoralAuto;
@@ -584,6 +585,46 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left North", new AlignReefSetAngle(drive, vision, led, elevator, true, 21));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left NorthWest", new AlignReefSetAngle(drive, vision, led, elevator, true, 20));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left NorthEast", new AlignReefSetAngle(drive, vision, led, elevator, true, 22));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left South", new AlignReefSetAngle(drive, vision, led, elevator, true, 18));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left SouthWest", new AlignReefSetAngle(drive, vision, led, elevator, true, 19));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left SouthEast", new AlignReefSetAngle(drive, vision, led, elevator, true, 17));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right North", new AlignReefSetAngle(drive, vision, led, elevator, false, 21));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right NorthWest",
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right NorthEast",
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 22));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right South", new AlignReefSetAngle(drive, vision, led, elevator, false, 18));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right SouthWest",
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 19));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right SouthEast",
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 17));
 
     NamedCommands.registerCommand("Stop Drivetrain", Commands.runOnce(() -> drive.stop(), drive));
 

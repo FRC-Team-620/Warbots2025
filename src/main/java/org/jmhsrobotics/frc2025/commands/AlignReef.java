@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
@@ -23,22 +22,17 @@ public class AlignReef extends Command {
   private final PIDController xController = new PIDController(0.6, 0, 0);
   private final PIDController yController = new PIDController(0.6, 0, 0);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
-  private double xGoalMeters = 0.48;
-  private double yGoalMeters = Units.inchesToMeters(-7.375);
+
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
 
   private LEDPattern progressPattern;
-  private double initialDistance = 2;
-  private double currentDistance = 2;
+  private double initialDistance = 3;
+  private double currentDistance = 3;
 
   private int targetTagId;
   private Pose3d lastTagPose = null;
   private Transform2d goalTransform;
   private Pose3d tagPose;
-
-  private double theta = 0;
-  private double xdist = 0;
-  private double ydist = 0;
 
   // boolean for if bot should align left or right
   private boolean isLeft = true;
@@ -51,38 +45,29 @@ public class AlignReef extends Command {
     this.isLeft = isLeft;
 
     progressPattern =
-        LEDPattern.progressMaskLayer(() -> ((initialDistance - currentDistance) / initialDistance));
+        LEDPattern.progressMaskLayer(
+            () -> ((this.initialDistance - this.currentDistance) / this.initialDistance));
 
     addRequirements(drive, led);
   }
 
   @Override
   public void initialize() {
-    // Default setpoint: L4 left side(i think)
     xController.reset();
     yController.reset();
     thetaController.reset();
+    thetaController.enableContinuousInput(-180, 180);
 
-    // goal transform is recalculated in execute because the elevator height can change while it is
-    // running
     this.goalTransform = AutoAlign.calculateReefTransform(this.elevator.getSetpoint(), isLeft);
-    // angle goal and target ID do not ever need to be recalculated
     this.thetaGoalDegrees = AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees());
     this.targetTagId = AutoAlign.calculateGoalTargetID(this.thetaGoalDegrees);
-
-    xController.setSetpoint(xGoalMeters);
-    yController.setSetpoint(yGoalMeters);
-    double driveAngle = drive.getRotation().getDegrees();
-    this.thetaGoalDegrees = AutoAlign.calculateGoalAngle(driveAngle);
-
-    thetaController.setSetpoint(thetaGoalDegrees);
-    thetaController.enableContinuousInput(-180, 180);
   }
 
   @Override
   public void execute() {
     // New Reef Auto Align should have:
-    // calculates goal transform
+    // calculates goal transform. recalculated in execute because the elevator height can change
+    // while it is running
     this.goalTransform = AutoAlign.calculateReefTransform(this.elevator.getSetpoint(), isLeft);
 
     // gets target tag pose relative to bot
@@ -110,6 +95,13 @@ public class AlignReef extends Command {
       drive.runVelocity(outputSpeeds);
       Logger.recordOutput("Align Reef/Target Tag Pose", tagPose);
       Logger.recordOutput("Align Reef/Target Tag ID", this.targetTagId);
+
+      //calculates the distance from target for the LED progress pattern
+      this.currentDistance =
+          Math.sqrt(
+              Math.pow(tagPose.getX() - goalTransform.getX(), 2)
+                  + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
+      led.setPattern(progressPattern);
     }
   }
 

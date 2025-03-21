@@ -79,13 +79,11 @@ public class AlignReef extends Command {
       lastTagPose =
           new Pose3d(drive.getPose())
               .plus(new Transform3d(tagPose.getTranslation(), tagPose.getRotation()));
-      ChassisSpeeds outputSpeeds = new ChassisSpeeds();
       // calculate chassis speeds based on tag pose relative to bot and goal transformation from
       // that tag pose
-      outputSpeeds =
-          outputSpeeds.plus(
-              AutoAlign.getReefAlignSpeeds(
-                  tagPose, this.goalTransform, this.xController, this.yController));
+      ChassisSpeeds outputSpeeds =
+          AutoAlign.getReefAlignSpeeds(
+              tagPose, this.goalTransform, this.xController, this.yController);
       // calculate theta speeds
       outputSpeeds =
           outputSpeeds.plus(
@@ -96,7 +94,7 @@ public class AlignReef extends Command {
       Logger.recordOutput("Align Reef/Target Tag Pose", tagPose);
       Logger.recordOutput("Align Reef/Target Tag ID", this.targetTagId);
 
-      //calculates the distance from target for the LED progress pattern
+      // calculates the distance from target for the LED progress pattern
       this.currentDistance =
           Math.sqrt(
               Math.pow(tagPose.getX() - goalTransform.getX(), 2)

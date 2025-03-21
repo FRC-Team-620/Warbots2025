@@ -70,47 +70,33 @@ public class AlignSource extends Command {
    *
    * @param drive
    * @param alignCloseToSource
-   * @return double array with index 0 being the x coordinate setpoint and index 1 being the y
-   *     coordinate setpoint
+   * @return Pose2d
    */
   public static Pose2d calculateSetpoints(Drive drive, boolean alignCloseToSource) {
-    Pose2d targetPose = new Pose2d();
-
+    double ySetpoint = 0.5;
+    Pose2d targetTagPose;
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
       if (drive.getPose().getY() > 4) {
-        Pose2d targetTagPose =
+        targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(2).orElse(new Pose3d()).toPose2d();
-        if (alignCloseToSource)
-          targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
-        else targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
+        if (!alignCloseToSource) ySetpoint = -0.5;
       } else {
-        Pose2d targetTagPose =
+        targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(1).orElse(new Pose3d()).toPose2d();
-
-        if (alignCloseToSource)
-          targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
-        else targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
+        if (alignCloseToSource) ySetpoint = -0.5;
       }
-
     } else {
       if (drive.getPose().getY() > 4) {
-        Pose2d targetTagPose =
+        targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(13).orElse(new Pose3d()).toPose2d();
-
-        if (alignCloseToSource)
-          targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
-        else targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
+        if (alignCloseToSource) ySetpoint = -0.5;
       } else {
-        Pose2d targetTagPose =
+        targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(12).orElse(new Pose3d()).toPose2d();
-
-        if (alignCloseToSource)
-          targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
-        else targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
+        if (!alignCloseToSource) ySetpoint = -0.5;
       }
     }
-    // if (alignCloseToSource)
-    //   return targetTagPose.plus(new Transform2d(0.15, 0.61, new Rotation2d()));
-    return targetPose;
+
+    return targetTagPose.plus(new Transform2d(0.4, ySetpoint, new Rotation2d()));
   }
 }

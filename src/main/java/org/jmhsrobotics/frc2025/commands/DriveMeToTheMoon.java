@@ -120,7 +120,6 @@ public class DriveMeToTheMoon extends Command {
 
     // TODO: prevent speed from surpassing maximum
     if (elevator.getSetpoint() == 0 && !intake.isCoralInIntake()) {
-      System.out.println("Auto Aligning Source");
       boolean alignCloseToSource =
           (rightTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() > 4)
               || (leftTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() < 4);
@@ -148,7 +147,6 @@ public class DriveMeToTheMoon extends Command {
                     this.thetaController));
       }
     } else {
-      System.out.println("Auto Aligning Reef");
       speeds = speeds.plus(calculateAutoAlignReefTranslationSpeeds());
       speeds = speeds.plus(calculateAutoAlignThetaSpeeds());
     }

@@ -44,7 +44,7 @@ public class AlignSource extends Command {
   public void execute() {
     this.goalPose = calculateSetpoints(drive, alignCloseToStation);
     drive.runVelocity(
-        calculateSourceAutoAlignSpeeds(
+        AutoAlign.calculateSourceAutoAlignSpeeds(
             this.drive, this.goalPose, this.xController, this.yController, this.thetaController));
     // calculateSourceAutoAlignSpeeds(
     //     this.drive, this.goalPose, this.xController, this.yController, this.thetaController));
@@ -81,7 +81,6 @@ public class AlignSource extends Command {
       if (drive.getPose().getY() > 4) {
         Pose2d targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(2).orElse(new Pose3d()).toPose2d();
-
         if (alignCloseToSource)
           targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
         else targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
@@ -93,6 +92,7 @@ public class AlignSource extends Command {
           targetPose = targetTagPose.plus(new Transform2d(0.4, -0.5, new Rotation2d()));
         else targetPose = targetTagPose.plus(new Transform2d(0.4, 0.5, new Rotation2d()));
       }
+
     } else {
       if (drive.getPose().getY() > 4) {
         Pose2d targetTagPose =
@@ -113,38 +113,5 @@ public class AlignSource extends Command {
     // if (alignCloseToSource)
     //   return targetTagPose.plus(new Transform2d(0.15, 0.61, new Rotation2d()));
     return targetPose;
-  }
-
-  /**
-   * calculates chassis speeds output for source auto align based on a setpoint and PID controllers
-   * passed in
-   *
-   * @param drive
-   * @param setpoint
-   * @param xController
-   * @param yController
-   * @param thetaController
-   * @return ChassisSpeeds object with x, y, and angular speeds
-   */
-  public static ChassisSpeeds calculateSourceAutoAlignSpeeds(
-      Drive drive,
-      Pose2d setpoint,
-      PIDController xController,
-      PIDController yController,
-      PIDController thetaController) {
-
-    double xOutput = xController.calculate(drive.getPose().getX(), setpoint.getX());
-    double yOutput = yController.calculate(drive.getPose().getY(), setpoint.getY());
-    double thetaOutput =
-        thetaController.calculate(
-            drive.getPose().getRotation().getDegrees(), setpoint.getRotation().getDegrees());
-
-    ChassisSpeeds outputSpeeds =
-        new ChassisSpeeds(
-            xOutput * drive.getMaxLinearSpeedMetersPerSec(),
-            yOutput * drive.getMaxLinearSpeedMetersPerSec(),
-            thetaOutput * drive.getMaxAngularSpeedRadPerSec());
-
-    return ChassisSpeeds.fromFieldRelativeSpeeds(outputSpeeds, drive.getRotation());
   }
 }

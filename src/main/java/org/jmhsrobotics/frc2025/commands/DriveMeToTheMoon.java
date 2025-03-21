@@ -74,7 +74,7 @@ public class DriveMeToTheMoon extends Command {
     thetaController.reset();
 
     double driveAngle = drive.getRotation().getDegrees();
-    this.thetaGoalDegrees = AlignReef.calculateGoalAngle(driveAngle);
+    this.thetaGoalDegrees = AutoAlign.calculateGoalAngle(driveAngle);
 
     thetaController.enableContinuousInput(-180, 180);
     drive.stop();
@@ -120,7 +120,6 @@ public class DriveMeToTheMoon extends Command {
 
     // TODO: prevent speed from surpassing maximum
     if (elevator.getSetpoint() == 0 && !intake.isCoralInIntake()) {
-      System.out.println("Auto Aligning Source");
       boolean alignCloseToSource =
           (rightTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() > 4)
               || (leftTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() < 4);
@@ -129,7 +128,7 @@ public class DriveMeToTheMoon extends Command {
         Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, alignCloseToSource);
         speeds =
             speeds.plus(
-                AlignSource.calculateSourceAutoAlignSpeeds(
+                AutoAlign.calculateSourceAutoAlignSpeeds(
                     this.drive,
                     sourceGoalPose,
                     this.xController,
@@ -140,7 +139,7 @@ public class DriveMeToTheMoon extends Command {
         Pose2d sourceGoalPose = AlignSource.calculateSetpoints(drive, alignCloseToSource);
         speeds =
             speeds.plus(
-                AlignSource.calculateSourceAutoAlignSpeeds(
+                AutoAlign.calculateSourceAutoAlignSpeeds(
                     this.drive,
                     sourceGoalPose,
                     this.xController,
@@ -148,15 +147,14 @@ public class DriveMeToTheMoon extends Command {
                     this.thetaController));
       }
     } else {
-      System.out.println("Auto Aligning Reef");
       speeds = speeds.plus(calculateAutoAlignReefTranslationSpeeds());
-      speeds = speeds.plus(calculateAutoAlignThetaSpeeds());
+      speeds = speeds.plus(AutoAlign.calculateAutoAlignThetaSpeeds(this.thetaController, AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees()), drive.getRotation()));
     }
 
     drive.runVelocity(speeds);
     int targetId =
-        AlignReef.calculateGoalTargetID(
-            AlignReef.calculateGoalAngle(drive.getRotation().getDegrees()));
+      AutoAlign.calculateGoalTargetID(
+          AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees()));
 
     Logger.recordOutput("X speed", speeds.vxMetersPerSecond);
     Logger.recordOutput("Y Speed", speeds.vyMetersPerSecond);
@@ -189,7 +187,7 @@ public class DriveMeToTheMoon extends Command {
         getReefOffset(elevator.getSetpoint(), isRight); // TODO: add offset for algae
     xController.setSetpoint(goalTransform.getX());
     yController.setSetpoint(goalTransform.getY());
-    int targetId = AlignReef.calculateGoalTargetID(thetaGoalDegrees);
+    int targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
     // Logger.recordOutput("Align/Goal X", goalTransform.getX());
     // Does all calculations only if triggers are pressed
     if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
@@ -266,33 +264,6 @@ public class DriveMeToTheMoon extends Command {
     // speeds object if auto align is not being attempted
     drive.setAutoAlignComplete(false);
     this.lastTagPose = null;
-    return new ChassisSpeeds();
-  }
-
-  /**
-   * Calculates and Returns a chassis speed with rotational speed for auto align. This method is
-   * separate from the translation auto align calculation to allow it to work even without an april
-   * tag being seen
-   *
-   * @return
-   */
-  private ChassisSpeeds calculateAutoAlignThetaSpeeds() {
-    if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
-      ChassisSpeeds thetaSpeed = new ChassisSpeeds();
-      this.thetaGoalDegrees = AlignReef.calculateGoalAngle(drive.getRotation().getDegrees());
-
-      thetaController.setSetpoint(thetaGoalDegrees);
-
-      if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
-        thetaSpeed =
-            thetaSpeed.plus(
-                new ChassisSpeeds(
-                    0,
-                    0,
-                    thetaController.calculate(drive.getPose().getRotation().getDegrees()) * 0.5));
-      }
-      return thetaSpeed;
-    }
     return new ChassisSpeeds();
   }
 

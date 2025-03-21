@@ -69,7 +69,7 @@ public class AlignReef extends Command {
     xController.setSetpoint(xGoalMeters);
     yController.setSetpoint(yGoalMeters);
     double driveAngle = drive.getRotation().getDegrees();
-    this.thetaGoalDegrees = AlignReef.calculateGoalAngle(driveAngle);
+    this.thetaGoalDegrees = AutoAlign.calculateGoalAngle(driveAngle);
 
     thetaController.setSetpoint(thetaGoalDegrees);
     thetaController.enableContinuousInput(-180, 180);
@@ -77,6 +77,15 @@ public class AlignReef extends Command {
 
   @Override
   public void execute() {
+    // New Reef Auto Align should have:
+    // calculate translation relative to tag
+    // calculate target tag
+    // calculate target angle
+    // calculate target pose relative to bot
+    // calculate chassis speeds based on pose and goal pose
+    // calculate theta speeds
+
+
     // change setpoints if elevator setpoints have changed
     // if elevator septoint is for L2 or L3
     if (elevator.getSetpoint() == Constants.ElevatorConstants.kLevel2Meters
@@ -97,7 +106,7 @@ public class AlignReef extends Command {
     }
     xController.setSetpoint(xGoalMeters);
     yController.setSetpoint(yGoalMeters);
-    int targetId = AlignReef.calculateGoalTargetID(thetaGoalDegrees);
+    int targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
     Pose3d tag = null; // TODO: handle seeing more than one reef tag
     for (var target : vision.getTagPoses(0)) { // TODO: Handle more than one camera
       // if(target.id() )
@@ -112,7 +121,7 @@ public class AlignReef extends Command {
         }
       }
     }
-    Logger.recordOutput("Align/Target Tag ID: ", AlignReef.calculateGoalTargetID(thetaGoalDegrees));
+    Logger.recordOutput("Align/Target Tag ID: ", AutoAlign.calculateGoalTargetID(thetaGoalDegrees));
     Logger.recordOutput("Align/Drive Angle: ", drive.getPose().getRotation().getDegrees());
     System.out.println(tag);
 
@@ -157,53 +166,6 @@ public class AlignReef extends Command {
     // if (tag == null && lastTagPose == null) {
     //   drive.runVelocity(new ChassisSpeeds(0.2, 0, 0));
     // }
-  }
-
-  /**
-   * Determines the goal angle based on the current angle by choosing the closest one
-   *
-   * @param driveAngle
-   * @return
-   */
-  public static double calculateGoalAngle(double driveAngle) {
-    // double driveAngle = drive.getRotation().getDegrees();
-    if (Math.abs(driveAngle) <= 30) return 0;
-    else if (Math.abs(driveAngle) >= 150) return 180;
-    else if (driveAngle >= 30 && driveAngle <= 90) return 60;
-    else if (driveAngle >= 60) return 120;
-    else if (driveAngle <= -30 && driveAngle >= -90) return -60;
-    else return -120;
-  }
-
-  /**
-   * Determines the target april tag ID based on the goal angle and alliance color. Ignores opposite
-   * team's tags
-   *
-   * @return April tag ID
-   */
-  public static int calculateGoalTargetID(double angle_deg) {
-    // red side tags
-    // back - 10
-    // front 7
-    // blue side tags
-    // if current alliance is blue, use the following april tags
-    // default team is blue
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-      if (angle_deg == 0) return 18;
-      else if (angle_deg == 60) return 17;
-      else if (angle_deg == 120) return 22;
-      else if (angle_deg == 180) return 21;
-      else if (angle_deg == -60) return 19;
-      else return 20;
-    }
-    // if current alliance is red, use the following april tags
-    int invert = 180;
-    if (angle_deg == 0 + invert) return 7;
-    else if (angle_deg == -120) return 8;
-    else if (angle_deg == 0) return 10;
-    else if (angle_deg == 120) return 6;
-    else if (angle_deg == -60) return 9;
-    else return 11;
   }
 
   @Override

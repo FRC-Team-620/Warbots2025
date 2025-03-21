@@ -326,12 +326,12 @@ public class Drive extends SubsystemBase {
 
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
-    return this.maxLinearSpeedMetersPerSec;
+    return DriveConstants.maxSpeedMetersPerSec;
   }
 
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
-    return this.maxLinearSpeedMetersPerSec / DriveConstants.thriftyConstants.driveBaseRadius;
+    return DriveConstants.thriftyConstants.maxAngularSpeedRadPerSec;
   }
 
   /**

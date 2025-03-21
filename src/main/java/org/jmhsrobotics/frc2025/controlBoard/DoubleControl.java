@@ -93,6 +93,11 @@ public class DoubleControl implements ControlBoard {
   }
 
   @Override
+  public Trigger autoIntakeAlge() {
+    return driver.a();
+  }
+
+  @Override
   public Trigger resetForward() {
     return driver.rightBumper();
   }

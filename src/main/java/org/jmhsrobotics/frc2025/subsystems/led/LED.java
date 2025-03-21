@@ -33,6 +33,6 @@ public class LED extends SubsystemBase {
   }
 
   public void setPattern(LEDPattern pattern) {
-    this.pattern = pattern.atBrightness(Dimensionless.ofRelativeUnits(80, Units.Percent));
+    this.pattern = pattern.atBrightness(Dimensionless.ofRelativeUnits(60, Units.Percent));
   }
 }

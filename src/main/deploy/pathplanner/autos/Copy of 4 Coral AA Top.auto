@@ -53,12 +53,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "Align Source"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
@@ -72,6 +66,25 @@
                       "type": "named",
                       "data": {
                         "name": "Intake Coral"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Align Source"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Drive Backwards"
                       }
                     }
                   ]
@@ -123,12 +136,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "Align Source"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
@@ -142,6 +149,25 @@
                       "type": "named",
                       "data": {
                         "name": "Intake Coral"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Align Source"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Drive Backwards"
                       }
                     }
                   ]
@@ -193,12 +219,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "Align Source"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
@@ -212,6 +232,25 @@
                       "type": "named",
                       "data": {
                         "name": "Intake Coral"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Align Source"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Drive Backwards"
                       }
                     }
                   ]

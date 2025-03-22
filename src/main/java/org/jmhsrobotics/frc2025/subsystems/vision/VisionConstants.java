@@ -15,9 +15,11 @@ package org.jmhsrobotics.frc2025.subsystems.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Quaternion;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.util.Units;
 
 public class VisionConstants {
   // AprilTag layout
@@ -32,19 +34,43 @@ public class VisionConstants {
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
   // TODO: Make sure camera transformations are correctx
-  public static Transform3d robotToCamera0 =
-      new Transform3d(
-          Units.inchesToMeters(8),
-          Units.inchesToMeters(11),
-          0.185,
-          new Rotation3d(0.0, Units.degreesToRadians(-10), Units.degreesToRadians(-35)));
+  //   public static Transform3d robotToCamera0 =
+  //       new Transform3d(
+  //           Units.inchesToMeters(8),
+  //           Units.inchesToMeters(11),
+  //           0.185,
+  //           new Rotation3d(0.0, Units.degreesToRadians(-10), Units.degreesToRadians(-35)));
 
-  public static Transform3d robotToCamera1 =
+  //   public static Transform3d robotToCamera1 =
+  //       new Transform3d(
+  //           Units.inchesToMeters(8.5),
+  //           Units.inchesToMeters(-11),
+  //           0.185,
+  //           new Rotatio(0.0, Units.degreesToRadians(-10), Units.degreesToRadians(35)));
+
+  public static Transform3d blackbirdCalibration =
       new Transform3d(
-          Units.inchesToMeters(8.5),
-          Units.inchesToMeters(-11),
-          0.185,
-          new Rotation3d(0.0, Units.degreesToRadians(-10), Units.degreesToRadians(35)));
+          0.824, 0.187, -0.028, new Rotation3d(new Quaternion(0.275, -0.052, 0.042, -0.959)));
+  // 0.824, 0.187, -0.028, new Rotation3d());
+  public static Transform3d overtureCalibration =
+      new Transform3d(
+          0.795, -0.224, -0.139, new Rotation3d(new Quaternion(-.306, -0.119, -0.019, -0.944)));
+  // 0.795, -0.224, -0.139, new Rotation3d());
+  // blackbirdCalibration = new Pose3d();
+  public static Pose3d calibrationOffset =
+      new Pose3d(1, 0, 0.25, new Rotation3d(Rotation2d.fromDegrees(180)));
+  public static final Pose3d blackbirdToRobot =
+      calibrationOffset.transformBy(blackbirdCalibration.inverse());
+  public static final Pose3d overtureToRobot =
+      calibrationOffset.transformBy(overtureCalibration.inverse());
+
+  public static final Transform3d robotToCamera0 =
+      new Transform3d(blackbirdToRobot.getTranslation(), blackbirdToRobot.getRotation());
+  public static final Transform3d robotToCamera1 =
+      new Transform3d(overtureToRobot.getTranslation(), overtureToRobot.getRotation());
+
+  //   public static final Transform3d robotToCamera0 = blackbirdToRobot.plus(calibrationOffset);
+  //   public static final Transform3d robotToCamera1 = overtureToRobot.plus(calibrationOffset);
 
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;

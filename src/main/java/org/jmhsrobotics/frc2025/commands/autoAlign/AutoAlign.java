@@ -74,7 +74,7 @@ public class AutoAlign {
   public static ChassisSpeeds getAutoAlignThetaSpeeds(
       PIDController thetaController, double thetaGoalDegrees, Rotation2d currentRotation) {
     ChassisSpeeds thetaSpeed = new ChassisSpeeds();
-    thetaGoalDegrees = AutoAlign.calculateGoalAngle(currentRotation.getDegrees());
+    // thetaGoalDegrees = AutoAlign.calculateGoalAngle(currentRotation.getDegrees()); //FIXME: WARNING THIS MIGHT BrEAK AUTO ALIGN
 
     thetaController.setSetpoint(thetaGoalDegrees);
     var thetaOut = thetaController.calculate(currentRotation.getDegrees());
@@ -146,6 +146,7 @@ public class AutoAlign {
   public static Pose3d getTagPoseRobotRelative(
       int targetId, Vision vision, Pose3d lastPose, Pose2d drivePose) {
     Pose3d tagPose = null;
+    lastPose = null;
     // looks at first cam to see if it sees the target tag
     for (var target : vision.getTagPoses(0)) {
       if (target.id() == targetId) tagPose = target.pose();

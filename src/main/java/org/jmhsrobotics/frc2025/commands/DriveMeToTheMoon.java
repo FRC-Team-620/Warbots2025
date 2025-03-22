@@ -127,11 +127,21 @@ public class DriveMeToTheMoon extends Command {
         && !autoIntakeAlgae.getAsBoolean()) {
       if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
         // calculates the field relative setpoint position
-        Pose2d setpoint =
-            AlignSource.calculateSetpoints(
-                drive,
-                (rightTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() > 4)
-                    || (leftTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() < 4));
+        // TODO: Needs to be cleaned up
+        Pose2d setpoint;
+        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+          setpoint =
+              AlignSource.calculateSetpoints(
+                  drive,
+                  (rightTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() > 4)
+                      || (leftTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() < 4));
+        } else {
+          setpoint =
+              AlignSource.calculateSetpoints(
+                  drive,
+                  (!((rightTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() > 4)
+                      || (leftTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() < 4))));
+        }
         // calculates the source auto align speed and adds it to speeds
         speeds =
             speeds.plus(

@@ -634,7 +634,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Drive Backwards", new DriveBackwards(drive));
 
-    NamedCommands.registerCommand("Align Source", new AlignSource(drive, true));
+    NamedCommands.registerCommand("Align Source", new AlignSource(drive, false));
   }
 
   public Command getToggleBrakeCommand() {

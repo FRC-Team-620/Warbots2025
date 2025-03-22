@@ -80,11 +80,11 @@ public class AlignSource extends Command {
       if (drive.getPose().getY() > 4) {
         targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(2).orElse(new Pose3d()).toPose2d();
-        if (alignCloseToSource) ySetpoint = -0.5;
+        if (!alignCloseToSource) ySetpoint = -0.5;
       } else {
         targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(1).orElse(new Pose3d()).toPose2d();
-        if (!alignCloseToSource) ySetpoint = -0.5;
+        if (alignCloseToSource) ySetpoint = -0.5;
       }
     } else {
       if (drive.getPose().getY() > 4) {

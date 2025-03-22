@@ -45,6 +45,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.littletonrobotics.urcl.URCL;
+import org.photonvision.PhotonUtils;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -203,21 +204,22 @@ public class Robot extends LoggedRobot {
                     Units.degreesToRadians(0),
                     Units.degreesToRadians(-10),
                     Units.degreesToRadians(35)))));
-    VisionConstants.robotToCamera1 =
-        new Transform3d(
-            Units.inchesToMeters(8),
-            Units.inchesToMeters(-11.5),
-            0.185,
-            new Rotation3d(0.0, Units.degreesToRadians(-20), Units.degreesToRadians(35)));
-    VisionConstants.robotToCamera0 =
-        new Transform3d(
-            Units.inchesToMeters(8),
-            Units.inchesToMeters(11.5),
-            0.185,
-            new Rotation3d(0.0, Units.degreesToRadians(-20), Units.degreesToRadians(-35)));
-
-    Logger.recordOutput("cam/left_robot", new Pose3d().plus(VisionConstants.robotToCamera0));
-    Logger.recordOutput("cam/right_robot", new Pose3d().plus(VisionConstants.robotToCamera1));
+    // VisionConstants.robotToCamera1 =
+    //     new Transform3d(
+    //         Units.inchesToMeters(8),
+    //         Units.inchesToMeters(-11.5),
+    //         0.185,
+    //         new Rotation3d(0.0, Units.degreesToRadians(-20), Units.degreesToRadians(35)));
+    // VisionConstants.robotToCamera0 =
+    //     new Transform3d(
+    //         Units.inchesToMeters(8),
+    //         Units.inchesToMeters(11.5),
+    //         0.185,
+    //         new Rotation3d(0.0, Units.degreesToRadians(-20), Units.degreesToRadians(-35)));
+    Logger.recordOutput(
+        "cam/left_robot_different", new Pose3d().plus(VisionConstants.robotToCamera0));
+    Logger.recordOutput(
+        "cam/right_robot_different", new Pose3d().plus(VisionConstants.robotToCamera1));
     Logger.recordOutput("cam/left_field", robotpos.plus(VisionConstants.robotToCamera0));
     Logger.recordOutput("cam/right_field", robotpos.plus(VisionConstants.robotToCamera1));
     if (robotContainer.intake.isCoralInIntake()) {

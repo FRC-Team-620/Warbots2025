@@ -49,19 +49,22 @@ public class VisionConstants {
 
   public static Pose3d blackbirdCalibration =
       new Pose3d(
-        //   0.824, 0.187, -0.028, new Rotation3d(new Quaternion(0.275, -0.052, 0.042, -0.959)));
-    0.824, 0.187, -0.028, new Rotation3d());
-  public static Pose3d overtureCalibration =new Pose3d();
-    //   new Pose3d(
-        //   0.795, -0.224, -0.139, new Rotation3d(new Quaternion(-.306, -0.119, -0.019, -0.944)));
-    // 0.795, -0.224, -0.139, new Rotation3d());
-    // blackbirdCalibration = new Pose3d();
+          0.824, 0.187, -0.028, new Rotation3d(new Quaternion(0.275, -0.052, 0.042, -0.959)));
+  // 0.824, 0.187, -0.028, new Rotation3d());
+  public static Pose3d overtureCalibration =
+      new Pose3d(
+          0.795, -0.224, -0.139, new Rotation3d(new Quaternion(-.306, -0.119, -0.019, -0.944)));
+  // 0.795, -0.224, -0.139, new Rotation3d());
+  // blackbirdCalibration = new Pose3d();
   public static Pose3d calibrationOffset = new Pose3d(1, 0, 0.25, new Rotation3d());
-  public static final Transform3d blackbirdToRobot = blackbirdCalibration.minus(calibrationOffset);
-  public static final Transform3d overtureToRobot = overtureCalibration.minus(calibrationOffset);
+  public static final Transform3d blackbirdToRobot = calibrationOffset.minus(blackbirdCalibration);
+  public static final Transform3d overtureToRobot = calibrationOffset.minus(overtureCalibration);
+
   public static final Transform3d robotToCamera0 = blackbirdToRobot.inverse();
   public static final Transform3d robotToCamera1 = overtureToRobot.inverse();
-  
+
+  //   public static final Transform3d robotToCamera0 = blackbirdToRobot.plus(calibrationOffset);
+  //   public static final Transform3d robotToCamera1 = overtureToRobot.plus(calibrationOffset);
 
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;

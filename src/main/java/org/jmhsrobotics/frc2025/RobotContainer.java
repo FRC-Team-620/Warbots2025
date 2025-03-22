@@ -50,6 +50,7 @@ import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReef;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeCoralAuto;
@@ -58,7 +59,6 @@ import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
 import org.jmhsrobotics.frc2025.subsystems.climber.Climber;
 import org.jmhsrobotics.frc2025.subsystems.climber.ClimberIO;
-import org.jmhsrobotics.frc2025.subsystems.climber.NeoClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.climber.SimClimberIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.GyroIO;
@@ -72,7 +72,6 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
 import org.jmhsrobotics.frc2025.subsystems.indexer.IndexerIO;
-import org.jmhsrobotics.frc2025.subsystems.indexer.NeoIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
@@ -142,9 +141,9 @@ public class RobotContainer {
 
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
-        climber = new Climber(new NeoClimberIO());
+        climber = new Climber(new SimClimberIO());
         intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
-        indexer = new Indexer(new NeoIndexerIO());
+        indexer = new Indexer(new SimIndexerIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -505,6 +504,12 @@ public class RobotContainer {
                 Constants.WristConstants.kRotationIntakeCoralDegrees),
             new IntakeFromIndexer(wrist, intake, led),
             new FixCoralPlacement(intake, wrist)));
+    SmartDashboard.putData(
+        "cmd/Align Preset Southwest",
+        new AlignReefSetAngle(drive, vision, led, elevator, true, 19));
+    SmartDashboard.putData(
+        "cmd/Align Preset Northwest",
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
   }
 
   private void configurePathPlanner() {
@@ -585,11 +590,51 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
 
+    NamedCommands.registerCommand(
+        "Align Reef Left North", new AlignReefSetAngle(drive, vision, led, elevator, true, 21));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left NorthWest", new AlignReefSetAngle(drive, vision, led, elevator, true, 20));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left NorthEast", new AlignReefSetAngle(drive, vision, led, elevator, true, 22));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left South", new AlignReefSetAngle(drive, vision, led, elevator, true, 18));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left SouthWest", new AlignReefSetAngle(drive, vision, led, elevator, true, 19));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left SouthEast", new AlignReefSetAngle(drive, vision, led, elevator, true, 17));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right North", new AlignReefSetAngle(drive, vision, led, elevator, false, 21));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right NorthWest",
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right NorthEast",
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 22));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right South", new AlignReefSetAngle(drive, vision, led, elevator, false, 18));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right SouthWest",
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 19));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right SouthEast",
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 17));
+
     NamedCommands.registerCommand("Stop Drivetrain", Commands.runOnce(() -> drive.stop(), drive));
 
     NamedCommands.registerCommand("Drive Backwards", new DriveBackwards(drive));
 
-    NamedCommands.registerCommand("Align Source", new AlignSource(drive, false));
+    NamedCommands.registerCommand("Align Source", new AlignSource(drive, true));
   }
 
   public Command getToggleBrakeCommand() {

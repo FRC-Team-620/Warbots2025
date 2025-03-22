@@ -32,8 +32,8 @@ public class DriveMeToTheMoon extends Command {
   private final Intake intake;
   private Trigger autoIntakeAlgae;
 
-  private final PIDController xController = new PIDController(0.6, 0, 0);
-  private final PIDController yController = new PIDController(0.6, 0, 0);
+  private final PIDController xController = new PIDController(0.6, 0, 0.005);
+  private final PIDController yController = new PIDController(0.6, 0, 0.005);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
   private int targetId;
   Transform2d goalTransform = new Transform2d();

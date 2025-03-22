@@ -19,7 +19,7 @@ public class SimTimeOfFlightIO implements TimeOfFLightIO {
     } else {
       inputs.coralDistance = 300; // TODO: replace with actual sensor reading
     }
-    // distance is in millimeters
+    // distance is in millimeterss
     if (SmartDashboard.getBoolean("sim/hasBall", false)) {
       inputs.algaeDistance = 0;
     } else {

@@ -186,7 +186,7 @@ public final class Constants {
   public static final class LEDConstants {
     public static final int kPWMHeader = 5;
     // led length in pixels
-    public static final int kLength = 60;
+    public static final int kLength = 150;
     // Density of the LED Strip - currently set at 120 LEDs per meter
     public static final Distance kSpacing = Meters.of(1.0 / 60);
     // number of times the flashcommand will change color per second

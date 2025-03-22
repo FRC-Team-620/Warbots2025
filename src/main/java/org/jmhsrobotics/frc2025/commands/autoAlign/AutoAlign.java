@@ -136,10 +136,13 @@ public class AutoAlign {
         || elevatorSetpoint == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) {
       xTransform = 0.7;
     } else {
-      yTransform = isLeft ? Units.inchesToMeters(-7.375) : Units.inchesToMeters(7.375);
+      yTransform = isLeft ? Units.inchesToMeters(-7.3) : Units.inchesToMeters(6.8);
       if (elevatorSetpoint == Constants.ElevatorConstants.kLevel2Meters
           || elevatorSetpoint == Constants.ElevatorConstants.kLevel3Meters) xTransform = 0.45;
-      else xTransform = 0.5;
+      else {
+        if (isLeft) xTransform = 0.49;
+        else xTransform = 0.48;
+      }
     }
     return new Transform2d(xTransform, yTransform, new Rotation2d());
   }

@@ -14,12 +14,12 @@ public class ScoreCoral extends Command {
 
   @Override
   public void initialize() {
-    intake.set(Constants.IntakeConstants.kCoralIntakeSpeedDutyCycle);
+    intake.set(Constants.IntakeConstants.kCoralIntakeSpeedDutyCycle * 1.5);
   }
 
   @Override
   public void execute() {
-    intake.set(Constants.IntakeConstants.kCoralIntakeSpeedDutyCycle);
+    intake.set(Constants.IntakeConstants.kCoralIntakeSpeedDutyCycle * 1.5);
   }
 
   @Override

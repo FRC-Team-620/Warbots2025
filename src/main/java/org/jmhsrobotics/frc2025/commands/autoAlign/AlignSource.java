@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,8 +17,8 @@ public class AlignSource extends Command {
   private Pose2d goalPose;
   private boolean alignCloseToStation;
 
-  private final PIDController xController = new PIDController(0.6, 0, 0);
-  private final PIDController yController = new PIDController(0.6, 0, 0);
+  private final PIDController xController = new PIDController(0.6, 0, 0.005);
+  private final PIDController yController = new PIDController(0.6, 0, 0.005);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   public AlignSource(Drive drive, boolean alignCloseToStation) {
@@ -53,10 +54,10 @@ public class AlignSource extends Command {
   @Override
   public boolean isFinished() {
     Transform2d distance = drive.getPose().minus(this.goalPose);
-    // return distance.getX() < Units.inchesToMeters(0.5)
-    //     && distance.getY() < Units.inchesToMeters(1)
-    //     && distance.getRotation().getDegrees() < 3;
-    return false;
+    return distance.getX() < Units.inchesToMeters(1)
+        && distance.getY() < Units.inchesToMeters(1)
+        && distance.getRotation().getDegrees() < 3;
+    // return false;
   }
 
   @Override

@@ -19,12 +19,6 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.3
-                      }
-                    },
-                    {
                       "type": "named",
                       "data": {
                         "name": "Elevator And Wrist L4"
@@ -46,12 +40,6 @@
           "type": "sequential",
           "data": {
             "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.5
-                }
-              },
               {
                 "type": "named",
                 "data": {

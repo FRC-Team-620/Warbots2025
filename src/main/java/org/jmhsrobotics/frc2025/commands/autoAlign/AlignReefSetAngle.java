@@ -131,7 +131,7 @@ public class AlignReefSetAngle extends Command {
               .plus(new Transform3d(tagPose.getTranslation(), tagPose.getRotation()));
       // calculate chassis speeds based on tag pose relative to bot and goal transformation from
       // that tag pose
-      ChassisSpeeds outputSpeeds  = new ChassisSpeeds();
+      ChassisSpeeds outputSpeeds = new ChassisSpeeds();
       outputSpeeds =
           AutoAlign.getReefAlignSpeeds(
               tagPose, this.goalTransform, this.xController, this.yController);

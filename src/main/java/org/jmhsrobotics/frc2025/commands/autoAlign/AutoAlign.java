@@ -74,7 +74,8 @@ public class AutoAlign {
   public static ChassisSpeeds getAutoAlignThetaSpeeds(
       PIDController thetaController, double thetaGoalDegrees, Rotation2d currentRotation) {
     ChassisSpeeds thetaSpeed = new ChassisSpeeds();
-    // thetaGoalDegrees = AutoAlign.calculateGoalAngle(currentRotation.getDegrees()); //FIXME: WARNING THIS MIGHT BrEAK AUTO ALIGN
+    // thetaGoalDegrees = AutoAlign.calculateGoalAngle(currentRotation.getDegrees()); //FIXME:
+    // WARNING THIS MIGHT BrEAK AUTO ALIGN
 
     thetaController.setSetpoint(thetaGoalDegrees);
     var thetaOut = thetaController.calculate(currentRotation.getDegrees());

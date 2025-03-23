@@ -157,7 +157,7 @@ public final class Constants {
     public static final double kRotationUpDegrees = 175;
     public static final double kRotationDownDegrees = 5;
 
-    // degrees / rotation (360) times gear ratio (1/20)
+    // degrees / rotation (360) times gear ratio (1/20[\])
     public static final double kConversionFactor = 360.0 * (1.0 / 20.0);
 
     public static final double kP = 0.005;

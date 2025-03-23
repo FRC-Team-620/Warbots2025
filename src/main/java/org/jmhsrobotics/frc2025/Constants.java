@@ -149,7 +149,7 @@ public final class Constants {
     public static final int kAlgaeInIntakeDistanceMm = 30;
 
     public static final double kCoralDebounceTime = 0.03;
-    public static final double kAlgaeFallingDebounceTime = 0.3;
+    public static final double kAlgaeFallingDebounceTime = 0.2;
     public static final double kAlgaeRisingDebounceTime = 0.1;
   }
 

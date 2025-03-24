@@ -91,7 +91,7 @@ public final class Constants {
     public static final double kLevel2Meters = 0.28;
     public static final double kLevel3Meters = 0.75;
     // BARGE AND L4 SETPOINT CANNOT BE THE EXACT SAME
-    public static final double kLevel4Meters = 1.775;
+    public static final double kLevel4Meters = 1.77;
     public static final double kBargeMeters = 1.78;
     public static final double kProcesserMeters = .10;
 
@@ -149,7 +149,7 @@ public final class Constants {
     public static final int kAlgaeInIntakeDistanceMm = 30;
 
     public static final double kCoralDebounceTime = 0.03;
-    public static final double kAlgaeFallingDebounceTime = 0.3;
+    public static final double kAlgaeFallingDebounceTime = 0.2;
     public static final double kAlgaeRisingDebounceTime = 0.1;
   }
 
@@ -157,7 +157,7 @@ public final class Constants {
     public static final double kRotationUpDegrees = 175;
     public static final double kRotationDownDegrees = 5;
 
-    // degrees / rotation (360) times gear ratio (1/20)
+    // degrees / rotation (360) times gear ratio (1/20[\])
     public static final double kConversionFactor = 360.0 * (1.0 / 20.0);
 
     public static final double kP = 0.005;
@@ -186,7 +186,7 @@ public final class Constants {
   public static final class LEDConstants {
     public static final int kPWMHeader = 5;
     // led length in pixels
-    public static final int kLength = 60;
+    public static final int kLength = 150;
     // Density of the LED Strip - currently set at 120 LEDs per meter
     public static final Distance kSpacing = Meters.of(1.0 / 60);
     // number of times the flashcommand will change color per second

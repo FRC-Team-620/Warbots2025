@@ -17,8 +17,8 @@ public class AlignSource extends Command {
   private Pose2d goalPose;
   private boolean alignCloseToStation;
 
-  private final PIDController xController = new PIDController(0.6, 0, 0.005);
-  private final PIDController yController = new PIDController(0.6, 0, 0.005);
+  private final PIDController xController = new PIDController(0.7, 0, 0.005);
+  private final PIDController yController = new PIDController(0.7, 0, 0.005);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   public AlignSource(Drive drive, boolean alignCloseToStation) {
@@ -80,11 +80,11 @@ public class AlignSource extends Command {
       if (drive.getPose().getY() > 4) {
         targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(2).orElse(new Pose3d()).toPose2d();
-        if (alignCloseToSource) ySetpoint = -0.5;
+        if (!alignCloseToSource) ySetpoint = -0.5;
       } else {
         targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(1).orElse(new Pose3d()).toPose2d();
-        if (!alignCloseToSource) ySetpoint = -0.5;
+        if (alignCloseToSource) ySetpoint = -0.5;
       }
     } else {
       if (drive.getPose().getY() > 4) {

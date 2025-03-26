@@ -138,7 +138,7 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("Gyro/Gyro Connected", gyroInputs.connected);
     Logger.recordOutput("Gyro/Gyro Heading", gyroInputs.yawPosition);
 
-    //Calculates 
+    // Calculates acceleration and velocity, then logs them
     driveAcceleration =
         (Math.sqrt(
                     Math.pow(kinematics.toChassisSpeeds(getModuleStates()).vxMetersPerSecond, 2)

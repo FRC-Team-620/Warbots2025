@@ -75,6 +75,9 @@ public class Drive extends SubsystemBase {
   private boolean autoAlignComplete = false;
   private boolean turboMode = false;
 
+  private double driveVelocity = 0;
+  private double driveAcceleration = 0;
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -134,6 +137,24 @@ public class Drive extends SubsystemBase {
     Logger.processInputs("Drive/Gyro", gyroInputs);
     Logger.recordOutput("Gyro/Gyro Connected", gyroInputs.connected);
     Logger.recordOutput("Gyro/Gyro Heading", gyroInputs.yawPosition);
+
+    //Calculates 
+    driveAcceleration =
+        (Math.sqrt(
+                    Math.pow(kinematics.toChassisSpeeds(getModuleStates()).vxMetersPerSecond, 2)
+                        + Math.pow(
+                            kinematics.toChassisSpeeds(getModuleStates()).vyMetersPerSecond, 2))
+                - driveVelocity)
+            / 0.02;
+
+    driveVelocity =
+        Math.sqrt(
+            Math.pow(kinematics.toChassisSpeeds(getModuleStates()).vxMetersPerSecond, 2)
+                + Math.pow(kinematics.toChassisSpeeds(getModuleStates()).vyMetersPerSecond, 2));
+
+    Logger.recordOutput("SwerveChassisSpeeds/Measured Velocity", driveVelocity);
+    Logger.recordOutput("SwerveChassisSpeeds/Measured Acceleration", driveAcceleration);
+
     for (var module : modules) {
       module.periodic();
     }

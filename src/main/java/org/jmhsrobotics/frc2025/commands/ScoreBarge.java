@@ -24,6 +24,8 @@ public class ScoreBarge extends Command {
 
   @Override
   public void initialize() {
+    scoreStarted = false;
+    wristMovementStart = false;
     wrist.setSetpoint(Constants.WristConstants.kRotationAlgaeDegrees);
     elevator.setSetpoint(Constants.ElevatorConstants.kProcesserMeters);
   }
@@ -36,12 +38,14 @@ public class ScoreBarge extends Command {
         && elevator.getSetpoint() == Constants.ElevatorConstants.kProcesserMeters) {
       scoreStarted = true;
       elevator.setSetpoint(Constants.ElevatorConstants.kBargeMeters);
+      intake.set(-0.2);
     }
-    if (this.elevator.getHeight() > 1 && scoreStarted) {
+    if (this.elevator.getHeight() > 0.9 && scoreStarted) {
       this.wrist.setSetpoint(Constants.WristConstants.kSafeAngleDegrees);
       this.wristMovementStart = true;
+      intake.set(-0.2);
     }
-    if (this.wrist.getPositionDegrees() < 120 && scoreStarted) {
+    if (this.wrist.getPositionDegrees() < 135 && scoreStarted) {
       this.intake.set(0.8);
     }
   }
@@ -54,7 +58,7 @@ public class ScoreBarge extends Command {
   @Override
   public void end(boolean interrupted) {
     elevator.setSetpoint(0);
-    wrist.setSetpoint(Constants.WristConstants.kSafeAngleDegrees);
+    wrist.setSetpoint(Constants.WristConstants.kRotationAlgaeDegrees);
     intake.set(0);
   }
 }

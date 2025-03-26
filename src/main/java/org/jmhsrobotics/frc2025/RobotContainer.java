@@ -461,7 +461,8 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/Align Source Far", new AlignSource(drive, false));
 
     SmartDashboard.putData("cmd/Score Barge", new ScoreBarge(elevator, wrist, intake));
-    SmartDashboard.putData("cmd/Score Barge No Wrist", new ScoreBargeNoWrist(elevator, wrist, intake));
+    SmartDashboard.putData(
+        "cmd/Score Barge No Wrist", new ScoreBargeNoWrist(elevator, wrist, intake));
   }
 
   private void configurePathPlanner() {

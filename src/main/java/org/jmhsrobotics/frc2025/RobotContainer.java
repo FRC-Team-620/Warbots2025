@@ -47,6 +47,8 @@ import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
+import org.jmhsrobotics.frc2025.commands.ScoreBarge;
+import org.jmhsrobotics.frc2025.commands.ScoreBargeNoWrist;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReef;
@@ -493,26 +495,8 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/Align Source Close", new AlignSource(drive, true));
     SmartDashboard.putData("cmd/Align Source Far", new AlignSource(drive, false));
 
-    SmartDashboard.putData(
-        "cmd/Intake Indexer",
-        new SequentialCommandGroup(
-            new ElevatorAndWristMove(
-                elevator,
-                wrist,
-                intake,
-                Constants.ElevatorConstants.kCoralIntakeMeters,
-                Constants.WristConstants.kRotationIntakeCoralDegrees),
-            new IntakeFromIndexer(wrist, intake, led),
-            new FixCoralPlacement(intake, wrist)));
-    SmartDashboard.putData(
-        "cmd/Align Preset Southwest",
-        new AlignReefSetAngle(drive, vision, led, elevator, true, 19));
-    SmartDashboard.putData(
-        "cmd/Align Preset Southwest Right",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 19));
-    SmartDashboard.putData(
-        "cmd/Align Preset Northwest",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
+    SmartDashboard.putData("cmd/Score Barge", new ScoreBarge(elevator, wrist, intake));
+    SmartDashboard.putData("cmd/Score Barge No Wrist", new ScoreBargeNoWrist(elevator, wrist, intake));
   }
 
   private void configurePathPlanner() {

@@ -175,26 +175,6 @@ public class DoubleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger climberUp() {
-    return operator.povUp();
-  }
-
-  @Override
-  public Trigger climberDown() {
-    return operator.povDown();
-  }
-
-  @Override
-  public Trigger prepareClimb() {
-    return operator.povLeft();
-  }
-
-  @Override
-  public Trigger unPrepareClimb() {
-    return operator.povRight();
-  }
-
-  @Override
   public Trigger changeModeLeft() {
     return operator.leftStick();
   }

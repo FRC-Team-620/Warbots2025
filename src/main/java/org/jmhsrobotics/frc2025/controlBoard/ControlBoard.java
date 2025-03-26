@@ -50,14 +50,6 @@ public interface ControlBoard {
 
   public Trigger takeAlgaeQTip();
 
-  public Trigger climberUp();
-
-  public Trigger climberDown();
-
-  public Trigger prepareClimb();
-
-  public Trigger unPrepareClimb();
-
   public Trigger changeModeLeft();
 
   public Trigger changeModeRight();

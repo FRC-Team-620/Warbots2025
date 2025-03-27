@@ -45,7 +45,7 @@ public class ScoreBarge extends Command {
       this.wristMovementStart = true;
       intake.set(-0.2);
     }
-    if (this.wrist.getPositionDegrees() < 135 && scoreStarted) {
+    if (this.wrist.getPositionDegrees() < 140 && scoreStarted) {
       this.intake.set(0.8);
     }
   }

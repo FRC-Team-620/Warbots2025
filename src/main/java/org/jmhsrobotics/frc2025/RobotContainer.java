@@ -44,7 +44,6 @@ import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.ScoreBarge;
-import org.jmhsrobotics.frc2025.commands.ScoreBargeNoWrist;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReef;
@@ -461,8 +460,6 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/Align Source Far", new AlignSource(drive, false));
 
     SmartDashboard.putData("cmd/Score Barge", new ScoreBarge(elevator, wrist, intake));
-    SmartDashboard.putData(
-        "cmd/Score Barge No Wrist", new ScoreBargeNoWrist(elevator, wrist, intake));
   }
 
   private void configurePathPlanner() {

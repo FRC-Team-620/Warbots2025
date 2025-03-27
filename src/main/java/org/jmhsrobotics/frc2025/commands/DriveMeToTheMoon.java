@@ -222,8 +222,8 @@ public class DriveMeToTheMoon extends Command {
             .orElse(new Pose3d()); // TODO: handle null tag pose
     Logger.recordOutput("Align/targetPos", defaultTagPose.plus(new Transform3d(goalTransform)));
 
-    if (speeds.vxMetersPerSecond == 0
-        && speeds.vyMetersPerSecond == 0
+    if (speeds.vxMetersPerSecond <= 0.1
+        && speeds.vyMetersPerSecond <= 0.1
         && wrist.getSetpoint() == Constants.WristConstants.kRotationIntakeCoralDegrees) {
       drive.stopWithX();
     }

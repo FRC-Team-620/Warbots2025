@@ -164,6 +164,8 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kToleranceDegrees = 5;
+
+    public static final double kIndexerSpeedDutyCycle = 0.23;
   }
 
   public static final class ClimberConstants {

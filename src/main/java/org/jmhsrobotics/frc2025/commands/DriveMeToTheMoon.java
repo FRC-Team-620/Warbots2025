@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
+import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AutoAlign;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
@@ -39,6 +40,8 @@ public class DriveMeToTheMoon extends Command {
   Transform2d goalTransform = new Transform2d();
 
   private Pose3d lastTagPose = null;
+  private final Transform2d algaeLineupTransform = new Transform2d(0.7, 0, new Rotation2d());
+  private final Transform2d algaeIntakeTransform = new Transform2d(0.45, 0, new Rotation2d());
 
   private static final double DEADBAND = 0.05;
 
@@ -120,87 +123,132 @@ public class DriveMeToTheMoon extends Command {
             speeds,
             isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation());
 
+    // if intake algea button is being pressed, go through the auto algae intake sequence
+    if (autoIntakeAlgae.getAsBoolean()) {
+      double thetaGoalDegrees = AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees());
+      targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
+
+      Pose3d tagPose =
+          AutoAlign.getTagPoseRobotRelative(targetId, vision, lastTagPose, drive.getPose());
+
+      // determines what the transformation from tag should be. If at goal, transformation changes
+      // to the other option
+      if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
+          && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1)
+          && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3) {
+        // if goal was intaking, then backs out. if goal was lineup and elevator is at right
+        // setpoint, then move up to intake
+        if (goalTransform == algaeIntakeTransform) goalTransform = algaeLineupTransform;
+        else if (goalTransform == algaeLineupTransform
+                && elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
+            || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters)
+          goalTransform = algaeIntakeTransform;
+      } else if (goalTransform != algaeIntakeTransform && goalTransform != algaeLineupTransform) {
+        // sets goal to lineup if not already at lineup setting
+        goalTransform = algaeLineupTransform;
+      }
+
+      if (tagPose != null) {
+        // sets last tag position
+        lastTagPose =
+            new Pose3d(drive.getPose())
+                .plus(new Transform3d(tagPose.getTranslation(), tagPose.getRotation()));
+
+        // gets reef align translation speeds and theta speeds separately, then adds them together
+        ChassisSpeeds reefAlignSpeeds =
+            AutoAlign.getReefAlignSpeeds(tagPose, goalTransform, xController, yController);
+        reefAlignSpeeds =
+            reefAlignSpeeds.plus(
+                AutoAlign.getAutoAlignThetaSpeeds(
+                    thetaController, thetaGoalDegrees, drive.getRotation()));
+        speeds = speeds.plus(reefAlignSpeeds);
+
+        // For LED driver feedback
+        Logger.recordOutput("Align/X Distance", Math.abs(tagPose.getX() - goalTransform.getX()));
+        Logger.recordOutput("Align/Y Distance", Math.abs(tagPose.getY() - goalTransform.getY()));
+        Logger.recordOutput(
+            "Align/Theta Distance", Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees));
+      }
+    }
     // if triggers elevator is at bottom and no coral in intake, default for triggers is source auto
     // align
-    if (elevator.getSetpoint() == 0
-        && !intake.isCoralInIntake()
-        && !autoIntakeAlgae.getAsBoolean()) {
-      if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
-        // calculates the field relative setpoint position
-        // TODO: Needs to be cleaned up
-        Pose2d setpoint;
-        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-          setpoint =
-              AlignSource.calculateSetpoints(
-                  drive,
-                  (rightTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() > 4)
-                      || (leftTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() < 4));
-        } else {
-          setpoint =
-              AlignSource.calculateSetpoints(
-                  drive,
-                  (!((rightTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() > 4)
-                      || (leftTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() < 4))));
-        }
-        // calculates the source auto align speed and adds it to speeds
-        speeds =
-            speeds.plus(
-                AutoAlign.getSourceAlignSpeeds(
-                    drive, setpoint, xController, yController, thetaController));
-      } else drive.setAutoAlignComplete(false);
-    } else {
-      // reef auto align
-      if (rightTriggerValue.getAsDouble() > 0.5
-          || leftTriggerValue.getAsDouble() > 0.5
-          || autoIntakeAlgae.getAsBoolean()) {
-        // calculate angle goal, target tag ID, goal transform from tag and tag position
-        double thetaGoalDegrees = AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees());
-        targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
+    else {
+      if (elevator.getSetpoint() == 0 && !intake.isCoralInIntake()) {
+        if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
+          // calculates the field relative setpoint position
+          // TODO: Needs to be cleaned up
+          Pose2d setpoint;
+          if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+            setpoint =
+                AlignSource.calculateSetpoints(
+                    drive,
+                    (rightTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() > 4)
+                        || (leftTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() < 4));
+          } else {
+            setpoint =
+                AlignSource.calculateSetpoints(
+                    drive,
+                    (!((rightTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() > 4)
+                        || (leftTriggerValue.getAsDouble() > 0.5 && drive.getPose().getY() < 4))));
+          }
+          // calculates the source auto align speed and adds it to speeds
+          speeds =
+              speeds.plus(
+                  AutoAlign.getSourceAlignSpeeds(
+                      drive, setpoint, xController, yController, thetaController));
+        } else drive.setAutoAlignComplete(false);
+      } else {
+        // reef auto align
+        if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
+          // calculate angle goal, target tag ID, goal transform from tag and tag position
+          double thetaGoalDegrees = AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees());
+          targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
 
-        // if driver is pressing the dedicated algae align button, transform is automatically set
-        // correctly for algae
-        if (autoIntakeAlgae.getAsBoolean())
-          goalTransform = new Transform2d(0.7, 0.0, new Rotation2d());
-        else
+          // if driver is pressing the dedicated algae align button, transform is automatically set
+          // correctly for algae
           goalTransform =
               AutoAlign.calculateReefTransform(
                   elevator.getSetpoint(),
                   leftTriggerValue.getAsDouble() > rightTriggerValue.getAsDouble());
 
-        Pose3d tagPose =
-            AutoAlign.getTagPoseRobotRelative(targetId, vision, lastTagPose, drive.getPose());
+          Pose3d tagPose =
+              AutoAlign.getTagPoseRobotRelative(targetId, vision, lastTagPose, drive.getPose());
 
-        if (tagPose != null) {
-          // sets last tag position
-          lastTagPose =
-              new Pose3d(drive.getPose())
-                  .plus(new Transform3d(tagPose.getTranslation(), tagPose.getRotation()));
+          if (tagPose != null) {
+            // sets last tag position
+            lastTagPose =
+                new Pose3d(drive.getPose())
+                    .plus(new Transform3d(tagPose.getTranslation(), tagPose.getRotation()));
 
-          // gets reef align translation speeds and theta speeds separately, then adds them together
-          ChassisSpeeds reefAlignSpeeds =
-              AutoAlign.getReefAlignSpeeds(tagPose, goalTransform, xController, yController);
-          reefAlignSpeeds =
-              reefAlignSpeeds.plus(
-                  AutoAlign.getAutoAlignThetaSpeeds(
-                      thetaController, thetaGoalDegrees, drive.getRotation()));
-          speeds = speeds.plus(reefAlignSpeeds);
+            // gets reef align translation speeds and theta speeds separately, then adds them
+            // together
+            ChassisSpeeds reefAlignSpeeds =
+                AutoAlign.getReefAlignSpeeds(tagPose, goalTransform, xController, yController);
+            reefAlignSpeeds =
+                reefAlignSpeeds.plus(
+                    AutoAlign.getAutoAlignThetaSpeeds(
+                        thetaController, thetaGoalDegrees, drive.getRotation()));
+            speeds = speeds.plus(reefAlignSpeeds);
 
-          // For LED driver feedback
-          Logger.recordOutput("Align/X Distance", Math.abs(tagPose.getX() - goalTransform.getX()));
-          Logger.recordOutput("Align/Y Distance", Math.abs(tagPose.getY() - goalTransform.getY()));
-          Logger.recordOutput(
-              "Align/Theta Distance",
-              Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees));
+            // For LED driver feedback
+            Logger.recordOutput(
+                "Align/X Distance", Math.abs(tagPose.getX() - goalTransform.getX()));
+            Logger.recordOutput(
+                "Align/Y Distance", Math.abs(tagPose.getY() - goalTransform.getY()));
+            Logger.recordOutput(
+                "Align/Theta Distance",
+                Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees));
 
-          drive.setAutoAlignComplete(
-              Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
-                  && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1)
-                  && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3);
+            drive.setAutoAlignComplete(
+                Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
+                    && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1)
+                    && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3);
+          }
+
+        } else {
+          lastTagPose = null;
+          drive.setAutoAlignComplete(false);
         }
-
-      } else {
-        lastTagPose = null;
-        drive.setAutoAlignComplete(false);
       }
     }
 

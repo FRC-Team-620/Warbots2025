@@ -244,6 +244,7 @@ public class RobotContainer {
             vision,
             elevator,
             intake,
+            wrist,
             () -> -control.translationY(),
             () -> -control.translationX(),
             () -> -control.rotation(),

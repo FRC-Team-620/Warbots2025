@@ -16,6 +16,7 @@ package org.jmhsrobotics.frc2025.subsystems.drive;
 import com.reduxrobotics.sensors.canandgyro.Canandgyro;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+
 import java.util.Queue;
 import org.jmhsrobotics.frc2025.Constants;
 
@@ -24,11 +25,26 @@ public class GyroIOBoron implements GyroIO {
   private Canandgyro canandgyro;
   private final Queue<Double> yawTimestampQueue;
   private final Queue<Double> yawPositionQueue;
+  private final Queue<Double> XAccelerationTimestampQueue;
+  private final Queue<Double> XAccelerationQueue;
+  private final Queue<Double> YAccelerationTimestampQueue;
+  private final Queue<Double> YAccelerationQueue;
+  private final double yAcceleration = canandgyro.getAccelerationY();
+  private final double xAcceleration = canandgyro.getAccelerationX();
+
+
 
   public GyroIOBoron() {
     canandgyro = new Canandgyro(Constants.CAN.kCanAndGyroID);
     yawTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
     yawPositionQueue = SparkOdometryThread.getInstance().registerSignal(canandgyro::getYaw);
+    XAccelerationTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
+    YAccelerationTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
+    XAccelerationQueue = ;
+    YAccelerationQueue = ;
+
+
+
   }
 
   // Check if gyro is calibrated

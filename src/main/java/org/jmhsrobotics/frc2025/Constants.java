@@ -100,6 +100,8 @@ public final class Constants {
     public static final double kAlgaeIntakeL2Meters = 0.54;
     public static final double kAlgaeIntakeL3Meters = 1.03;
 
+    public static final double kTrapezoidalProfileMaxVelocity = 1.68;
+    public static final double kTrapezoidalProfileMaxAcceleration = 4;
     public static final double kP = 0.05;
     public static final double kI = 0.0;
     public static final double kD = 0.0005;

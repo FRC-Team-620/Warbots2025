@@ -21,11 +21,23 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
+import java.util.Optional;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.jmhsrobotics.frc2025.util.ControllerMonitor;
+import org.jmhsrobotics.frc2025.util.Elastic;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -87,10 +99,47 @@ public class Robot extends LoggedRobot {
     }
 
     // Initialize URCL
-    Logger.registerURCL(URCL.startExternal());
+    Logger.registerURCL(URCL.startExternal(Constants.CAN.kCanDeviceMap));
 
     // Start AdvantageKit logger
     Logger.start();
+    SmartDashboard.putString("logsavefile", "");
+    SmartDashboard.putData(
+        "saveLog",
+        new InstantCommand(
+                () -> {
+                  Logger.end();
+                  Logger.end();
+                  var path = Paths.get(RobotBase.isSimulation() ? "logs" : "/U/logs");
+                  try {
+                    Optional<Path> lastModifiedFile =
+                        Files.list(path)
+                            .filter(Files::isRegularFile)
+                            .max(Comparator.comparingLong(f -> f.toFile().lastModified()));
+
+                    lastModifiedFile.ifPresentOrElse(
+                        file -> {
+                          try {
+                            var filename = SmartDashboard.getString("logsavefile", "unamed");
+                            Files.move(
+                                file,
+                                file.getParent().resolve(filename + " " + file.getFileName()),
+                                StandardCopyOption.REPLACE_EXISTING);
+                          } catch (IOException e) {
+                            e.printStackTrace();
+                          }
+                        },
+                        () -> System.out.println("No files found in the directory."));
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                  }
+                  // Logger.addDataReceiver(new WPILOGWriter());
+                  // Logger.addDataReceiver(new NT4Publisher());
+                  // For some reason starting the logger again crashes so just kill the code anway
+                  // and let it restart. XD
+                  System.exit(0);
+                })
+            .ignoringDisable(true));
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
@@ -119,8 +168,6 @@ public class Robot extends LoggedRobot {
   private void updateAscopeVis() {
     double height = robotContainer.elevator.getHeight();
     double gripperDegrees = robotContainer.wrist.getPositionDegrees();
-    double climberDegrees = robotContainer.climber.getClimberPositionDegrees();
-    double indexerDegrees = robotContainer.climber.getIndexerPositionDegrees();
     Logger.recordOutput(
         "stage1",
         new Pose3d(new Translation3d(0, 0, height / 2), new Rotation3d(Rotation2d.fromDegrees(0))));
@@ -132,16 +179,6 @@ public class Robot extends LoggedRobot {
         new Pose3d(
             new Translation3d(0.2730451486, 0, 0.4064 + height),
             new Rotation3d(0, Units.degreesToRadians(gripperDegrees), 0)));
-    Logger.recordOutput(
-        "climber",
-        new Pose3d(
-            new Translation3d(-.075, 0.267, 0.165),
-            new Rotation3d(Units.degreesToRadians(climberDegrees), 0, 0)));
-    Logger.recordOutput(
-        "indexer",
-        new Pose3d(
-            new Translation3d(-0.0125, 0, 0.9775),
-            new Rotation3d(0, Units.degreesToRadians(indexerDegrees), 0)));
     var robotpos = new Pose3d(robotContainer.drive.getPose());
     Logger.recordOutput(
         "camtest",
@@ -154,6 +191,36 @@ public class Robot extends LoggedRobot {
                     Units.degreesToRadians(0),
                     Units.degreesToRadians(-10),
                     Units.degreesToRadians(35)))));
+    // VisionConstants.robotToCamera1 =
+    //     new Transform3d(
+    //         Units.inchesToMeters(8),
+    //         Units.inchesToMeters(-11.5),
+    //         0.185,
+    //         new Rotation3d(0.0, Units.degreesToRadians(-20), Units.degreesToRadians(35)));
+    // VisionConstants.robotToCamera0 =
+    //     new Transform3d(
+    //         Units.inchesToMeters(8),
+    //         Units.inchesToMeters(11.5),
+    //         0.185,
+    //         new Rotation3d(0.0, Units.degreesToRadians(-20), Units.degreesToRadians(-35)));
+    Logger.recordOutput(
+        "cam/left_robot_different", new Pose3d().plus(VisionConstants.robotToCamera0));
+    Logger.recordOutput(
+        "cam/right_robot_different", new Pose3d().plus(VisionConstants.robotToCamera1));
+    Logger.recordOutput("cam/left_field", robotpos.plus(VisionConstants.robotToCamera0));
+    Logger.recordOutput("cam/right_field", robotpos.plus(VisionConstants.robotToCamera1));
+    if (robotContainer.intake.isCoralInIntake()) {
+      Logger.recordOutput(
+          "hasPipe", robotpos.plus(new Transform3d(0.0, 0.0, 1.2, new Rotation3d())));
+    } else {
+      Logger.recordOutput("hasPipe", robotpos.plus(new Transform3d(90, 0.0, 4, new Rotation3d())));
+    }
+    if (robotContainer.intake.isAlgaeInintake()) {
+      Logger.recordOutput(
+          "hasball", robotpos.plus(new Transform3d(0.0, 0.0, 1.5, new Rotation3d())));
+    } else {
+      Logger.recordOutput("hasball", robotpos.plus(new Transform3d(90, 0.0, 4, new Rotation3d())));
+    }
   }
 
   /** This function is called once when the robot is disabled. */
@@ -169,6 +236,7 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    Elastic.selectTab("Autonomous");
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -184,6 +252,7 @@ public class Robot extends LoggedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    Elastic.selectTab("Teleoperated");
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -200,6 +269,7 @@ public class Robot extends LoggedRobot {
   /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {
+    Elastic.selectTab("Tuning");
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
   }

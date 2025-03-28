@@ -17,7 +17,7 @@ public class SimElevatorIO implements ElevatorIO {
   ElevatorSim simElevator =
       new ElevatorSim(
           DCMotor.getNeoVortex(2),
-          10.0,
+          12.0,
           Units.lbsToKilograms(20.0),
           Units.inchesToMeters(0.944000),
           0,

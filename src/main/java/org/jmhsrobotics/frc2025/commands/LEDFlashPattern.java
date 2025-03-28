@@ -8,19 +8,15 @@ import org.jmhsrobotics.frc2025.subsystems.led.LED;
 
 public class LEDFlashPattern extends Command {
   private LED led;
-  private double duration;
   private double interval = 1.0 / Constants.LEDConstants.kFlashFrequency;
 
   private final LEDPattern firstPattern;
   private final LEDPattern secondPattern;
 
-  private Timer timer = new Timer();
   private Timer lightTimer = new Timer();
 
-  public LEDFlashPattern(
-      LED led, LEDPattern firstPattern, LEDPattern secondPattern, double duration) {
+  public LEDFlashPattern(LED led, LEDPattern firstPattern, LEDPattern secondPattern) {
     this.led = led;
-    this.duration = duration;
     this.firstPattern = firstPattern;
     this.secondPattern = secondPattern;
 
@@ -29,7 +25,6 @@ public class LEDFlashPattern extends Command {
 
   @Override
   public void initialize() {
-    timer.restart();
     lightTimer.restart();
     led.setPattern(firstPattern);
   }
@@ -43,11 +38,5 @@ public class LEDFlashPattern extends Command {
       else led.setPattern(firstPattern);
       lightTimer.restart();
     }
-  }
-
-  @Override
-  public boolean isFinished() {
-    // TODO Auto-generated method stub
-    return timer.get() > this.duration;
   }
 }

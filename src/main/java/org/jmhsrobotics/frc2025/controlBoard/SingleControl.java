@@ -66,6 +66,22 @@ public class SingleControl implements ControlBoard {
     return driver.getLeftY();
   }
 
+  // both aligns return 0 because buttoms are available
+  @Override
+  public double alignLeft() {
+    return 0;
+  }
+
+  @Override
+  public double alignRight() {
+    return 0;
+  }
+
+  @Override
+  public Trigger autoIntakeAlge() {
+    return nop;
+  }
+
   @Override
   public Trigger resetForward() {
     return driver.rightBumper();
@@ -73,14 +89,14 @@ public class SingleControl implements ControlBoard {
 
   @Override
   public Trigger turboMode() {
-    return nop;
+    return driver.leftBumper();
   }
 
   // =======Operator Controls=======
 
   @Override
   public Trigger intakeCoralFromIndexer() {
-    return driver.rightStick().and(elevatorAtBottom);
+    return driver.rightStick().and(searchMode);
   }
 
   @Override
@@ -155,26 +171,6 @@ public class SingleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger climbUp() {
-    return driver.povUp();
-  }
-
-  @Override
-  public Trigger climbDown() {
-    return driver.povDown();
-  }
-
-  @Override
-  public Trigger indexerUp() {
-    return driver.leftStick();
-  }
-
-  @Override
-  public Trigger indexerDown() {
-    return driver.rightStick();
-  }
-
-  @Override
   public Trigger changeModeLeft() {
     return driver.back();
   }
@@ -190,7 +186,7 @@ public class SingleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger resetIndexer() {
-    return driver.povLeft();
+  public Trigger zeroElevator() {
+    return driver.leftStick();
   }
 }

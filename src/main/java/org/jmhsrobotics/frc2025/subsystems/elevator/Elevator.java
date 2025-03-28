@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.util.CheckTolerance;
 import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
@@ -58,11 +59,9 @@ public class Elevator extends SubsystemBase {
         elevatorIO.setPositionMeters(calculatedState.position);
       }
     }
-  }
+    Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
 
-  public boolean atGoal() {
-    return Math.abs(inputs.heightMeters - this.setPointMeters)
-        < Constants.ElevatorConstants.kHeightTolerance;
+    SmartDashboard.putNumber("Elevator/Raw Height Meters", inputs.heightMeters);
   }
 
   public void setSetpoint(double setPoint) {
@@ -80,12 +79,20 @@ public class Elevator extends SubsystemBase {
     return inputs.heightMeters;
   }
 
+  public boolean atGoal() {
+    return CheckTolerance.atGoalTolerance(
+        setPointMeters, inputs.heightMeters, Constants.ElevatorConstants.kHeightTolerance);
+  }
+
   public double getVelocity() {
     return inputs.velocityMPS;
   }
 
   public double getCurrentAmps() {
     double totalAmps = 0;
+    if (inputs.motorAmps == null) {
+      return 0;
+    }
     for (int i = 0; i < inputs.motorAmps.length; i++) {
       totalAmps += inputs.motorAmps[i];
     }

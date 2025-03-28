@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.util.SparkUtil;
 
@@ -30,7 +31,17 @@ public class VortexElevatorIO implements ElevatorIO {
 
   private double goalMeters = 0;
 
+  private double lp, li, ld, lf;
+
   public VortexElevatorIO() {
+    SmartDashboard.putNumber("elev/p", Constants.ElevatorConstants.kP);
+    SmartDashboard.putNumber("elev/i", Constants.ElevatorConstants.kI);
+    SmartDashboard.putNumber("elev/d", Constants.ElevatorConstants.kD);
+    SmartDashboard.putNumber("elev/f", 0);
+    lp = Constants.ElevatorConstants.kP;
+    ld = Constants.ElevatorConstants.kD;
+    li = Constants.ElevatorConstants.kI;
+    lf = 0;
     vortexLeftConfig = new SparkFlexConfig();
     vortexLeftConfig
         .idleMode(IdleMode.kBrake)
@@ -39,10 +50,11 @@ public class VortexElevatorIO implements ElevatorIO {
         .inverted(true)
         .encoder
         .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
-    vortexLeftConfig.closedLoop.pid(
+    vortexLeftConfig.closedLoop.pidf(
         Constants.ElevatorConstants.kP,
         Constants.ElevatorConstants.kI,
-        Constants.ElevatorConstants.kD);
+        Constants.ElevatorConstants.kD,
+        Constants.ElevatorConstants.kF);
 
     vortexRightConfig = new SparkFlexConfig();
     vortexRightConfig
@@ -52,10 +64,11 @@ public class VortexElevatorIO implements ElevatorIO {
         .follow(vortexLeft, true)
         .encoder
         .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
-    vortexRightConfig.closedLoop.pid(
+    vortexRightConfig.closedLoop.pidf(
         Constants.ElevatorConstants.kP,
         Constants.ElevatorConstants.kI,
-        Constants.ElevatorConstants.kD);
+        Constants.ElevatorConstants.kD,
+        Constants.ElevatorConstants.kF);
 
     SparkUtil.tryUntilOk(
         vortexLeft,
@@ -75,6 +88,20 @@ public class VortexElevatorIO implements ElevatorIO {
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
+    SmartDashboard.putNumber("elevator output", vortexLeft.getAppliedOutput());
+
+    // double np = SmartDashboard.getNumber("elev/p", lp);
+    // double ni = SmartDashboard.getNumber("elev/i", li);
+    // double nd = SmartDashboard.getNumber("elev/d", ld);
+    // double nf = SmartDashboard.getNumber("elev/f", lf);
+
+    // if (np != lp || ni != lp || nd != ld || nf != lf){
+
+    // }
+    // lp = np;
+    // li = ni;
+    // ld = nd;
+    // lf = nf;
     inputs.motorAmps = new double[2];
 
     // Get current speed, subtract from previous tic's speed, divide by time interval
@@ -88,7 +115,9 @@ public class VortexElevatorIO implements ElevatorIO {
     SparkUtil.ifOk(
         vortexRight, vortexRight::getOutputCurrent, (value) -> inputs.motorAmps[1] = value);
 
-    SparkUtil.ifOk(vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value);
+    // inputs.motorVolts = new double[2];
+    SparkUtil.ifOk(
+        vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value / 100.0);
 
     // divide RPM by 60 for the 1:60 gear ratio, divide by 60 again for minutes to seconds
     SparkUtil.ifOk(
@@ -109,7 +138,8 @@ public class VortexElevatorIO implements ElevatorIO {
   @Override
   public void setPositionMeters(double positionMeters) {
     isOpenLoop = false;
-    this.goalMeters = positionMeters;
+    // change the setpoint from meters to centimeters
+    this.goalMeters = positionMeters * 100.0;
   }
 
   public void setVoltage(double voltage) {

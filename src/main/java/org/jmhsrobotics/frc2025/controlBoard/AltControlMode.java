@@ -65,6 +65,22 @@ public class AltControlMode implements ControlBoard {
     return calculateTotalTranslation(false);
   }
 
+  // both aligns return 0 because buttoms are available
+  @Override
+  public double alignLeft() {
+    return 0;
+  }
+
+  @Override
+  public double alignRight() {
+    return 0;
+  }
+
+  @Override
+  public Trigger autoIntakeAlge() {
+    return nop;
+  }
+
   // normalizes the X and Y translations and puts them in a vector
   private double calculateTotalTranslation(boolean isX) {
     double driveX = driver.getLeftX();
@@ -91,19 +107,17 @@ public class AltControlMode implements ControlBoard {
 
   @Override
   public Trigger turboMode() {
-    return nop;
+    return driver.leftBumper();
   }
 
   // =======Operator Controls=======
-
   @Override
   public Trigger intakeCoralFromIndexer() {
-    return driver.rightStick().and(elevatorAtBottom);
+    return driver.rightStick().and(searchMode);
   }
 
   @Override
   public DoubleSupplier intakeCoral() {
-    // return driver.leftTrigger();
     return () -> driver.getLeftTriggerAxis();
   }
 
@@ -114,83 +128,52 @@ public class AltControlMode implements ControlBoard {
 
   @Override
   public Trigger placeCoralLevel1() {
-    // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
     return driver.a().and(coralMode);
   }
 
   @Override
   public Trigger placeCoralLevel2() {
-    // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
     return driver.b().and(coralMode);
   }
 
   @Override
   public Trigger placeCoralLevel3() {
-    // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
-
     return driver.x().and(coralMode);
   }
 
   @Override
   public Trigger placeCoralLevel4() {
-    // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
     return driver.y().and(coralMode);
   }
 
   @Override
   public Trigger scoreAlgaeProcesser() {
-    // if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
     return (driver.a().or(driver.b())).and(algaeMode);
   }
 
   @Override
   public Trigger scoreAlgaeBarge() {
-    // if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
     return (driver.y().or(driver.x())).and(algaeMode);
   }
 
   @Override
   public Trigger elevatorIntakeCoral() {
-    // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
     return driver.a().and(searchMode);
   }
 
   @Override
   public Trigger takeAlgaeLevel2() {
-    // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
     return driver.b().and(searchMode);
   }
 
   @Override
   public Trigger takeAlgaeLevel3() {
-    // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
     return driver.x().and(searchMode);
   }
 
   @Override
   public Trigger takeAlgaeQTip() {
-    // if (intake.getMode() != Constants.ModeConstants.kSearch) return nop;
     return driver.y().and(searchMode);
-  }
-
-  @Override
-  public Trigger climbUp() {
-    return driver.povUp();
-  }
-
-  @Override
-  public Trigger climbDown() {
-    return driver.povDown();
-  }
-
-  @Override
-  public Trigger indexerUp() {
-    return driver.leftStick();
-  }
-
-  @Override
-  public Trigger indexerDown() {
-    return driver.rightStick();
   }
 
   @Override
@@ -209,7 +192,7 @@ public class AltControlMode implements ControlBoard {
   }
 
   @Override
-  public Trigger resetIndexer() {
-    return driver.povLeft();
+  public Trigger zeroElevator() {
+    return driver.leftStick();
   }
 }

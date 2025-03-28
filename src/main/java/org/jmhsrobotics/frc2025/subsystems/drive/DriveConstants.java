@@ -23,6 +23,11 @@ import edu.wpi.first.math.util.Units;
 public class DriveConstants {
 
   public static final double maxSpeedMetersPerSec = 4.8768;
+
+  // change coefficients when we want to implement turbo
+  public static final double turboCoefficient = 1;
+  public static final double nonTurboCoefficient = 0.9;
+
   public static final double odometryFrequency = 100.0; // Hz
 
   public static final Rotation2d frontLeftZeroRotation = new Rotation2d(0.0);
@@ -44,6 +49,9 @@ public class DriveConstants {
           new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
           new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0)
         };
+
+    public static final double maxAngularSpeedRadPerSec =
+        DriveConstants.maxSpeedMetersPerSec / DriveConstants.revConstants.driveBaseRadius;
 
     // Zeroed rotation values for each module, see setup instructions
 
@@ -93,7 +101,7 @@ public class DriveConstants {
     public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 
     // Turn PID configuration
-    public static final double turnKp = 0.2;
+    public static final double turnKp = 0.1;
     public static final double turnKd = 0.0;
     public static final double turnSimP = 4;
     public static final double turnSimD = 0.0;
@@ -125,6 +133,9 @@ public class DriveConstants {
     public static final double trackWidth = Units.inchesToMeters(22.5); // make this a variable?
     public static final double wheelBase = Units.inchesToMeters(22.5); // this too?
     public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
+    public static final double maxAngularSpeedRadPerSec =
+        DriveConstants.maxSpeedMetersPerSec / DriveConstants.revConstants.driveBaseRadius;
+
     public static final Translation2d[] moduleTranslations =
         new Translation2d[] {
           new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
@@ -182,8 +193,9 @@ public class DriveConstants {
     public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 
     // Turn PID configuration
-    public static final double turnKp = 0.5;
-    public static final double turnKd = 0.0;
+    // 14 for p value was too much
+    public static final double turnKp = 6;
+    public static final double turnKd = 0.03;
     public static final double turnSimP = 0.2;
     public static final double turnSimD = 0.0;
     public static final double turnPIDMinInput = 0; // Radians

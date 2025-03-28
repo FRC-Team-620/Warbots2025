@@ -12,6 +12,12 @@ public interface ControlBoard {
 
   public double translationY();
 
+  public double alignLeft();
+
+  public double alignRight();
+
+  public Trigger autoIntakeAlge();
+
   public Trigger resetForward();
 
   public Trigger turboMode();
@@ -44,19 +50,11 @@ public interface ControlBoard {
 
   public Trigger takeAlgaeQTip();
 
-  public Trigger climbUp();
-
-  public Trigger climbDown();
-
-  public Trigger indexerUp();
-
-  public Trigger indexerDown();
-
   public Trigger changeModeLeft();
 
   public Trigger changeModeRight();
 
   public Trigger UnOverrideControlMode();
 
-  public Trigger resetIndexer();
+  public Trigger zeroElevator();
 }

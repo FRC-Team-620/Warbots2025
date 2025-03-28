@@ -71,6 +71,10 @@ public class Drive extends SubsystemBase {
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
 
+  private double maxLinearSpeedMetersPerSec = DriveConstants.maxSpeedMetersPerSec;
+  private boolean autoAlignComplete = false;
+  private boolean turboMode = false;
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -96,7 +100,7 @@ public class Drive extends SubsystemBase {
         this::getChassisSpeeds,
         this::runVelocity,
         new PPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+            new PIDConstants(30, 0.0, 0.0), new PIDConstants(20, 0.0, 0.0)),
         DriveConstants.thriftyConstants.ppConfig,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
@@ -128,6 +132,8 @@ public class Drive extends SubsystemBase {
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
+    Logger.recordOutput("Gyro/Gyro Connected", gyroInputs.connected);
+    Logger.recordOutput("Gyro/Gyro Heading", gyroInputs.yawPosition);
     for (var module : modules) {
       module.periodic();
     }
@@ -198,7 +204,7 @@ public class Drive extends SubsystemBase {
     speeds = ChassisSpeeds.discretize(speeds, Constants.krealTimeStep);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        setpointStates, DriveConstants.maxSpeedMetersPerSec);
+        setpointStates, this.getMaxLinearSpeedMetersPerSec());
 
     // Log unoptimized setpoints
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
@@ -315,7 +321,9 @@ public class Drive extends SubsystemBase {
       double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {
     poseEstimator.addVisionMeasurement(
-        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+        new Pose2d(visionRobotPoseMeters.getX(), visionRobotPoseMeters.getY(), this.getRotation()),
+        timestampSeconds,
+        visionMeasurementStdDevs);
   }
 
   /** Returns the maximum linear speed in meters per sec. */
@@ -325,13 +333,35 @@ public class Drive extends SubsystemBase {
 
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
-    return DriveConstants.maxSpeedMetersPerSec / DriveConstants.thriftyConstants.driveBaseRadius;
+    return DriveConstants.thriftyConstants.maxAngularSpeedRadPerSec;
   }
+
+  /**
+   * Sets the maximum speed to either align mode or standard mode based on what the current max
+   * speed is
+   */
+  public void changeMaxSpeedMetersPerSec() {}
 
   /** Sets all Motor Controllers to brake or coast mode */
   public void setBrakeMode(boolean enable) {
     for (var module : modules) {
       module.setBrakeMode(enable);
     }
+  }
+
+  public void setAutoAlignComplete(boolean isAligned) {
+    this.autoAlignComplete = isAligned;
+  }
+
+  public boolean isAutoAlignComplete() {
+    return autoAlignComplete;
+  }
+
+  public void setTurboMode(boolean turboMode) {
+    this.turboMode = turboMode;
+  }
+
+  public boolean getTurboMode() {
+    return turboMode;
   }
 }

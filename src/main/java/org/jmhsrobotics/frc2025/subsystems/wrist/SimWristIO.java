@@ -24,7 +24,7 @@ public class SimWristIO implements WristIO {
           false,
           0,
           new double[0]);
-  PIDController pidController = new PIDController(0.1, 0, 0);
+  PIDController pidController = new PIDController(0.8, 0, 0);
 
   public SimWristIO() {
     SmartDashboard.putData("Wrist PID", pidController);
@@ -38,8 +38,8 @@ public class SimWristIO implements WristIO {
     this.armSim.update(Constants.ksimTimestep);
 
     inputs.motorAmps = this.armSim.getCurrentDrawAmps();
-    inputs.wristRPM =
-        Units.radiansPerSecondToRotationsPerMinute(this.armSim.getVelocityRadPerSec());
+    inputs.wristSpeedDegPerSec =
+        Units.radiansToDegrees(this.armSim.getVelocityRadPerSec());
     inputs.positionDegrees = Units.radiansToDegrees(armSim.getAngleRads());
   }
 

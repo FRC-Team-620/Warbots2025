@@ -29,7 +29,7 @@ public class NeoWristIO implements WristIO {
   private double setPointDegrees = Constants.WristConstants.kSafeAngleDegrees;
 
   public NeoWristIO() {
-    encoderConfig.positionConversionFactor(360);
+    encoderConfig.positionConversionFactor(360).velocityConversionFactor(6);
 
     motorConfig
         .idleMode(IdleMode.kBrake)
@@ -51,7 +51,7 @@ public class NeoWristIO implements WristIO {
             Constants.WristConstants.kI,
             Constants.WristConstants.kD,
             Constants.WristConstants.kF)
-        .outputRange(-0.8, 8)
+        .outputRange(-0.25, 0.25)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
         .maxMotion
         .maxAcceleration(12)
@@ -81,7 +81,7 @@ public class NeoWristIO implements WristIO {
     SparkUtil.ifOk(motor, motor::getOutputCurrent, (value) -> inputs.motorAmps = value);
 
     SparkUtil.ifOk(motor, encoder::getVelocity, (value) -> previousRPM = value);
-    inputs.wristRPM = previousRPM;
+    inputs.wristSpeedDegPerSec = previousRPM;
 
     pidController.setReference(setPointDegrees, ControlType.kPosition);
     // pidController.setReference(setPointDegrees, ControlType.kMAXMotionPositionControl);

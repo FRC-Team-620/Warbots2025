@@ -168,18 +168,22 @@ public class Robot extends LoggedRobot {
   private void updateAscopeVis() {
     double height = robotContainer.elevator.getHeight();
     double gripperDegrees = robotContainer.wrist.getPositionDegrees();
+    var robotpos = new Pose3d(robotContainer.drive.getPose());
     Logger.recordOutput(
         "stage1",
         new Pose3d(new Translation3d(0, 0, height / 2), new Rotation3d(Rotation2d.fromDegrees(0))));
     Logger.recordOutput(
         "stage2",
         new Pose3d(new Translation3d(0, 0, height), new Rotation3d(Rotation2d.fromDegrees(0))));
+
+    Logger.recordOutput(
+        "LuCam", robotpos.plus(new Transform3d(new Translation3d(0.12, 0.17, height+0.23), new Rotation3d())));
     Logger.recordOutput(
         "gripper",
         new Pose3d(
             new Translation3d(0.2730451486, 0, 0.4064 + height),
             new Rotation3d(0, Units.degreesToRadians(gripperDegrees), 0)));
-    var robotpos = new Pose3d(robotContainer.drive.getPose());
+
     Logger.recordOutput(
         "camtest",
         robotpos.plus(

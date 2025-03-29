@@ -16,6 +16,8 @@ public class IntakeFromIndexer extends Command {
   private Intake intake;
   private LED led;
 
+  private boolean coralIntaked;
+
   private LEDPattern blinkPattern = LEDPattern.solid(Color.kOrange).blink(Seconds.of(0.1));
 
   private Timer timer = new Timer();
@@ -32,6 +34,7 @@ public class IntakeFromIndexer extends Command {
   public void initialize() {
     intake.set(0);
     wrist.setSetpoint(Constants.WristConstants.kRotationIntakeCoralDegrees);
+    this.coralIntaked = false;
     timer.reset();
     led.setPattern(blinkPattern);
   }
@@ -39,17 +42,21 @@ public class IntakeFromIndexer extends Command {
   @Override
   public void execute() {
     led.setPattern(blinkPattern);
-    intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);
+    if (intake.isCoralInIntake()) {
+      intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed * 0.8);
+      coralIntaked = true;
+    } else intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);
   }
 
   @Override
   public boolean isFinished() {
-    return intake.isCoralInIntake();
+    return coralIntaked && !intake.isCoralInIntake();
   }
 
   @Override
   public void end(boolean interrupted) {
     intake.set(0);
+    wrist.setSetpoint(Constants.WristConstants.kSafeAngleDegrees);
     System.out.println("Intake From Indexer Complete: " + interrupted);
   }
 }

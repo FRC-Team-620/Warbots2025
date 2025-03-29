@@ -390,7 +390,7 @@ public class RobotContainer {
                     Constants.ElevatorConstants.kCoralIntakeMeters,
                     Constants.WristConstants.kRotationIntakeCoralDegrees),
                 new IntakeFromIndexer(wrist, intake, led),
-                new FixCoralPlacement(intake, wrist)));
+                new FixCoralPlacement(intake)));
 
     control
         .changeModeLeft()
@@ -452,7 +452,7 @@ public class RobotContainer {
         "cmd/Align Reef Left", new AlignReef(drive, vision, led, elevator, true).withTimeout(5));
     SmartDashboard.putData(
         "cmd/Align Reef Right", new AlignReef(drive, vision, led, elevator, false).withTimeout(5));
-    SmartDashboard.putData("Fix Coral Placement", new FixCoralPlacement(intake, wrist));
+    SmartDashboard.putData("Fix Coral Placement", new FixCoralPlacement(intake));
 
     SmartDashboard.putData("Scheduler2", CommandScheduler.getInstance());
     SmartDashboard.putData("cmd/Score Coral", new ScoreCoral(intake).withTimeout(0.15));
@@ -469,7 +469,7 @@ public class RobotContainer {
                 Constants.ElevatorConstants.kCoralIntakeMeters,
                 Constants.WristConstants.kRotationIntakeCoralDegrees),
             new IntakeFromIndexer(wrist, intake, led),
-            new FixCoralPlacement(intake, wrist)));
+            new FixCoralPlacement(intake)));
     SmartDashboard.putData(
         "cmd/Align Preset Southwest",
         new AlignReefSetAngle(drive, vision, led, elevator, true, 19));
@@ -542,13 +542,13 @@ public class RobotContainer {
           "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led).withTimeout(3));
 
       NamedCommands.registerCommand(
-          "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(1.2));
+          "Fix Coral Placement", new FixCoralPlacement(intake).withTimeout(1.2));
     } else {
       NamedCommands.registerCommand(
           "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led));
 
       NamedCommands.registerCommand(
-          "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(3));
+          "Fix Coral Placement", new FixCoralPlacement(intake).withTimeout(3));
     }
 
     NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(0.25));

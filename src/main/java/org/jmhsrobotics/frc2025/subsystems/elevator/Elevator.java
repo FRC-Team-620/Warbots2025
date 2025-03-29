@@ -1,5 +1,8 @@
 package org.jmhsrobotics.frc2025.subsystems.elevator;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,6 +22,9 @@ public class Elevator extends SubsystemBase {
   Mechanism2d elevatorMech = new Mechanism2d(4, 4);
   private double setPointMeters;
 
+  private State calculatedState = new State(Constants.ElevatorConstants.kLevel1Meters, 0);
+  private TrapezoidProfile trapezoidProfile = new TrapezoidProfile(new Constraints(.5, .5));
+
   public Elevator(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;
     var root = elevatorMech.getRoot("base", 1, 0);
@@ -28,6 +34,10 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    calculatedState =
+        trapezoidProfile.calculate(0.02, calculatedState, new State(this.setPointMeters, 0));
+    elevatorIO.setPositionMeters(calculatedState.position);
+
     elevatorIO.updateInputs(inputs);
     stage1.setLength(inputs.heightMeters / 2);
     carriage.setLength(inputs.heightMeters / 2);
@@ -35,13 +45,15 @@ public class Elevator extends SubsystemBase {
     Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
     Logger.recordOutput("Elevator/Height", inputs.heightMeters);
     Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
+    Logger.recordOutput("Elevator/Calculated Setpoint", calculatedState.position);
+    Logger.recordOutput("Elevator/VelocityDegPerSec", inputs.elevatorSpeedCmPerSec);
 
     SmartDashboard.putNumber("Elevator/Raw Height Meters", inputs.heightMeters);
   }
 
   public void setSetpoint(double setPoint) {
     this.setPointMeters = setPoint;
-    elevatorIO.setPositionMeters(setPoint);
+    // elevatorIO.setPositionMeters(setPoint);
   }
 
   public void setVoltage(double voltage) {

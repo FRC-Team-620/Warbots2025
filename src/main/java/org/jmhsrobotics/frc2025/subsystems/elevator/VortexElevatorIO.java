@@ -35,6 +35,8 @@ public class VortexElevatorIO implements ElevatorIO {
 
   private double lp, li, ld, lf;
 
+  private double previousRPM;
+
   public VortexElevatorIO() {
     SmartDashboard.putNumber("elev/p", Constants.ElevatorConstants.kP);
     SmartDashboard.putNumber("elev/i", Constants.ElevatorConstants.kI);
@@ -51,7 +53,8 @@ public class VortexElevatorIO implements ElevatorIO {
         .voltageCompensation(12)
         .inverted(true)
         .encoder
-        .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
+        .positionConversionFactor(Constants.ElevatorConstants.conversionFactor)
+        .velocityConversionFactor(6);
     vortexLeftConfig.closedLoop.pidf(
         Constants.ElevatorConstants.kP,
         Constants.ElevatorConstants.kI,
@@ -65,7 +68,8 @@ public class VortexElevatorIO implements ElevatorIO {
         .voltageCompensation(12)
         .follow(vortexLeft, true)
         .encoder
-        .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
+        .positionConversionFactor(Constants.ElevatorConstants.conversionFactor)
+        .velocityConversionFactor(6);
     vortexRightConfig.closedLoop.pidf(
         Constants.ElevatorConstants.kP,
         Constants.ElevatorConstants.kI,
@@ -113,6 +117,9 @@ public class VortexElevatorIO implements ElevatorIO {
     // inputs.motorVolts = new double[2];
     SparkUtil.ifOk(
         vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value / 100.0);
+
+    SparkUtil.ifOk(vortexLeft, leftEncoder::getVelocity, (value) -> previousRPM = value);
+    inputs.elevatorSpeedCmPerSec = previousRPM;
 
     inputs.isOpenLoop = this.isOpenLoop;
 

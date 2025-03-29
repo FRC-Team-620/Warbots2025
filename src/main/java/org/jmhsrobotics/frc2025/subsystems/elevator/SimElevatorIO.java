@@ -52,6 +52,7 @@ public class SimElevatorIO implements ElevatorIO {
         };
     inputs.heightMeters = simElevator.getPositionMeters();
     inputs.velocityMPS = simElevator.getVelocityMetersPerSecond();
+    inputs.elevatorSpeedCmPerSec = (this.simElevator.getVelocityMetersPerSecond()) * 100;
   }
 
   @Override

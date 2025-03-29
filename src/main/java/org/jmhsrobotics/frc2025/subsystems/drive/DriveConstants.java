@@ -22,7 +22,7 @@ import edu.wpi.first.math.util.Units;
 
 public class DriveConstants {
 
-  public static final double maxSpeedMetersPerSec = 4.8768;
+  public static final double maxSpeedMetersPerSec = 5.0;
 
   // change coefficients when we want to implement turbo
   public static final double turboCoefficient = 1;
@@ -162,7 +162,7 @@ public class DriveConstants {
     public static final int backRightTurnCanId = 23;
 
     // Drive motor configuration
-    public static final int driveMotorCurrentLimit = 50;
+    public static final int driveMotorCurrentLimit = 65;
     public static final double wheelRadiusMeters = Units.inchesToMeters(2);
     public static final double driveMotorReduction = 6.23;
 
@@ -173,10 +173,11 @@ public class DriveConstants {
         (2 * Math.PI) / 60.0 / driveMotorReduction; // Rotor RPM -> Wheel Rad/Sec
 
     // Drive PID configuration
-    public static final double driveKp = 0.01;
+    public static final double driveKp = 0.02;
     public static final double driveKd = 0.0;
     public static final double driveKs = 0.0;
-    public static final double driveKv = 0.1;
+    public static final double driveKv = 0.125;
+    // public static final double driveKf = 0.1;
     public static final double driveSimP = 0.05;
     public static final double driveSimD = 0.0;
     public static final double driveSimKs = 0.0;

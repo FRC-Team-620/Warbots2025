@@ -84,14 +84,17 @@ public class DriveMeToTheMoon extends Command {
 
   @Override
   public void execute() {
-    double xValue, yValue;
+    double xValue, yValue, omega;
 
     if (drive.getTurboMode()) {
       xValue = xSupplier.getAsDouble() * DriveConstants.turboCoefficient;
       yValue = ySupplier.getAsDouble() * DriveConstants.turboCoefficient;
+      omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.8, DEADBAND);
+
     } else {
       xValue = xSupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
       yValue = ySupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
+      omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.6, DEADBAND);
     }
 
     Translation2d linearVelocity =
@@ -99,7 +102,6 @@ public class DriveMeToTheMoon extends Command {
             Math.copySign(xValue * xValue, xValue), Math.copySign(yValue * yValue, yValue));
 
     // Apply rotation deadband
-    double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.6, DEADBAND);
 
     // Square rotation value for more precise control
     omega = Math.copySign(omega * omega, omega);

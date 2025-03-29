@@ -29,7 +29,6 @@ public class FixCoralPlacement extends Command {
     // tells intake that command is running which keeps it in coral mode without coral in front of
     // sensor
     intake.startPlacementCommandTimer();
-
     intake.set(-Constants.IntakeConstants.kCoralDefaultCommandSpeed * 1.2);
   }
 

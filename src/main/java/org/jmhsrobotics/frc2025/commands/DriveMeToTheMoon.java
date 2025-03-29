@@ -179,11 +179,12 @@ public class DriveMeToTheMoon extends Command {
             // sets goal to lineup if not already at lineup setting
             goalTransform = algaeLineupTransform;
           }
+        } else {
+          goalTransform =
+              AutoAlign.calculateReefTransform(
+                  elevator.getSetpoint(),
+                  leftTriggerValue.getAsDouble() > rightTriggerValue.getAsDouble());
         }
-        goalTransform =
-            AutoAlign.calculateReefTransform(
-                elevator.getSetpoint(),
-                leftTriggerValue.getAsDouble() > rightTriggerValue.getAsDouble());
 
         tagPose = AutoAlign.getTagPoseRobotRelative(targetId, vision, lastTagPose, drive.getPose());
 

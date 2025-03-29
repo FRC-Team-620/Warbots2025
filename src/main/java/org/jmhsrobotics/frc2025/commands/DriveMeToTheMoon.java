@@ -24,6 +24,7 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
+import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveMeToTheMoon extends Command {
@@ -31,6 +32,8 @@ public class DriveMeToTheMoon extends Command {
   private final Vision vision;
   private final Elevator elevator;
   private final Intake intake;
+  private final Wrist wrist;
+
   private Trigger autoIntakeAlgae;
 
   private final PIDController xController = new PIDController(0.6, 0, 0.005);
@@ -55,6 +58,7 @@ public class DriveMeToTheMoon extends Command {
       Vision vision,
       Elevator elevator,
       Intake intake,
+      Wrist wrist,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
@@ -65,6 +69,7 @@ public class DriveMeToTheMoon extends Command {
     this.vision = vision;
     this.elevator = elevator;
     this.intake = intake;
+    this.wrist = wrist;
     this.autoIntakeAlgae = autoIntakeAlge;
 
     this.xSupplier = xSupplier;
@@ -234,5 +239,12 @@ public class DriveMeToTheMoon extends Command {
             .getTagPose(targetId)
             .orElse(new Pose3d()); // TODO: handle null tag pose
     Logger.recordOutput("Align/targetPos", defaultTagPose.plus(new Transform3d(goalTransform)));
+
+    if (Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2))
+            < 0.01
+        && Math.abs(speeds.omegaRadiansPerSecond) < 0.01
+        && wrist.getSetpoint() == Constants.WristConstants.kRotationIntakeCoralDegrees) {
+      drive.stopWithX();
+    }
   }
 }

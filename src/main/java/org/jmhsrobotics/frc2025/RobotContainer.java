@@ -551,14 +551,14 @@ public class RobotContainer {
     // timeouts needed for simulation since they will never end without simulated game piece pickup
     if (Robot.isSimulation()) {
       NamedCommands.registerCommand(
-          "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led).withTimeout(3));
+          "Intake Coral",
+          new IntakeCoralAuto(elevator, wrist, intake, led, indexer).withTimeout(3));
 
       NamedCommands.registerCommand(
           "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(1.2));
     } else {
       NamedCommands.registerCommand(
-          "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led));
-
+          "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led, indexer));
       NamedCommands.registerCommand(
           "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(3));
     }

@@ -30,7 +30,8 @@ public class IndexerMove extends Command {
 
   @Override
   public boolean isFinished() {
-    return intake.isCoralInIntake();
+    // return intake.isCoralInIntake();
+    return false;
   }
 
   @Override

@@ -490,6 +490,7 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Align Preset Northwest",
         new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
+    SmartDashboard.putData("cmd/Run Indexer Intake", new IndexerMove(indexer, intake));
   }
 
   private void configurePathPlanner() {

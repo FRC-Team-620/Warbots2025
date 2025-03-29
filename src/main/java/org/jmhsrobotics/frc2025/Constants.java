@@ -145,7 +145,7 @@ public final class Constants {
     public static final double kAlgaeExtakeSpeedDutyCycle = 0.9;
     public static final double kAlgaeIntakeSpeedDutyCycle = -0.5;
 
-    public static final int kCoralInIntakeDistanceMm = 20;
+    public static final int kCoralInIntakeDistanceMm = 30;
     public static final int kAlgaeInIntakeDistanceMm = 30;
 
     public static final double kCoralDebounceTime = 0.03;
@@ -165,7 +165,7 @@ public final class Constants {
     public static final double kD = 0.0;
     public static final double kToleranceDegrees = 5;
 
-    public static final double kIndexerSpeedDutyCycle = 0.23;
+    public static final double kIndexerSpeedDutyCycle = 0.85;
   }
 
   public static final class ClimberConstants {

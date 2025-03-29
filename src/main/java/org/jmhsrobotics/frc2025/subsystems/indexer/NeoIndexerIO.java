@@ -11,7 +11,7 @@ import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.util.SparkUtil;
 
 public class NeoIndexerIO implements IndexerIO {
-  private SparkMax motor = new SparkMax(Constants.CAN.kIntakeMotorID, MotorType.kBrushless);
+  private SparkMax motor = new SparkMax(Constants.CAN.kIndexerMotorID, MotorType.kBrushless);
   private SparkMaxConfig motorConfig;
   private RelativeEncoder encoder = motor.getEncoder();
   private double speedDutyCycle;
@@ -19,16 +19,25 @@ public class NeoIndexerIO implements IndexerIO {
   public NeoIndexerIO() {
     motorConfig = new SparkMaxConfig();
     motorConfig
-        .idleMode(IdleMode.kBrake)
+        .idleMode(IdleMode.kCoast)
         .smartCurrentLimit(25) // may need to change current limit
         .voltageCompensation(12) // may need to change voltage compensation
         .inverted(true); // may need to change inverted as well
+
+    SparkUtil.tryUntilOk(
+        motor,
+        5,
+        () ->
+            motor.configure(
+                motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
   }
 
   @Override
   public void updateInputs(IndexerIOInputs inputs) {
     SparkUtil.ifOk(motor, motor::getOutputCurrent, (value) -> inputs.motorAmps = value);
     SparkUtil.ifOk(motor, encoder::getVelocity, (value) -> inputs.motorRPM = value);
+    SparkUtil.ifOk(
+        motor, motor::getMotorTemperature, (value) -> inputs.motorTemperatureCelcius = value);
     inputs.outputSpeedDutyCycle = this.speedDutyCycle;
   }
 

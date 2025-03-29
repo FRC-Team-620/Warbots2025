@@ -8,6 +8,7 @@ public interface IndexerIO {
     public double motorRPM;
     public double motorAmps;
     public double outputSpeedDutyCycle;
+    public double motorTemperatureCelcius;
   }
 
   public default void updateInputs(IndexerIOInputs inputs) {}

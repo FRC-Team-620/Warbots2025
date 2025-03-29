@@ -38,8 +38,7 @@ public class SimWristIO implements WristIO {
     this.armSim.update(Constants.ksimTimestep);
 
     inputs.motorAmps = this.armSim.getCurrentDrawAmps();
-    inputs.wristSpeedDegPerSec =
-        Units.radiansToDegrees(this.armSim.getVelocityRadPerSec());
+    inputs.wristSpeedDegPerSec = Units.radiansToDegrees(this.armSim.getVelocityRadPerSec());
     inputs.positionDegrees = Units.radiansToDegrees(armSim.getAngleRads());
   }
 

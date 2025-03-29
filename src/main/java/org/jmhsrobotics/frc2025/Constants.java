@@ -122,9 +122,9 @@ public final class Constants {
     public static final double kRotationProcesserDegrees = 190;
     public static final double kRotationBargeDegrees = 70;
 
-    public static final double kP = 0.02;
+    public static final double kP = 0.0225;
     public static final double kI = 0.00;
-    public static final double kD = 0.01;
+    public static final double kD = 0.0;
     public static final double kF = 0.0;
     public static final double kAngleTolerance = 5;
 

@@ -51,7 +51,7 @@ public class NeoWristIO implements WristIO {
             Constants.WristConstants.kI,
             Constants.WristConstants.kD,
             Constants.WristConstants.kF)
-        .outputRange(-0.25, 0.25)
+        .outputRange(-1, 1)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
         .maxMotion
         .maxAcceleration(12)

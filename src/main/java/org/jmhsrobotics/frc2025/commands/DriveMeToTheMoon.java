@@ -43,6 +43,9 @@ public class DriveMeToTheMoon extends Command {
   Transform2d goalTransform = new Transform2d();
 
   private Pose3d lastTagPose = null;
+  private Pose3d tagPose = new Pose3d();
+  private final Transform2d algaeLineupTransform = new Transform2d(0.7, 0, new Rotation2d());
+  private final Transform2d algaeIntakeTransform = new Transform2d(0.45, 0, new Rotation2d());
 
   private static final double DEADBAND = 0.05;
 
@@ -165,16 +168,30 @@ public class DriveMeToTheMoon extends Command {
 
         // if driver is pressing the dedicated algae align button, transform is automatically set
         // correctly for algae
-        if (autoIntakeAlgae.getAsBoolean())
-          goalTransform = new Transform2d(0.7, 0.0, new Rotation2d());
-        else
+        if (autoIntakeAlgae.getAsBoolean()) {
+          if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
+              && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1)
+              && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3) {
+            // if goal was intaking, then backs out. if goal was lineup and elevator is at right
+            // setpoint, then move up to intake
+            if (goalTransform == algaeIntakeTransform) goalTransform = algaeLineupTransform;
+            else if (goalTransform == algaeLineupTransform
+                && (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
+                    || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters))
+              goalTransform = algaeIntakeTransform;
+          } else if (goalTransform != algaeIntakeTransform
+              && goalTransform != algaeLineupTransform) {
+            // sets goal to lineup if not already at lineup setting
+            goalTransform = algaeLineupTransform;
+          }
+        } else {
           goalTransform =
               AutoAlign.calculateReefTransform(
                   elevator.getSetpoint(),
                   leftTriggerValue.getAsDouble() > rightTriggerValue.getAsDouble());
+        }
 
-        Pose3d tagPose =
-            AutoAlign.getTagPoseRobotRelative(targetId, vision, lastTagPose, drive.getPose());
+        tagPose = AutoAlign.getTagPoseRobotRelative(targetId, vision, lastTagPose, drive.getPose());
 
         if (tagPose != null) {
           // sets last tag position
@@ -182,7 +199,8 @@ public class DriveMeToTheMoon extends Command {
               new Pose3d(drive.getPose())
                   .plus(new Transform3d(tagPose.getTranslation(), tagPose.getRotation()));
 
-          // gets reef align translation speeds and theta speeds separately, then adds them together
+          // gets reef align translation speeds and theta speeds separately, then adds them
+          // together
           ChassisSpeeds reefAlignSpeeds =
               AutoAlign.getReefAlignSpeeds(tagPose, goalTransform, xController, yController);
           reefAlignSpeeds =

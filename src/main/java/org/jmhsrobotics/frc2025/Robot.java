@@ -169,6 +169,10 @@ public class Robot extends LoggedRobot {
     double height = robotContainer.elevator.getHeight();
     double gripperDegrees = robotContainer.wrist.getPositionDegrees();
     var robotpos = new Pose3d(robotContainer.drive.getPose());
+    var gripperpos =
+        new Pose3d(
+            new Translation3d(0.2730451486, 0, 0.4064 + height),
+            new Rotation3d(0, Units.degreesToRadians(gripperDegrees), 0));
     Logger.recordOutput(
         "stage1",
         new Pose3d(new Translation3d(0, 0, height / 2), new Rotation3d(Rotation2d.fromDegrees(0))));
@@ -177,36 +181,11 @@ public class Robot extends LoggedRobot {
         new Pose3d(new Translation3d(0, 0, height), new Rotation3d(Rotation2d.fromDegrees(0))));
 
     Logger.recordOutput(
-        "LuCam", robotpos.plus(new Transform3d(new Translation3d(0.12, 0.17, height+0.23), new Rotation3d())));
-    Logger.recordOutput(
-        "gripper",
-        new Pose3d(
-            new Translation3d(0.2730451486, 0, 0.4064 + height),
-            new Rotation3d(0, Units.degreesToRadians(gripperDegrees), 0)));
-
-    Logger.recordOutput(
-        "camtest",
+        "LuCam",
         robotpos.plus(
-            new Transform3d(
-                0.16,
-                -0.29198,
-                0.192,
-                new Rotation3d(
-                    Units.degreesToRadians(0),
-                    Units.degreesToRadians(-10),
-                    Units.degreesToRadians(35)))));
-    // VisionConstants.robotToCamera1 =
-    //     new Transform3d(
-    //         Units.inchesToMeters(8),
-    //         Units.inchesToMeters(-11.5),
-    //         0.185,
-    //         new Rotation3d(0.0, Units.degreesToRadians(-20), Units.degreesToRadians(35)));
-    // VisionConstants.robotToCamera0 =
-    //     new Transform3d(
-    //         Units.inchesToMeters(8),
-    //         Units.inchesToMeters(11.5),
-    //         0.185,
-    //         new Rotation3d(0.0, Units.degreesToRadians(-20), Units.degreesToRadians(-35)));
+            new Transform3d(new Translation3d(0.12, 0.17, height + 0.23), new Rotation3d())));
+    Logger.recordOutput("gripper", gripperpos);
+
     Logger.recordOutput(
         "cam/left_robot_different", new Pose3d().plus(VisionConstants.robotToCamera0));
     Logger.recordOutput(
@@ -214,14 +193,17 @@ public class Robot extends LoggedRobot {
     Logger.recordOutput("cam/left_field", robotpos.plus(VisionConstants.robotToCamera0));
     Logger.recordOutput("cam/right_field", robotpos.plus(VisionConstants.robotToCamera1));
     if (robotContainer.intake.isCoralInIntake()) {
-      Logger.recordOutput(
-          "hasPipe", robotpos.plus(new Transform3d(0.0, 0.0, 1.2, new Rotation3d())));
+      var coralpos =
+          robotpos.plus(new Transform3d(gripperpos.getTranslation(), gripperpos.getRotation())).plus(new Transform3d(new Translation3d(-0.2, 0, 0.22), new Rotation3d()));
+      Logger.recordOutput("hasPipe", coralpos);
     } else {
       Logger.recordOutput("hasPipe", robotpos.plus(new Transform3d(90, 0.0, 4, new Rotation3d())));
     }
     if (robotContainer.intake.isAlgaeInintake()) {
+      var algae =
+      robotpos.plus(new Transform3d(gripperpos.getTranslation(), gripperpos.getRotation())).plus(new Transform3d(new Translation3d(-0.25, 0, -0.05), new Rotation3d()));
       Logger.recordOutput(
-          "hasball", robotpos.plus(new Transform3d(0.0, 0.0, 1.5, new Rotation3d())));
+          "hasball", algae);
     } else {
       Logger.recordOutput("hasball", robotpos.plus(new Transform3d(90, 0.0, 4, new Rotation3d())));
     }

@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -39,6 +40,7 @@ import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
+import org.jmhsrobotics.frc2025.commands.IndexerMove;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
@@ -63,6 +65,10 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.elevator.ElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.SimElevatorIO;
 import org.jmhsrobotics.frc2025.subsystems.elevator.VortexElevatorIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
+import org.jmhsrobotics.frc2025.subsystems.indexer.IndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.NeoIndexerIO;
+import org.jmhsrobotics.frc2025.subsystems.indexer.SimIndexerIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.GrappleTimeOfFLightIO;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.intake.IntakeIO;
@@ -97,6 +103,7 @@ public class RobotContainer {
   private final ControlBoard control;
   private final LED led;
   public final Intake intake;
+  public final Indexer indexer;
   private boolean isBrakeMode = true;
 
   // Controller
@@ -130,6 +137,7 @@ public class RobotContainer {
         elevator = new Elevator(new VortexElevatorIO() {});
         wrist = new Wrist(new NeoWristIO());
         intake = new Intake(new NeoIntakeIO(), new GrappleTimeOfFLightIO());
+        indexer = new Indexer(new NeoIndexerIO());
 
         System.out.println("Mode: REAL");
         break;
@@ -153,6 +161,7 @@ public class RobotContainer {
         elevator = new Elevator(new SimElevatorIO());
         wrist = new Wrist(new SimWristIO());
         intake = new Intake(new SimIntakeIO() {}, new SimTimeOfFlightIO() {});
+        indexer = new Indexer(new SimIndexerIO());
 
         System.out.println("Mode: SIM");
         break;
@@ -170,6 +179,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         wrist = new Wrist(new WristIO() {});
         intake = new Intake(new IntakeIO() {}, new TimeOfFLightIO() {});
+        indexer = new Indexer(new IndexerIO() {});
 
         System.out.println("Mode: DEFAULT");
         break;
@@ -389,7 +399,8 @@ public class RobotContainer {
                     intake,
                     Constants.ElevatorConstants.kCoralIntakeMeters,
                     Constants.WristConstants.kRotationIntakeCoralDegrees),
-                new IntakeFromIndexer(wrist, intake, led),
+                new ParallelRaceGroup(
+                    new IntakeFromIndexer(wrist, intake, led), new IndexerMove(indexer, intake)),
                 new FixCoralPlacement(intake, wrist)));
 
     control
@@ -479,6 +490,7 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Align Preset Northwest",
         new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
+    SmartDashboard.putData("cmd/Run Indexer Intake", new IndexerMove(indexer, intake));
   }
 
   private void configurePathPlanner() {
@@ -539,14 +551,14 @@ public class RobotContainer {
     // timeouts needed for simulation since they will never end without simulated game piece pickup
     if (Robot.isSimulation()) {
       NamedCommands.registerCommand(
-          "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led).withTimeout(3));
+          "Intake Coral",
+          new IntakeCoralAuto(elevator, wrist, intake, led, indexer).withTimeout(3));
 
       NamedCommands.registerCommand(
           "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(1.2));
     } else {
       NamedCommands.registerCommand(
-          "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led));
-
+          "Intake Coral", new IntakeCoralAuto(elevator, wrist, intake, led, indexer));
       NamedCommands.registerCommand(
           "Fix Coral Placement", new FixCoralPlacement(intake, wrist).withTimeout(3));
     }

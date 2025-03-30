@@ -3,15 +3,12 @@ package org.jmhsrobotics.frc2025.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
-import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 
 public class IndexerMove extends Command {
   private Indexer indexer;
-  private Intake intake;
 
-  public IndexerMove(Indexer indexer, Intake intake) {
+  public IndexerMove(Indexer indexer) {
     this.indexer = indexer;
-    this.intake = intake;
 
     addRequirements(indexer);
   }

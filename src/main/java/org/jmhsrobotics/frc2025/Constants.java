@@ -26,7 +26,7 @@ import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
  * (log replay from a file).
  */
 public final class Constants {
-  public static final Mode simMode = Mode.REPLAY;
+  public static final Mode simMode = Mode.SIM;
   public static final double ksimTimestep = 0.02;
   public static final double krealTimeStep = ksimTimestep;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;

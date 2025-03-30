@@ -53,7 +53,7 @@ public class AlignReefSetAngle extends Command {
         LEDPattern.progressMaskLayer(
             () -> ((this.initialDistance - this.currentDistance) / this.initialDistance));
 
-    addRequirements(drive, led);
+    addRequirements(drive);
   }
 
   private void adjustTagId() {
@@ -151,7 +151,7 @@ public class AlignReefSetAngle extends Command {
           Math.sqrt(
               Math.pow(tagPose.getX() - goalTransform.getX(), 2)
                   + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
-      led.setPattern(progressPattern);
+      // led.setPattern(progressPattern);
     }
   }
 

@@ -506,7 +506,7 @@ public class RobotContainer {
     if (Robot.isSimulation()) {
       NamedCommands.registerCommand(
           "Intake Until Indexer Has Coral",
-          new IntakeUntilCoralInIndexer(wrist, intake, indexer).withTimeout(1));
+          new IntakeUntilCoralInIndexer(wrist, intake, indexer, led).withTimeout(1));
 
       NamedCommands.registerCommand(
           "Finish Coral Intake", new IntakeFromIndexer(wrist, intake, indexer, led).withTimeout(2));
@@ -515,7 +515,8 @@ public class RobotContainer {
           "Fix Coral Placement", new FixCoralPlacement(intake).withTimeout(1.2));
     } else {
       NamedCommands.registerCommand(
-          "Intake Until Indexer Has Coral", new IntakeUntilCoralInIndexer(wrist, intake, indexer));
+          "Intake Until Indexer Has Coral",
+          new IntakeUntilCoralInIndexer(wrist, intake, indexer, led));
 
       NamedCommands.registerCommand(
           "Finish Coral Intake", new IntakeFromIndexer(wrist, intake, indexer, led));

@@ -40,7 +40,7 @@ public class Indexer extends SubsystemBase {
   }
 
   public void set(double speedDutyCycle) {
-    if (speedDutyCycle != this.speedDutyCycle){
+    if (speedDutyCycle != this.speedDutyCycle) {
       isAccelerating = true;
       accelerationTimer.restart();
     }
@@ -49,5 +49,9 @@ public class Indexer extends SubsystemBase {
 
   public void setBrakeMode(boolean enable) {
     indexerIO.setBrakeMode(enable);
+  }
+
+  public boolean hasCoral() {
+    return this.coralInIndexer;
   }
 }

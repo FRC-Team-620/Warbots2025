@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Top Start Auto.0"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
@@ -42,7 +48,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Elevator And Wrist L4"
+                  "name": "Elevator And Wrist L3"
                 }
               }
             ]

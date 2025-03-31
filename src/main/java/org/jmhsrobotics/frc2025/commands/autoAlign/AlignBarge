@@ -1,0 +1,96 @@
+package org.jmhsrobotics.frc2025.commands.autoAlign;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
+import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
+import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
+
+public class AlignBarge extends Command {
+  private Drive drive;
+  private Pose2d goalPose;
+
+  private final PIDController xController = new PIDController(0.3, 0, 0.005);
+  private final PIDController yController = new PIDController(0.3, 0, 0.005);
+  private final PIDController thetaController = new PIDController(0.01, 0, 0);
+
+  private Trigger leftPOVButton = new Trigger()
+
+  public AlignBarge(Drive drive) {
+    this.drive = drive;
+
+    addRequirements(drive);
+  }
+
+  @Override
+  public void initialize() {
+    this.goalPose = calculateSetpoints(drive);
+    xController.reset();
+    yController.reset();
+    thetaController.reset();
+
+    xController.setSetpoint(this.goalPose.getX());
+    yController.setSetpoint(this.goalPose.getY());
+    thetaController.setSetpoint(this.goalPose.getRotation().getDegrees());
+  }
+
+  @Override
+  public void execute() {
+    
+
+
+
+    drive.runVelocity(
+        AutoAlign.getSourceAlignSpeeds(
+            this.drive, this.goalPose, this.xController, this.yController, this.thetaController));
+    // calculateSourceAutoAlignSpeeds(
+    //     this.drive, this.goalPose, this.xController, this.yController, this.thetaController));
+    // Logger.recordOutput("Align Source/Goal Pose", this.goalPose);
+  }
+
+  @Override
+  public boolean isFinished() {
+    Transform2d distance = drive.getPose().minus(this.goalPose);
+    return distance.getX() < Units.inchesToMeters(1)
+        && distance.getY() < Units.inchesToMeters(1)
+        && distance.getRotation().getDegrees() < 3;
+    // return false;
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    drive.stop();
+  }
+
+  /**
+   * calculates the coordinate setpoints for source align based drivetrain position and if the auto
+   * align should be on the end further or closer to the drivers
+   *
+   * @param drive
+   * @param alignCloseToSource
+   * @return Pose2d
+   */
+  public static Pose2d calculateSetpoints() {
+    double xSetpoint;
+    double ySetpoint;
+    double goalTheta;
+    if (DriverStation.getAlliance() == Alliance.Red) {
+        xSetpoint = 10.4;
+        ySetpoint = 1.9;
+        goalTheta = 180;
+    } 
+    else {
+        xSetpoint = 7.2;
+        ySetpoint = 6.2;
+        goalTheta = 0;
+    }
+
+    return new Pose2d(xSetpoint, ySetpoint, goalTheta);
+  }
+}

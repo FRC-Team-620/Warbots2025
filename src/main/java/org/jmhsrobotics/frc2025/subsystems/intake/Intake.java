@@ -20,7 +20,7 @@ public class Intake extends SubsystemBase {
   private Debouncer coralDebouncer =
       new Debouncer(Constants.IntakeConstants.kCoralDebounceTime, DebounceType.kBoth);
   private Debouncer algaeDebouncer =
-      new Debouncer(Constants.IntakeConstants.kAlgaeFallingDebounceTime, DebounceType.kBoth);
+      new Debouncer(Constants.IntakeConstants.kAlgaeDebounceTime, DebounceType.kBoth);
 
   private boolean coralInIntake = false;
   private boolean algaeInIntake = false;

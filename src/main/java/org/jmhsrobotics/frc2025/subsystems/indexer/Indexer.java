@@ -1,11 +1,23 @@
 package org.jmhsrobotics.frc2025.subsystems.indexer;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
 public class Indexer extends SubsystemBase {
   private IndexerIO indexerIO;
-  private IndexerIOInputsAutoLogged indexerInputs = new IndexerIOInputsAutoLogged();
+  private IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
+
+  private boolean coralInIndexer;
+  private Timer accelerationTimer = new Timer();
+
+  private boolean isAccelerating;
+
+  private double goalSpeedRPM;
+
+  private Debouncer debouncer = new Debouncer(0.1, DebounceType.kBoth);
 
   public Indexer(IndexerIO indexerIO) {
     this.indexerIO = indexerIO;
@@ -13,16 +25,41 @@ public class Indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
-    indexerIO.updateInputs(indexerInputs);
+    indexerIO.updateInputs(inputs);
+    if (accelerationTimer.hasElapsed(0.85)) isAccelerating = false;
+    else isAccelerating = true;
+    coralInIndexer = !this.atRPMGoal() && !isAccelerating;
 
-    Logger.recordOutput("Indexer/Indexer Current Amps", indexerInputs.motorAmps);
+    Logger.recordOutput("Indexer/Current Amps", inputs.motorAmps);
+    Logger.recordOutput("Indexer/Speed RPM", inputs.motorRPM);
+    Logger.recordOutput("Indexer/Goal RPM", this.goalSpeedRPM);
+    Logger.recordOutput("Indexer/Output Duty Cycle", inputs.outputSpeedDutyCycle);
+    Logger.recordOutput("Indexer/Temperature Celcius", inputs.motorTemperatureCelcius);
+    Logger.recordOutput("Indexer/Coral In Indexer", this.coralInIndexer);
+    Logger.recordOutput("Indexer/Is Indexer Accelerating", isAccelerating);
+    Logger.recordOutput("Indexer/At RPM Goal", this.atRPMGoal());
   }
 
-  public void set(double speedDutyCycle) {
-    indexerIO.set(speedDutyCycle);
+  public void set(double speedRPM) {
+    if (speedRPM > 0) {
+      accelerationTimer.start();
+    } else {
+      accelerationTimer.reset();
+      accelerationTimer.stop();
+    }
+    goalSpeedRPM = speedRPM;
+    indexerIO.set(speedRPM);
   }
 
   public void setBrakeMode(boolean enable) {
     indexerIO.setBrakeMode(enable);
+  }
+
+  public boolean hasCoral() {
+    return this.coralInIndexer;
+  }
+
+  private boolean atRPMGoal() {
+    return Math.abs(inputs.motorRPM - goalSpeedRPM) < 50;
   }
 }

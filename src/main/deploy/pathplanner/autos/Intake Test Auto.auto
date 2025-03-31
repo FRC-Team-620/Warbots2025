@@ -5,15 +5,53 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Intake Coral"
+            "pathName": "Top Start Auto.0"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Drive Backwards"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Until Indexer Has Coral"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Fix Coral Placement"
+            "name": "Finish Coral Intake"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Fix Coral Placement"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator And Wrist L3"
+                }
+              }
+            ]
           }
         }
       ]

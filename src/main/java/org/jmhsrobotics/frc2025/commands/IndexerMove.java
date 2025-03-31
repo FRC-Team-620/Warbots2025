@@ -3,15 +3,12 @@ package org.jmhsrobotics.frc2025.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
-import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 
 public class IndexerMove extends Command {
   private Indexer indexer;
-  private Intake intake;
 
-  public IndexerMove(Indexer indexer, Intake intake) {
+  public IndexerMove(Indexer indexer) {
     this.indexer = indexer;
-    this.intake = intake;
 
     addRequirements(indexer);
   }
@@ -25,7 +22,7 @@ public class IndexerMove extends Command {
   public void execute() {
     indexer.set(
         Constants.IndexerConstants
-            .kIndexerSpeedDutyCycle); // make a constant for indexer speed duty cylce
+            .kIndexerSpeedRPM); // make a constant for indexer speed duty cylce
   }
 
   @Override

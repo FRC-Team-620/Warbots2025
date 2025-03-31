@@ -84,6 +84,8 @@ public final class Constants {
 
   public static class ElevatorConstants {
 
+    // new elevator max height is 1.80 
+
     // converts motor rotations to elevator height in centimeters
     public static final double conversionFactor = (((1.0 / 3.0) / 12.0) * 100);
 
@@ -96,7 +98,7 @@ public final class Constants {
     public static final double kProcesserMeters = .10;
 
     public static final double kAlgaeQTipMeters = .125;
-    public static final double kCoralIntakeMeters = 0;
+    public static final double kCoralIntakeMeters = 0.02;
     public static final double kAlgaeIntakeL2Meters = 0.54;
     public static final double kAlgaeIntakeL3Meters = 1.03;
 
@@ -145,25 +147,23 @@ public final class Constants {
     public static final double kAlgaeExtakeSpeedDutyCycle = 0.9;
     public static final double kAlgaeIntakeSpeedDutyCycle = -0.5;
 
-    public static final int kCoralInIntakeDistanceMm = 20;
-    public static final int kAlgaeInIntakeDistanceMm = 30;
+    public static final int kCoralInIntakeDistanceMm = 30;
+    public static final int kAlgaeInIntakeDistanceMm = 40;
 
     public static final double kCoralDebounceTime = 0.03;
-    public static final double kAlgaeFallingDebounceTime = 0.2;
-    public static final double kAlgaeRisingDebounceTime = 0.1;
+    public static final double kAlgaeDebounceTime = 0.1;
   }
 
   public static final class IndexerConstants {
-    public static final double kRotationUpDegrees = 175;
-    public static final double kRotationDownDegrees = 5;
+    public static final double kIndexerSpeedDutyCycle = 0.85;
 
-    // degrees / rotation (360) times gear ratio (1/20[\])
-    public static final double kConversionFactor = 360.0 * (1.0 / 20.0);
+    public static final double kIndexerSpeedRPM = 9800;
+    public static final double kIndexerMaxAcceleration = 30000;
 
-    public static final double kP = 0.005;
+    public static final double kP = 0.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-    public static final double kToleranceDegrees = 5;
+    public static final double kF = 0.0000862;
   }
 
   public static final class ClimberConstants {

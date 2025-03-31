@@ -22,7 +22,7 @@ public class IndexerMove extends Command {
   public void execute() {
     indexer.set(
         Constants.IndexerConstants
-            .kIndexerSpeedDutyCycle); // make a constant for indexer speed duty cylce
+            .kIndexerSpeedRPM); // make a constant for indexer speed duty cylce
   }
 
   @Override

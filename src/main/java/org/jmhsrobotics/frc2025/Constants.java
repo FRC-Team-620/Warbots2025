@@ -96,7 +96,7 @@ public final class Constants {
     public static final double kProcesserMeters = .10;
 
     public static final double kAlgaeQTipMeters = .125;
-    public static final double kCoralIntakeMeters = 0;
+    public static final double kCoralIntakeMeters = 0.02;
     public static final double kAlgaeIntakeL2Meters = 0.54;
     public static final double kAlgaeIntakeL3Meters = 1.03;
 
@@ -155,6 +155,14 @@ public final class Constants {
 
   public static final class IndexerConstants {
     public static final double kIndexerSpeedDutyCycle = 0.85;
+
+    public static final double kIndexerSpeedRPM = 9800;
+    public static final double kIndexerMaxAcceleration = 30000;
+
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final double kF = 0.0000862;
   }
 
   public static final class ClimberConstants {

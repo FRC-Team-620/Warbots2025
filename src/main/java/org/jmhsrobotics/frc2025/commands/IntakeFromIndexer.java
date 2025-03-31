@@ -33,7 +33,7 @@ public class IntakeFromIndexer extends Command {
   @Override
   public void initialize() {
     intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);
-    indexer.set(Constants.IndexerConstants.kIndexerSpeedDutyCycle);
+    indexer.set(Constants.IndexerConstants.kIndexerSpeedRPM);
 
     wrist.setSetpoint(Constants.WristConstants.kRotationIntakeCoralDegrees);
 
@@ -50,7 +50,7 @@ public class IntakeFromIndexer extends Command {
       coralIntaked = true;
     } else {
       intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);
-      indexer.set(Constants.IndexerConstants.kIndexerSpeedDutyCycle);
+      indexer.set(Constants.IndexerConstants.kIndexerSpeedRPM);
     }
   }
 

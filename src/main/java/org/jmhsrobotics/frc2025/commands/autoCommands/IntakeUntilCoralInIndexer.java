@@ -30,7 +30,7 @@ public class IntakeUntilCoralInIndexer extends Command {
 
   @Override
   public void initialize() {
-    indexer.set(Constants.IndexerConstants.kIndexerSpeedDutyCycle);
+    indexer.set(Constants.IndexerConstants.kIndexerSpeedRPM);
     intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);
     wrist.setSetpoint(Constants.WristConstants.kRotationIntakeCoralDegrees);
 
@@ -39,7 +39,7 @@ public class IntakeUntilCoralInIndexer extends Command {
 
   @Override
   public void execute() {
-    indexer.set(Constants.IndexerConstants.kIndexerSpeedDutyCycle);
+    indexer.set(Constants.IndexerConstants.kIndexerSpeedRPM);
     intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);
 
     led.setPattern(blinkPattern);

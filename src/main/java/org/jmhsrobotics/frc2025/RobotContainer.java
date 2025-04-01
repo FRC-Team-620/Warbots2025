@@ -44,6 +44,7 @@ import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
+import org.jmhsrobotics.frc2025.commands.ScoreBarge;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignBarge;
@@ -313,14 +314,7 @@ public class RobotContainer {
                 Constants.ElevatorConstants.kProcesserMeters,
                 Constants.WristConstants.kRotationProcesserDegrees));
 
-    control
-        .scoreAlgaeBarge()
-        .onTrue(
-            new ElevatorAndWristMove(
-                elevator,
-                wrist,
-                Constants.ElevatorConstants.kBargeMeters,
-                Constants.WristConstants.kRotationBargeDegrees));
+    control.scoreAlgaeBarge().onTrue(new ScoreBarge(elevator, wrist, intake));
 
     control
         .elevatorIntakeCoral()

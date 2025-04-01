@@ -29,8 +29,8 @@ public class ElevatorSetZero extends Command {
 
   @Override
   public boolean isFinished() {
-    // command finished when the velocity has been at zero for a full second
-    return timer.get() > 0.5;
+    // command finished when the velocity has been at zero for 1/4 seconds[\]
+    return timer.get() > 0.25;
   }
 
   @Override

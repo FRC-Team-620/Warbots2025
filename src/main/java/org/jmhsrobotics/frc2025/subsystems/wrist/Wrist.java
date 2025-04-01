@@ -14,7 +14,8 @@ public class Wrist extends SubsystemBase {
   private double setPointDegrees = Constants.WristConstants.kSafeAngleDegrees;
 
   private State calculatedState = new State(Constants.WristConstants.kSafeAngleDegrees, 0);
-  private TrapezoidProfile trapezoidProfile = new TrapezoidProfile(new Constraints(10000, 1000));
+  private TrapezoidProfile trapezoidProfile =
+      new TrapezoidProfile(new Constraints(36000, 360 * 80));
 
   public Wrist(WristIO wristIO) {
     this.wristIO = wristIO;

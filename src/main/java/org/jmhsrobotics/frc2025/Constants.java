@@ -93,7 +93,7 @@ public final class Constants {
     public static final double kLevel2Meters = 0.28;
     public static final double kLevel3Meters = 0.75;
     // BARGE AND L4 SETPOINT CANNOT BE THE EXACT SAME
-    public static final double kLevel4Meters = 1.77;
+    public static final double kLevel4Meters = 1.53;
     public static final double kBargeMeters = 1.78;
     public static final double kProcesserMeters = .10;
 
@@ -118,7 +118,7 @@ public final class Constants {
     public static final double kLevel1Degrees = 30.0;
     public static final double kLevel2Degrees = 40.5;
     public static final double kLevel3Degrees = 40.5;
-    public static final double kLevel4Degrees = 105.0;
+    public static final double kLevel4Degrees = 61.5;
 
     public static final double kRotationAlgaeDegrees = 181;
     public static final double kRotationProcesserDegrees = 190;

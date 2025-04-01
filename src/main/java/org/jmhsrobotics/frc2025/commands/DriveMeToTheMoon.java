@@ -227,6 +227,11 @@ public class DriveMeToTheMoon extends Command {
         drive.setAutoAlignComplete(false);
       }
     }
+    // Really weird way of stopping auto algae intake from starting at the intake setpoint in some
+    // extraneous cases. sorry this is getting really spaghetti again
+    if (!autoIntakeAlgae.getAsBoolean()
+        && (!(rightTriggerValue.getAsDouble() > 0.5) || !(leftTriggerValue.getAsDouble() > 0.5)))
+      goalTransform = algaeLineupTransform;
 
     drive.runVelocity(speeds);
 

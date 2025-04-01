@@ -238,8 +238,8 @@ public class RobotContainer {
             () -> -control.translationX(),
             () -> -control.rotation(),
             () -> control.alignLeft(),
-            () -> control.alignRight()));
-
+            () -> control.alignRight(),
+            control.autoAlignAlgaeIntake()));
     // Reset gyro to 0° when right bumper is pressed
 
     control

@@ -22,8 +22,10 @@ public class Elevator extends SubsystemBase {
   Mechanism2d elevatorMech = new Mechanism2d(4, 4);
   private double setPointMeters;
 
+  private boolean isOpenLoop = false;
+
   private State calculatedState = new State(Constants.ElevatorConstants.kLevel1Meters, 0);
-  private TrapezoidProfile trapezoidProfile = new TrapezoidProfile(new Constraints(6, 6));
+  private TrapezoidProfile trapezoidProfile = new TrapezoidProfile(new Constraints(10, 10));
 
   public Elevator(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;
@@ -36,7 +38,7 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     calculatedState =
         trapezoidProfile.calculate(0.02, calculatedState, new State(this.setPointMeters, 0));
-    elevatorIO.setPositionMeters(calculatedState.position);
+    if (!this.isOpenLoop) elevatorIO.setPositionMeters(calculatedState.position);
 
     elevatorIO.updateInputs(inputs);
     stage1.setLength(inputs.heightMeters / 2);
@@ -47,16 +49,17 @@ public class Elevator extends SubsystemBase {
     Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
     Logger.recordOutput("Elevator/Calculated Setpoint", calculatedState.position);
     Logger.recordOutput("Elevator/VelocityDegPerSec", inputs.elevatorSpeedCmPerSec);
-
+    Logger.recordOutput("Elevator/Is Open Loop", this.isOpenLoop);
     SmartDashboard.putNumber("Elevator/Raw Height Meters", inputs.heightMeters);
   }
 
   public void setSetpoint(double setPoint) {
+    this.isOpenLoop = false;
     this.setPointMeters = setPoint;
-    // elevatorIO.setPositionMeters(setPoint);
   }
 
   public void setVoltage(double voltage) {
+    this.isOpenLoop = true;
     elevatorIO.setVoltage(voltage);
   }
 

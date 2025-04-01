@@ -70,7 +70,7 @@ public class SimElevatorIO implements ElevatorIO {
   }
 
   // I can't find a way to set the encoders to zero, so I am using this as a visual placeholder for
-  // when the encoders would be set to zero
+  // when the encoders wouldbe set to zero
   @Override
   public void setZero() {
     simElevator.setState(0.5, 0);

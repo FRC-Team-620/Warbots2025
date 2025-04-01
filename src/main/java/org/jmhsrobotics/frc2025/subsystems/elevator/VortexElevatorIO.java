@@ -27,7 +27,7 @@ public class VortexElevatorIO implements ElevatorIO {
   private SparkFlexConfig vortexRightConfig;
   private SparkClosedLoopController pidController;
 
-  private boolean isOpenLoop = true;
+  private boolean isOpenLoop = false;
 
   private double controlVoltage;
 
@@ -135,11 +135,13 @@ public class VortexElevatorIO implements ElevatorIO {
   public void setPositionMeters(double positionMeters) {
     isOpenLoop = false;
     // change the setpoint from meters to centimeters
+    System.out.println("Setting Setpoint");
     this.goalMeters = positionMeters * 100.0;
   }
 
   public void setVoltage(double voltage) {
     isOpenLoop = true;
+    System.out.println("Setting Voltage");
     this.controlVoltage = voltage;
     this.vortexLeft.setVoltage(voltage);
   }

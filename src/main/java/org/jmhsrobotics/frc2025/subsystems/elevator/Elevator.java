@@ -23,7 +23,7 @@ public class Elevator extends SubsystemBase {
   private double setPointMeters;
 
   private State calculatedState = new State(Constants.ElevatorConstants.kLevel1Meters, 0);
-  private TrapezoidProfile trapezoidProfile = new TrapezoidProfile(new Constraints(.5, .5));
+  private TrapezoidProfile trapezoidProfile = new TrapezoidProfile(new Constraints(6, 6));
 
   public Elevator(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;

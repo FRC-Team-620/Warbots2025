@@ -1,4 +1,4 @@
-package org.jmhsrobotics.frc2025.commands;
+package org.jmhsrobotics.frc2025.commands.autoCommands;
 
 import static edu.wpi.first.units.Units.Seconds;
 
@@ -11,60 +11,48 @@ import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 
-public class IntakeFromIndexer extends Command {
+public class IntakeUntilCoralInIndexer extends Command {
   private Wrist wrist;
   private Intake intake;
   private Indexer indexer;
   private LED led;
 
-  private boolean coralIntaked = false;
-
   private LEDPattern blinkPattern = LEDPattern.solid(Color.kOrange).blink(Seconds.of(0.1));
 
-  public IntakeFromIndexer(Wrist wrist, Intake intake, Indexer indexer, LED led) {
+  public IntakeUntilCoralInIndexer(Wrist wrist, Intake intake, Indexer indexer, LED led) {
     this.wrist = wrist;
     this.intake = intake;
     this.indexer = indexer;
     this.led = led;
 
-    addRequirements(wrist, intake, indexer, led);
+    addRequirements(wrist, intake, indexer);
   }
 
   @Override
   public void initialize() {
-    intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);
     indexer.set(Constants.IndexerConstants.kIndexerSpeedRPM);
-
+    intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);
     wrist.setSetpoint(Constants.WristConstants.kRotationIntakeCoralDegrees);
 
-    this.coralIntaked = false;
     led.setPattern(blinkPattern);
   }
 
   @Override
   public void execute() {
-    led.setPattern(blinkPattern);
+    indexer.set(Constants.IndexerConstants.kIndexerSpeedRPM);
+    intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);
 
-    if (intake.isCoralInIntake()) {
-      intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed * 0.8);
-      coralIntaked = true;
-    } else {
-      intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);
-      indexer.set(Constants.IndexerConstants.kIndexerSpeedRPM);
-    }
+    led.setPattern(blinkPattern);
   }
 
   @Override
   public boolean isFinished() {
-    // return intake.isCoralInIntake();
-    return coralIntaked && !intake.isCoralInIntake();
+    return indexer.hasCoral() || intake.isCoralInIntake();
   }
 
   @Override
   public void end(boolean interrupted) {
-    intake.set(0);
-    indexer.set(0);
-    wrist.setSetpoint(Constants.WristConstants.kSafeAngleDegrees);
-    System.out.println("Intake From Indexer Complete: " + interrupted);
+    indexer.set(Constants.IndexerConstants.kIndexerSpeedDutyCycle);
+    intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);
   }
 }

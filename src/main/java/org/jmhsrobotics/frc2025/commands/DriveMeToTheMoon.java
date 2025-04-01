@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
+import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AutoAlign;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
@@ -23,6 +24,7 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
+import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveMeToTheMoon extends Command {
@@ -30,6 +32,8 @@ public class DriveMeToTheMoon extends Command {
   private final Vision vision;
   private final Elevator elevator;
   private final Intake intake;
+  private final Wrist wrist;
+
   private Trigger autoIntakeAlgae;
 
   private final PIDController xController = new PIDController(0.6, 0, 0.005);
@@ -51,6 +55,7 @@ public class DriveMeToTheMoon extends Command {
       Vision vision,
       Elevator elevator,
       Intake intake,
+      Wrist wrist,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
@@ -61,6 +66,7 @@ public class DriveMeToTheMoon extends Command {
     this.vision = vision;
     this.elevator = elevator;
     this.intake = intake;
+    this.wrist = wrist;
     this.autoIntakeAlgae = autoIntakeAlge;
 
     this.xSupplier = xSupplier;
@@ -84,14 +90,17 @@ public class DriveMeToTheMoon extends Command {
 
   @Override
   public void execute() {
-    double xValue, yValue;
+    double xValue, yValue, omega;
 
     if (drive.getTurboMode()) {
       xValue = xSupplier.getAsDouble() * DriveConstants.turboCoefficient;
       yValue = ySupplier.getAsDouble() * DriveConstants.turboCoefficient;
+      omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.8, DEADBAND);
+
     } else {
       xValue = xSupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
       yValue = ySupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
+      omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.6, DEADBAND);
     }
 
     Translation2d linearVelocity =
@@ -99,7 +108,6 @@ public class DriveMeToTheMoon extends Command {
             Math.copySign(xValue * xValue, xValue), Math.copySign(yValue * yValue, yValue));
 
     // Apply rotation deadband
-    double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.6, DEADBAND);
 
     // Square rotation value for more precise control
     omega = Math.copySign(omega * omega, omega);
@@ -122,7 +130,7 @@ public class DriveMeToTheMoon extends Command {
 
     // if triggers elevator is at bottom and no coral in intake, default for triggers is source auto
     // align
-    if (elevator.getSetpoint() == 0
+    if (elevator.getSetpoint() == Constants.ElevatorConstants.kCoralIntakeMeters
         && !intake.isCoralInIntake()
         && !autoIntakeAlgae.getAsBoolean()) {
       if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
@@ -215,5 +223,12 @@ public class DriveMeToTheMoon extends Command {
             .getTagPose(targetId)
             .orElse(new Pose3d()); // TODO: handle null tag pose
     Logger.recordOutput("Align/targetPos", defaultTagPose.plus(new Transform3d(goalTransform)));
+
+    if (Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2))
+            < 0.01
+        && Math.abs(speeds.omegaRadiansPerSecond) < 0.01
+        && wrist.getSetpoint() == Constants.WristConstants.kRotationIntakeCoralDegrees) {
+      drive.stopWithX();
+    }
   }
 }

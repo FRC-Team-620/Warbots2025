@@ -528,10 +528,10 @@ public class RobotContainer {
           new IntakeUntilCoralInIndexer(wrist, intake, indexer, led));
 
       NamedCommands.registerCommand(
-          "Finish Coral Intake", new IntakeFromIndexer(wrist, intake, indexer, led));
+          "Finish Coral Intake", new IntakeFromIndexer(wrist, intake, indexer, led).withTimeout(2));
 
       NamedCommands.registerCommand(
-          "Fix Coral Placement", new FixCoralPlacement(intake).withTimeout(3));
+          "Fix Coral Placement", new FixCoralPlacement(intake).withTimeout(1.5));
     }
 
     NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(0.25));

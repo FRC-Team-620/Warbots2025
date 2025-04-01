@@ -84,7 +84,7 @@ public final class Constants {
 
   public static class ElevatorConstants {
 
-    // new elevator max height is 1.80 
+    // new elevator max height is 1.80
 
     // converts motor rotations to elevator height in centimeters
     public static final double conversionFactor = (((1.0 / 3.0) / 12.0) * 100);
@@ -98,7 +98,7 @@ public final class Constants {
     public static final double kProcesserMeters = .10;
 
     public static final double kAlgaeQTipMeters = .125;
-    public static final double kCoralIntakeMeters = 0.02;
+    public static final double kCoralIntakeMeters = 0.0;
     public static final double kAlgaeIntakeL2Meters = 0.54;
     public static final double kAlgaeIntakeL3Meters = 1.03;
 
@@ -124,9 +124,9 @@ public final class Constants {
     public static final double kRotationProcesserDegrees = 190;
     public static final double kRotationBargeDegrees = 70;
 
-    public static final double kP = 0.02;
+    public static final double kP = 0.0225;
     public static final double kI = 0.00;
-    public static final double kD = 0.01;
+    public static final double kD = 0.0;
     public static final double kF = 0.0;
     public static final double kAngleTolerance = 5;
 

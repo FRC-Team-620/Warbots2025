@@ -98,7 +98,7 @@ public class AutoAlign {
    * @param thetaController
    * @return ChassisSpeeds object with x, y, and angular speeds
    */
-  public static ChassisSpeeds getSourceAlignSpeeds(
+  public static ChassisSpeeds getDriveToPoseSpeeds(
       Drive drive,
       Pose2d setpoint,
       PIDController xController,

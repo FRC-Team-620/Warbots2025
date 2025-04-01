@@ -44,7 +44,7 @@ public class AlignSource extends Command {
   public void execute() {
     this.goalPose = calculateSetpoints(drive, alignCloseToStation);
     drive.runVelocity(
-        AutoAlign.getSourceAlignSpeeds(
+        AutoAlign.getDriveToPoseSpeeds(
             this.drive, this.goalPose, this.xController, this.yController, this.thetaController));
     // calculateSourceAutoAlignSpeeds(
     //     this.drive, this.goalPose, this.xController, this.yController, this.thetaController));

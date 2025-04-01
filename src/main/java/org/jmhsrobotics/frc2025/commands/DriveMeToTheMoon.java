@@ -34,8 +34,8 @@ public class DriveMeToTheMoon extends Command {
   private final Intake intake;
   private final Wrist wrist;
 
-  private final PIDController xController = new PIDController(0.6, 0, 0.005);
-  private final PIDController yController = new PIDController(0.6, 0, 0.005);
+  private final PIDController xController = new PIDController(0.5, 0, 0.01);
+  private final PIDController yController = new PIDController(0.5, 0, 0.01);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   private Trigger autoIntakeAlgae;

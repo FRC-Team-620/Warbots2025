@@ -140,8 +140,8 @@ public class AutoAlign {
       if (elevatorSetpoint == Constants.ElevatorConstants.kLevel2Meters
           || elevatorSetpoint == Constants.ElevatorConstants.kLevel3Meters) xTransform = 0.45;
       else {
-        if (isLeft) xTransform = 0.49;
-        else xTransform = 0.48;
+        if (isLeft) xTransform = 0.52;
+        else xTransform = 0.52;
       }
     }
     return new Transform2d(xTransform, yTransform, new Rotation2d());

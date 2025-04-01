@@ -1,9 +1,10 @@
 package org.jmhsrobotics.frc2025.commands.autoAlign;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,6 +15,7 @@ import org.littletonrobotics.junction.Logger;
 public class AlignBarge extends Command {
   private Drive drive;
   private Pose2d goalPose;
+  private double ySetpointAdd = 0;
 
   private final PIDController xController = new PIDController(0.3, 0, 0.005);
   private final PIDController yController = new PIDController(0.3, 0, 0.005);
@@ -21,8 +23,6 @@ public class AlignBarge extends Command {
 
   private Trigger leftPOVButton;
   private Trigger rightPOVButton;
-
-  private double inversion = 1;
 
   public AlignBarge(Drive drive, Trigger left, Trigger right) {
     this.drive = drive;
@@ -34,7 +34,6 @@ public class AlignBarge extends Command {
   @Override
   public void initialize() {
     this.goalPose = calculateSetpoints();
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) inversion = -1;
     xController.reset();
     yController.reset();
     thetaController.reset();
@@ -48,15 +47,26 @@ public class AlignBarge extends Command {
   @Override
   public void execute() {
 
-    if (leftPOVButton.getAsBoolean()) {
-      goalPose = this.goalPose.plus(new Transform2d(0, 0.02 * inversion, new Rotation2d(0)));
-      System.out.println("Left POV Presed");
-    }
+    if (leftPOVButton.getAsBoolean())
+      ySetpointAdd =
+          (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) ? -0.03 : 0.03;
+    else if (rightPOVButton.getAsBoolean())
+      ySetpointAdd =
+          (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) ? 0.03 : -0.03;
+    else ySetpointAdd = 0;
 
-    if (rightPOVButton.getAsBoolean()) {
-      goalPose = this.goalPose.plus(new Transform2d(0, -0.02 * inversion, new Rotation2d(0)));
-      System.out.println("Right POV Presed");
-    }
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red)
+      goalPose =
+          new Pose2d(
+              goalPose.getX(),
+              MathUtil.clamp(goalPose.getY() + ySetpointAdd, 0.4, 3.48),
+              goalPose.getRotation());
+    else
+      goalPose =
+          new Pose2d(
+              goalPose.getX(),
+              MathUtil.clamp(goalPose.getY() + ySetpointAdd, 4.56, 7.66),
+              goalPose.getRotation());
 
     Logger.recordOutput("Barge Align/GoalPose", this.goalPose);
 
@@ -99,13 +109,13 @@ public class AlignBarge extends Command {
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
       xSetpoint = 10.4;
       ySetpoint = 1.9;
-      goalTheta = 180;
+      goalTheta = 0;
     } else {
       xSetpoint = 7.2;
       ySetpoint = 6.2;
-      goalTheta = 0;
+      goalTheta = 180;
     }
 
-    return new Pose2d(xSetpoint, ySetpoint, new Rotation2d(goalTheta));
+    return new Pose2d(xSetpoint, ySetpoint, new Rotation2d(Units.degreesToRadians(goalTheta)));
   }
 }

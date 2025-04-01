@@ -18,6 +18,7 @@ public class ElevatorSetZero extends Command {
   public void initialize() {
     timer.reset();
     timer.stop();
+    elevator.setSetpoint(0);
     elevator.setVoltage(-1.5);
   }
 

@@ -46,7 +46,7 @@ public class IntakeFromIndexer extends Command {
     led.setPattern(blinkPattern);
 
     if (intake.isCoralInIntake()) {
-      intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed * 0.8);
+      intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed);
       coralIntaked = true;
     } else {
       intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);

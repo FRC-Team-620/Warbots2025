@@ -98,7 +98,7 @@ public class DoubleControl implements ControlBoard {
   }
 
   public Trigger autoAlignAlgaeIntake() {
-    return driver.a().and(searchMode);
+    return driver.a();
   }
 
   @Override

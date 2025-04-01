@@ -17,8 +17,8 @@ public class AlignBarge extends Command {
   private Pose2d goalPose;
   private double ySetpointAdd = 0;
 
-  private final PIDController xController = new PIDController(0.3, 0, 0.005);
-  private final PIDController yController = new PIDController(0.3, 0, 0.005);
+  private final PIDController xController = new PIDController(0.45, 0, 0.005);
+  private final PIDController yController = new PIDController(0.45, 0, 0.005);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   private Trigger leftPOVButton;

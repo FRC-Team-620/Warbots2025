@@ -78,7 +78,11 @@ public class SingleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger autoIntakeAlge() {
+  public Trigger autoAlignBarge() {
+    return nop;
+  }
+
+  public Trigger autoAlignAlgaeIntake() {
     return nop;
   }
 
@@ -90,6 +94,16 @@ public class SingleControl implements ControlBoard {
   @Override
   public Trigger turboMode() {
     return driver.leftBumper();
+  }
+
+  @Override
+  public Trigger AdjustAlignBargeLeft() {
+    return driver.povLeft();
+  }
+
+  @Override
+  public Trigger AdjustAlignBargeRight() {
+    return driver.povRight();
   }
 
   // =======Operator Controls=======

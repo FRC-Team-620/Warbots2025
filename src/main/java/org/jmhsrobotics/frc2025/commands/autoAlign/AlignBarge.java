@@ -2,15 +2,14 @@ package org.jmhsrobotics.frc2025.commands.autoAlign;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
-import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class AlignBarge extends Command {
   private Drive drive;
@@ -20,20 +19,26 @@ public class AlignBarge extends Command {
   private final PIDController yController = new PIDController(0.3, 0, 0.005);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
-  private Trigger leftPOVButton = new Trigger()
+  private Trigger leftPOVButton;
+  private Trigger rightPOVButton;
 
-  public AlignBarge(Drive drive) {
+  private double inversion = 1;
+
+  public AlignBarge(Drive drive, Trigger left, Trigger right) {
     this.drive = drive;
-
+    this.leftPOVButton = left;
+    this.rightPOVButton = right;
     addRequirements(drive);
   }
 
   @Override
   public void initialize() {
-    this.goalPose = calculateSetpoints(drive);
+    this.goalPose = calculateSetpoints();
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) inversion = -1;
     xController.reset();
     yController.reset();
     thetaController.reset();
+    thetaController.enableContinuousInput(-180, 180);
 
     xController.setSetpoint(this.goalPose.getX());
     yController.setSetpoint(this.goalPose.getY());
@@ -42,25 +47,36 @@ public class AlignBarge extends Command {
 
   @Override
   public void execute() {
-    
 
+    if (leftPOVButton.getAsBoolean()) {
+      goalPose = this.goalPose.plus(new Transform2d(0, 0.02 * inversion, new Rotation2d(0)));
+      System.out.println("Left POV Presed");
+    }
 
+    if (rightPOVButton.getAsBoolean()) {
+      goalPose = this.goalPose.plus(new Transform2d(0, -0.02 * inversion, new Rotation2d(0)));
+      System.out.println("Right POV Presed");
+    }
+
+    Logger.recordOutput("Barge Align/GoalPose", this.goalPose);
 
     drive.runVelocity(
-        AutoAlign.getSourceAlignSpeeds(
+        AutoAlign.getDriveToPoseSpeeds(
             this.drive, this.goalPose, this.xController, this.yController, this.thetaController));
     // calculateSourceAutoAlignSpeeds(
     //     this.drive, this.goalPose, this.xController, this.yController, this.thetaController));
     // Logger.recordOutput("Align Source/Goal Pose", this.goalPose);
+    xController.setSetpoint(this.goalPose.getX());
+    yController.setSetpoint(this.goalPose.getY());
   }
 
   @Override
   public boolean isFinished() {
-    Transform2d distance = drive.getPose().minus(this.goalPose);
-    return distance.getX() < Units.inchesToMeters(1)
-        && distance.getY() < Units.inchesToMeters(1)
-        && distance.getRotation().getDegrees() < 3;
-    // return false;
+    // Transform2d distance = drive.getPose().minus(this.goalPose);
+    // return distance.getX() < Units.inchesToMeters(1)
+    //  && distance.getY() < Units.inchesToMeters(1)
+    // && distance.getRotation().getDegrees() < 3;
+    return false;
   }
 
   @Override
@@ -80,17 +96,16 @@ public class AlignBarge extends Command {
     double xSetpoint;
     double ySetpoint;
     double goalTheta;
-    if (DriverStation.getAlliance() == Alliance.Red) {
-        xSetpoint = 10.4;
-        ySetpoint = 1.9;
-        goalTheta = 180;
-    } 
-    else {
-        xSetpoint = 7.2;
-        ySetpoint = 6.2;
-        goalTheta = 0;
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+      xSetpoint = 10.4;
+      ySetpoint = 1.9;
+      goalTheta = 180;
+    } else {
+      xSetpoint = 7.2;
+      ySetpoint = 6.2;
+      goalTheta = 0;
     }
 
-    return new Pose2d(xSetpoint, ySetpoint, goalTheta);
+    return new Pose2d(xSetpoint, ySetpoint, new Rotation2d(goalTheta));
   }
 }

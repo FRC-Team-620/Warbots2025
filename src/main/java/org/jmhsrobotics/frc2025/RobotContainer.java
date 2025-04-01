@@ -46,6 +46,7 @@ import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignBarge;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReef;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
@@ -237,8 +238,7 @@ public class RobotContainer {
             () -> -control.translationX(),
             () -> -control.rotation(),
             () -> control.alignLeft(),
-            () -> control.alignRight(),
-            control.autoIntakeAlge()));
+            () -> control.alignRight()));
 
     // Reset gyro to 0° when right bumper is pressed
 
@@ -388,6 +388,12 @@ public class RobotContainer {
 
     control.turboMode().onTrue(Commands.runOnce(() -> drive.setTurboMode(true), drive));
     control.turboMode().onFalse(Commands.runOnce(() -> drive.setTurboMode(false), drive));
+
+    // control.autoAlignAlgae().whileTrue()
+    control
+        .autoAlignBarge()
+        .whileTrue(
+            new AlignBarge(drive, control.AdjustAlignBargeLeft(), control.AdjustAlignBargeRight()));
   }
 
   private void configureDriverFeedback() {
@@ -466,6 +472,9 @@ public class RobotContainer {
                 Constants.WristConstants.kRotationIntakeCoralDegrees),
             new IntakeFromIndexer(wrist, intake, indexer, led),
             new FixCoralPlacement(intake)));
+    SmartDashboard.putData(
+        "cmd/Align Barge",
+        new AlignBarge(drive, control.AdjustAlignBargeLeft(), control.AdjustAlignBargeRight()));
   }
 
   private void configurePathPlanner() {

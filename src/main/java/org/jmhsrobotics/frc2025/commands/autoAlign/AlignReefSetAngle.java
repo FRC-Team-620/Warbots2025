@@ -22,8 +22,8 @@ public class AlignReefSetAngle extends Command {
   private final LED led;
   private final Elevator elevator;
 
-  private final PIDController xController = new PIDController(0.5, 0, 0.005);
-  private final PIDController yController = new PIDController(0.5, 0, 0.005);
+  private final PIDController xController = new PIDController(0.525, 0, 0.01);
+  private final PIDController yController = new PIDController(0.525, 0, 0.01);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
@@ -53,7 +53,7 @@ public class AlignReefSetAngle extends Command {
         LEDPattern.progressMaskLayer(
             () -> ((this.initialDistance - this.currentDistance) / this.initialDistance));
 
-    addRequirements(drive, led);
+    addRequirements(drive);
   }
 
   private void adjustTagId() {
@@ -151,7 +151,7 @@ public class AlignReefSetAngle extends Command {
           Math.sqrt(
               Math.pow(tagPose.getX() - goalTransform.getX(), 2)
                   + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
-      led.setPattern(progressPattern);
+      // led.setPattern(progressPattern);
     }
   }
 

@@ -173,14 +173,16 @@ public class DriveMeToTheMoon extends Command {
         if (autoIntakeAlgae.getAsBoolean()) {
           if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
               && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1)
-              && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3) {
+              && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3
+              && goalTransform != algaeInIntakeTransform) {
             if (goalTransform == algaeIntakeTransform) goalTransform = algaeInIntakeTransform;
             else if (goalTransform == algaeLineupTransform
                 && (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
                     || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters))
               goalTransform = algaeIntakeTransform;
-            else if (goalTransform != algaeIntakeTransform && goalTransform != algaeLineupTransform)
-              goalTransform = algaeLineupTransform;
+            else if (goalTransform != algaeIntakeTransform
+                && goalTransform != algaeLineupTransform
+                && goalTransform != algaeInIntakeTransform) goalTransform = algaeLineupTransform;
           }
         } else {
           goalTransform =

@@ -351,6 +351,15 @@ public class RobotContainer {
                 wrist,
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
+
+    control
+        .moveAlgaePreBarge()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kPreBargeMeters,
+                Constants.WristConstants.kRotationProcesserDegrees));
     control
         .intakeCoralFromIndexer()
         .onTrue(
@@ -383,7 +392,6 @@ public class RobotContainer {
     control.turboMode().onTrue(Commands.runOnce(() -> drive.setTurboMode(true), drive));
     control.turboMode().onFalse(Commands.runOnce(() -> drive.setTurboMode(false), drive));
 
-    // control.autoAlignAlgae().whileTrue()
     control
         .autoAlignBarge()
         .whileTrue(

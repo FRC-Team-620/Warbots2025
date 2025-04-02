@@ -209,4 +209,8 @@ public class AltControlMode implements ControlBoard {
   public Trigger AdjustAlignBargeRight() {
     return driver.povRight();
   }
+
+  public Trigger moveAlgaePreBarge() {
+    return nop;
+  }
 }

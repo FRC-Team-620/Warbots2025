@@ -203,4 +203,8 @@ public class SingleControl implements ControlBoard {
   public Trigger zeroElevator() {
     return driver.leftStick();
   }
+
+  public Trigger moveAlgaePreBarge() {
+    return nop;
+  }
 }

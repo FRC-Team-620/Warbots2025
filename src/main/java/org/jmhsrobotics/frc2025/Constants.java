@@ -96,6 +96,7 @@ public final class Constants {
     public static final double kLevel4Meters = 1.53;
     public static final double kBargeMeters = 1.78;
     public static final double kProcesserMeters = .10;
+    public static final double kPreBargeMeters = 0.27;
 
     public static final double kAlgaeQTipMeters = .125;
     public static final double kCoralIntakeMeters = 0.0;

@@ -371,4 +371,8 @@ public class Drive extends SubsystemBase {
   public GyroIOInputsAutoLogged getGyroInputs() {
     return gyroInputs;
   }
+
+  public GyroIOInputsAutoLogged getGyroInputs() {
+    return gyroInputs;
+  }
 }

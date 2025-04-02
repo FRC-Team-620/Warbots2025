@@ -134,8 +134,8 @@ public class Drive extends SubsystemBase {
     Logger.processInputs("Drive/Gyro", gyroInputs);
     Logger.recordOutput("Gyro/Gyro Connected", gyroInputs.connected);
     Logger.recordOutput("Gyro/Gyro Heading", gyroInputs.yawPosition);
-    Logger.recordOutput("Gyro/Gryo X Acceleration", gyroInputs.xAcceleration);
-    Logger.recordOutput("Gyro/Gryo Y Acceleration", gyroInputs.yAcceleration);
+    Logger.recordOutput("Gryo X Acceleration", gyroInputs.xAcceleration);
+    Logger.recordOutput("Gryo Y Acceleration", gyroInputs.yAcceleration);
 
     for (var module : modules) {
       module.periodic();
@@ -366,10 +366,6 @@ public class Drive extends SubsystemBase {
 
   public boolean getTurboMode() {
     return turboMode;
-  }
-
-  public GyroIOInputsAutoLogged getGyroInputs() {
-    return gyroInputs;
   }
 
   public GyroIOInputsAutoLogged getGyroInputs() {

@@ -194,16 +194,19 @@ public class Robot extends LoggedRobot {
     Logger.recordOutput("cam/right_field", robotpos.plus(VisionConstants.robotToCamera1));
     if (robotContainer.intake.isCoralInIntake()) {
       var coralpos =
-          robotpos.plus(new Transform3d(gripperpos.getTranslation(), gripperpos.getRotation())).plus(new Transform3d(new Translation3d(-0.2, 0, 0.22), new Rotation3d()));
+          robotpos
+              .plus(new Transform3d(gripperpos.getTranslation(), gripperpos.getRotation()))
+              .plus(new Transform3d(new Translation3d(-0.2, 0, 0.22), new Rotation3d()));
       Logger.recordOutput("hasPipe", coralpos);
     } else {
       Logger.recordOutput("hasPipe", robotpos.plus(new Transform3d(90, 0.0, 4, new Rotation3d())));
     }
     if (robotContainer.intake.isAlgaeInintake()) {
       var algae =
-      robotpos.plus(new Transform3d(gripperpos.getTranslation(), gripperpos.getRotation())).plus(new Transform3d(new Translation3d(-0.25, 0, -0.05), new Rotation3d()));
-      Logger.recordOutput(
-          "hasball", algae);
+          robotpos
+              .plus(new Transform3d(gripperpos.getTranslation(), gripperpos.getRotation()))
+              .plus(new Transform3d(new Translation3d(-0.25, 0, -0.05), new Rotation3d()));
+      Logger.recordOutput("hasball", algae);
     } else {
       Logger.recordOutput("hasball", robotpos.plus(new Transform3d(90, 0.0, 4, new Rotation3d())));
     }

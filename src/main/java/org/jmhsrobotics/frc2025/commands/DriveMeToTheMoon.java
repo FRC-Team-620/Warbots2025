@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
+import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AutoAlign;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
@@ -23,6 +24,7 @@ import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
+import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 import org.littletonrobotics.junction.Logger;
 
 public class DriveMeToTheMoon extends Command {
@@ -30,13 +32,19 @@ public class DriveMeToTheMoon extends Command {
   private final Vision vision;
   private final Elevator elevator;
   private final Intake intake;
-  private Trigger autoIntakeAlgae;
+  private final Wrist wrist;
 
-  private final PIDController xController = new PIDController(0.6, 0, 0.005);
-  private final PIDController yController = new PIDController(0.6, 0, 0.005);
+  private final PIDController xController = new PIDController(0.5, 0, 0.01);
+  private final PIDController yController = new PIDController(0.5, 0, 0.01);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
+
+  private Trigger autoIntakeAlgae;
   private int targetId;
+
+  Pose3d tagPose = new Pose3d();
   Transform2d goalTransform = new Transform2d();
+  private Transform2d algaeIntakeTransform = new Transform2d(0.46, 0, new Rotation2d());
+  private Transform2d algaeLineupTransform = new Transform2d(0.7, 0, new Rotation2d());
 
   private Pose3d lastTagPose = null;
 
@@ -51,18 +59,20 @@ public class DriveMeToTheMoon extends Command {
       Vision vision,
       Elevator elevator,
       Intake intake,
+      Wrist wrist,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
       DoubleSupplier leftTriggerValue,
       DoubleSupplier rightTriggerValue,
-      Trigger autoIntakeAlge) {
+      Trigger autoIntakeAlgae) {
     this.drive = drive;
     this.vision = vision;
     this.elevator = elevator;
     this.intake = intake;
-    this.autoIntakeAlgae = autoIntakeAlge;
+    this.wrist = wrist;
 
+    this.autoIntakeAlgae = autoIntakeAlgae;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
     this.omegaSupplier = omegaSupplier;
@@ -84,14 +94,17 @@ public class DriveMeToTheMoon extends Command {
 
   @Override
   public void execute() {
-    double xValue, yValue;
+    double xValue, yValue, omega;
 
     if (drive.getTurboMode()) {
       xValue = xSupplier.getAsDouble() * DriveConstants.turboCoefficient;
       yValue = ySupplier.getAsDouble() * DriveConstants.turboCoefficient;
+      omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.8, DEADBAND);
+
     } else {
       xValue = xSupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
       yValue = ySupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
+      omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.6, DEADBAND);
     }
 
     Translation2d linearVelocity =
@@ -99,7 +112,6 @@ public class DriveMeToTheMoon extends Command {
             Math.copySign(xValue * xValue, xValue), Math.copySign(yValue * yValue, yValue));
 
     // Apply rotation deadband
-    double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.6, DEADBAND);
 
     // Square rotation value for more precise control
     omega = Math.copySign(omega * omega, omega);
@@ -122,7 +134,7 @@ public class DriveMeToTheMoon extends Command {
 
     // if triggers elevator is at bottom and no coral in intake, default for triggers is source auto
     // align
-    if (elevator.getSetpoint() == 0
+    if (elevator.getSetpoint() == Constants.ElevatorConstants.kCoralIntakeMeters
         && !intake.isCoralInIntake()
         && !autoIntakeAlgae.getAsBoolean()) {
       if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
@@ -145,7 +157,7 @@ public class DriveMeToTheMoon extends Command {
         // calculates the source auto align speed and adds it to speeds
         speeds =
             speeds.plus(
-                AutoAlign.getSourceAlignSpeeds(
+                AutoAlign.getDriveToPoseSpeeds(
                     drive, setpoint, xController, yController, thetaController));
       } else drive.setAutoAlignComplete(false);
     } else {
@@ -157,18 +169,26 @@ public class DriveMeToTheMoon extends Command {
         double thetaGoalDegrees = AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees());
         targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
 
-        // if driver is pressing the dedicated algae align button, transform is automatically set
-        // correctly for algae
-        if (autoIntakeAlgae.getAsBoolean())
-          goalTransform = new Transform2d(0.7, 0.0, new Rotation2d());
-        else
+        if (autoIntakeAlgae.getAsBoolean()) {
+          if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
+              && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1)
+              && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3) {
+            if (goalTransform == algaeIntakeTransform) goalTransform = algaeLineupTransform;
+            else if (goalTransform == algaeLineupTransform
+                && (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
+                    || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters))
+              goalTransform = algaeIntakeTransform;
+            else if (goalTransform != algaeIntakeTransform && goalTransform != algaeLineupTransform)
+              goalTransform = algaeLineupTransform;
+          }
+        } else {
           goalTransform =
               AutoAlign.calculateReefTransform(
                   elevator.getSetpoint(),
                   leftTriggerValue.getAsDouble() > rightTriggerValue.getAsDouble());
+        }
 
-        Pose3d tagPose =
-            AutoAlign.getTagPoseRobotRelative(targetId, vision, lastTagPose, drive.getPose());
+        tagPose = AutoAlign.getTagPoseRobotRelative(targetId, vision, lastTagPose, drive.getPose());
 
         if (tagPose != null) {
           // sets last tag position
@@ -203,6 +223,11 @@ public class DriveMeToTheMoon extends Command {
         drive.setAutoAlignComplete(false);
       }
     }
+    // really weird way of stoping auto algae intake from starting at the intake setpoint instead of
+    // lineup in some extraneous cases. sorry this is getting very spaghetti-like
+    if (!autoIntakeAlgae.getAsBoolean()
+        && (!(rightTriggerValue.getAsDouble() > 0.5) || !(leftTriggerValue.getAsDouble() > 0.5)))
+      goalTransform = algaeLineupTransform;
 
     drive.runVelocity(speeds);
 
@@ -215,5 +240,12 @@ public class DriveMeToTheMoon extends Command {
             .getTagPose(targetId)
             .orElse(new Pose3d()); // TODO: handle null tag pose
     Logger.recordOutput("Align/targetPos", defaultTagPose.plus(new Transform3d(goalTransform)));
+
+    if (Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2))
+            < 0.01
+        && Math.abs(speeds.omegaRadiansPerSecond) < 0.01
+        && wrist.getSetpoint() == Constants.WristConstants.kRotationIntakeCoralDegrees) {
+      drive.stopWithX();
+    }
   }
 }

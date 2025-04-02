@@ -93,7 +93,11 @@ public class DoubleControl implements ControlBoard {
   }
 
   @Override
-  public Trigger autoIntakeAlge() {
+  public Trigger autoAlignBarge() {
+    return driver.b().and(algaeMode);
+  }
+
+  public Trigger autoAlignAlgaeIntake() {
     return driver.a();
   }
 
@@ -105,6 +109,16 @@ public class DoubleControl implements ControlBoard {
   @Override
   public Trigger turboMode() {
     return driver.leftBumper();
+  }
+
+  @Override
+  public Trigger AdjustAlignBargeLeft() {
+    return driver.povLeft();
+  }
+
+  @Override
+  public Trigger AdjustAlignBargeRight() {
+    return driver.povRight();
   }
 
   // =======Operator Controls=======

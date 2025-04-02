@@ -16,7 +16,6 @@ package org.jmhsrobotics.frc2025.subsystems.drive;
 import com.reduxrobotics.sensors.canandgyro.Canandgyro;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-
 import java.util.Queue;
 import org.jmhsrobotics.frc2025.Constants;
 
@@ -25,26 +24,22 @@ public class GyroIOBoron implements GyroIO {
   private Canandgyro canandgyro;
   private final Queue<Double> yawTimestampQueue;
   private final Queue<Double> yawPositionQueue;
-  private final Queue<Double> XAccelerationTimestampQueue;
-  private final Queue<Double> XAccelerationQueue;
-  private final Queue<Double> YAccelerationTimestampQueue;
-  private final Queue<Double> YAccelerationQueue;
-  private final double yAcceleration = canandgyro.getAccelerationY();
-  private final double xAcceleration = canandgyro.getAccelerationX();
-
-
+  private final Queue<Double> xAccelerationTimestampQueue;
+  private final Queue<Double> xAccelerationQueue;
+  private final Queue<Double> yAccelerationTimestampQueue;
+  private final Queue<Double> yAccelerationQueue;
 
   public GyroIOBoron() {
     canandgyro = new Canandgyro(Constants.CAN.kCanAndGyroID);
     yawTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
     yawPositionQueue = SparkOdometryThread.getInstance().registerSignal(canandgyro::getYaw);
-    XAccelerationTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
-    YAccelerationTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
-    XAccelerationQueue = ;
-    YAccelerationQueue = ;
+    xAccelerationTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
+    xAccelerationQueue =
+        SparkOdometryThread.getInstance().registerSignal(canandgyro::getAccelerationX);
 
-
-
+    yAccelerationTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
+    yAccelerationQueue =
+        SparkOdometryThread.getInstance().registerSignal(canandgyro::getAccelerationY);
   }
 
   // Check if gyro is calibrated
@@ -54,6 +49,8 @@ public class GyroIOBoron implements GyroIO {
     inputs.calibrated = !canandgyro.isCalibrating();
     inputs.yawPosition = Rotation2d.fromRotations(canandgyro.getYaw());
     inputs.yawVelocityRadPerSec = Units.rotationsToRadians(canandgyro.getAngularVelocityYaw());
+    inputs.xAcceleration = canandgyro.getAccelerationX();
+    inputs.yAcceleration = canandgyro.getAccelerationY();
 
     inputs.odometryYawTimestamps =
         yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
@@ -61,7 +58,22 @@ public class GyroIOBoron implements GyroIO {
         yawPositionQueue.stream()
             .map((Double value) -> Rotation2d.fromRotations(value))
             .toArray(Rotation2d[]::new);
+
+    inputs.odometryYTimestamps =
+        xAccelerationTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+    inputs.odometryYAccelerations =
+        xAccelerationQueue.stream().mapToDouble((Double value) -> value).toArray();
+
+    inputs.odometryXTimestamps =
+        yAccelerationTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+    inputs.odometryXAccelerations =
+        yAccelerationQueue.stream().mapToDouble((Double value) -> value).toArray();
+
     yawTimestampQueue.clear();
     yawPositionQueue.clear();
+    xAccelerationTimestampQueue.clear();
+    xAccelerationQueue.clear();
+    yAccelerationTimestampQueue.clear();
+    yAccelerationQueue.clear();
   }
 }

@@ -45,6 +45,7 @@ public class DriveMeToTheMoon extends Command {
   Transform2d goalTransform = new Transform2d();
   private Transform2d algaeIntakeTransform = new Transform2d(0.46, 0, new Rotation2d());
   private Transform2d algaeLineupTransform = new Transform2d(0.7, 0, new Rotation2d());
+  private Transform2d algaeInIntakeTransform = new Transform2d(1.0, 0, new Rotation2d());
 
   private Pose3d lastTagPose = null;
 
@@ -173,7 +174,7 @@ public class DriveMeToTheMoon extends Command {
           if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
               && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1)
               && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3) {
-            if (goalTransform == algaeIntakeTransform) goalTransform = algaeLineupTransform;
+            if (goalTransform == algaeIntakeTransform) goalTransform = algaeInIntakeTransform;
             else if (goalTransform == algaeLineupTransform
                 && (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
                     || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters))

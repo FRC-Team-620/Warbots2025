@@ -110,6 +110,10 @@ public class VortexElevatorIO implements ElevatorIO {
     SparkUtil.ifOk(
         vortexRight, vortexRight::getOutputCurrent, (value) -> inputs.motorAmps[1] = value);
 
+    SparkUtil.ifOk(
+        vortexLeft, vortexLeft::getMotorTemperature, (value) -> inputs.leftMotorTemp = value);
+    SparkUtil.ifOk(
+        vortexRight, vortexRight::getMotorTemperature, (value) -> inputs.rightMotorTemp = value);
     // inputs.motorVolts = new double[2];
     SparkUtil.ifOk(
         vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value / 100.0);

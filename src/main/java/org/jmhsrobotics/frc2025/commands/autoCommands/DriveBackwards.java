@@ -25,7 +25,6 @@ public class DriveBackwards extends Command {
 
   @Override
   public boolean isFinished() {
-    drive.
     return false;
   }
 

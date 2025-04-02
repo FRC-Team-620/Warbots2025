@@ -63,4 +63,6 @@ public interface ControlBoard {
   public Trigger UnOverrideControlMode();
 
   public Trigger zeroElevator();
+
+  public Trigger moveAlgaePreBarge();
 }

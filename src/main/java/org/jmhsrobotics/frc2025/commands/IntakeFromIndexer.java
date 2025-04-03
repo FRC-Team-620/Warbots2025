@@ -38,12 +38,12 @@ public class IntakeFromIndexer extends Command {
     wrist.setSetpoint(Constants.WristConstants.kRotationIntakeCoralDegrees);
 
     this.coralIntaked = false;
-    led.setPattern(blinkPattern);
+    // led.setPattern(blinkPattern);
   }
 
   @Override
   public void execute() {
-    led.setPattern(blinkPattern);
+    // led.setPattern(blinkPattern);
 
     if (intake.isCoralInIntake()) {
       intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed);

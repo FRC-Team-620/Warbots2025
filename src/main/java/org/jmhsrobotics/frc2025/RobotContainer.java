@@ -13,6 +13,8 @@
 
 package org.jmhsrobotics.frc2025;
 
+import static edu.wpi.first.units.Units.Seconds;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.reduxrobotics.canand.CanandEventLoop;
@@ -42,7 +44,6 @@ import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
 import org.jmhsrobotics.frc2025.commands.IndexerMove;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
-import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
 import org.jmhsrobotics.frc2025.commands.ScoreBarge;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
@@ -406,19 +407,22 @@ public class RobotContainer {
     // If control mode is manually overridden, lights flash red and green(Christmas!)
     new Trigger(intake::isControlModeOverridden)
         .onTrue(
-            new LEDFlashPattern(led, LEDPattern.solid(Color.kRed), LEDPattern.solid(Color.kWhite))
+            Commands.run(
+                    () -> led.setPattern(LEDPattern.solid(Color.kRed).blink(Seconds.of(0.1))), led)
                 .withTimeout(1.5));
 
     // if control mode is un-overridden, lights will flash gold and white
     new Trigger(intake::isControlModeOverridden)
         .onFalse(
-            new LEDFlashPattern(led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite))
+            Commands.run(
+                    () -> led.setPattern(LEDPattern.solid(Color.kGold).blink(Seconds.of(0.1))), led)
                 .withTimeout(1.5));
 
     new Trigger(drive::isAutoAlignComplete)
         .whileTrue(
-            new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kCyan), LEDPattern.solid(Color.kWhite)));
+            Commands.run(
+                    () -> led.setPattern(LEDPattern.solid(Color.kCyan).blink(Seconds.of(0.1))), led)
+                .withTimeout(1.5));
   }
 
   private void setupSmartDashbaord() {

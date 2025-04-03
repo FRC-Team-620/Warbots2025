@@ -136,9 +136,19 @@ public class AutoAlign {
         || elevatorSetpoint == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) {
       xTransform = 0.7;
     } else {
-      yTransform = isLeft ? Units.inchesToMeters(-7.3) : Units.inchesToMeters(6.8);
+      if (isLeft)
+        yTransform =
+            (elevatorSetpoint == Constants.ElevatorConstants.kLevel1Meters)
+                ? Units.inchesToMeters(-17)
+                : Units.inchesToMeters(-7.3);
+      else
+        yTransform =
+            (elevatorSetpoint == Constants.ElevatorConstants.kLevel1Meters)
+                ? Units.inchesToMeters(17)
+                : Units.inchesToMeters(6.8);
       if (elevatorSetpoint == Constants.ElevatorConstants.kLevel2Meters
-          || elevatorSetpoint == Constants.ElevatorConstants.kLevel3Meters) xTransform = 0.45;
+          || elevatorSetpoint == Constants.ElevatorConstants.kLevel3Meters) xTransform = 0.47;
+      else if (elevatorSetpoint == Constants.ElevatorConstants.kLevel1Meters) xTransform = 0.5;
       else {
         if (isLeft) xTransform = 0.52;
         else xTransform = 0.52;
@@ -151,21 +161,6 @@ public class AutoAlign {
       int targetId, Vision vision, Pose3d lastPose, Pose2d drivePose) {
     Pose3d tagPose = null;
     lastPose = null;
-    // looks at first cam to see if it sees the target tag
-    for (var target : vision.getTagPoses(0)) {
-      if (target.id() == targetId) tagPose = target.pose();
-    }
-    // Checks if other camera can see the tag if pose is still null
-    if (tagPose == null) {
-      for (var target : vision.getTagPoses(1)) {
-        if (target.id() == targetId) tagPose = target.pose();
-      }
-    }
-    // If tag is null estimates its position based on its last known pose
-    if (tagPose == null && lastPose != null) {
-      Transform3d transform = new Pose3d(drivePose).minus(lastPose);
-      tagPose = new Pose3d(transform.getTranslation(), transform.getRotation());
-    }
     // If no tag is seen, estimates tag pos using odometry
     if (tagPose == null) {
       Pose3d defaultTagPose =

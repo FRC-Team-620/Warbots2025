@@ -29,6 +29,20 @@
         800
       ],
       "fov": 70
+    },
+    {
+      "name": "LuCam",
+      "rotations": [],
+      "position": [
+        0.12,
+        0.17,
+        0.23
+      ],
+      "resolution": [
+        1280,
+        800
+      ],
+      "fov": 155
     }
   ],
   "components": [

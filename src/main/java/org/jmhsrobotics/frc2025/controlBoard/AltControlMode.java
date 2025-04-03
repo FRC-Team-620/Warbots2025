@@ -77,7 +77,11 @@ public class AltControlMode implements ControlBoard {
   }
 
   @Override
-  public Trigger autoIntakeAlge() {
+  public Trigger autoAlignBarge() {
+    return nop;
+  }
+
+  public Trigger autoAlignAlgaeIntake() {
     return nop;
   }
 
@@ -194,5 +198,19 @@ public class AltControlMode implements ControlBoard {
   @Override
   public Trigger zeroElevator() {
     return driver.leftStick();
+  }
+
+  @Override
+  public Trigger AdjustAlignBargeLeft() {
+    return driver.povLeft();
+  }
+
+  @Override
+  public Trigger AdjustAlignBargeRight() {
+    return driver.povRight();
+  }
+
+  public Trigger moveAlgaePreBarge() {
+    return nop;
   }
 }

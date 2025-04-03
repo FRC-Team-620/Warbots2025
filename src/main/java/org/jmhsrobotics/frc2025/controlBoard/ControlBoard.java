@@ -16,11 +16,17 @@ public interface ControlBoard {
 
   public double alignRight();
 
-  public Trigger autoIntakeAlge();
-
   public Trigger resetForward();
 
   public Trigger turboMode();
+
+  public Trigger autoAlignBarge();
+
+  public Trigger autoAlignAlgaeIntake();
+
+  public Trigger AdjustAlignBargeLeft();
+
+  public Trigger AdjustAlignBargeRight();
 
   // =======Operator Controls=======
 
@@ -57,4 +63,6 @@ public interface ControlBoard {
   public Trigger UnOverrideControlMode();
 
   public Trigger zeroElevator();
+
+  public Trigger moveAlgaePreBarge();
 }

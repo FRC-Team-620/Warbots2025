@@ -17,7 +17,7 @@ public class Indexer extends SubsystemBase {
 
   private double goalSpeedRPM;
 
-  private Debouncer debouncer = new Debouncer(0.1, DebounceType.kBoth);
+  private Debouncer debouncer = new Debouncer(0.15, DebounceType.kBoth);
 
   public Indexer(IndexerIO indexerIO) {
     this.indexerIO = indexerIO;
@@ -26,9 +26,9 @@ public class Indexer extends SubsystemBase {
   @Override
   public void periodic() {
     indexerIO.updateInputs(inputs);
-    if (accelerationTimer.hasElapsed(0.85)) isAccelerating = false;
+    if (accelerationTimer.hasElapsed(1.15)) isAccelerating = false;
     else isAccelerating = true;
-    coralInIndexer = !this.atRPMGoal() && !isAccelerating;
+    coralInIndexer = debouncer.calculate(!this.atRPMGoal() && !isAccelerating);
 
     Logger.recordOutput("Indexer/Current Amps", inputs.motorAmps);
     Logger.recordOutput("Indexer/Speed RPM", inputs.motorRPM);
@@ -57,9 +57,10 @@ public class Indexer extends SubsystemBase {
 
   public boolean hasCoral() {
     return this.coralInIndexer;
+    // return false;
   }
 
   private boolean atRPMGoal() {
-    return Math.abs(inputs.motorRPM - goalSpeedRPM) < 50;
+    return Math.abs(inputs.motorRPM - goalSpeedRPM) < 100;
   }
 }

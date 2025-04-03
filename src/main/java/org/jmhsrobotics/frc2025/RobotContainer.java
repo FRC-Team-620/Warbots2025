@@ -13,6 +13,8 @@
 
 package org.jmhsrobotics.frc2025;
 
+import static edu.wpi.first.units.Units.Seconds;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.reduxrobotics.canand.CanandEventLoop;
@@ -42,10 +44,11 @@ import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
 import org.jmhsrobotics.frc2025.commands.IndexerMove;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
-import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
+import org.jmhsrobotics.frc2025.commands.ScoreBarge;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignBarge;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReef;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
@@ -233,13 +236,13 @@ public class RobotContainer {
             elevator,
             intake,
             wrist,
+            indexer,
             () -> -control.translationY(),
             () -> -control.translationX(),
             () -> -control.rotation(),
             () -> control.alignLeft(),
             () -> control.alignRight(),
-            control.autoIntakeAlge()));
-
+            control.autoAlignAlgaeIntake()));
     // Reset gyro to 0° when right bumper is pressed
 
     control
@@ -313,14 +316,7 @@ public class RobotContainer {
                 Constants.ElevatorConstants.kProcesserMeters,
                 Constants.WristConstants.kRotationProcesserDegrees));
 
-    control
-        .scoreAlgaeBarge()
-        .onTrue(
-            new ElevatorAndWristMove(
-                elevator,
-                wrist,
-                Constants.ElevatorConstants.kBargeMeters,
-                Constants.WristConstants.kRotationBargeDegrees));
+    control.scoreAlgaeBarge().onTrue(new ScoreBarge(elevator, wrist, intake));
 
     control
         .elevatorIntakeCoral()
@@ -357,6 +353,15 @@ public class RobotContainer {
                 wrist,
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
+
+    control
+        .moveAlgaePreBarge()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kPreBargeMeters,
+                Constants.WristConstants.kRotationProcesserDegrees));
     control
         .intakeCoralFromIndexer()
         .onTrue(
@@ -388,6 +393,11 @@ public class RobotContainer {
 
     control.turboMode().onTrue(Commands.runOnce(() -> drive.setTurboMode(true), drive));
     control.turboMode().onFalse(Commands.runOnce(() -> drive.setTurboMode(false), drive));
+
+    control
+        .autoAlignBarge()
+        .whileTrue(
+            new AlignBarge(drive, control.AdjustAlignBargeLeft(), control.AdjustAlignBargeRight()));
   }
 
   private void configureDriverFeedback() {
@@ -397,19 +407,22 @@ public class RobotContainer {
     // If control mode is manually overridden, lights flash red and green(Christmas!)
     new Trigger(intake::isControlModeOverridden)
         .onTrue(
-            new LEDFlashPattern(led, LEDPattern.solid(Color.kRed), LEDPattern.solid(Color.kWhite))
+            Commands.run(
+                    () -> led.setPattern(LEDPattern.solid(Color.kRed).blink(Seconds.of(0.1))), led)
                 .withTimeout(1.5));
 
     // if control mode is un-overridden, lights will flash gold and white
     new Trigger(intake::isControlModeOverridden)
         .onFalse(
-            new LEDFlashPattern(led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite))
+            Commands.run(
+                    () -> led.setPattern(LEDPattern.solid(Color.kGold).blink(Seconds.of(0.1))), led)
                 .withTimeout(1.5));
 
     new Trigger(drive::isAutoAlignComplete)
         .whileTrue(
-            new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kCyan), LEDPattern.solid(Color.kWhite)));
+            Commands.run(
+                    () -> led.setPattern(LEDPattern.solid(Color.kCyan).blink(Seconds.of(0.1))), led)
+                .withTimeout(1.5));
   }
 
   private void setupSmartDashbaord() {
@@ -466,6 +479,9 @@ public class RobotContainer {
                 Constants.WristConstants.kRotationIntakeCoralDegrees),
             new IntakeFromIndexer(wrist, intake, indexer, led),
             new FixCoralPlacement(intake)));
+    SmartDashboard.putData(
+        "cmd/Align Barge",
+        new AlignBarge(drive, control.AdjustAlignBargeLeft(), control.AdjustAlignBargeRight()));
   }
 
   private void configurePathPlanner() {
@@ -519,10 +535,10 @@ public class RobotContainer {
           new IntakeUntilCoralInIndexer(wrist, intake, indexer, led));
 
       NamedCommands.registerCommand(
-          "Finish Coral Intake", new IntakeFromIndexer(wrist, intake, indexer, led));
+          "Finish Coral Intake", new IntakeFromIndexer(wrist, intake, indexer, led).withTimeout(2));
 
       NamedCommands.registerCommand(
-          "Fix Coral Placement", new FixCoralPlacement(intake).withTimeout(3));
+          "Fix Coral Placement", new FixCoralPlacement(intake).withTimeout(1.5));
     }
 
     NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(0.25));

@@ -89,13 +89,14 @@ public final class Constants {
     // converts motor rotations to elevator height in centimeters
     public static final double conversionFactor = (((1.0 / 3.0) / 12.0) * 100);
 
-    public static final double kLevel1Meters = 0.05;
-    public static final double kLevel2Meters = 0.28;
-    public static final double kLevel3Meters = 0.75;
+    public static final double kLevel1Meters = 0.47;
+    public static final double kLevel2Meters = 0.30;
+    public static final double kLevel3Meters = 0.77;
     // BARGE AND L4 SETPOINT CANNOT BE THE EXACT SAME
-    public static final double kLevel4Meters = 1.77;
+    public static final double kLevel4Meters = 1.55;
     public static final double kBargeMeters = 1.78;
     public static final double kProcesserMeters = .10;
+    public static final double kPreBargeMeters = 0.27;
 
     public static final double kAlgaeQTipMeters = .125;
     public static final double kCoralIntakeMeters = 0.0;
@@ -115,11 +116,12 @@ public final class Constants {
     // tolerance to 1 degree;
     public static final double kRotationIntakeCoralDegrees = 14;
 
-    public static final double kLevel1Degrees = 30.0;
+    public static final double kLevel1Degrees = 180;
     public static final double kLevel2Degrees = 40.5;
     public static final double kLevel3Degrees = 40.5;
-    public static final double kLevel4Degrees = 105.0;
+    public static final double kLevel4Degrees = 61.5;
 
+    // algae rotation cannot be the exact same as kLevel1Degrees(stupid shit)
     public static final double kRotationAlgaeDegrees = 181;
     public static final double kRotationProcesserDegrees = 190;
     public static final double kRotationBargeDegrees = 70;
@@ -145,7 +147,7 @@ public final class Constants {
     public static final double kCoralIntakeIndexerSlowSpeedDutyCycle = 0.2;
 
     public static final double kAlgaeExtakeSpeedDutyCycle = 0.9;
-    public static final double kAlgaeIntakeSpeedDutyCycle = -0.5;
+    public static final double kAlgaeIntakeSpeedDutyCycle = 0.5;
 
     public static final int kCoralInIntakeDistanceMm = 30;
     public static final int kAlgaeInIntakeDistanceMm = 40;

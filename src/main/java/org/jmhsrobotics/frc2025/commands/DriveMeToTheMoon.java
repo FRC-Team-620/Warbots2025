@@ -21,6 +21,7 @@ import org.jmhsrobotics.frc2025.commands.autoAlign.AutoAlign;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
+import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
@@ -33,6 +34,7 @@ public class DriveMeToTheMoon extends Command {
   private final Elevator elevator;
   private final Intake intake;
   private final Wrist wrist;
+  private final Indexer indexer;
 
   private final PIDController xController = new PIDController(0.5, 0, 0.01);
   private final PIDController yController = new PIDController(0.5, 0, 0.01);
@@ -61,6 +63,7 @@ public class DriveMeToTheMoon extends Command {
       Elevator elevator,
       Intake intake,
       Wrist wrist,
+      Indexer indexer,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
@@ -72,6 +75,7 @@ public class DriveMeToTheMoon extends Command {
     this.elevator = elevator;
     this.intake = intake;
     this.wrist = wrist;
+    this.indexer = indexer;
 
     this.autoIntakeAlgae = autoIntakeAlgae;
     this.xSupplier = xSupplier;
@@ -137,7 +141,8 @@ public class DriveMeToTheMoon extends Command {
     // align
     if (elevator.getSetpoint() == Constants.ElevatorConstants.kCoralIntakeMeters
         && !intake.isCoralInIntake()
-        && !autoIntakeAlgae.getAsBoolean()) {
+        && !autoIntakeAlgae.getAsBoolean()
+        && !indexer.hasCoral()) {
       if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
         // calculates the field relative setpoint position
         // TODO: Needs to be cleaned up

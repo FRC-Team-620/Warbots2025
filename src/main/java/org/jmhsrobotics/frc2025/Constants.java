@@ -121,6 +121,7 @@ public final class Constants {
     public static final double kLevel3Degrees = 40.5;
     public static final double kLevel4Degrees = 61.5;
 
+    // algae rotation cannot be the exact same as kLevel1Degrees(stupid shit)
     public static final double kRotationAlgaeDegrees = 181;
     public static final double kRotationProcesserDegrees = 190;
     public static final double kRotationBargeDegrees = 70;
@@ -146,7 +147,7 @@ public final class Constants {
     public static final double kCoralIntakeIndexerSlowSpeedDutyCycle = 0.2;
 
     public static final double kAlgaeExtakeSpeedDutyCycle = 0.9;
-    public static final double kAlgaeIntakeSpeedDutyCycle = -0.5;
+    public static final double kAlgaeIntakeSpeedDutyCycle = 0.5;
 
     public static final int kCoralInIntakeDistanceMm = 30;
     public static final int kAlgaeInIntakeDistanceMm = 40;

@@ -26,7 +26,7 @@ public class Indexer extends SubsystemBase {
   @Override
   public void periodic() {
     indexerIO.updateInputs(inputs);
-    if (accelerationTimer.hasElapsed(0.85)) isAccelerating = false;
+    if (accelerationTimer.hasElapsed(1.15)) isAccelerating = false;
     else isAccelerating = true;
     coralInIndexer = debouncer.calculate(!this.atRPMGoal() && !isAccelerating);
 
@@ -61,6 +61,6 @@ public class Indexer extends SubsystemBase {
   }
 
   private boolean atRPMGoal() {
-    return Math.abs(inputs.motorRPM - goalSpeedRPM) < 60;
+    return Math.abs(inputs.motorRPM - goalSpeedRPM) < 100;
   }
 }

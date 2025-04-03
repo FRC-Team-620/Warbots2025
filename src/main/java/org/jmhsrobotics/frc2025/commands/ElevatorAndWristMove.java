@@ -1,11 +1,9 @@
 package org.jmhsrobotics.frc2025.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-// import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
-import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 
 public class ElevatorAndWristMove extends SequentialCommandGroup {
@@ -19,16 +17,11 @@ public class ElevatorAndWristMove extends SequentialCommandGroup {
    *
    * @param elevator
    * @param wrist
-   * @param intake
    * @param elevatorGoalMeters
    * @param wristGoalDegrees
    */
   public ElevatorAndWristMove(
-      Elevator elevator,
-      Wrist wrist,
-      Intake intake,
-      double elevatorGoalMeters,
-      double wristGoalDegrees) {
+      Elevator elevator, Wrist wrist, double elevatorGoalMeters, double wristGoalDegrees) {
     addCommands(
         // if wrist angle is lower than the safe angle, first move the wrist to the safe angle
         new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees)
@@ -40,6 +33,15 @@ public class ElevatorAndWristMove extends SequentialCommandGroup {
                 new ElevatorMoveTo(elevator, elevatorGoalMeters),
                 new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees))
             .onlyIf(() -> wristGoalDegrees < Constants.WristConstants.kSafeAngleDegrees),
+
+        // if at algae intake l3 setpoint and moving below algae l2 setpoint, move elevator to algae
+        // l2 setpoint and then move in parallel
+        new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kAlgaeIntakeL2Meters)
+            .onlyIf(
+                () ->
+                    elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters
+                        && elevatorGoalMeters < Constants.ElevatorConstants.kAlgaeIntakeL2Meters
+                        && wristGoalDegrees != Constants.WristConstants.kRotationAlgaeDegrees),
 
         // if the elevator setpoint is L4, move the wrist to the safe position, then elevator up
         new SequentialCommandGroup(

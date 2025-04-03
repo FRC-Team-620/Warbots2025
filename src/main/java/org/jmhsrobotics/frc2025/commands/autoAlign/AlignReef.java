@@ -20,8 +20,8 @@ public class AlignReef extends Command {
   private final LED led;
   private final Elevator elevator;
 
-  private final PIDController xController = new PIDController(0.6, 0, 0.005);
-  private final PIDController yController = new PIDController(0.6, 0, 0.005);
+  private final PIDController xController = new PIDController(0.55, 0, 0.01);
+  private final PIDController yController = new PIDController(0.55, 0, 0.01);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
@@ -107,8 +107,8 @@ public class AlignReef extends Command {
   @Override
   public boolean isFinished() {
     if (tagPose != null)
-      return Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
-          && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1);
+      return Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1.7)
+          && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1.7);
     return false;
   }
 

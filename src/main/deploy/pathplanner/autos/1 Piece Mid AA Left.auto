@@ -7,32 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top Start Auto.0"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Drive Backwards"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake Until Indexer Has Coral"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Finish Coral Intake"
+            "pathName": "Mid Start Auto.0"
           }
         },
         {
@@ -42,22 +17,34 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Fix Coral Placement"
+                  "name": "Align Reef Left North"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Elevator And Wrist L3"
+                  "name": "Elevator And Wrist L4"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Elevator And Wrist Coral Intake"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Test Autos",
+  "folder": "Mid Start",
   "choreoAuto": true
 }

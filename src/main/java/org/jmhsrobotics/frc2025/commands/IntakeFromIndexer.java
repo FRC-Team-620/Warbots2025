@@ -27,7 +27,7 @@ public class IntakeFromIndexer extends Command {
     this.indexer = indexer;
     this.led = led;
 
-    addRequirements(wrist, intake, indexer, led);
+    addRequirements(wrist, intake, indexer);
   }
 
   @Override
@@ -43,7 +43,8 @@ public class IntakeFromIndexer extends Command {
 
   @Override
   public void execute() {
-    led.setPattern(blinkPattern);
+    if (indexer.hasCoral()) led.setPattern(LEDPattern.solid(Color.kFuchsia).blink(Seconds.of(0.1)));
+    else led.setPattern(blinkPattern);
 
     if (intake.isCoralInIntake()) {
       intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed);

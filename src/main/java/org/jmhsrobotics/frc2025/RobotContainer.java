@@ -80,6 +80,7 @@ import org.jmhsrobotics.frc2025.subsystems.wrist.NeoWristIO;
 import org.jmhsrobotics.frc2025.subsystems.wrist.SimWristIO;
 import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 import org.jmhsrobotics.frc2025.subsystems.wrist.WristIO;
+import org.jmhsrobotics.frc2025.util.CameraTranformCalibration;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -478,6 +479,9 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Align Preset Northwest",
         new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
+
+    SmartDashboard.putData(
+        "cmd/CalCamera", CameraTranformCalibration.getCameraTranformCalibration(vision));
   }
 
   private void configurePathPlanner() {

@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2025.subsystems.indexer;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
@@ -18,6 +19,7 @@ public class Indexer extends SubsystemBase {
   private double goalSpeedRPM;
 
   private Debouncer debouncer = new Debouncer(0.15, DebounceType.kBoth);
+  private Debouncer brownoutDebounce = new Debouncer(0.3, DebounceType.kFalling);
 
   public Indexer(IndexerIO indexerIO) {
     this.indexerIO = indexerIO;
@@ -29,10 +31,12 @@ public class Indexer extends SubsystemBase {
     if (accelerationTimer.hasElapsed(1.15)) isAccelerating = false;
     else isAccelerating = true;
     coralInIndexer = debouncer.calculate(!this.atRPMGoal() && !isAccelerating);
-
+    boolean isBrown = brownoutDebounce.calculate(RobotController.isBrownedOut());
+    coralInIndexer = coralInIndexer && !isBrown;
     Logger.recordOutput("Indexer/Current Amps", inputs.motorAmps);
     Logger.recordOutput("Indexer/Speed RPM", inputs.motorRPM);
     Logger.recordOutput("Indexer/Goal RPM", this.goalSpeedRPM);
+    Logger.recordOutput("Indexer/brownDetected", isBrown);
     Logger.recordOutput("Indexer/Output Duty Cycle", inputs.outputSpeedDutyCycle);
     Logger.recordOutput("Indexer/Temperature Celcius", inputs.motorTemperatureCelcius);
     Logger.recordOutput("Indexer/Coral In Indexer", this.coralInIndexer);

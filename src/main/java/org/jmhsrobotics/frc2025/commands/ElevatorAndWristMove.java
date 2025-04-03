@@ -43,6 +43,12 @@ public class ElevatorAndWristMove extends SequentialCommandGroup {
                         && elevatorGoalMeters < Constants.ElevatorConstants.kAlgaeIntakeL2Meters
                         && wristGoalDegrees != Constants.WristConstants.kRotationAlgaeDegrees),
 
+        // if the elevator setpoint is L4, move the wrist to the safe position, then elevator up
+        new SequentialCommandGroup(
+                new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees),
+                new ElevatorMoveTo(elevator, elevatorGoalMeters))
+            .onlyIf(() -> elevatorGoalMeters == Constants.ElevatorConstants.kLevel4Meters),
+
         // if going from L4 to intaking algea, move the wrist to safe angle, then move wrist and
         // elevator to goal in parallel
         new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees)

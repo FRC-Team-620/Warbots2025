@@ -89,7 +89,7 @@ public final class Constants {
     // converts motor rotations to elevator height in centimeters
     public static final double conversionFactor = (((1.0 / 3.0) / 12.0) * 100);
 
-    public static final double kLevel1Meters = 0.49;
+    public static final double kLevel1Meters = 0.47;
     public static final double kLevel2Meters = 0.30;
     public static final double kLevel3Meters = 0.77;
     // BARGE AND L4 SETPOINT CANNOT BE THE EXACT SAME

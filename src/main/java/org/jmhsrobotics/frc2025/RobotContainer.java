@@ -427,8 +427,9 @@ public class RobotContainer {
     new Trigger(indexer::hasCoral)
         .onTrue(
             Commands.run(
-                    () -> led.setPattern(LEDPattern.solid(Color.kPeachPuff).blink(Seconds.of(0.1))), led)
-                .withTimeout(0.5));
+                    () -> led.setPattern(LEDPattern.solid(Color.kPeachPuff).blink(Seconds.of(0.1))),
+                    led)
+                .withTimeout(0.75));
   }
 
   private void setupSmartDashbaord() {

@@ -94,6 +94,7 @@ public class AlignReef extends Command {
       drive.runVelocity(outputSpeeds);
       Logger.recordOutput("Align Reef/Target Tag Pose", tagPose);
       Logger.recordOutput("Align Reef/Target Tag ID", this.targetTagId);
+      Logger.recordOutput("Align Reef/Distance From Reef", this.currentDistance);
 
       // calculates the distance from target for the LED progress pattern
       this.currentDistance =

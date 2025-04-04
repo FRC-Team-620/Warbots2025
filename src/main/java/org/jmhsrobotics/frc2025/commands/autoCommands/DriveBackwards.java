@@ -15,12 +15,12 @@ public class DriveBackwards extends Command {
 
   @Override
   public void initialize() {
-    drive.runVelocity(new ChassisSpeeds(-0.1, 0, 0));
+    drive.runVelocity(new ChassisSpeeds(-0.75, 0, 0));
   }
 
   @Override
   public void execute() {
-    drive.runVelocity(new ChassisSpeeds(-0.1, 0, 0));
+    drive.runVelocity(new ChassisSpeeds(-0.75, 0, 0));
   }
 
   @Override

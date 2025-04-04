@@ -22,8 +22,8 @@ public class AlignReefSetAngle extends Command {
   private final LED led;
   private final Elevator elevator;
 
-  private final PIDController xController = new PIDController(0.525, 0, 0.01);
-  private final PIDController yController = new PIDController(0.525, 0, 0.01);
+  private final PIDController xController = new PIDController(0.55, 0, 0.01);
+  private final PIDController yController = new PIDController(0.55, 0, 0.01);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
@@ -141,26 +141,25 @@ public class AlignReefSetAngle extends Command {
               AutoAlign.getAutoAlignThetaSpeeds(
                   thetaController, this.thetaGoalDegrees, drive.getRotation()));
 
-      drive.runVelocity(outputSpeeds);
       Logger.recordOutput("Align Reef/Target Tag Pose1", tagPose);
       Logger.recordOutput("Align Reef/Target Tag ID1", this.targetTagId);
       Logger.recordOutput("Align Reef/Target Angle1", this.thetaGoalDegrees);
+      Logger.recordOutput("Align Reef/Distance From Reef", this.currentDistance);
 
       // calculates the distance from target for the LED progress pattern
       this.currentDistance =
           Math.sqrt(
               Math.pow(tagPose.getX() - goalTransform.getX(), 2)
                   + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
+
+      if (currentDistance > Units.inchesToMeters(1)) drive.runVelocity(outputSpeeds);
       // led.setPattern(progressPattern);
     }
   }
 
   @Override
   public boolean isFinished() {
-    if (tagPose != null)
-      return Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
-          && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1);
-    return false;
+    return this.currentDistance < Units.inchesToMeters(2);
   }
 
   @Override

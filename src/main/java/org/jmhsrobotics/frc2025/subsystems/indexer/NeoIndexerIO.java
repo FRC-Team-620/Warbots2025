@@ -25,7 +25,7 @@ public class NeoIndexerIO implements IndexerIO {
     motorConfig = new SparkMaxConfig();
     motorConfig
         .idleMode(IdleMode.kCoast)
-        .smartCurrentLimit(25) // may need to change current limit
+        .smartCurrentLimit(20) // may need to change current limit
         .voltageCompensation(12) // may need to change voltage compensation
         .inverted(true)
         .closedLoop

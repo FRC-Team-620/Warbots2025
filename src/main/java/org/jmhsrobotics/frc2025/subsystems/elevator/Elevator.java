@@ -25,7 +25,7 @@ public class Elevator extends SubsystemBase {
   private boolean isOpenLoop = false;
 
   private State calculatedState = new State(Constants.ElevatorConstants.kLevel1Meters, 0);
-  private TrapezoidProfile trapezoidProfile = new TrapezoidProfile(new Constraints(10, 10));
+  private TrapezoidProfile trapezoidProfile = new TrapezoidProfile(new Constraints(1000, 14));
 
   public Elevator(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;

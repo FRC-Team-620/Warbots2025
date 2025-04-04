@@ -39,6 +39,7 @@ import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveMeToTheMoon;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
+import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
 import org.jmhsrobotics.frc2025.commands.IndexerMove;
@@ -448,6 +449,11 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/Score Coral", new ScoreCoral(intake).withTimeout(0.15));
     SmartDashboard.putData("cmd/Align Source Close", new AlignSource(drive, true));
     SmartDashboard.putData("cmd/Align Source Far", new AlignSource(drive, false));
+    SmartDashboard.putData(
+        "cmd/Elevator Up", new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel4Meters));
+    SmartDashboard.putData("cmd/Elevator Down", new ElevatorMoveTo(elevator, 0));
+    SmartDashboard.putData(
+        "cmd/Wrist Safe Angle", new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees));
 
     SmartDashboard.putData(
         "cmd/Intake Indexer",

@@ -60,6 +60,7 @@ public class VortexElevatorIO implements ElevatorIO {
         Constants.ElevatorConstants.kI,
         Constants.ElevatorConstants.kD,
         Constants.ElevatorConstants.kF);
+    vortexLeftConfig.signals.primaryEncoderPositionPeriodMs(10);
 
     vortexRightConfig = new SparkFlexConfig();
     vortexRightConfig
@@ -75,6 +76,7 @@ public class VortexElevatorIO implements ElevatorIO {
         Constants.ElevatorConstants.kI,
         Constants.ElevatorConstants.kD,
         Constants.ElevatorConstants.kF);
+    vortexRightConfig.signals.primaryEncoderPositionPeriodMs(10);
 
     SparkUtil.tryUntilOk(
         vortexLeft,
@@ -135,13 +137,11 @@ public class VortexElevatorIO implements ElevatorIO {
   public void setPositionMeters(double positionMeters) {
     isOpenLoop = false;
     // change the setpoint from meters to centimeters
-    System.out.println("Setting Setpoint");
     this.goalMeters = positionMeters * 100.0;
   }
 
   public void setVoltage(double voltage) {
     isOpenLoop = true;
-    System.out.println("Setting Voltage");
     this.controlVoltage = voltage;
     this.vortexLeft.setVoltage(voltage);
   }

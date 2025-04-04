@@ -159,7 +159,7 @@ public class AlignReefSetAngle extends Command {
 
   @Override
   public boolean isFinished() {
-    return this.currentDistance < Units.inchesToMeters(2);
+    return this.currentDistance < Units.inchesToMeters(1.5);
   }
 
   @Override

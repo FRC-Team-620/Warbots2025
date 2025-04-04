@@ -51,9 +51,22 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "Elevator And Wrist Coral Intake"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator And Wrist Coral Intake"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Score Coral"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -147,9 +160,22 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "Elevator And Wrist Coral Intake"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator And Wrist Coral Intake"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Score Coral"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -243,9 +269,22 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "Elevator And Wrist Coral Intake"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator And Wrist Coral Intake"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Score Coral"
+                            }
+                          }
+                        ]
                       }
                     },
                     {

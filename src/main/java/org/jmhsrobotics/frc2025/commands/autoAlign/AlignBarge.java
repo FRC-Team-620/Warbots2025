@@ -107,11 +107,11 @@ public class AlignBarge extends Command {
     double ySetpoint;
     double goalTheta;
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
-      xSetpoint = 10.4;
+      xSetpoint = 9.771;
       ySetpoint = 1.9;
       goalTheta = 0;
     } else {
-      xSetpoint = 7.2;
+      xSetpoint = 7.789;
       ySetpoint = 6.2;
       goalTheta = 180;
     }

@@ -159,7 +159,7 @@ public final class Constants {
   public static final class IndexerConstants {
     public static final double kIndexerSpeedDutyCycle = 0.85;
 
-    public static final double kIndexerSpeedRPM = 9800;
+    public static final double kIndexerSpeedRPM = 8500;
     public static final double kIndexerMaxAcceleration = 30000;
 
     public static final double kP = 0.0;

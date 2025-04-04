@@ -94,21 +94,27 @@ public class AlignReef extends Command {
       drive.runVelocity(outputSpeeds);
       Logger.recordOutput("Align Reef/Target Tag Pose", tagPose);
       Logger.recordOutput("Align Reef/Target Tag ID", this.targetTagId);
+      Logger.recordOutput("Align Reef/Distance From Reef", this.currentDistance);
 
       // calculates the distance from target for the LED progress pattern
       this.currentDistance =
           Math.sqrt(
               Math.pow(tagPose.getX() - goalTransform.getX(), 2)
                   + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
+
+      if (this.currentDistance > Units.inchesToMeters(1)) drive.runVelocity(outputSpeeds);
+
       led.setPattern(progressPattern);
     }
   }
 
   @Override
   public boolean isFinished() {
-    if (tagPose != null)
-      return Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1.7)
-          && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1.7);
+    // if (tagPose != null)
+    //   return Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1.7)
+    //       && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1.7);
+    if (this.currentDistance < Units.inchesToMeters(2))
+      ;
     return false;
   }
 

@@ -64,7 +64,7 @@ public class IntakeMove extends Command {
     if (intake.getAlgaeDistance() < 30 && intake.getAlgaeDistance() > 0) {
       intake.set(Constants.IntakeConstants.kAlgaeDefaultCommandSpeed);
     } else {
-      intake.set(Constants.IntakeConstants.kAlgaeIntakeSpeedDutyCycle);
+      intake.set(-Constants.IntakeConstants.kAlgaeIntakeSpeedDutyCycle);
     }
   }
 

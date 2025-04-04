@@ -8,7 +8,7 @@ import org.jmhsrobotics.frc2025.Constants;
 import org.littletonrobotics.junction.Logger;
 
 public class PowerSystem extends SubsystemBase {
-  PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev); // TODO: set can id
+  PowerDistribution pdh = new PowerDistribution(2, ModuleType.kRev); // TODO: set can id
   MitoCANdria powerhouse = new MitoCANdria(Constants.CAN.kMitoCANdriaID);
 
   public PowerSystem() {

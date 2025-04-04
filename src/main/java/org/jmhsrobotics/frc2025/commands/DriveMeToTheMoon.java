@@ -36,9 +36,12 @@ public class DriveMeToTheMoon extends Command {
   private final Wrist wrist;
   private final Indexer indexer;
 
-  private final PIDController xController = new PIDController(0.5, 0, 0.01);
-  private final PIDController yController = new PIDController(0.5, 0, 0.01);
+  private final PIDController reefXController = new PIDController(0.5, 0, 0.01);
+  private final PIDController reefYController = new PIDController(0.5, 0, 0.01);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
+
+  private final PIDController sourceXController = new PIDController(0.9, 0, 0.01);
+  private final PIDController sourceYController = new PIDController(0.9, 0, 0.01);
 
   private Trigger autoIntakeAlgae;
   private int targetId;
@@ -89,8 +92,11 @@ public class DriveMeToTheMoon extends Command {
 
   @Override
   public void initialize() {
-    xController.reset();
-    yController.reset();
+    reefXController.reset();
+    reefYController.reset();
+    sourceXController.reset();
+    sourceYController.reset();
+
     thetaController.reset();
     thetaController.enableContinuousInput(-180, 180);
 
@@ -164,7 +170,7 @@ public class DriveMeToTheMoon extends Command {
         speeds =
             speeds.plus(
                 AutoAlign.getDriveToPoseSpeeds(
-                    drive, setpoint, xController, yController, thetaController));
+                    drive, setpoint, sourceXController, sourceYController, thetaController));
       } else drive.setAutoAlignComplete(false);
     } else {
       // reef auto align
@@ -176,8 +182,8 @@ public class DriveMeToTheMoon extends Command {
         targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
 
         if (autoIntakeAlgae.getAsBoolean()) {
-          if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
-              && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1)
+          if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1.5)
+              && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1.5)
               && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3
               && goalTransform != algaeInIntakeTransform) {
             if (goalTransform == algaeIntakeTransform) goalTransform = algaeInIntakeTransform;
@@ -206,7 +212,8 @@ public class DriveMeToTheMoon extends Command {
 
           // gets reef align translation speeds and theta speeds separately, then adds them together
           ChassisSpeeds reefAlignSpeeds =
-              AutoAlign.getReefAlignSpeeds(tagPose, goalTransform, xController, yController);
+              AutoAlign.getReefAlignSpeeds(
+                  tagPose, goalTransform, reefXController, reefYController);
           reefAlignSpeeds =
               reefAlignSpeeds.plus(
                   AutoAlign.getAutoAlignThetaSpeeds(

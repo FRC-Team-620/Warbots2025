@@ -27,13 +27,15 @@ public class VortexElevatorIO implements ElevatorIO {
   private SparkFlexConfig vortexRightConfig;
   private SparkClosedLoopController pidController;
 
-  private boolean isOpenLoop = true;
+  private boolean isOpenLoop = false;
 
   private double controlVoltage;
 
   private double goalMeters = 0;
 
   private double lp, li, ld, lf;
+
+  private double previousRPM;
 
   public VortexElevatorIO() {
     SmartDashboard.putNumber("elev/p", Constants.ElevatorConstants.kP);
@@ -51,12 +53,14 @@ public class VortexElevatorIO implements ElevatorIO {
         .voltageCompensation(12)
         .inverted(true)
         .encoder
-        .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
+        .positionConversionFactor(Constants.ElevatorConstants.conversionFactor)
+        .velocityConversionFactor(6);
     vortexLeftConfig.closedLoop.pidf(
         Constants.ElevatorConstants.kP,
         Constants.ElevatorConstants.kI,
         Constants.ElevatorConstants.kD,
         Constants.ElevatorConstants.kF);
+    vortexLeftConfig.signals.primaryEncoderPositionPeriodMs(10);
 
     vortexRightConfig = new SparkFlexConfig();
     vortexRightConfig
@@ -65,12 +69,14 @@ public class VortexElevatorIO implements ElevatorIO {
         .voltageCompensation(12)
         .follow(vortexLeft, true)
         .encoder
-        .positionConversionFactor(Constants.ElevatorConstants.conversionFactor);
+        .positionConversionFactor(Constants.ElevatorConstants.conversionFactor)
+        .velocityConversionFactor(6);
     vortexRightConfig.closedLoop.pidf(
         Constants.ElevatorConstants.kP,
         Constants.ElevatorConstants.kI,
         Constants.ElevatorConstants.kD,
         Constants.ElevatorConstants.kF);
+    vortexRightConfig.signals.primaryEncoderPositionPeriodMs(10);
 
     SparkUtil.tryUntilOk(
         vortexLeft,
@@ -113,6 +119,9 @@ public class VortexElevatorIO implements ElevatorIO {
     // inputs.motorVolts = new double[2];
     SparkUtil.ifOk(
         vortexLeft, leftEncoder::getPosition, (value) -> inputs.heightMeters = value / 100.0);
+
+    SparkUtil.ifOk(vortexLeft, leftEncoder::getVelocity, (value) -> previousRPM = value);
+    inputs.elevatorSpeedCmPerSec = previousRPM;
 
     inputs.isOpenLoop = this.isOpenLoop;
 

@@ -11,6 +11,7 @@ public interface ElevatorIO {
     public double heightMeters;
     public boolean isOpenLoop = true;
     public double setPointMeters;
+    public double elevatorSpeedCmPerSec;
   }
 
   public default void updateInputs(ElevatorIOInputs inputs) {}

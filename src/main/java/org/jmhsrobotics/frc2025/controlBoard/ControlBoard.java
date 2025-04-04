@@ -46,6 +46,10 @@ public interface ControlBoard {
 
   public Trigger scoreAlgaeProcesser();
 
+  public Trigger algaeIntermediateSetpoint();
+
+  public Trigger prepareAlgaeBarge();
+
   public Trigger scoreAlgaeBarge();
 
   public Trigger elevatorIntakeCoral();
@@ -63,6 +67,4 @@ public interface ControlBoard {
   public Trigger UnOverrideControlMode();
 
   public Trigger zeroElevator();
-
-  public Trigger moveAlgaePreBarge();
 }

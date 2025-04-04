@@ -45,7 +45,7 @@ import org.jmhsrobotics.frc2025.commands.IndexerMove;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
-import org.jmhsrobotics.frc2025.commands.ScoreBarge;
+import org.jmhsrobotics.frc2025.commands.ScoreBargeWrist;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignBarge;
@@ -316,7 +316,7 @@ public class RobotContainer {
                 Constants.ElevatorConstants.kProcesserMeters,
                 Constants.WristConstants.kRotationProcesserDegrees));
 
-    control.scoreAlgaeBarge().onTrue(new ScoreBarge(elevator, wrist, intake));
+    control.scoreAlgaeBarge().onTrue(new ScoreBargeWrist(wrist, elevator, intake));
 
     control
         .elevatorIntakeCoral()
@@ -355,13 +355,23 @@ public class RobotContainer {
                 Constants.WristConstants.kRotationAlgaeDegrees));
 
     control
-        .moveAlgaePreBarge()
+        .prepareAlgaeBarge()
         .onTrue(
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
-                Constants.ElevatorConstants.kPreBargeMeters,
+                Constants.ElevatorConstants.kBargeMeters,
                 Constants.WristConstants.kRotationProcesserDegrees));
+
+    control
+        .algaeIntermediateSetpoint()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kIntermediateAlgaeSetpoint,
+                Constants.WristConstants.kRotationProcesserDegrees));
+
     control
         .intakeCoralFromIndexer()
         .onTrue(
@@ -448,6 +458,7 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/Score Coral", new ScoreCoral(intake).withTimeout(0.15));
     SmartDashboard.putData("cmd/Align Source Close", new AlignSource(drive, true));
     SmartDashboard.putData("cmd/Align Source Far", new AlignSource(drive, false));
+    SmartDashboard.putData("cmd/Score Barge Wrist", new ScoreBargeWrist(wrist, elevator, intake));
 
     SmartDashboard.putData(
         "cmd/Intake Indexer",

@@ -50,11 +50,11 @@ public class VisionConstants {
 
   public static Transform3d blackbirdCalibration =
       new Transform3d(
-          0.793, 0.196, -0.101, new Rotation3d(new Quaternion(0.278, -0.067, 0.042, -0.958)));
+          0.769, 0.240, -0.152, new Rotation3d(new Quaternion(0.294, -0.097, 0.044, -0.95)));
   // 0.824, 0.187, -0.028, new Rotation3d());
   public static Transform3d overtureCalibration =
       new Transform3d(
-          0.812, -0.193, -0.12, new Rotation3d(new Quaternion(-.289, -0.093, -0.036, -0.952)));
+          0.782, -0.270, -0.176, new Rotation3d(new Quaternion(-0.332, -0.132, -0.037, -0.933)));
   // 0.795, -0.224, -0.139, new Rotation3d());
   // blackbirdCalibration = new Pose3d();
   public static Pose3d calibrationOffset =

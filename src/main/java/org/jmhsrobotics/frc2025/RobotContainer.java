@@ -360,8 +360,18 @@ public class RobotContainer {
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
-                Constants.ElevatorConstants.kPreBargeMeters,
+                Constants.ElevatorConstants.kBargeMeters,
                 Constants.WristConstants.kRotationProcesserDegrees));
+
+    control
+        .algaeIntermediateSetpoint()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kIntermediateAlgaeSetpoint,
+                Constants.WristConstants.kRotationProcesserDegrees));
+
     control
         .intakeCoralFromIndexer()
         .onTrue(

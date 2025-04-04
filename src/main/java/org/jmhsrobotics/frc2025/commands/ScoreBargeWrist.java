@@ -28,6 +28,7 @@ public class ScoreBargeWrist extends Command {
     if (elevator.getSetpoint() == Constants.ElevatorConstants.kBargeMeters && elevator.atGoal())
       readyToScore = true;
     else readyToScore = false;
+    elevator.setSetpoint(Constants.ElevatorConstants.kBargeMeters);
 
     timer.reset();
     timer.stop();
@@ -40,12 +41,12 @@ public class ScoreBargeWrist extends Command {
   public void execute() {
     if (elevator.getSetpoint() == Constants.ElevatorConstants.kBargeMeters && elevator.atGoal())
       timer.start();
-    if (timer.hasElapsed(0.1)) readyToScore = true;
+    if (timer.hasElapsed(0.25)) readyToScore = true;
 
     if (readyToScore) wrist.setSetpoint(Constants.WristConstants.kSafeAngleDegrees);
-    if (wrist.getPositionDegrees() < 140) {
+    if (wrist.getPositionDegrees() < 160) {
       intake.set(0.8);
-    }
+    } else intake.set(-0.5);
   }
 
   @Override

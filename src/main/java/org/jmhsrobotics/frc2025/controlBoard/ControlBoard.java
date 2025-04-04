@@ -64,5 +64,5 @@ public interface ControlBoard {
 
   public Trigger zeroElevator();
 
-  public Trigger moveAlgaePreBarge();
+  public Trigger prepareAlgaeBarge();
 }

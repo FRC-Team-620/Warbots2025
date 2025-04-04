@@ -208,7 +208,7 @@ public class DoubleControl implements ControlBoard {
     return operator.back();
   }
 
-  public Trigger moveAlgaePreBarge() {
+  public Trigger prepareAlgaeBarge() {
     return operator.x().and(algaeMode);
   }
 }

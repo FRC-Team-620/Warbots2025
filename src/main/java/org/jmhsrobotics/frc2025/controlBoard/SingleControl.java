@@ -204,7 +204,7 @@ public class SingleControl implements ControlBoard {
     return driver.leftStick();
   }
 
-  public Trigger moveAlgaePreBarge() {
+  public Trigger prepareAlgaeBarge() {
     return nop;
   }
 }

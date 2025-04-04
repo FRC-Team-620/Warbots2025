@@ -210,7 +210,7 @@ public class AltControlMode implements ControlBoard {
     return driver.povRight();
   }
 
-  public Trigger moveAlgaePreBarge() {
+  public Trigger prepareAlgaeBarge() {
     return nop;
   }
 }

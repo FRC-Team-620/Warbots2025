@@ -44,7 +44,7 @@ public class ScoreBargeWrist extends Command {
     if (timer.hasElapsed(0.25)) readyToScore = true;
 
     if (readyToScore) wrist.setSetpoint(Constants.WristConstants.kSafeAngleDegrees);
-    if (wrist.getPositionDegrees() < 160) {
+    if (wrist.getPositionDegrees() < 165) {
       intake.set(0.8);
     } else intake.set(-0.5);
   }

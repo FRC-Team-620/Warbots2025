@@ -45,7 +45,6 @@ import org.jmhsrobotics.frc2025.commands.IndexerMove;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
-import org.jmhsrobotics.frc2025.commands.ScoreBarge;
 import org.jmhsrobotics.frc2025.commands.ScoreBargeWrist;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;

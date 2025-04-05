@@ -48,7 +48,7 @@ public class DriveMeToTheMoon extends Command {
 
   Pose3d tagPose = new Pose3d();
   Transform2d goalTransform = new Transform2d();
-  private Transform2d algaeIntakeTransform = new Transform2d(0.46, 0, new Rotation2d());
+  private Transform2d algaeIntakeTransform = new Transform2d(0.40, 0, new Rotation2d());
   private Transform2d algaeLineupTransform = new Transform2d(0.7, 0, new Rotation2d());
   private Transform2d algaeInIntakeTransform = new Transform2d(1.0, 0, new Rotation2d());
 

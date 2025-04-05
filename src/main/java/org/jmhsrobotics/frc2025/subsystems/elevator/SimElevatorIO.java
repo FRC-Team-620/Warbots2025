@@ -13,6 +13,7 @@ public class SimElevatorIO implements ElevatorIO {
   private double goalMeters;
   private boolean isOpenLoop;
   private double controlVoltage;
+  private double arbFeedForward;
 
   ElevatorSim simElevator =
       new ElevatorSim(
@@ -38,7 +39,7 @@ public class SimElevatorIO implements ElevatorIO {
     } else {
       double outvolts =
           MathUtil.clamp(
-              this.pidController.calculate(simElevator.getPositionMeters()),
+              this.pidController.calculate(simElevator.getPositionMeters() + arbFeedForward),
               -RobotController.getBatteryVoltage(),
               RobotController.getBatteryVoltage());
       this.simElevator.setInput(outvolts);
@@ -55,9 +56,10 @@ public class SimElevatorIO implements ElevatorIO {
   }
 
   @Override
-  public void setPositionMeters(double positionMeters) {
+  public void setPositionMeters(double positionMeters, double arbFeedForward) {
     this.isOpenLoop = false;
     this.goalMeters = positionMeters;
+    this.arbFeedForward = arbFeedForward;
     this.pidController.setSetpoint(positionMeters);
   }
 

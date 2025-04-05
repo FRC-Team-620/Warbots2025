@@ -29,4 +29,9 @@ public class ElevatorMoveTo extends Command {
     Logger.recordOutput("Elevator/Command Completion Time", timer.get());
     return elevatorSubsystem.atGoal();
   }
+
+  @Override
+  public void end(boolean interrupted) {
+    Logger.recordOutput("Elevator/Travel Time", timer.get());
+  }
 }

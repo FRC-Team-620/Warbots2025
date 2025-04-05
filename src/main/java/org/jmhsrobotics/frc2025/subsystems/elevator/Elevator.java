@@ -41,6 +41,8 @@ public class Elevator extends SubsystemBase {
 
   public void setSetpoint(double setPoint) {
     this.setPointMeters = setPoint;
+
+    // Speeds up elevator travel to L4 by added ff until elevator is above a certain height
     if (this.setPointMeters == Constants.ElevatorConstants.kLevel4Meters
         && inputs.heightMeters < 0.7) elevatorIO.setPositionMeters(setPoint, 12);
     elevatorIO.setPositionMeters(setPoint);

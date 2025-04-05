@@ -41,6 +41,8 @@ public class Elevator extends SubsystemBase {
 
   public void setSetpoint(double setPoint) {
     this.setPointMeters = setPoint;
+    if (this.setPointMeters == Constants.ElevatorConstants.kLevel4Meters
+        && inputs.heightMeters < 0.7) elevatorIO.setPositionMeters(setPoint, 12);
     elevatorIO.setPositionMeters(setPoint);
   }
 

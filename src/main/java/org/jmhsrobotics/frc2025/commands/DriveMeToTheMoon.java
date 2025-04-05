@@ -48,7 +48,7 @@ public class DriveMeToTheMoon extends Command {
 
   Pose3d tagPose = new Pose3d();
   Transform2d goalTransform = new Transform2d();
-  private Transform2d algaeIntakeTransform = new Transform2d(0.46, 0, new Rotation2d());
+  private Transform2d algaeIntakeTransform = new Transform2d(0.40, 0, new Rotation2d());
   private Transform2d algaeLineupTransform = new Transform2d(0.7, 0, new Rotation2d());
   private Transform2d algaeInIntakeTransform = new Transform2d(1.0, 0, new Rotation2d());
 
@@ -182,8 +182,8 @@ public class DriveMeToTheMoon extends Command {
         targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
 
         if (autoIntakeAlgae.getAsBoolean()) {
-          if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1.5)
-              && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1.5)
+          if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(3)
+              && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(3)
               && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3
               && goalTransform != algaeInIntakeTransform) {
             if (goalTransform == algaeIntakeTransform) goalTransform = algaeInIntakeTransform;

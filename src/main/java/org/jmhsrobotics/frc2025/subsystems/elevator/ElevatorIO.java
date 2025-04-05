@@ -15,7 +15,11 @@ public interface ElevatorIO {
 
   public default void updateInputs(ElevatorIOInputs inputs) {}
 
-  public default void setPositionMeters(double heightMeters) {}
+  public default void setPositionMeters(double heightMeters) {
+    this.setPositionMeters(heightMeters, 0);
+  }
+
+  public default void setPositionMeters(double heightMeters, double arbFeedForward) {}
 
   public default void setVoltage(double voltage) {}
 

@@ -19,7 +19,7 @@ public class Elevator extends SubsystemBase {
   Mechanism2d elevatorMech = new Mechanism2d(4, 4);
   private double setPointMeters;
 
-  private final double ffEndHeight = 0.3;
+  private final double ffEndHeight = 1.3;
 
   public Elevator(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;

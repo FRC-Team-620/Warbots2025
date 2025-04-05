@@ -39,7 +39,7 @@ public class SimElevatorIO implements ElevatorIO {
     } else {
       double outvolts =
           MathUtil.clamp(
-              this.pidController.calculate(simElevator.getPositionMeters() + arbFeedForward),
+              this.pidController.calculate(simElevator.getPositionMeters()) + arbFeedForward,
               -RobotController.getBatteryVoltage(),
               RobotController.getBatteryVoltage());
       this.simElevator.setInput(outvolts);

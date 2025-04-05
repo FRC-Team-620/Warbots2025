@@ -182,8 +182,8 @@ public class DriveMeToTheMoon extends Command {
         targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
 
         if (autoIntakeAlgae.getAsBoolean()) {
-          if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1.5)
-              && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1.5)
+          if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(3)
+              && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(3)
               && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3
               && goalTransform != algaeInIntakeTransform) {
             if (goalTransform == algaeIntakeTransform) goalTransform = algaeInIntakeTransform;

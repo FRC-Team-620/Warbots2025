@@ -17,6 +17,7 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -51,7 +52,9 @@ import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignBarge;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReef;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleBeans;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSourceBeans;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeUntilCoralInIndexer;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
@@ -217,6 +220,7 @@ public class RobotContainer {
     configureButtonBindings();
     configureDriverFeedback();
     setupSmartDashbaord();
+    PathfindingCommand.warmupCommand().schedule();
   }
 
   /**
@@ -493,6 +497,10 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Align Barge",
         new AlignBarge(drive, control.AdjustAlignBargeLeft(), control.AdjustAlignBargeRight()));
+
+    SmartDashboard.putData(
+        "cmd/Align Reef Beans ID 6",
+        new AlignReefSetAngleBeans(drive, vision, led, elevator, true, 6));
   }
 
   private void configurePathPlanner() {
@@ -577,12 +585,20 @@ public class RobotContainer {
         new AlignReefSetAngle(drive, vision, led, elevator, true, 18).withTimeout(4));
 
     NamedCommands.registerCommand(
+        "Align Reef Left South BEANS",
+        new AlignReefSetAngleBeans(drive, vision, led, elevator, true, 18).withTimeout(4));
+
+    NamedCommands.registerCommand(
         "Align Reef Left SouthWest",
         new AlignReefSetAngle(drive, vision, led, elevator, true, 19).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Left SouthEast",
         new AlignReefSetAngle(drive, vision, led, elevator, true, 17).withTimeout(4));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left SouthEast BEANS",
+        new AlignReefSetAngleBeans(drive, vision, led, elevator, true, 17).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right North",
@@ -601,8 +617,16 @@ public class RobotContainer {
         new AlignReefSetAngle(drive, vision, led, elevator, false, 18).withTimeout(4));
 
     NamedCommands.registerCommand(
+        "Align Reef Right South BEANS",
+        new AlignReefSetAngleBeans(drive, vision, led, elevator, false, 18).withTimeout(4));
+
+    NamedCommands.registerCommand(
         "Align Reef Right SouthWest",
         new AlignReefSetAngle(drive, vision, led, elevator, false, 19).withTimeout(4));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right SouthWest BEANS",
+        new AlignReefSetAngleBeans(drive, vision, led, elevator, false, 19).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right SouthEast",
@@ -613,6 +637,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Drive Backwards", new DriveBackwards(drive));
 
     NamedCommands.registerCommand("Align Source", new AlignSource(drive, false));
+
+    NamedCommands.registerCommand("Align Source Beans", new AlignSourceBeans(drive, false));
   }
 
   public Command getToggleBrakeCommand() {

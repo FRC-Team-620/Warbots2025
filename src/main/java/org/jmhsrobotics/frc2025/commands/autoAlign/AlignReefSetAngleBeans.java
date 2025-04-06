@@ -28,7 +28,7 @@ public class AlignReefSetAngleBeans extends Command {
   private double initialDistance = 3;
   private double currentDistance = 3;
 
-  private double beansP = 0.7;
+  private double beansP = 0.6;
   private double noBeansP = 0.525;
 
   private final PIDController xController = new PIDController(beansP, 0, 0.01);
@@ -108,6 +108,8 @@ public class AlignReefSetAngleBeans extends Command {
     xController.reset();
     yController.reset();
     thetaController.reset();
+    xController.setP(beansP);
+    yController.setP(beansP);
     thetaController.enableContinuousInput(-180, 180);
 
     this.goalTransform = AutoAlign.calculateReefTransform(this.elevator.getSetpoint(), isLeft);
@@ -155,7 +157,7 @@ public class AlignReefSetAngleBeans extends Command {
               Math.pow(tagPose.getX() - goalTransform.getX(), 2)
                   + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
 
-      if (currentDistance < 2.0) {
+      if (currentDistance < 2.5) {
         xController.setP(noBeansP);
         yController.setP(noBeansP);
       }

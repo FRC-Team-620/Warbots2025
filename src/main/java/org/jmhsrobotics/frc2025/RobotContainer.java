@@ -497,6 +497,10 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Align Barge",
         new AlignBarge(drive, control.AdjustAlignBargeLeft(), control.AdjustAlignBargeRight()));
+
+    SmartDashboard.putData(
+        "cmd/Align Reef Beans ID 6",
+        new AlignReefSetAngleBeans(drive, vision, led, elevator, true, 6));
   }
 
   private void configurePathPlanner() {

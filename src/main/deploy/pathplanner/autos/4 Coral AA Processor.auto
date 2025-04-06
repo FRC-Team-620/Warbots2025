@@ -271,7 +271,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Align Source Beans"
+                        "name": "Align Source"
                       }
                     },
                     {
@@ -293,7 +293,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Align Reef Right South BEANS"
+                  "name": "Align Reef Right South"
                 }
               },
               {

@@ -17,8 +17,8 @@ public class AlignSourceBeans extends Command {
   private Pose2d goalPose;
   private boolean alignCloseToStation;
 
-  private final PIDController xController = new PIDController(0.9, 0, 0.005);
-  private final PIDController yController = new PIDController(0.9, 0, 0.005);
+  private final PIDController xController = new PIDController(0.8, 0, 0.005);
+  private final PIDController yController = new PIDController(0.8, 0, 0.005);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   public AlignSourceBeans(Drive drive, boolean alignCloseToStation) {

@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -40,6 +41,7 @@ import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveMeToTheMoon;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
+import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
 import org.jmhsrobotics.frc2025.commands.IndexerMove;
@@ -58,6 +60,7 @@ import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSourceBeans;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeUntilCoralInIndexer;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
+import org.jmhsrobotics.frc2025.commands.autoCommands.WristMoveToNoFinish;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
@@ -501,6 +504,14 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Align Reef Beans ID 6",
         new AlignReefSetAngleBeans(drive, vision, led, elevator, true, 6));
+
+    SmartDashboard.putData(
+        "cmd/Test shoot with wrist",
+        new SequentialCommandGroup(
+            new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel4Meters),
+            new ParallelCommandGroup(
+                new ScoreCoral(intake),
+                new WristMoveTo(wrist, Constants.WristConstants.kLevel4Degrees))));
   }
 
   private void configurePathPlanner() {
@@ -639,6 +650,16 @@ public class RobotContainer {
     NamedCommands.registerCommand("Align Source", new AlignSource(drive, false));
 
     NamedCommands.registerCommand("Align Source Beans", new AlignSourceBeans(drive, false));
+
+    NamedCommands.registerCommand(
+        "Elevator Only L4",
+        new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel4Meters));
+    NamedCommands.registerCommand(
+        "Wrist Only L4", new WristMoveTo(wrist, Constants.WristConstants.kLevel4Degrees));
+
+    NamedCommands.registerCommand(
+        "Wrist Only L4 Unending",
+        new WristMoveToNoFinish(wrist, Constants.WristConstants.kLevel4Degrees));
   }
 
   public Command getToggleBrakeCommand() {

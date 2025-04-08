@@ -16,21 +16,24 @@ import org.jmhsrobotics.frc2025.subsystems.led.LED;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.littletonrobotics.junction.Logger;
 
-public class AlignReefSetAngle extends Command {
+public class AlignReefSetAngleBeans extends Command {
   private final Drive drive;
   private final Vision vision;
   private final LED led;
   private final Elevator elevator;
-
-  private final PIDController xController = new PIDController(0.525, 0, 0.01);
-  private final PIDController yController = new PIDController(0.525, 0, 0.01);
-  private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
 
   private LEDPattern progressPattern;
   private double initialDistance = 3;
   private double currentDistance = 3;
+
+  private double beansP = 0.6;
+  private double noBeansP = 0.525;
+
+  private final PIDController xController = new PIDController(beansP, 0, 0.01);
+  private final PIDController yController = new PIDController(beansP, 0, 0.01);
+  private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   private int targetTagId;
   private Pose3d lastTagPose = null;
@@ -40,7 +43,7 @@ public class AlignReefSetAngle extends Command {
   // boolean for if bot should align left or right
   private boolean isLeft = true;
 
-  public AlignReefSetAngle(
+  public AlignReefSetAngleBeans(
       Drive drive, Vision vision, LED led, Elevator elevator, boolean isLeft, int targetTagId) {
     this.drive = drive;
     this.vision = vision;
@@ -105,6 +108,8 @@ public class AlignReefSetAngle extends Command {
     xController.reset();
     yController.reset();
     thetaController.reset();
+    xController.setP(beansP);
+    yController.setP(beansP);
     thetaController.enableContinuousInput(-180, 180);
 
     this.goalTransform = AutoAlign.calculateReefTransform(this.elevator.getSetpoint(), isLeft);
@@ -151,6 +156,11 @@ public class AlignReefSetAngle extends Command {
           Math.sqrt(
               Math.pow(tagPose.getX() - goalTransform.getX(), 2)
                   + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
+
+      if (currentDistance < 2.5) {
+        xController.setP(noBeansP);
+        yController.setP(noBeansP);
+      }
 
       if (currentDistance > Units.inchesToMeters(1)) drive.runVelocity(outputSpeeds);
       // led.setPattern(progressPattern);

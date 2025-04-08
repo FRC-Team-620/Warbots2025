@@ -93,10 +93,10 @@ public final class Constants {
     public static final double kLevel2Meters = 0.30;
     public static final double kLevel3Meters = 0.77;
     // BARGE AND L4 SETPOINT CANNOT BE THE EXACT SAME
-    public static final double kLevel4Meters = 1.55;
-    public static final double kBargeMeters = 1.78;
+    public static final double kLevel4Meters = 1.58;
+    public static final double kBargeMeters = 1.75;
     public static final double kProcesserMeters = .10;
-    public static final double kPreBargeMeters = 0.27;
+    public static final double kIntermediateAlgaeSetpoint = 0.27;
 
     public static final double kAlgaeQTipMeters = .125;
     public static final double kCoralIntakeMeters = 0.0;
@@ -137,7 +137,7 @@ public final class Constants {
 
   public static class IntakeConstants {
 
-    public static final double kAlgaeDefaultCommandSpeed = -0.13;
+    public static final double kAlgaeDefaultCommandSpeed = -0.2;
     public static final double kCoralDefaultCommandSpeed = 0.1;
 
     public static final double kCoralIntakeSpeedDutyCycle = 0.4;

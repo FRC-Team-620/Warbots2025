@@ -139,19 +139,19 @@ public class AutoAlign {
       if (isLeft)
         yTransform =
             (elevatorSetpoint == Constants.ElevatorConstants.kLevel1Meters)
-                ? Units.inchesToMeters(-18)
-                : Units.inchesToMeters(-7.3);
+                ? Units.inchesToMeters(-19)
+                : Units.inchesToMeters(-8.3);
       else
         yTransform =
             (elevatorSetpoint == Constants.ElevatorConstants.kLevel1Meters)
-                ? Units.inchesToMeters(17)
-                : Units.inchesToMeters(6.8);
+                ? Units.inchesToMeters(18)
+                : Units.inchesToMeters(6);
       if (elevatorSetpoint == Constants.ElevatorConstants.kLevel2Meters
           || elevatorSetpoint == Constants.ElevatorConstants.kLevel3Meters) xTransform = 0.47;
       else if (elevatorSetpoint == Constants.ElevatorConstants.kLevel1Meters) xTransform = 0.5;
       else {
-        if (isLeft) xTransform = 0.52;
-        else xTransform = 0.52;
+        if (isLeft) xTransform = 0.46;
+        else xTransform = 0.45;
       }
     }
     return new Transform2d(xTransform, yTransform, new Rotation2d());

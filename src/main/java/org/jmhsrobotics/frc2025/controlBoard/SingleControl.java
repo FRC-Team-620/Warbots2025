@@ -150,14 +150,22 @@ public class SingleControl implements ControlBoard {
 
   @Override
   public Trigger scoreAlgaeProcesser() {
-    // if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
-    return (driver.a().or(driver.b())).and(algaeMode);
+    return driver.a().and(algaeMode);
+  }
+
+  @Override
+  public Trigger algaeIntermediateSetpoint() {
+    return driver.b().and(algaeMode);
+  }
+
+  @Override
+  public Trigger prepareAlgaeBarge() {
+    return driver.x().and(algaeMode);
   }
 
   @Override
   public Trigger scoreAlgaeBarge() {
-    // if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
-    return (driver.y().or(driver.x())).and(algaeMode);
+    return driver.y().and(algaeMode);
   }
 
   @Override
@@ -202,9 +210,5 @@ public class SingleControl implements ControlBoard {
   @Override
   public Trigger zeroElevator() {
     return driver.leftStick();
-  }
-
-  public Trigger moveAlgaePreBarge() {
-    return nop;
   }
 }

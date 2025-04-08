@@ -160,7 +160,17 @@ public class DoubleControl implements ControlBoard {
 
   @Override
   public Trigger scoreAlgaeProcesser() {
-    return (operator.a().or(operator.b())).and(algaeMode);
+    return operator.a().and(algaeMode);
+  }
+
+  @Override
+  public Trigger algaeIntermediateSetpoint() {
+    return operator.b().and(algaeMode);
+  }
+
+  @Override
+  public Trigger prepareAlgaeBarge() {
+    return operator.x().and(algaeMode);
   }
 
   @Override
@@ -206,9 +216,5 @@ public class DoubleControl implements ControlBoard {
   @Override
   public Trigger zeroElevator() {
     return operator.back();
-  }
-
-  public Trigger moveAlgaePreBarge() {
-    return operator.x().and(algaeMode);
   }
 }

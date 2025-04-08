@@ -103,19 +103,32 @@ public class AlignBarge extends Command {
    * @return Pose2d
    */
   public static Pose2d calculateSetpoints() {
-    double xSetpoint;
-    double ySetpoint;
-    double goalTheta;
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
-      xSetpoint = 10.4;
-      ySetpoint = 1.9;
-      goalTheta = 0;
-    } else {
-      xSetpoint = 7.2;
-      ySetpoint = 6.2;
-      goalTheta = 180;
-    }
+    // double xSetpoint;
+    // double ySetpoint;
+    // double goalTheta;
+    // if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+    //   xSetpoint = 9.771;
+    //   ySetpoint = 1.9;
+    //   goalTheta = 0;
+    // } else {
+    //   xSetpoint = 7.789;
+    //   ySetpoint = 6.2;
+    //   goalTheta = 180;
+    // }
 
-    return new Pose2d(xSetpoint, ySetpoint, new Rotation2d(Units.degreesToRadians(goalTheta)));
+    // return new Pose2d(xSetpoint, ySetpoint, new Rotation2d(Units.degreesToRadians(goalTheta)));
+
+    // first number is half the bumber length, should not change
+    // second number is distance to setpoint from edge of bumper
+    double xDisplacement = 17.5 + 17;
+    return (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red)
+        ? new Pose2d(
+            8.78 + Units.inchesToMeters(xDisplacement),
+            1.9,
+            new Rotation2d(Units.degreesToRadians(0)))
+        : new Pose2d(
+            8.78 - Units.inchesToMeters(xDisplacement),
+            6.2,
+            new Rotation2d(Units.degreesToRadians(180)));
   }
 }

@@ -12,16 +12,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 
-public class AlignSource extends Command {
+public class AlignSourceBeans extends Command {
   private Drive drive;
   private Pose2d goalPose;
   private boolean alignCloseToStation;
 
-  private final PIDController xController = new PIDController(0.7, 0, 0.005);
-  private final PIDController yController = new PIDController(0.7, 0, 0.005);
+  private final PIDController xController = new PIDController(0.8, 0, 0.005);
+  private final PIDController yController = new PIDController(0.8, 0, 0.005);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
-  public AlignSource(Drive drive, boolean alignCloseToStation) {
+  public AlignSourceBeans(Drive drive, boolean alignCloseToStation) {
     this.drive = drive;
     this.alignCloseToStation = alignCloseToStation;
 

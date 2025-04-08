@@ -58,9 +58,22 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "Elevator And Wrist Coral Intake"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator And Wrist Coral Intake"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Score Coral"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -95,7 +108,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -121,13 +134,26 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "Elevator And Wrist L4"
+                              "name": "Fix Coral Placement"
                             }
                           },
                           {
-                            "type": "named",
+                            "type": "sequential",
                             "data": {
-                              "name": "Fix Coral Placement"
+                              "commands": [
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "Elevator Only L4"
+                                  }
+                                },
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "Wrist Only L4 Unending"
+                                  }
+                                }
+                              ]
                             }
                           }
                         ]
@@ -140,9 +166,35 @@
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "Score Coral"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator Only L4"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Wrist Only L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Score Coral"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
@@ -154,9 +206,22 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "Elevator And Wrist Coral Intake"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator And Wrist Coral Intake"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Score Coral"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -191,7 +256,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -217,13 +282,26 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "Elevator And Wrist L4"
+                              "name": "Fix Coral Placement"
                             }
                           },
                           {
-                            "type": "named",
+                            "type": "sequential",
                             "data": {
-                              "name": "Fix Coral Placement"
+                              "commands": [
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "Elevator Only L4"
+                                  }
+                                },
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "Wrist Only L4 Unending"
+                                  }
+                                }
+                              ]
                             }
                           }
                         ]
@@ -236,9 +314,35 @@
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "Score Coral"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator Only L4"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Wrist Only L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Score Coral"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
@@ -250,9 +354,22 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "Elevator And Wrist Coral Intake"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator And Wrist Coral Intake"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Score Coral"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -287,7 +404,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -313,13 +430,26 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "Elevator And Wrist L4"
+                              "name": "Fix Coral Placement"
                             }
                           },
                           {
-                            "type": "named",
+                            "type": "sequential",
                             "data": {
-                              "name": "Fix Coral Placement"
+                              "commands": [
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "Elevator Only L4"
+                                  }
+                                },
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "Wrist Only L4 Unending"
+                                  }
+                                }
+                              ]
                             }
                           }
                         ]
@@ -332,15 +462,54 @@
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "Score Coral"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator Only L4"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Wrist Only L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Score Coral"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Elevator And Wrist Coral Intake"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator And Wrist Coral Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Source"
+                }
+              }
+            ]
           }
         }
       ]

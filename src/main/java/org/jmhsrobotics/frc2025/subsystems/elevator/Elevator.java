@@ -19,6 +19,8 @@ public class Elevator extends SubsystemBase {
   Mechanism2d elevatorMech = new Mechanism2d(4, 4);
   private double setPointMeters;
 
+  private final double ffEndHeight = 1.3;
+
   public Elevator(ElevatorIO elevatorIO) {
     this.elevatorIO = elevatorIO;
     var root = elevatorMech.getRoot("base", 1, 0);
@@ -32,6 +34,11 @@ public class Elevator extends SubsystemBase {
     stage1.setLength(inputs.heightMeters / 2);
     carriage.setLength(inputs.heightMeters / 2);
 
+    if (this.setPointMeters == Constants.ElevatorConstants.kLevel4Meters
+        && inputs.heightMeters < this.ffEndHeight)
+      elevatorIO.setPositionMeters(this.setPointMeters, 13);
+    else elevatorIO.setPositionMeters(this.setPointMeters);
+
     Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
     Logger.recordOutput("Elevator/Height", inputs.heightMeters);
     Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
@@ -41,7 +48,11 @@ public class Elevator extends SubsystemBase {
 
   public void setSetpoint(double setPoint) {
     this.setPointMeters = setPoint;
-    elevatorIO.setPositionMeters(setPoint);
+
+    // Speeds up elevator travel to L4 by added ff until elevator is above a certain height
+    if (this.setPointMeters == Constants.ElevatorConstants.kLevel4Meters
+        && inputs.heightMeters < this.ffEndHeight) elevatorIO.setPositionMeters(setPoint, 13);
+    else elevatorIO.setPositionMeters(setPoint);
   }
 
   public void setVoltage(double voltage) {

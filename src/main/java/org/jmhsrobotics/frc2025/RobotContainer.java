@@ -17,6 +17,7 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -32,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -39,22 +41,26 @@ import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveMeToTheMoon;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
+import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
 import org.jmhsrobotics.frc2025.commands.IndexerMove;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
-import org.jmhsrobotics.frc2025.commands.ScoreBarge;
+import org.jmhsrobotics.frc2025.commands.ScoreBargeWrist;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignBarge;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReef;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleBeans;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSourceBeans;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeUntilCoralInIndexer;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
+import org.jmhsrobotics.frc2025.commands.autoCommands.WristMoveToNoFinish;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
@@ -217,6 +223,7 @@ public class RobotContainer {
     configureButtonBindings();
     configureDriverFeedback();
     setupSmartDashbaord();
+    PathfindingCommand.warmupCommand().schedule();
   }
 
   /**
@@ -316,7 +323,7 @@ public class RobotContainer {
                 Constants.ElevatorConstants.kProcesserMeters,
                 Constants.WristConstants.kRotationProcesserDegrees));
 
-    control.scoreAlgaeBarge().onTrue(new ScoreBarge(elevator, wrist, intake));
+    control.scoreAlgaeBarge().onTrue(new ScoreBargeWrist(wrist, elevator, intake));
 
     control
         .elevatorIntakeCoral()
@@ -355,13 +362,23 @@ public class RobotContainer {
                 Constants.WristConstants.kRotationAlgaeDegrees));
 
     control
-        .moveAlgaePreBarge()
+        .prepareAlgaeBarge()
         .onTrue(
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
-                Constants.ElevatorConstants.kPreBargeMeters,
+                Constants.ElevatorConstants.kBargeMeters,
                 Constants.WristConstants.kRotationProcesserDegrees));
+
+    control
+        .algaeIntermediateSetpoint()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kIntermediateAlgaeSetpoint,
+                Constants.WristConstants.kRotationProcesserDegrees));
+
     control
         .intakeCoralFromIndexer()
         .onTrue(
@@ -448,6 +465,7 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/Score Coral", new ScoreCoral(intake).withTimeout(0.15));
     SmartDashboard.putData("cmd/Align Source Close", new AlignSource(drive, true));
     SmartDashboard.putData("cmd/Align Source Far", new AlignSource(drive, false));
+    SmartDashboard.putData("cmd/Score Barge Wrist", new ScoreBargeWrist(wrist, elevator, intake));
 
     SmartDashboard.putData(
         "cmd/Intake Indexer",
@@ -482,6 +500,18 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Align Barge",
         new AlignBarge(drive, control.AdjustAlignBargeLeft(), control.AdjustAlignBargeRight()));
+
+    SmartDashboard.putData(
+        "cmd/Align Reef Beans ID 6",
+        new AlignReefSetAngleBeans(drive, vision, led, elevator, true, 6));
+
+    SmartDashboard.putData(
+        "cmd/Test shoot with wrist",
+        new SequentialCommandGroup(
+            new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel4Meters),
+            new ParallelCommandGroup(
+                new ScoreCoral(intake),
+                new WristMoveTo(wrist, Constants.WristConstants.kLevel4Degrees))));
   }
 
   private void configurePathPlanner() {
@@ -544,56 +574,92 @@ public class RobotContainer {
     NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(0.25));
 
     NamedCommands.registerCommand(
-        "Align Reef Left", new AlignReef(drive, vision, led, elevator, true));
+        "Align Reef Left", new AlignReef(drive, vision, led, elevator, true).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
+        "Align Reef Right", new AlignReef(drive, vision, led, elevator, false).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Left North", new AlignReefSetAngle(drive, vision, led, elevator, true, 21));
+        "Align Reef Left North",
+        new AlignReefSetAngle(drive, vision, led, elevator, true, 21).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Left NorthWest", new AlignReefSetAngle(drive, vision, led, elevator, true, 20));
+        "Align Reef Left NorthWest",
+        new AlignReefSetAngle(drive, vision, led, elevator, true, 20).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Left NorthEast", new AlignReefSetAngle(drive, vision, led, elevator, true, 22));
+        "Align Reef Left NorthEast",
+        new AlignReefSetAngle(drive, vision, led, elevator, true, 22).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Left South", new AlignReefSetAngle(drive, vision, led, elevator, true, 18));
+        "Align Reef Left South",
+        new AlignReefSetAngle(drive, vision, led, elevator, true, 18).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Left SouthWest", new AlignReefSetAngle(drive, vision, led, elevator, true, 19));
+        "Align Reef Left South BEANS",
+        new AlignReefSetAngleBeans(drive, vision, led, elevator, true, 18).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Left SouthEast", new AlignReefSetAngle(drive, vision, led, elevator, true, 17));
+        "Align Reef Left SouthWest",
+        new AlignReefSetAngle(drive, vision, led, elevator, true, 19).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Right North", new AlignReefSetAngle(drive, vision, led, elevator, false, 21));
+        "Align Reef Left SouthEast",
+        new AlignReefSetAngle(drive, vision, led, elevator, true, 17).withTimeout(4));
+
+    NamedCommands.registerCommand(
+        "Align Reef Left SouthEast BEANS",
+        new AlignReefSetAngleBeans(drive, vision, led, elevator, true, 17).withTimeout(4));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right North",
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 21).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right NorthWest",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 20).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right NorthEast",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 22));
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 22).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Right South", new AlignReefSetAngle(drive, vision, led, elevator, false, 18));
+        "Align Reef Right South",
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 18).withTimeout(4));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right South BEANS",
+        new AlignReefSetAngleBeans(drive, vision, led, elevator, false, 18).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right SouthWest",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 19));
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 19).withTimeout(4));
+
+    NamedCommands.registerCommand(
+        "Align Reef Right SouthWest BEANS",
+        new AlignReefSetAngleBeans(drive, vision, led, elevator, false, 19).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right SouthEast",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 17));
+        new AlignReefSetAngle(drive, vision, led, elevator, false, 17).withTimeout(4));
 
     NamedCommands.registerCommand("Stop Drivetrain", Commands.runOnce(() -> drive.stop(), drive));
 
     NamedCommands.registerCommand("Drive Backwards", new DriveBackwards(drive));
 
     NamedCommands.registerCommand("Align Source", new AlignSource(drive, false));
+
+    NamedCommands.registerCommand("Align Source Beans", new AlignSourceBeans(drive, false));
+
+    NamedCommands.registerCommand(
+        "Elevator Only L4",
+        new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel4Meters));
+    NamedCommands.registerCommand(
+        "Wrist Only L4", new WristMoveTo(wrist, Constants.WristConstants.kLevel4Degrees));
+
+    NamedCommands.registerCommand(
+        "Wrist Only L4 Unending",
+        new WristMoveToNoFinish(wrist, Constants.WristConstants.kLevel4Degrees));
   }
 
   public Command getToggleBrakeCommand() {

@@ -34,6 +34,7 @@ public class AlignSource extends Command {
     xController.reset();
     yController.reset();
     thetaController.reset();
+    thetaController.enableContinuousInput(-180, 180);
 
     xController.setSetpoint(this.goalPose.getX());
     yController.setSetpoint(this.goalPose.getY());

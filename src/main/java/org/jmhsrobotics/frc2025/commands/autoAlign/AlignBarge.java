@@ -69,10 +69,8 @@ public class AlignBarge extends Command {
     this.goalPose = calculateSetpoints();
 
     if (!isTeleop)
-      this.goalPose =
-          (isRedAlliance)
-              ? goalPose.transformBy(new Transform2d(0, -yOffset, new Rotation2d()))
-              : goalPose.transformBy(new Transform2d(0, yOffset, new Rotation2d()));
+      this.goalPose = goalPose.transformBy(new Transform2d(0, yOffset, new Rotation2d()));
+
     xController.reset();
     yController.reset();
     thetaController.reset();

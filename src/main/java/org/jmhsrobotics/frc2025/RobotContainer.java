@@ -662,9 +662,9 @@ public class RobotContainer {
         new AutoRemoveAlgae(
             drive, elevator, wrist, vision, 20, Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
     NamedCommands.registerCommand(
-        "Score Barge Right", new AutoScoreAlgae(drive, elevator, wrist, intake, 1.25));
+        "Score Barge Right", new AutoScoreAlgae(drive, elevator, wrist, intake, 1.2));
     NamedCommands.registerCommand(
-        "Score Barge Right Center", new AutoScoreAlgae(drive, elevator, wrist, intake, 0.8));
+        "Score Barge Right Center", new AutoScoreAlgae(drive, elevator, wrist, intake, 0.9));
   }
 
   public Command getToggleBrakeCommand() {

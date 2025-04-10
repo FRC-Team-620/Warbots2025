@@ -57,6 +57,8 @@ import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleBeans;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSourceBeans;
+import org.jmhsrobotics.frc2025.commands.autoCommands.AutoIntakeCoral;
+import org.jmhsrobotics.frc2025.commands.autoCommands.AutoScoreCoral;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeUntilCoralInIndexer;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
@@ -559,6 +561,7 @@ public class RobotContainer {
 
       NamedCommands.registerCommand(
           "Fix Coral Placement", new FixCoralPlacement(intake).withTimeout(1.2));
+
     } else {
       NamedCommands.registerCommand(
           "Intake Until Indexer Has Coral",
@@ -660,6 +663,24 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Wrist Only L4 Unending",
         new WristMoveToNoFinish(wrist, Constants.WristConstants.kLevel4Degrees));
+
+    NamedCommands.registerCommand(
+        "Intake Coral And Align Source",
+        new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral RNW",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 20));
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral RSW",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 19));
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral LSW",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 19));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral LS",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 18));
   }
 
   public Command getToggleBrakeCommand() {

@@ -48,6 +48,8 @@ public class IntakeFromIndexer extends Command {
 
     if (intake.isCoralInIntake()) {
       intake.set(Constants.IntakeConstants.kCoralDefaultCommandSpeed);
+      // prevents intake from going to search mode
+      intake.startPlacementCommandTimer();
       coralIntaked = true;
     } else {
       intake.set(Constants.IntakeConstants.kCoralIntakeIndexerSpeedDutyCycle);

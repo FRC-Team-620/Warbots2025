@@ -473,18 +473,6 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Align Preset Northwest",
         new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
-
-    SmartDashboard.putData(
-        "cmd/Algae Remove Auto",
-        new AutoRemoveAlgae(
-            drive, elevator, wrist, vision, 21, Constants.ElevatorConstants.kAlgaeIntakeL2Meters));
-
-    SmartDashboard.putData("cmd/Align Barge Autonomous Test 1", new AlignBarge(drive, 1));
-    SmartDashboard.putData("cmd/Align Barge Autonomous Test 2", new AlignBarge(drive, 0.5));
-    SmartDashboard.putData("cmd/Align Barge Autonomous Test 3", new AlignBarge(drive, -0.75));
-
-    SmartDashboard.putData(
-        "cmd/Auto Score Algae", new AutoScoreAlgae(drive, elevator, wrist, intake, 1));
   }
 
   private void configurePathPlanner() {
@@ -657,14 +645,22 @@ public class RobotContainer {
         "Intake North Algae",
         new AutoRemoveAlgae(
             drive, elevator, wrist, vision, 21, Constants.ElevatorConstants.kAlgaeIntakeL2Meters));
+
     NamedCommands.registerCommand(
         "Intake North West Algae",
         new AutoRemoveAlgae(
             drive, elevator, wrist, vision, 20, Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
+
     NamedCommands.registerCommand(
         "Score Barge Right", new AutoScoreAlgae(drive, elevator, wrist, intake, 1.2));
+
     NamedCommands.registerCommand(
         "Score Barge Right Center", new AutoScoreAlgae(drive, elevator, wrist, intake, 0.5));
+
+    NamedCommands.registerCommand(
+        "Intake North East Algae",
+        new AutoRemoveAlgae(
+            drive, elevator, wrist, vision, 22, Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
   }
 
   public Command getToggleBrakeCommand() {

@@ -142,7 +142,7 @@ public class AlignBarge extends Command {
   public Pose2d calculateSetpoints() {
     // first number is half the bumber length, should not change
     // second number is distance to setpoint from edge of bumper
-    double xDisplacement = 17.5 + 17;
+    double xDisplacement = 17.5 + 15;
     return (isRedAlliance)
         ? new Pose2d(
             8.78 + Units.inchesToMeters(xDisplacement),

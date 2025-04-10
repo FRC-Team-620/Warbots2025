@@ -29,7 +29,7 @@ public class RemoveAlgaeAutoAlign extends Command {
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   private final Transform2d algaeIntakeTransform = new Transform2d(0.29, 0, new Rotation2d());
-  private final Transform2d algaeLineupTransform = new Transform2d(0.7, 0, new Rotation2d());
+  private final Transform2d algaeLineupTransform = new Transform2d(0.9, 0, new Rotation2d());
   private final Transform2d algaeInIntakeTransform = new Transform2d(1.0, 0, new Rotation2d());
 
   private Transform2d goalTransform = new Transform2d();

@@ -40,8 +40,7 @@ public class ElevatorAndWristMove extends SequentialCommandGroup {
             .onlyIf(
                 () ->
                     elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters
-                        && elevatorGoalMeters < Constants.ElevatorConstants.kAlgaeIntakeL2Meters
-                        && wristGoalDegrees != Constants.WristConstants.kRotationAlgaeDegrees),
+                        && elevatorGoalMeters == Constants.ElevatorConstants.kCoralIntakeMeters),
 
         // if the elevator setpoint is L4, move the wrist to the safe position, then elevator up
         new SequentialCommandGroup(

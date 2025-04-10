@@ -59,7 +59,7 @@ public class RemoveAlgaeAutoAlign extends Command {
   @Override
   public void execute() {
     if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(5.5)
-        && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(5.5)
+        && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(3)
         && Math.abs(drive.getRotation().getDegrees() - goalAngle) < 3) {
       if (goalTransform == algaeLineupTransform) goalTransform = algaeIntakeTransform;
       else if (goalTransform == algaeIntakeTransform) goalTransform = algaeInIntakeTransform;

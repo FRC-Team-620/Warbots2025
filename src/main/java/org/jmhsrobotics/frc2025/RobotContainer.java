@@ -664,7 +664,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Score Barge Right", new AutoScoreAlgae(drive, elevator, wrist, intake, 1.2));
     NamedCommands.registerCommand(
-        "Score Barge Right Center", new AutoScoreAlgae(drive, elevator, wrist, intake, 0.9));
+        "Score Barge Right Center", new AutoScoreAlgae(drive, elevator, wrist, intake, 0.5));
   }
 
   public Command getToggleBrakeCommand() {

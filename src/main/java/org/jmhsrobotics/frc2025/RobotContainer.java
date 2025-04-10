@@ -56,10 +56,10 @@ import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleBeans;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSourceBeans;
 import org.jmhsrobotics.frc2025.commands.autoCommands.AutoIntakeCoral;
+import org.jmhsrobotics.frc2025.commands.autoCommands.AutoRemoveAlgae;
 import org.jmhsrobotics.frc2025.commands.autoCommands.AutoScoreCoral;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeUntilCoralInIndexer;
-import org.jmhsrobotics.frc2025.commands.autoCommands.RemoveAlgaeAutoAlign;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
 import org.jmhsrobotics.frc2025.commands.autoCommands.WristMoveToNoFinish;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
@@ -474,7 +474,13 @@ public class RobotContainer {
         new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
 
     SmartDashboard.putData(
-        "cmd/Algae Remove Auto", new RemoveAlgaeAutoAlign(drive, vision, elevator, wrist, 18));
+        "cmd/Algae Remove Auto",
+        new AutoRemoveAlgae(
+            drive, elevator, wrist, vision, 21, Constants.ElevatorConstants.kAlgaeIntakeL2Meters));
+
+    SmartDashboard.putData("cmd/Align Barge Autonomous Test 1", new AlignBarge(drive, 1));
+    SmartDashboard.putData("cmd/Align Barge Autonomous Test 2", new AlignBarge(drive, 0.5));
+    SmartDashboard.putData("cmd/Align Barge Autonomous Test 3", new AlignBarge(drive, -0.75));
   }
 
   private void configurePathPlanner() {

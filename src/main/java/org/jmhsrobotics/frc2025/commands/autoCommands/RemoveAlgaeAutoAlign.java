@@ -12,7 +12,6 @@ import org.jmhsrobotics.frc2025.commands.autoAlign.AutoAlign;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
-import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 import org.littletonrobotics.junction.Logger;
 
 public class RemoveAlgaeAutoAlign extends Command {
@@ -35,11 +34,9 @@ public class RemoveAlgaeAutoAlign extends Command {
 
   private Transform2d goalTransform = new Transform2d();
 
-  public RemoveAlgaeAutoAlign(
-      Drive drive, Vision vision, Elevator elevator, Wrist wrist, int targetTagID) {
+  public RemoveAlgaeAutoAlign(Drive drive, Vision vision, int targetTagID) {
     this.drive = drive;
     this.vision = vision;
-    this.elevator = elevator;
 
     this.targetTagID = targetTagID;
 
@@ -51,6 +48,8 @@ public class RemoveAlgaeAutoAlign extends Command {
     xController.reset();
     yController.reset();
     thetaController.reset();
+
+    thetaController.enableContinuousInput(-180, 180);
 
     goalTransform = algaeLineupTransform;
     this.targetTagID = AutoAlign.adjustTagID(this.targetTagID);

@@ -15,12 +15,6 @@ import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.wrist.Wrist;
 
 public class AutoScoreCoral extends SequentialCommandGroup {
-  // aligns reef while:
-  // sequentially finishing the coral intake, raising the elevator and fixing coral placement
-  // deadline group, waits on the elevator to be at the top and align reef to be finished
-  // wrist should move out after elevator is done if align reef is not already done.
-  // after align reef and elevator are done, score coral and move wrist to l4 setpoint are run in
-  // parallel
   public AutoScoreCoral(
       Drive drive,
       Elevator elevator,
@@ -32,12 +26,10 @@ public class AutoScoreCoral extends SequentialCommandGroup {
       boolean isLeft,
       int targetTagID) {
     addCommands(
-        // moves wrist to L4 setpoint only after elevator has reached L4 goal, and only if the
-        // commands withint "withDeadline" have not yet been finished
-        // aligns reef while finishing the intake and moving up the elevator as soon as
-        // possible
         new ParallelCommandGroup(
             new AlignReefSetAngle(drive, vision, led, elevator, isLeft, targetTagID),
+            // intakes from indexer, timeout dependent on if sim or real, also fixes coral placement
+            // and then raises the elevator and moves wrist
             new SequentialCommandGroup(
                 new IntakeFromIndexer(wrist, intake, indexer, led)
                     .withTimeout(2)
@@ -48,7 +40,7 @@ public class AutoScoreCoral extends SequentialCommandGroup {
                 new ParallelCommandGroup(
                     new FixCoralPlacement(intake).withTimeout(2),
                     new ElevatorAndWristMoveAlt(elevator, wrist)))),
-        // scpres coral while moving wrist out
+        // scores coral. moves wrist in parallel if already aligned
         new ScoreCoral(intake).withTimeout(0.15));
   }
 }

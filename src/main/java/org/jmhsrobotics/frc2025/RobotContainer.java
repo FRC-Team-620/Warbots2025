@@ -57,6 +57,7 @@ import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSourceBeans;
 import org.jmhsrobotics.frc2025.commands.autoCommands.AutoIntakeCoral;
 import org.jmhsrobotics.frc2025.commands.autoCommands.AutoRemoveAlgae;
+import org.jmhsrobotics.frc2025.commands.autoCommands.AutoScoreAlgae;
 import org.jmhsrobotics.frc2025.commands.autoCommands.AutoScoreCoral;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeUntilCoralInIndexer;
@@ -481,6 +482,9 @@ public class RobotContainer {
     SmartDashboard.putData("cmd/Align Barge Autonomous Test 1", new AlignBarge(drive, 1));
     SmartDashboard.putData("cmd/Align Barge Autonomous Test 2", new AlignBarge(drive, 0.5));
     SmartDashboard.putData("cmd/Align Barge Autonomous Test 3", new AlignBarge(drive, -0.75));
+
+    SmartDashboard.putData(
+        "cmd/Auto Score Algae", new AutoScoreAlgae(drive, elevator, wrist, intake, 1));
   }
 
   private void configurePathPlanner() {
@@ -648,6 +652,19 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral LS",
         new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 18));
+
+    NamedCommands.registerCommand(
+        "Intake North Algae",
+        new AutoRemoveAlgae(
+            drive, elevator, wrist, vision, 21, Constants.ElevatorConstants.kAlgaeIntakeL2Meters));
+    NamedCommands.registerCommand(
+        "Intake North West Algae",
+        new AutoRemoveAlgae(
+            drive, elevator, wrist, vision, 20, Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
+    NamedCommands.registerCommand(
+        "Score Barge Right", new AutoScoreAlgae(drive, elevator, wrist, intake, 1.25));
+    NamedCommands.registerCommand(
+        "Score Barge Right Center", new AutoScoreAlgae(drive, elevator, wrist, intake, 0.8));
   }
 
   public Command getToggleBrakeCommand() {

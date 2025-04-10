@@ -681,21 +681,6 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral LS",
         new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 18));
-
-    NamedCommands.registerCommand(
-        "Finish Intake and Score Coral LS L3",
-        new AutoScoreCoral(
-            drive,
-            elevator,
-            wrist,
-            intake,
-            indexer,
-            vision,
-            led,
-            true,
-            18,
-            Constants.ElevatorConstants.kLevel3Meters,
-            Constants.WristConstants.kLevel3Degrees));
   }
 
   public Command getToggleBrakeCommand() {

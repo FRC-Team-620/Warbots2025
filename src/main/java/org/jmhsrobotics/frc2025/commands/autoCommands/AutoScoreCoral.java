@@ -62,8 +62,6 @@ public class AutoScoreCoral extends SequentialCommandGroup {
     addCommands(
         new ParallelCommandGroup(
             new AlignReefSetAngle(drive, vision, led, elevator, isLeft, targetTagID),
-            // intakes from indexer, timeout dependent on if sim or real, also fixes coral placement
-            // and then raises the elevator and moves wrist
             new SequentialCommandGroup(
                 new IntakeFromIndexer(wrist, intake, indexer, led)
                     .withTimeout(2)
@@ -75,7 +73,6 @@ public class AutoScoreCoral extends SequentialCommandGroup {
                     new FixCoralPlacement(intake).withTimeout(2),
                     new ElevatorAndWristMove(
                         elevator, wrist, elevatorGoalMeters, wristGoalDegrees)))),
-        // scores coral. moves wrist in parallel if already aligned
         new ScoreCoral(intake).withTimeout(0.15));
   }
 }

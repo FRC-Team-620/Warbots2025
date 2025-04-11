@@ -78,6 +78,9 @@ public class Drive extends SubsystemBase {
   private double driveVelocity = 0;
   private double driveAcceleration = 0;
 
+  private int coralScoredEast = 0;
+  private int coralScoredWest = 0;
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -384,5 +387,21 @@ public class Drive extends SubsystemBase {
 
   public boolean getTurboMode() {
     return turboMode;
+  }
+
+  public void addCoralScoredEast() {
+    this.coralScoredEast++;
+  }
+
+  public int getCoralScoredEast() {
+    return this.coralScoredEast;
+  }
+
+  public void addCoralScoredWest() {
+    this.coralScoredWest++;
+  }
+
+  public int getCoralScoredWest() {
+    return this.coralScoredWest;
   }
 }

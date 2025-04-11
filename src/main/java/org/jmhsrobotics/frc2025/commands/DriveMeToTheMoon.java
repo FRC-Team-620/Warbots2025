@@ -44,6 +44,7 @@ public class DriveMeToTheMoon extends Command {
   private final PIDController sourceYController = new PIDController(0.9, 0, 0.01);
 
   private Trigger autoIntakeAlgae;
+  private Trigger l1AlignOverride;
   private int targetId;
 
   Pose3d tagPose = new Pose3d();
@@ -72,7 +73,8 @@ public class DriveMeToTheMoon extends Command {
       DoubleSupplier omegaSupplier,
       DoubleSupplier leftTriggerValue,
       DoubleSupplier rightTriggerValue,
-      Trigger autoIntakeAlgae) {
+      Trigger autoIntakeAlgae,
+      Trigger l1AlignOverride) {
     this.drive = drive;
     this.vision = vision;
     this.elevator = elevator;
@@ -81,6 +83,7 @@ public class DriveMeToTheMoon extends Command {
     this.indexer = indexer;
 
     this.autoIntakeAlgae = autoIntakeAlgae;
+    this.l1AlignOverride = l1AlignOverride;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
     this.omegaSupplier = omegaSupplier;
@@ -197,9 +200,13 @@ public class DriveMeToTheMoon extends Command {
           }
         } else {
           goalTransform =
-              AutoAlign.calculateReefTransform(
-                  elevator.getSetpoint(),
-                  leftTriggerValue.getAsDouble() > rightTriggerValue.getAsDouble());
+              l1AlignOverride.getAsBoolean()
+                  ? AutoAlign.calculateReefTransform(
+                      Constants.ElevatorConstants.kLevel1Meters,
+                      leftTriggerValue.getAsDouble() > rightTriggerValue.getAsDouble())
+                  : AutoAlign.calculateReefTransform(
+                      elevator.getSetpoint(),
+                      leftTriggerValue.getAsDouble() > rightTriggerValue.getAsDouble());
         }
 
         tagPose = AutoAlign.getTagPoseRobotRelative(targetId, vision, lastTagPose, drive.getPose());

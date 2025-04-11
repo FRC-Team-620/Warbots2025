@@ -44,6 +44,8 @@ public interface ControlBoard {
 
   public Trigger placeCoralLevel4();
 
+  public Trigger altPlaceCoralLevel4();
+
   public Trigger scoreAlgaeProcesser();
 
   public Trigger algaeIntermediateSetpoint();

@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
@@ -57,6 +58,9 @@ public class DriveMeToTheMoon extends Command {
   private static final double DEADBAND = 0.05;
 
   private DoubleSupplier xSupplier, ySupplier, omegaSupplier, leftTriggerValue, rightTriggerValue;
+
+  // timer used for detecting if coral is in front of reef
+  private Timer timer = new Timer();
 
   // boolean for if bot should align left or right
 
@@ -180,6 +184,19 @@ public class DriveMeToTheMoon extends Command {
         // calculate angle goal, target tag ID, goal transform from tag and tag position
         double thetaGoalDegrees = AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees());
         targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
+        // calculates distance from goal position
+        double distance =
+            Math.sqrt(
+                Math.pow(tagPose.getX() - goalTransform.getX(), 2)
+                    + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
+        if (distance > Units.inchesToMeters(5) && distance < Units.inchesToMeters(7)) timer.start();
+        else timer.reset();
+
+        if (timer.hasElapsed(.001)) drive.setAlignBlockedByCoral(true);
+        else drive.setAlignBlockedByCoral(false);
+
+        Logger.recordOutput("Align/Timer Value", timer.get());
+        Logger.recordOutput("Align/Align Distance", Units.metersToInches(distance));
 
         if (autoIntakeAlgae.getAsBoolean()) {
           if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(5.5)
@@ -236,6 +253,7 @@ public class DriveMeToTheMoon extends Command {
       } else {
         lastTagPose = null;
         drive.setAutoAlignComplete(false);
+        drive.setAlignBlockedByCoral(false);
       }
     }
     // really weird way of stoping auto algae intake from starting at the intake setpoint instead of

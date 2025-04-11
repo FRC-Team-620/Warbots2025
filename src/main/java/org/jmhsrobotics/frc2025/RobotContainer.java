@@ -315,6 +315,15 @@ public class RobotContainer {
                 Constants.WristConstants.kLevel4Degrees));
 
     control
+        .placeCoralLevel4()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kAltLevel4Meters,
+                Constants.WristConstants.kLevel4Degrees));
+
+    control
         .scoreAlgaeProcesser()
         .onTrue(
             new ElevatorAndWristMove(

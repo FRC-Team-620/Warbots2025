@@ -94,6 +94,8 @@ public final class Constants {
     public static final double kLevel3Meters = 0.77;
     // BARGE AND L4 SETPOINT CANNOT BE THE EXACT SAME
     public static final double kLevel4Meters = 1.58;
+    public static final double kAltLevel4Meters = 1.63; // needs to be tested and maybe changed
+
     public static final double kBargeMeters = 1.75;
     public static final double kProcesserMeters = .10;
     public static final double kIntermediateAlgaeSetpoint = 0.27;

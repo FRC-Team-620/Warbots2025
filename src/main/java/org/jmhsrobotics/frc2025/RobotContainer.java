@@ -62,6 +62,7 @@ import org.jmhsrobotics.frc2025.commands.autoCommands.AutoScoreCoral;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeUntilCoralInIndexer;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
+import org.jmhsrobotics.frc2025.commands.autoCommands.TeleopCoralScoreSequence;
 import org.jmhsrobotics.frc2025.commands.autoCommands.WristMoveToNoFinish;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
@@ -473,6 +474,14 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Align Preset Northwest",
         new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
+
+    SmartDashboard.putData(
+        "cmd/Run Teleop Scoring Sequence",
+        new TeleopCoralScoreSequence(drive, elevator, wrist, intake, indexer, vision, led));
+
+    SmartDashboard.putData(
+        "cmd/Auto Intake Coral",
+        new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false));
   }
 
   private void configurePathPlanner() {

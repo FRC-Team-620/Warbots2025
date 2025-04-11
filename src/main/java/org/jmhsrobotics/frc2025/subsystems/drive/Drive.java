@@ -74,6 +74,7 @@ public class Drive extends SubsystemBase {
   private double maxLinearSpeedMetersPerSec = DriveConstants.maxSpeedMetersPerSec;
   private boolean autoAlignComplete = false;
   private boolean turboMode = false;
+  private boolean alignBlockedByCoral = false;
 
   private double driveVelocity = 0;
   private double driveAcceleration = 0;
@@ -384,5 +385,13 @@ public class Drive extends SubsystemBase {
 
   public boolean getTurboMode() {
     return turboMode;
+  }
+
+  public boolean getAlignBlockedByCoral() {
+    return alignBlockedByCoral;
+  }
+
+  public void setAlignBlockedByCoral(boolean alignBlockedByCoral) {
+    this.alignBlockedByCoral = alignBlockedByCoral;
   }
 }

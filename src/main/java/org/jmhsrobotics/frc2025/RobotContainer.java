@@ -315,13 +315,13 @@ public class RobotContainer {
                 Constants.WristConstants.kLevel4Degrees));
 
     control
-        .placeCoralLevel4()
+        .altPlaceCoralLevel4()
         .onTrue(
             new ElevatorAndWristMove(
                 elevator,
                 wrist,
                 Constants.ElevatorConstants.kAltLevel4Meters,
-                Constants.WristConstants.kLevel4Degrees));
+                Constants.WristConstants.kAltLevel4Degrees));
 
     control
         .scoreAlgaeProcesser()
@@ -448,6 +448,13 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(
                     () -> led.setPattern(LEDPattern.solid(Color.kCyan).blink(Seconds.of(0.1))), led)
+                .withTimeout(1.5));
+
+    new Trigger(drive::getAlignBlockedByCoral)
+        .whileTrue(
+            Commands.run(
+                    () -> led.setPattern(LEDPattern.solid(Color.kWhite).blink(Seconds.of(0.1))),
+                    led)
                 .withTimeout(1.5));
   }
 

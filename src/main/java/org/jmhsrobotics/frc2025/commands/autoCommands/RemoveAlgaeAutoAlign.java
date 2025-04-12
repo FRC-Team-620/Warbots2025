@@ -28,8 +28,8 @@ public class RemoveAlgaeAutoAlign extends Command {
   private final PIDController yController = new PIDController(0.5, 0, 0.01);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
-  private final Transform2d algaeIntakeTransform = new Transform2d(0.29, 0, new Rotation2d());
-  private final Transform2d algaeLineupTransform = new Transform2d(0.9, 0, new Rotation2d());
+  private final Transform2d algaeIntakeTransform = new Transform2d(0.44, 0, new Rotation2d());
+  private final Transform2d algaeLineupTransform = new Transform2d(1.2, 0, new Rotation2d());
   private final Transform2d algaeInIntakeTransform = new Transform2d(1.0, 0, new Rotation2d());
 
   private Transform2d goalTransform = new Transform2d();
@@ -59,7 +59,7 @@ public class RemoveAlgaeAutoAlign extends Command {
   @Override
   public void execute() {
     if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(5.5)
-        && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(3)
+        && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1.5)
         && Math.abs(drive.getRotation().getDegrees() - goalAngle) < 3) {
       if (goalTransform == algaeLineupTransform) goalTransform = algaeIntakeTransform;
       else if (goalTransform == algaeIntakeTransform) goalTransform = algaeInIntakeTransform;

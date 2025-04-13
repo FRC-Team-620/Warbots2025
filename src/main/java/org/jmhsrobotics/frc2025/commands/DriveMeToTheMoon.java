@@ -146,7 +146,7 @@ public class DriveMeToTheMoon extends Command {
     // if triggers elevator is at bottom and no coral in intake, default for triggers is source auto
     // align
     if (elevator.getSetpoint() == Constants.ElevatorConstants.kCoralIntakeMeters
-        && !intake.isCoralInIntake()
+        && intake.getMode() == 2
         && !autoIntakeAlgae.getAsBoolean()
         && !indexer.hasCoral()) {
       if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {

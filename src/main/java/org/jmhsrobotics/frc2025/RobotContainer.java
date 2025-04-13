@@ -33,7 +33,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -44,7 +43,6 @@ import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
-import org.jmhsrobotics.frc2025.commands.IndexerMove;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
@@ -57,6 +55,10 @@ import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleBeans;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSourceBeans;
+import org.jmhsrobotics.frc2025.commands.autoCommands.AutoIntakeCoral;
+import org.jmhsrobotics.frc2025.commands.autoCommands.AutoRemoveAlgae;
+import org.jmhsrobotics.frc2025.commands.autoCommands.AutoScoreAlgae;
+import org.jmhsrobotics.frc2025.commands.autoCommands.AutoScoreCoral;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeUntilCoralInIndexer;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
@@ -457,21 +459,6 @@ public class RobotContainer {
     SmartDashboard.putData("Fix Coral Placement", new FixCoralPlacement(intake));
 
     SmartDashboard.putData("Scheduler2", CommandScheduler.getInstance());
-    SmartDashboard.putData("cmd/Score Coral", new ScoreCoral(intake).withTimeout(0.15));
-    SmartDashboard.putData("cmd/Align Source Close", new AlignSource(drive, true));
-    SmartDashboard.putData("cmd/Align Source Far", new AlignSource(drive, false));
-    SmartDashboard.putData("cmd/Score Barge Wrist", new ScoreBargeWrist(wrist, elevator, intake));
-
-    SmartDashboard.putData(
-        "cmd/Intake Indexer",
-        new SequentialCommandGroup(
-            new ElevatorAndWristMove(
-                elevator,
-                wrist,
-                Constants.ElevatorConstants.kCoralIntakeMeters,
-                Constants.WristConstants.kRotationIntakeCoralDegrees),
-            new IntakeFromIndexer(wrist, intake, indexer, led),
-            new FixCoralPlacement(intake)));
     SmartDashboard.putData(
         "cmd/Align Preset Southwest",
         new AlignReefSetAngle(drive, vision, led, elevator, true, 19));
@@ -481,32 +468,6 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Align Preset Northwest",
         new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
-    SmartDashboard.putData("cmd/Run Indexer", new IndexerMove(indexer));
-    SmartDashboard.putData(
-        "cmd/Run Intake Sequence",
-        new SequentialCommandGroup(
-            new ElevatorAndWristMove(
-                elevator,
-                wrist,
-                Constants.ElevatorConstants.kCoralIntakeMeters,
-                Constants.WristConstants.kRotationIntakeCoralDegrees),
-            new IntakeFromIndexer(wrist, intake, indexer, led),
-            new FixCoralPlacement(intake)));
-    SmartDashboard.putData(
-        "cmd/Align Barge",
-        new AlignBarge(drive, control.AdjustAlignBargeLeft(), control.AdjustAlignBargeRight()));
-
-    SmartDashboard.putData(
-        "cmd/Align Reef Beans ID 6",
-        new AlignReefSetAngleBeans(drive, vision, led, elevator, true, 6));
-
-    SmartDashboard.putData(
-        "cmd/Test shoot with wrist",
-        new SequentialCommandGroup(
-            new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel4Meters),
-            new ParallelCommandGroup(
-                new ScoreCoral(intake),
-                new WristMoveTo(wrist, Constants.WristConstants.kLevel4Degrees))));
   }
 
   private void configurePathPlanner() {
@@ -554,6 +515,7 @@ public class RobotContainer {
 
       NamedCommands.registerCommand(
           "Fix Coral Placement", new FixCoralPlacement(intake).withTimeout(1.2));
+
     } else {
       NamedCommands.registerCommand(
           "Intake Until Indexer Has Coral",
@@ -655,6 +617,63 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Wrist Only L4 Unending",
         new WristMoveToNoFinish(wrist, Constants.WristConstants.kLevel4Degrees));
+
+    NamedCommands.registerCommand(
+        "Intake Coral And Align Source",
+        new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral RNW",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 20));
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral RSW",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 19));
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral LSW",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 19));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral LS",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 18));
+
+    NamedCommands.registerCommand(
+        "Intake North Algae",
+        new AutoRemoveAlgae(
+            drive,
+            elevator,
+            wrist,
+            intake,
+            vision,
+            21,
+            Constants.ElevatorConstants.kAlgaeIntakeL2Meters));
+
+    NamedCommands.registerCommand(
+        "Intake North West Algae",
+        new AutoRemoveAlgae(
+            drive,
+            elevator,
+            wrist,
+            intake,
+            vision,
+            20,
+            Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
+
+    NamedCommands.registerCommand(
+        "Score Barge Right", new AutoScoreAlgae(drive, elevator, wrist, intake, 1.2));
+
+    NamedCommands.registerCommand(
+        "Score Barge Right Center", new AutoScoreAlgae(drive, elevator, wrist, intake, 0.5));
+
+    NamedCommands.registerCommand(
+        "Intake North East Algae",
+        new AutoRemoveAlgae(
+            drive,
+            elevator,
+            wrist,
+            intake,
+            vision,
+            22,
+            Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
   }
 
   public Command getToggleBrakeCommand() {

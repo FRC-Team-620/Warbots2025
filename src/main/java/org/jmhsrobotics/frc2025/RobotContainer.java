@@ -639,12 +639,24 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Intake North Algae",
         new AutoRemoveAlgae(
-            drive, elevator, wrist, vision, 21, Constants.ElevatorConstants.kAlgaeIntakeL2Meters));
+            drive,
+            elevator,
+            wrist,
+            intake,
+            vision,
+            21,
+            Constants.ElevatorConstants.kAlgaeIntakeL2Meters));
 
     NamedCommands.registerCommand(
         "Intake North West Algae",
         new AutoRemoveAlgae(
-            drive, elevator, wrist, vision, 20, Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
+            drive,
+            elevator,
+            wrist,
+            intake,
+            vision,
+            20,
+            Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
 
     NamedCommands.registerCommand(
         "Score Barge Right", new AutoScoreAlgae(drive, elevator, wrist, intake, 1.2));
@@ -655,7 +667,13 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Intake North East Algae",
         new AutoRemoveAlgae(
-            drive, elevator, wrist, vision, 22, Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
+            drive,
+            elevator,
+            wrist,
+            intake,
+            vision,
+            22,
+            Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
   }
 
   public Command getToggleBrakeCommand() {

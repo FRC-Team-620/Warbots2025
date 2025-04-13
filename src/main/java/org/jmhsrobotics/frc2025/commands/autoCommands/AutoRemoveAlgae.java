@@ -20,9 +20,14 @@ public class AutoRemoveAlgae extends ParallelCommandGroup {
       int targetTagID,
       double elevatorGoalMeters) {
     addCommands(
-        new RemoveAlgaeAutoAlign(drive, vision, targetTagID),
-        new ElevatorAndWristMove(
-            elevator, wrist, elevatorGoalMeters, Constants.WristConstants.kRotationAlgaeDegrees),
-        Commands.run(() -> intake.set(-0.6), intake));
+        Commands.run(() -> intake.set(-0.6))
+            .withDeadline(
+                new ParallelCommandGroup(
+                    new RemoveAlgaeAutoAlign(drive, vision, targetTagID),
+                    new ElevatorAndWristMove(
+                        elevator,
+                        wrist,
+                        elevatorGoalMeters,
+                        Constants.WristConstants.kRotationAlgaeDegrees))));
   }
 }

@@ -58,6 +58,18 @@
           "data": {
             "name": "Score Barge Right Center"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae Auto Intermediate Route.0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake North East Algae"
+          }
         }
       ]
     }

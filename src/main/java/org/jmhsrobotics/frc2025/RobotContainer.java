@@ -402,12 +402,7 @@ public class RobotContainer {
         .changeModeRight()
         .onTrue(Commands.runOnce(() -> intake.setMode(1), intake).ignoringDisable(true));
 
-    control
-        .zeroElevator()
-        .onTrue(
-            new SequentialCommandGroup(
-                new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees),
-                new ElevatorSetZero(elevator)));
+    control.zeroElevator().onTrue(new ElevatorSetZero(elevator, wrist));
 
     control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));
 
@@ -456,7 +451,7 @@ public class RobotContainer {
         "cmd/SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
     SmartDashboard.putData(
         "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
-    SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
+    SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator, wrist));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData(
         "cmd/Align Reef Left", new AlignReef(drive, vision, led, elevator, true).withTimeout(5));
@@ -645,12 +640,24 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Intake North Algae",
         new AutoRemoveAlgae(
-            drive, elevator, wrist, vision, 21, Constants.ElevatorConstants.kAlgaeIntakeL2Meters));
+            drive,
+            elevator,
+            wrist,
+            intake,
+            vision,
+            21,
+            Constants.ElevatorConstants.kAlgaeIntakeL2Meters));
 
     NamedCommands.registerCommand(
         "Intake North West Algae",
         new AutoRemoveAlgae(
-            drive, elevator, wrist, vision, 20, Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
+            drive,
+            elevator,
+            wrist,
+            intake,
+            vision,
+            20,
+            Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
 
     NamedCommands.registerCommand(
         "Score Barge Right", new AutoScoreAlgae(drive, elevator, wrist, intake, 1.2));
@@ -661,7 +668,13 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Intake North East Algae",
         new AutoRemoveAlgae(
-            drive, elevator, wrist, vision, 22, Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
+            drive,
+            elevator,
+            wrist,
+            intake,
+            vision,
+            22,
+            Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
   }
 
   public Command getToggleBrakeCommand() {

@@ -152,8 +152,6 @@ public class AlignReefSetAngle extends Command {
               Math.pow(tagPose.getX() - goalTransform.getX(), 2)
                   + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
 
-      Logger.recordOutput(
-          "Align/Align Reef Set Angle Distance", Units.metersToInches(this.currentDistance));
       if (currentDistance > Units.inchesToMeters(1)) drive.runVelocity(outputSpeeds);
       // led.setPattern(progressPattern);
     }

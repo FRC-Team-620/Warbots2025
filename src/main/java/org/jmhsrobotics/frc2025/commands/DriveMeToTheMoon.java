@@ -62,6 +62,8 @@ public class DriveMeToTheMoon extends Command {
   // timer used for detecting if coral is in front of reef
   private Timer timer = new Timer();
 
+  private double currentDistance;
+
   // boolean for if bot should align left or right
 
   public DriveMeToTheMoon(
@@ -185,18 +187,19 @@ public class DriveMeToTheMoon extends Command {
         double thetaGoalDegrees = AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees());
         targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
         // calculates distance from goal position
-        double distance =
+        this.currentDistance =
             Math.sqrt(
                 Math.pow(tagPose.getX() - goalTransform.getX(), 2)
                     + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
-        if (distance > Units.inchesToMeters(5) && distance < Units.inchesToMeters(7)) timer.start();
+        if (this.currentDistance > Units.inchesToMeters(5)
+            && this.currentDistance < Units.inchesToMeters(7)) timer.start();
         else timer.reset();
 
         if (timer.hasElapsed(.001)) drive.setAlignBlockedByCoral(true);
         else drive.setAlignBlockedByCoral(false);
 
         Logger.recordOutput("Align/Timer Value", timer.get());
-        Logger.recordOutput("Align/Align Distance", Units.metersToInches(distance));
+        Logger.recordOutput("Align/Align Distance", Units.metersToInches(this.currentDistance));
 
         if (autoIntakeAlgae.getAsBoolean()) {
           if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(5.5)

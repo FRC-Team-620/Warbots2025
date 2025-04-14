@@ -189,20 +189,6 @@ public class DriveMeToTheMoon extends Command {
         // calculate angle goal, target tag ID, goal transform from tag and tag position
         double thetaGoalDegrees = AutoAlign.calculateGoalAngle(drive.getRotation().getDegrees());
         targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
-        // calculates distance from goal position
-        this.currentDistance =
-            Math.sqrt(
-                Math.pow(tagPose.getX() - goalTransform.getX(), 2)
-                    + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
-        if (this.currentDistance > Units.inchesToMeters(5)
-            && this.currentDistance < Units.inchesToMeters(7)) timer.start();
-        else timer.reset();
-
-        if (timer.hasElapsed(.001)) drive.setAlignBlockedByCoral(true);
-        else drive.setAlignBlockedByCoral(false);
-
-        Logger.recordOutput("Align/Timer Value", timer.get());
-        Logger.recordOutput("Align/Align Distance", Units.metersToInches(this.currentDistance));
 
         if (autoIntakeAlgae.getAsBoolean()) {
           if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(5.5)
@@ -247,12 +233,25 @@ public class DriveMeToTheMoon extends Command {
                       thetaController, thetaGoalDegrees, drive.getRotation()));
           speeds = speeds.plus(reefAlignSpeeds);
 
+          // calculates distance from goal position
+          this.currentDistance =
+              Math.sqrt(
+                  Math.pow(tagPose.getX() - goalTransform.getX(), 2)
+                      + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
+
+          if (this.currentDistance > Units.inchesToMeters(4)
+              && this.currentDistance < Units.inchesToMeters(6)) timer.start();
+          else timer.reset();
+
+          if (timer.hasElapsed(2)) drive.setAlignBlockedByCoral(true);
+          else drive.setAlignBlockedByCoral(false);
+
+          Logger.recordOutput("Align/Timer Value", timer.get());
+          Logger.recordOutput("Align/Align Distance Meters", this.currentDistance);
+
           // For LED driver feedback
           Logger.recordOutput("Align/X Distance", Math.abs(tagPose.getX() - goalTransform.getX()));
           Logger.recordOutput("Align/Y Distance", Math.abs(tagPose.getY() - goalTransform.getY()));
-          Logger.recordOutput(
-              "Align/Theta Distance",
-              Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees));
 
           drive.setAutoAlignComplete(
               Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)

@@ -1,5 +1,6 @@
 package org.jmhsrobotics.frc2025.commands.autoCommands;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.jmhsrobotics.frc2025.Constants;
@@ -15,9 +16,11 @@ public class AutoScoreAlgae extends SequentialCommandGroup {
   public AutoScoreAlgae(
       Drive drive, Elevator elevator, Wrist wrist, Intake intake, double yOffset) {
     addCommands(
-        new ParallelCommandGroup(
-            new AlignBarge(drive, yOffset),
-            new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kBargeMeters)),
+        Commands.run(() -> intake.set(-0.3), intake)
+            .withDeadline(
+                new ParallelCommandGroup(
+                    new AlignBarge(drive, yOffset),
+                    new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kBargeMeters))),
         new ScoreBargeWrist(wrist, elevator, intake));
   }
 }

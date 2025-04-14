@@ -28,6 +28,8 @@ public interface ControlBoard {
 
   public Trigger AdjustAlignBargeRight();
 
+  public Trigger L1AutoAlign();
+
   // =======Operator Controls=======
 
   public DoubleSupplier intakeCoral();

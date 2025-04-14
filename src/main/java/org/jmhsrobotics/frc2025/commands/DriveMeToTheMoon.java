@@ -2,6 +2,8 @@ package org.jmhsrobotics.frc2025.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
@@ -43,6 +46,8 @@ public class DriveMeToTheMoon extends Command {
   private final PIDController sourceXController = new PIDController(0.9, 0, 0.01);
   private final PIDController sourceYController = new PIDController(0.9, 0, 0.01);
 
+  private Debouncer alignStuckDebouncer = new Debouncer(0.06, DebounceType.kBoth);
+
   private Trigger autoIntakeAlgae;
   private Trigger l1AlignOverride;
   private int targetId;
@@ -58,6 +63,11 @@ public class DriveMeToTheMoon extends Command {
   private static final double DEADBAND = 0.05;
 
   private DoubleSupplier xSupplier, ySupplier, omegaSupplier, leftTriggerValue, rightTriggerValue;
+
+  // timer used for detecting if coral is in front of reef
+  private Timer timer = new Timer();
+
+  private double currentDistance;
 
   // boolean for if bot should align left or right
 
@@ -227,12 +237,31 @@ public class DriveMeToTheMoon extends Command {
                       thetaController, thetaGoalDegrees, drive.getRotation()));
           speeds = speeds.plus(reefAlignSpeeds);
 
-          // For LED driver feedback
-          Logger.recordOutput("Align/X Distance", Math.abs(tagPose.getX() - goalTransform.getX()));
-          Logger.recordOutput("Align/Y Distance", Math.abs(tagPose.getY() - goalTransform.getY()));
+          // calculates distance from goal position
+          this.currentDistance =
+              Math.sqrt(
+                  Math.pow(tagPose.getX() - goalTransform.getX(), 2)
+                      + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
+
+          if (alignStuckDebouncer.calculate(
+              tagPose.getX() - goalTransform.getX() > Units.inchesToMeters(3)
+                  && tagPose.getX() - goalTransform.getX() < Units.inchesToMeters(4.3)
+                  && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(10)))
+            timer.start();
+          else timer.reset();
+
+          if (timer.hasElapsed(0.15)) drive.setAlignBlockedByCoral(true);
+          else drive.setAlignBlockedByCoral(false);
+
+          Logger.recordOutput("Align/Timer Value", timer.get());
           Logger.recordOutput(
-              "Align/Theta Distance",
-              Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees));
+              "Align/Align Distance Inches", Units.metersToInches(this.currentDistance));
+
+          // For LED driver feedback
+          Logger.recordOutput(
+              "Align/X Distance",
+              Units.metersToInches(Math.abs(tagPose.getX() - goalTransform.getX())));
+          Logger.recordOutput("Align/Y Distance", Math.abs(tagPose.getY() - goalTransform.getY()));
 
           drive.setAutoAlignComplete(
               Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
@@ -243,6 +272,8 @@ public class DriveMeToTheMoon extends Command {
       } else {
         lastTagPose = null;
         drive.setAutoAlignComplete(false);
+        drive.setAlignBlockedByCoral(false);
+        timer.reset();
       }
     }
     // really weird way of stoping auto algae intake from starting at the intake setpoint instead of

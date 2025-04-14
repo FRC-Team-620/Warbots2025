@@ -65,6 +65,13 @@ public class DoubleControl implements ControlBoard {
             return elevator.getSetpoint() == Constants.ElevatorConstants.kCoralIntakeMeters;
           });
 
+  private Trigger elevatorAtL4 =
+      new Trigger(
+          () -> {
+            return elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters
+                && elevator.atGoal();
+          });
+
   // ========Driver Controls========
 
   @Override
@@ -160,7 +167,12 @@ public class DoubleControl implements ControlBoard {
 
   @Override
   public Trigger placeCoralLevel4() {
-    return operator.y().and(coralMode);
+    return operator.y().and(coralMode).and(elevatorAtL4.negate());
+  }
+
+  @Override
+  public Trigger altPlaceCoralLevel4() {
+    return operator.y().and(elevatorAtL4).and(coralMode);
   }
 
   @Override

@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
@@ -34,6 +35,7 @@ public class AlignReefSetAngle extends Command {
   private Pose3d lastTagPose = null;
   private Transform2d goalTransform;
   private Pose3d tagPose;
+  private Timer timer = new Timer();
 
   // boolean for if bot should align left or right
   private boolean isLeft = true;
@@ -64,6 +66,8 @@ public class AlignReefSetAngle extends Command {
     this.goalTransform = AutoAlign.calculateReefTransform(this.elevator.getSetpoint(), isLeft);
     this.targetTagId = AutoAlign.adjustTagID(this.targetTagId);
     this.thetaGoalDegrees = AutoAlign.calculateGoalAngleFromId(this.targetTagId);
+    timer.reset();
+    timer.start();
   }
 
   @Override
@@ -118,6 +122,7 @@ public class AlignReefSetAngle extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    Logger.recordOutput("Align/Non Profiled Align Time", timer.get());
     drive.stop();
   }
 }

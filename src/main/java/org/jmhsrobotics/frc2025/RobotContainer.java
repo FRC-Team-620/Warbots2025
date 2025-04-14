@@ -53,6 +53,7 @@ import org.jmhsrobotics.frc2025.commands.autoAlign.AlignBarge;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReef;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleBeans;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleProf;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSourceBeans;
 import org.jmhsrobotics.frc2025.commands.autoCommands.AutoIntakeCoral;
@@ -476,12 +477,10 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Align Preset Southwest",
         new AlignReefSetAngle(drive, vision, led, elevator, true, 19));
+
     SmartDashboard.putData(
-        "cmd/Align Preset Southwest Right",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 19));
-    SmartDashboard.putData(
-        "cmd/Align Preset Northwest",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
+        "cmd/Align Left Southwest Profiled",
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 19));
   }
 
   private void configurePathPlanner() {
@@ -688,6 +687,10 @@ public class RobotContainer {
             vision,
             22,
             Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
+
+    NamedCommands.registerCommand(
+        "[Finish Intake and Score LSW Prof]",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 19, true));
   }
 
   public Command getToggleBrakeCommand() {

@@ -2,6 +2,7 @@ package org.jmhsrobotics.frc2025.commands.autoAlign;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -11,6 +12,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
@@ -25,11 +27,11 @@ public class AlignReefSetAngleProf extends Command {
   private final Vision vision;
   private final LED led;
   private final Elevator elevator;
-
+  private Timer timer = new Timer();
   // private final PIDController xController = new PIDController(0.525, 0, 0.01);
   // private final PIDController yController = new PIDController(0.525, 0, 0.01);
   private final ProfiledPIDControllerCustom distController =
-      new ProfiledPIDControllerCustom(0.525, 0, 0.01, new Constraints(100, 4.0, 2));
+      new ProfiledPIDControllerCustom(3.6, 0, 0.01, new Constraints(6, 10, 2.5));
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
@@ -116,6 +118,9 @@ public class AlignReefSetAngleProf extends Command {
     this.goalTransform = AutoAlign.calculateReefTransform(this.elevator.getSetpoint(), isLeft);
     adjustTagId();
     this.thetaGoalDegrees = calculateGoalAngleFromId(this.targetTagId);
+
+    timer.reset();
+    timer.start();
   }
 
   @Override
@@ -179,9 +184,18 @@ public class AlignReefSetAngleProf extends Command {
       Logger.recordOutput("Align Reef/Target Angle1", this.thetaGoalDegrees);
       Logger.recordOutput("Align Reef/Distance From Reef", this.currentDistance);
 
+      outputSpeeds =
+          ChassisSpeeds.fromFieldRelativeSpeeds(
+              outputSpeeds,
+              DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+                  ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                  : drive.getRotation());
       // calculates the distance from target for the LED progress pattern
+      drive.runVelocity(outputSpeeds);
 
-      if (currentDistance > Units.inchesToMeters(1)) drive.runVelocity(outputSpeeds);
+      // if (currentDistance > Units.inchesToMeters(1))
+      //   drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(outputSpeeds,
+      // drive.getRotation()));
       // led.setPattern(progressPattern);
     }
   }
@@ -193,6 +207,7 @@ public class AlignReefSetAngleProf extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    Logger.recordOutput("Align/Profiled Align Time", timer.get());
     drive.stop();
   }
 }

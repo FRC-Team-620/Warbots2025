@@ -7,6 +7,7 @@ import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleProf;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
@@ -73,6 +74,33 @@ public class AutoScoreCoral extends SequentialCommandGroup {
                     new FixCoralPlacement(intake).withTimeout(2),
                     new ElevatorAndWristMove(
                         elevator, wrist, elevatorGoalMeters, wristGoalDegrees)))),
+        new ScoreCoral(intake).withTimeout(0.15));
+  }
+
+  public AutoScoreCoral(
+      Drive drive,
+      Elevator elevator,
+      Wrist wrist,
+      Intake intake,
+      Indexer indexer,
+      Vision vision,
+      LED led,
+      boolean isLeft,
+      int targetTagID,
+      boolean isProfiled) {
+    addCommands(
+        new ParallelCommandGroup(
+            new AlignReefSetAngleProf(drive, vision, led, elevator, isLeft, targetTagID),
+            new SequentialCommandGroup(
+                new IntakeFromIndexer(wrist, intake, indexer, led)
+                    .withTimeout(2)
+                    .onlyIf(() -> Robot.isSimulation()),
+                new IntakeFromIndexer(wrist, intake, indexer, led)
+                    .withTimeout(8)
+                    .onlyIf(() -> Robot.isReal()),
+                new ParallelCommandGroup(
+                    new FixCoralPlacement(intake).withTimeout(2),
+                    new ElevatorAndWristMoveAlt(elevator, wrist)))),
         new ScoreCoral(intake).withTimeout(0.15));
   }
 }

@@ -196,7 +196,7 @@ public class RobotContainer {
         break;
     }
 
-    this.control = new DoubleControl(intake, elevator);
+    this.control = new DoubleControl(drive, intake, elevator);
 
     led = new LED();
 
@@ -414,6 +414,21 @@ public class RobotContainer {
         .autoAlignBarge()
         .whileTrue(
             new AlignBarge(drive, control.AdjustAlignBargeLeft(), control.AdjustAlignBargeRight()));
+
+    control.TeleopAutoScore()
+        .whileTrue(
+            new TeleopCoralScoreSequence(drive, elevator, wrist, intake, indexer, vision, led));
+
+    control.skipAutoScoreEast().onTrue(Commands.runOnce(() -> drive.addCoralScoredEast(), drive));
+
+    control.skipAutoScoreWest().onTrue(Commands.runOnce(() -> drive.addCoralScoredWest(), drive));
+
+    control
+        .revertAutoScoreEast()
+        .onTrue(Commands.runOnce(() -> drive.removeCoralScoredEast(), drive));
+    control
+        .revertAutoScoreWest()
+        .onTrue(Commands.runOnce(() -> drive.removeCoralScoredWest(), drive));
   }
 
   private void configureDriverFeedback() {

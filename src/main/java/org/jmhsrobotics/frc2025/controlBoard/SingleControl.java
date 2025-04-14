@@ -111,6 +111,11 @@ public class SingleControl implements ControlBoard {
     return nop;
   }
 
+  @Override
+  public Trigger TeleopAutoScore() {
+    return nop;
+  }
+
   // =======Operator Controls=======
 
   @Override
@@ -215,5 +220,25 @@ public class SingleControl implements ControlBoard {
   @Override
   public Trigger zeroElevator() {
     return driver.leftStick();
+  }
+
+  @Override
+  public Trigger skipAutoScoreEast() {
+    return nop;
+  }
+
+  @Override
+  public Trigger skipAutoScoreWest() {
+    return nop;
+  }
+
+  @Override
+  public Trigger revertAutoScoreEast() {
+    return nop;
+  }
+
+  @Override
+  public Trigger revertAutoScoreWest() {
+    return nop;
   }
 }

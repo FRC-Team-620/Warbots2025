@@ -30,6 +30,8 @@ public interface ControlBoard {
 
   public Trigger L1AutoAlign();
 
+  public Trigger TeleopAutoScore();
+
   // =======Operator Controls=======
 
   public DoubleSupplier intakeCoral();
@@ -69,4 +71,12 @@ public interface ControlBoard {
   public Trigger UnOverrideControlMode();
 
   public Trigger zeroElevator();
+
+  public Trigger skipAutoScoreEast();
+
+  public Trigger skipAutoScoreWest();
+
+  public Trigger revertAutoScoreEast();
+
+  public Trigger revertAutoScoreWest();
 }

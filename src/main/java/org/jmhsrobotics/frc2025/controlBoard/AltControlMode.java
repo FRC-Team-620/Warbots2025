@@ -53,7 +53,8 @@ public class AltControlMode implements ControlBoard {
   private Trigger elevatorAtL4 =
       new Trigger(
           () -> {
-            return elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters;
+            return elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters
+                && elevator.atGoal();
           });
 
   @Override
@@ -163,7 +164,7 @@ public class AltControlMode implements ControlBoard {
 
   @Override
   public Trigger altPlaceCoralLevel4() {
-    return driver.y().and(elevatorAtL4);
+    return driver.y().and(elevatorAtL4).and(coralMode);
   }
 
   @Override

@@ -112,6 +112,11 @@ public class SingleControl implements ControlBoard {
     return driver.povRight();
   }
 
+  @Override
+  public Trigger L1AutoAlign() {
+    return nop;
+  }
+
   // =======Operator Controls=======
 
   @Override

@@ -127,6 +127,11 @@ public class DoubleControl implements ControlBoard {
     return driver.povRight();
   }
 
+  @Override
+  public Trigger L1AutoAlign() {
+    return driver.y();
+  }
+
   // =======Operator Controls=======
 
   @Override

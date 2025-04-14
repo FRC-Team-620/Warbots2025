@@ -1,0 +1,80 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid Start Auto.0"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Reef Right North"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator And Wrist L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake North Algae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Barge Right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake North West Algae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Barge Right Center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae Auto Intermediate Route.0"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake North East Algae"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Mid Start",
+  "choreoAuto": true
+}

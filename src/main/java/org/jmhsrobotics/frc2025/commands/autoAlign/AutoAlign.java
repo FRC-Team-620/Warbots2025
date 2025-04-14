@@ -193,4 +193,43 @@ public class AutoAlign {
                 + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
     return currentDistance;
   }
+
+  public static int adjustTagID(int targetTagID) {
+    if (DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red) {
+      switch (targetTagID) {
+        case 17:
+          return 8;
+        case 18:
+          return 7;
+        case 19:
+          return 6;
+        case 20:
+          return 11;
+        case 21:
+          return 10;
+        case 22:
+          return 9;
+      }
+    }
+    return targetTagID;
+  }
+
+  public static double calculateGoalAngleFromId(int targetTagId) {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+      if (targetTagId == 18) return 0;
+      else if (targetTagId == 17) return 60;
+      else if (targetTagId == 22) return 120;
+      else if (targetTagId == 21) return 180;
+      else if (targetTagId == 19) return -60;
+      else return -120;
+    }
+
+    // if current alliance is red, use the following angles
+    if (targetTagId == 7) return 180;
+    else if (targetTagId == 8) return -120;
+    else if (targetTagId == 10) return 0;
+    else if (targetTagId == 6) return 120;
+    else if (targetTagId == 9) return -60;
+    else return 60;
+  }
 }

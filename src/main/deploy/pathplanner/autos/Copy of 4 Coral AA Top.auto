@@ -1,0 +1,100 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Top Start Auto.0"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Align Reef Right NorthWest"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator And Wrist L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Score Coral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral And Align Source"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Finish Intake and Score Coral LSW"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral And Align Source"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Finish Intake and Score Coral RSW"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral And Align Source"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Finish Intake and Score Coral LS"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral And Align Source"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Top Start",
+  "choreoAuto": true
+}

@@ -319,6 +319,15 @@ public class RobotContainer {
                 Constants.WristConstants.kLevel4Degrees));
 
     control
+        .altPlaceCoralLevel4()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kAltLevel4Meters,
+                Constants.WristConstants.kAltLevel4Degrees));
+
+    control
         .scoreAlgaeProcesser()
         .onTrue(
             new ElevatorAndWristMove(
@@ -452,8 +461,12 @@ public class RobotContainer {
     new Trigger(drive::isAutoAlignComplete)
         .whileTrue(
             Commands.run(
-                    () -> led.setPattern(LEDPattern.solid(Color.kCyan).blink(Seconds.of(0.1))), led)
-                .withTimeout(1.5));
+                () -> led.setPattern(LEDPattern.solid(Color.kCyan).blink(Seconds.of(0.1))), led));
+
+    new Trigger(drive::getAlignBlockedByCoral)
+        .whileTrue(
+            Commands.run(
+                () -> led.setPattern(LEDPattern.solid(Color.kRed).blink(Seconds.of(0.1))), led));
   }
 
   private void setupSmartDashbaord() {

@@ -185,6 +185,15 @@ public class AutoAlign {
         0);
   }
 
+  public static double getAutoAlignDistance(Pose3d tagPose, Transform2d goalTransform) {
+    double currentDistance;
+    currentDistance =
+        Math.sqrt(
+            Math.pow(tagPose.getX() - goalTransform.getX(), 2)
+                + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
+    return currentDistance;
+  }
+
   public static int adjustTagID(int targetTagID) {
     if (DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red) {
       switch (targetTagID) {

@@ -49,6 +49,12 @@ public class SingleControl implements ControlBoard {
             return elevator.getSetpoint() == Constants.ElevatorConstants.kCoralIntakeMeters;
           });
 
+  private Trigger elevatorAtL4 =
+      new Trigger(
+          () -> {
+            return elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters;
+          });
+
   // ========Driver Controls========
 
   @Override
@@ -156,6 +162,11 @@ public class SingleControl implements ControlBoard {
   public Trigger placeCoralLevel4() {
     // if (intake.getMode() != Constants.ModeConstants.kCoral) return nop;
     return driver.y().and(coralMode);
+  }
+
+  @Override
+  public Trigger altPlaceCoralLevel4() {
+    return driver.y().and(elevatorAtL4);
   }
 
   @Override

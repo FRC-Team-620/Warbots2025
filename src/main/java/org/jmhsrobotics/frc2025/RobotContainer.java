@@ -445,13 +445,12 @@ public class RobotContainer {
     new Trigger(drive::isAutoAlignComplete)
         .whileTrue(
             Commands.run(
-                    () -> led.setPattern(LEDPattern.solid(Color.kCyan).blink(Seconds.of(0.1))), led));
+                () -> led.setPattern(LEDPattern.solid(Color.kCyan).blink(Seconds.of(0.1))), led));
 
     new Trigger(drive::getAlignBlockedByCoral)
         .whileTrue(
             Commands.run(
-                    () -> led.setPattern(LEDPattern.solid(Color.kWhite).blink(Seconds.of(0.1))),
-                    led));
+                () -> led.setPattern(LEDPattern.solid(Color.kWhite).blink(Seconds.of(0.1))), led));
   }
 
   private void setupSmartDashbaord() {

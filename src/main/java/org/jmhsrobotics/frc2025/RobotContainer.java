@@ -52,10 +52,8 @@ import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignBarge;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReef;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
-import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleBeans;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleProf;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
-import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSourceBeans;
 import org.jmhsrobotics.frc2025.commands.autoCommands.AutoIntakeCoral;
 import org.jmhsrobotics.frc2025.commands.autoCommands.AutoRemoveAlgae;
 import org.jmhsrobotics.frc2025.commands.autoCommands.AutoScoreAlgae;
@@ -490,6 +488,7 @@ public class RobotContainer {
     SmartDashboard.putData("Fix Coral Placement", new FixCoralPlacement(intake));
 
     SmartDashboard.putData("Scheduler2", CommandScheduler.getInstance());
+
     SmartDashboard.putData(
         "cmd/Align Preset Southwest",
         new AlignReefSetAngle(drive, vision, led, elevator, true, 19));
@@ -583,75 +582,55 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Align Reef Left North",
-        new AlignReefSetAngle(drive, vision, led, elevator, true, 21).withTimeout(4));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 21).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Left NorthWest",
-        new AlignReefSetAngle(drive, vision, led, elevator, true, 20).withTimeout(4));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 20).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Left NorthEast",
-        new AlignReefSetAngle(drive, vision, led, elevator, true, 22).withTimeout(4));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 22).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Left South",
-        new AlignReefSetAngle(drive, vision, led, elevator, true, 18).withTimeout(4));
-
-    NamedCommands.registerCommand(
-        "Align Reef Left South BEANS",
-        new AlignReefSetAngleBeans(drive, vision, led, elevator, true, 18).withTimeout(4));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 18).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Left SouthWest",
-        new AlignReefSetAngle(drive, vision, led, elevator, true, 19).withTimeout(4));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 19).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Left SouthEast",
-        new AlignReefSetAngle(drive, vision, led, elevator, true, 17).withTimeout(4));
-
-    NamedCommands.registerCommand(
-        "Align Reef Left SouthEast BEANS",
-        new AlignReefSetAngleBeans(drive, vision, led, elevator, true, 17).withTimeout(4));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 17).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right North",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 21).withTimeout(4));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, false, 21).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right NorthWest",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 20).withTimeout(4));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, false, 20).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right NorthEast",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 22).withTimeout(4));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, false, 22).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right South",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 18).withTimeout(4));
-
-    NamedCommands.registerCommand(
-        "Align Reef Right South BEANS",
-        new AlignReefSetAngleBeans(drive, vision, led, elevator, false, 18).withTimeout(4));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, false, 18).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right SouthWest",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 19).withTimeout(4));
-
-    NamedCommands.registerCommand(
-        "Align Reef Right SouthWest BEANS",
-        new AlignReefSetAngleBeans(drive, vision, led, elevator, false, 19).withTimeout(4));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, false, 19).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right SouthEast",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 17).withTimeout(4));
-
-    NamedCommands.registerCommand("Stop Drivetrain", Commands.runOnce(() -> drive.stop(), drive));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, false, 17).withTimeout(4));
 
     NamedCommands.registerCommand("Drive Backwards", new DriveBackwards(drive));
 
     NamedCommands.registerCommand("Align Source", new AlignSource(drive, false));
-
-    NamedCommands.registerCommand("Align Source Beans", new AlignSourceBeans(drive, false));
 
     NamedCommands.registerCommand(
         "Elevator Only L4",
@@ -680,6 +659,22 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral LS",
         new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 18));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral LNE",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 22));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral RSE",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 17));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral LSE",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 17));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral RS",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 18));
 
     NamedCommands.registerCommand(
         "Intake North Algae",
@@ -719,10 +714,6 @@ public class RobotContainer {
             vision,
             22,
             Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
-
-    NamedCommands.registerCommand(
-        "[Finish Intake and Score LSW Prof]",
-        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 19, true));
   }
 
   public Command getToggleBrakeCommand() {

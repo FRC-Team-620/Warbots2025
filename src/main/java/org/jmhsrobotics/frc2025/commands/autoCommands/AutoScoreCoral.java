@@ -6,7 +6,6 @@ import org.jmhsrobotics.frc2025.Robot;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
-import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleProf;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
@@ -29,7 +28,7 @@ public class AutoScoreCoral extends SequentialCommandGroup {
       int targetTagID) {
     addCommands(
         new ParallelCommandGroup(
-            new AlignReefSetAngle(drive, vision, led, elevator, isLeft, targetTagID),
+            new AlignReefSetAngleProf(drive, vision, led, elevator, isLeft, targetTagID),
             // intakes from indexer, timeout dependent on if sim or real, also fixes coral placement
             // and then raises the elevator and moves wrist
             new SequentialCommandGroup(
@@ -62,7 +61,7 @@ public class AutoScoreCoral extends SequentialCommandGroup {
       double wristGoalDegrees) {
     addCommands(
         new ParallelCommandGroup(
-            new AlignReefSetAngle(drive, vision, led, elevator, isLeft, targetTagID),
+            new AlignReefSetAngleProf(drive, vision, led, elevator, isLeft, targetTagID),
             new SequentialCommandGroup(
                 new IntakeFromIndexer(wrist, intake, indexer, led)
                     .withTimeout(2)
@@ -74,33 +73,6 @@ public class AutoScoreCoral extends SequentialCommandGroup {
                     new FixCoralPlacement(intake).withTimeout(2),
                     new ElevatorAndWristMove(
                         elevator, wrist, elevatorGoalMeters, wristGoalDegrees)))),
-        new ScoreCoral(intake).withTimeout(0.15));
-  }
-
-  public AutoScoreCoral(
-      Drive drive,
-      Elevator elevator,
-      Wrist wrist,
-      Intake intake,
-      Indexer indexer,
-      Vision vision,
-      LED led,
-      boolean isLeft,
-      int targetTagID,
-      boolean isProfiled) {
-    addCommands(
-        new ParallelCommandGroup(
-            new AlignReefSetAngleProf(drive, vision, led, elevator, isLeft, targetTagID),
-            new SequentialCommandGroup(
-                new IntakeFromIndexer(wrist, intake, indexer, led)
-                    .withTimeout(2)
-                    .onlyIf(() -> Robot.isSimulation()),
-                new IntakeFromIndexer(wrist, intake, indexer, led)
-                    .withTimeout(8)
-                    .onlyIf(() -> Robot.isReal()),
-                new ParallelCommandGroup(
-                    new FixCoralPlacement(intake).withTimeout(2),
-                    new ElevatorAndWristMoveAlt(elevator, wrist)))),
         new ScoreCoral(intake).withTimeout(0.15));
   }
 }

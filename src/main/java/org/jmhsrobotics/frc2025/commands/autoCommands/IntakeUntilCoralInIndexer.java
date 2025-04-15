@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.Robot;
 import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.led.LED;
@@ -47,6 +48,7 @@ public class IntakeUntilCoralInIndexer extends Command {
 
   @Override
   public boolean isFinished() {
+    if (Robot.isSimulation()) return false;
     return indexer.hasCoral() || intake.isCoralInIntake();
   }
 

@@ -54,6 +54,7 @@ import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReef;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleProf;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSourceProf;
 import org.jmhsrobotics.frc2025.commands.autoCommands.AutoIntakeCoral;
 import org.jmhsrobotics.frc2025.commands.autoCommands.AutoRemoveAlgae;
 import org.jmhsrobotics.frc2025.commands.autoCommands.AutoScoreAlgae;
@@ -512,6 +513,8 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Auto Intake Coral",
         new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false));
+
+    SmartDashboard.putData("cmd/Align Source Profiled", new AlignSourceProf(drive, false));
   }
 
   private void configurePathPlanner() {

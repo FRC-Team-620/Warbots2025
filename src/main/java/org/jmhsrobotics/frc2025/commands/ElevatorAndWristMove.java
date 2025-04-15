@@ -86,6 +86,6 @@ public class ElevatorAndWristMove extends SequentialCommandGroup {
             .onlyIf(
                 () ->
                     elevator.getSetpoint() != elevatorGoalMeters
-                        && wrist.getSetpoint() != wristGoalDegrees));
+                        || wrist.getSetpoint() != wristGoalDegrees));
   }
 }

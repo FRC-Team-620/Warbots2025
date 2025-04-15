@@ -419,6 +419,8 @@ public class Drive extends SubsystemBase {
 
   public int getCoralScoredWest() {
     return this.coralScoredWest;
+  }
+
   public boolean getAlignBlockedByCoral() {
     return alignBlockedByCoral;
   }

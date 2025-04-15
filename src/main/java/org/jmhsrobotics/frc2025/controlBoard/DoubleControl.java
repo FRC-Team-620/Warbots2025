@@ -76,6 +76,8 @@ public class DoubleControl implements ControlBoard {
             return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
                 ? drive.getPose().getY() < 4
                 : drive.getPose().getY() > 4;
+          });
+
   private Trigger elevatorAtL4 =
       new Trigger(
           () -> {

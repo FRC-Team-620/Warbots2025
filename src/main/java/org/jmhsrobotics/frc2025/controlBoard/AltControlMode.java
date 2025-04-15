@@ -126,6 +126,11 @@ public class AltControlMode implements ControlBoard {
     return driver.leftBumper();
   }
 
+  @Override
+  public Trigger TeleopAutoScore() {
+    return nop;
+  }
+
   // =======Operator Controls=======
   @Override
   public Trigger intakeCoralFromIndexer() {
@@ -235,5 +240,25 @@ public class AltControlMode implements ControlBoard {
   @Override
   public Trigger AdjustAlignBargeRight() {
     return driver.povRight();
+  }
+
+  @Override
+  public Trigger skipAutoScoreEast() {
+    return nop;
+  }
+
+  @Override
+  public Trigger skipAutoScoreWest() {
+    return nop;
+  }
+
+  @Override
+  public Trigger revertAutoScoreEast() {
+    return nop;
+  }
+
+  @Override
+  public Trigger revertAutoScoreWest() {
+    return nop;
   }
 }

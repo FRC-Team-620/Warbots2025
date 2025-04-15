@@ -1,10 +1,13 @@
 package org.jmhsrobotics.frc2025.controlBoard;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
 import org.jmhsrobotics.frc2025.Constants;
+import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.util.ControllerMonitor;
@@ -15,12 +18,14 @@ public class DoubleControl implements ControlBoard {
   public CommandXboxController operator = new CommandXboxController(1);
   private Intake intake;
   private Elevator elevator;
+  private Drive drive;
 
-  public DoubleControl(Intake intake, Elevator elevator) {
+  public DoubleControl(Drive drive, Intake intake, Elevator elevator) {
     ControllerMonitor.addController(this.operator.getHID(), "Operator");
     ControllerMonitor.addController(this.driver.getHID(), "Driver");
     this.intake = intake;
     this.elevator = elevator;
+    this.drive = drive;
     coralMode.whileTrue(
         new InstantCommand(
                 () -> {
@@ -63,6 +68,14 @@ public class DoubleControl implements ControlBoard {
       new Trigger(
           () -> {
             return elevator.getSetpoint() == Constants.ElevatorConstants.kCoralIntakeMeters;
+          });
+
+  private Trigger atEast =
+      new Trigger(
+          () -> {
+            return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+                ? drive.getPose().getY() < 4
+                : drive.getPose().getY() > 4;
           });
 
   private Trigger elevatorAtL4 =
@@ -131,6 +144,11 @@ public class DoubleControl implements ControlBoard {
   @Override
   public Trigger L1AutoAlign() {
     return driver.y();
+  }
+
+  @Override
+  public Trigger TeleopAutoScore() {
+    return driver.x();
   }
 
   // =======Operator Controls=======
@@ -233,5 +251,25 @@ public class DoubleControl implements ControlBoard {
   @Override
   public Trigger zeroElevator() {
     return operator.back();
+  }
+
+  @Override
+  public Trigger skipAutoScoreEast() {
+    return operator.povRight().and(atEast);
+  }
+
+  @Override
+  public Trigger revertAutoScoreEast() {
+    return operator.povLeft().and(atEast);
+  }
+
+  @Override
+  public Trigger skipAutoScoreWest() {
+    return operator.povRight().and(atEast.negate());
+  }
+
+  @Override
+  public Trigger revertAutoScoreWest() {
+    return operator.povLeft().and(atEast.negate());
   }
 }

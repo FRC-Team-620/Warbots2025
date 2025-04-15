@@ -21,6 +21,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -78,6 +79,9 @@ public class Drive extends SubsystemBase {
 
   private double driveVelocity = 0;
   private double driveAcceleration = 0;
+
+  private int coralScoredEast = 0;
+  private int coralScoredWest = 0;
 
   public Drive(
       GyroIO gyroIO,
@@ -138,6 +142,8 @@ public class Drive extends SubsystemBase {
     Logger.processInputs("Drive/Gyro", gyroInputs);
     Logger.recordOutput("Gyro/Gyro Connected", gyroInputs.connected);
     Logger.recordOutput("Gyro/Gyro Heading", gyroInputs.yawPosition);
+    Logger.recordOutput("Drive/Coral Scored East", this.coralScoredEast);
+    Logger.recordOutput("Drive/Coral Scored West", this.coralScoredWest);
 
     // Calculates acceleration and velocity, then logs them
     driveAcceleration =
@@ -385,6 +391,34 @@ public class Drive extends SubsystemBase {
 
   public boolean getTurboMode() {
     return turboMode;
+  }
+
+  public void addCoralScoredEast() {
+    this.coralScoredEast++;
+    this.coralScoredEast = MathUtil.clamp(this.coralScoredEast, 0, 8);
+  }
+
+  public void removeCoralScoredEast() {
+    this.coralScoredEast--;
+    this.coralScoredEast = MathUtil.clamp(this.coralScoredEast, 0, 8);
+  }
+
+  public int getCoralScoredEast() {
+    return this.coralScoredEast;
+  }
+
+  public void addCoralScoredWest() {
+    this.coralScoredWest++;
+    this.coralScoredWest = MathUtil.clamp(this.coralScoredWest, 0, 8);
+  }
+
+  public void removeCoralScoredWest() {
+    this.coralScoredEast--;
+    this.coralScoredEast = MathUtil.clamp(this.coralScoredEast, 0, 8);
+  }
+
+  public int getCoralScoredWest() {
+    return this.coralScoredWest;
   }
 
   public boolean getAlignBlockedByCoral() {

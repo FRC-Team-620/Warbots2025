@@ -649,9 +649,11 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral RNW",
         new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 20));
+
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral RSW",
         new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 19));
+
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral LSW",
         new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 19));

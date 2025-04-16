@@ -31,7 +31,7 @@ public class AlignReefSetAngleProf extends Command {
   // private final PIDController xController = new PIDController(0.525, 0, 0.01);
   // private final PIDController yController = new PIDController(0.525, 0, 0.01);
   public static final ProfiledPIDControllerCustom distController =
-      new ProfiledPIDControllerCustom(3.6, 0, 0.01, new Constraints(6, 10, 2.5));
+      new ProfiledPIDControllerCustom(4, 0, 0, new Constraints(6, 6, 3));
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   private double thetaGoalDegrees = 0; // Janky only work for one angle now
@@ -108,7 +108,7 @@ public class AlignReefSetAngleProf extends Command {
       this.currentDistance =
           new Pose3d(drive.getPose()).getTranslation().getDistance(lastTagPose.getTranslation());
       if (!hasReset) {
-        this.distController.reset(currentDistance);
+        AlignReefSetAngleProf.distController.reset(currentDistance);
         this.hasReset = true;
       }
 
@@ -144,7 +144,13 @@ public class AlignReefSetAngleProf extends Command {
       Logger.recordOutput("Align Reef/Target Tag ID1", this.targetTagId);
       Logger.recordOutput("Align Reef/Target Angle1", this.thetaGoalDegrees);
       Logger.recordOutput("Align Reef/Distance From Reef", this.currentDistance);
-      Logger.recordOutput("Align Reef/Profiled Loop Speed Scalar", speedScalar);
+      Logger.recordOutput("Align Reef/Profiled Loop Speed Scalar", Math.abs(speedScalar));
+      Logger.recordOutput(
+          "Align Reef/Profiled Loop Setpoint Position",
+          Math.abs(AlignReefSetAngleProf.distController.getSetpoint().position));
+      Logger.recordOutput(
+          "Align Reef/Profiled Loop Setpoint Velocity",
+          Math.abs(AlignReefSetAngleProf.distController.getSetpoint().velocity));
 
       outputSpeeds =
           ChassisSpeeds.fromFieldRelativeSpeeds(

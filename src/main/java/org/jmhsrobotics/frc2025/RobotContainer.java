@@ -493,7 +493,7 @@ public class RobotContainer {
 
     SmartDashboard.putData(
         "cmd/Align Preset Southwest",
-        new AlignReefSetAngle(drive, vision, led, elevator, true, 19));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 19));
 
     SmartDashboard.putData(
         "cmd/Align Left Southwest Profiled",

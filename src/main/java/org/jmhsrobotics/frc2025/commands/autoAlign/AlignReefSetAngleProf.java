@@ -65,50 +65,6 @@ public class AlignReefSetAngleProf extends Command {
     addRequirements(drive);
   }
 
-  private void adjustTagId() {
-    if (DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red) {
-      switch (this.targetTagId) {
-        case 17:
-          this.targetTagId = 8;
-          break;
-        case 18:
-          this.targetTagId = 7;
-          break;
-        case 19:
-          this.targetTagId = 6;
-          break;
-        case 20:
-          this.targetTagId = 11;
-          break;
-        case 21:
-          this.targetTagId = 10;
-          break;
-        case 22:
-          this.targetTagId = 9;
-          break;
-      }
-    }
-  }
-
-  private double calculateGoalAngleFromId(int targetTagId) {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-      if (targetTagId == 18) return 0;
-      else if (targetTagId == 17) return 60;
-      else if (targetTagId == 22) return 120;
-      else if (targetTagId == 21) return 180;
-      else if (targetTagId == 19) return -60;
-      else return -120;
-    }
-
-    // if current alliance is red, use the following angles
-    if (targetTagId == 7) return 180;
-    else if (targetTagId == 8) return -120;
-    else if (targetTagId == 10) return 0;
-    else if (targetTagId == 6) return 120;
-    else if (targetTagId == 9) return -60;
-    else return 60;
-  }
-
   @Override
   public void initialize() {
     this.hasReset = false;
@@ -116,8 +72,8 @@ public class AlignReefSetAngleProf extends Command {
     thetaController.enableContinuousInput(-180, 180);
 
     this.goalTransform = AutoAlign.calculateReefTransform(this.elevator.getSetpoint(), isLeft);
-    adjustTagId();
-    this.thetaGoalDegrees = calculateGoalAngleFromId(this.targetTagId);
+    this.targetTagId = AutoAlign.adjustTagID(this.targetTagId);
+    this.thetaGoalDegrees = AutoAlign.calculateGoalAngleFromId(this.targetTagId);
 
     timer.reset();
     timer.start();
@@ -128,7 +84,6 @@ public class AlignReefSetAngleProf extends Command {
     // New Reef Auto Align should have:
     // calculates goal transform. recalculated in execute because the elevator height can change
     // while it is running[\]
-
     this.goalTransform = AutoAlign.calculateReefTransform(this.elevator.getSetpoint(), isLeft);
 
     // gets target tag pose relative to bot
@@ -167,6 +122,12 @@ public class AlignReefSetAngleProf extends Command {
               .getPose()
               .getTranslation()
               .minus(new Translation2d(lastTagPose.getX(), lastTagPose.getY()));
+      // TODO: not sure why we need to do this
+      // direction = (DriverStation.)
+      direction =
+          DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+              ? direction
+              : direction.rotateBy(new Rotation2d(Units.degreesToRadians(180)));
       direction = direction.div(direction.getNorm()); // Convert to Unit Vector
       direction = direction.times(speedScalar);
       outputSpeeds = new ChassisSpeeds(direction.getX(), direction.getY(), 0);

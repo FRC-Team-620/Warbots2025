@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
-import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSourceProf;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
@@ -35,6 +35,6 @@ public class AutoIntakeCoral extends ParallelRaceGroup {
                 new ScoreCoral(intake).withTimeout(0.15)),
             new IntakeUntilCoralInIndexer(wrist, intake, indexer, led).withTimeout(6)),
         new SequentialCommandGroup(
-            new AlignSourceProf(drive, alignCloseToStation), new DriveBackwards(drive)));
+            new AlignSource(drive, alignCloseToStation), new DriveBackwards(drive)));
   }
 }

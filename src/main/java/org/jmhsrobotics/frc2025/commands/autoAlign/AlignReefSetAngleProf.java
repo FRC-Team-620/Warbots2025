@@ -30,7 +30,7 @@ public class AlignReefSetAngleProf extends Command {
   private Timer timer = new Timer();
   // private final PIDController xController = new PIDController(0.525, 0, 0.01);
   // private final PIDController yController = new PIDController(0.525, 0, 0.01);
-  private final ProfiledPIDControllerCustom distController =
+  public static final ProfiledPIDControllerCustom distController =
       new ProfiledPIDControllerCustom(3.6, 0, 0.01, new Constraints(6, 10, 2.5));
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
@@ -183,6 +183,7 @@ public class AlignReefSetAngleProf extends Command {
       Logger.recordOutput("Align Reef/Target Tag ID1", this.targetTagId);
       Logger.recordOutput("Align Reef/Target Angle1", this.thetaGoalDegrees);
       Logger.recordOutput("Align Reef/Distance From Reef", this.currentDistance);
+      Logger.recordOutput("Align Reef/Profiled Loop Speed Scalar", speedScalar);
 
       outputSpeeds =
           ChassisSpeeds.fromFieldRelativeSpeeds(

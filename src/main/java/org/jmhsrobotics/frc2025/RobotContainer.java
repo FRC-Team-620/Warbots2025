@@ -444,7 +444,8 @@ public class RobotContainer {
     // Changes LED light status and controller rumble
     led.setDefaultCommand(new LEDToControlMode(this.led, this.intake));
 
-    // If control mode is manually overridden, lights flash red and green(Christmas!)
+    // If control mode is manually overridden, lights flash red and
+    // green(Christmas!)
     new Trigger(intake::isControlModeOverridden)
         .onTrue(
             Commands.run(
@@ -513,8 +514,12 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Auto Intake Coral",
         new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false));
+    var sourceAlignprof = new AlignSourceProf(drive, false);
+    SmartDashboard.putData("Align Source Profiled Loop", AlignSourceProf.distController);
+    SmartDashboard.putData("cmd/Align Source Profiled", sourceAlignprof);
 
-    SmartDashboard.putData("cmd/Align Source Profiled", new AlignSourceProf(drive, false));
+    SmartDashboard.putData("Align Reef Profiled Loop", AlignReefSetAngleProf.distController);
+    SmartDashboard.putData("cmd/Align Source Non-Profiled", new AlignSource(drive, false));
   }
 
   private void configurePathPlanner() {
@@ -548,10 +553,12 @@ public class RobotContainer {
             Constants.ElevatorConstants.kCoralIntakeMeters,
             Constants.WristConstants.kSafeAngleDegrees));
     // Intake Commands
-    // TODO: Intake Coral command needs to be updated once updated intake control is merged to
+    // TODO: Intake Coral command needs to be updated once updated intake control is
+    // merged to
     // master to also run the fix coral placement command
 
-    // timeouts needed for simulation since they will never end without simulated game piece pickup
+    // timeouts needed for simulation since they will never end without simulated
+    // game piece pickup
     if (Robot.isSimulation()) {
       NamedCommands.registerCommand(
           "Intake Until Indexer Has Coral",

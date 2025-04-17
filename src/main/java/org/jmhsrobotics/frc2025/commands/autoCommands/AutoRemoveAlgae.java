@@ -24,7 +24,7 @@ public class AutoRemoveAlgae extends ParallelCommandGroup {
         Commands.run(() -> intake.set(-0.6))
             .withDeadline(
                 new ParallelCommandGroup(
-                    new RemoveAlgaeAutoAlign(drive, vision, targetTagID),
+                    new RemoveAlgaeAutoAlign(drive, vision, intake, targetTagID),
                     new SequentialCommandGroup(
                         Commands.waitSeconds(0.25),
                         new ElevatorAndWristMove(

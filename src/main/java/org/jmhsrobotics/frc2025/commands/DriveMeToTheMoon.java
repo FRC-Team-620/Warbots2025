@@ -208,6 +208,7 @@ public class DriveMeToTheMoon extends Command {
                 && goalTransform != algaeLineupTransform
                 && goalTransform != algaeInIntakeTransform) goalTransform = algaeLineupTransform;
           }
+          if (intake.isAlgaeInintake()) goalTransform = algaeInIntakeTransform;
         } else {
           goalTransform =
               l1AlignOverride.getAsBoolean()

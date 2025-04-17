@@ -42,7 +42,10 @@ public class IntakeMove extends Command {
     // the right trigger is always intake
     if (rightTrigger >= leftTrigger) {
       if (isInAlgaeMode || wrist.getSetpoint() == Constants.WristConstants.kLevel1Degrees)
-        this.intake.set(-rightTrigger * Constants.IntakeConstants.kAlgaeIntakeSpeedDutyCycle);
+        this.intake.set(
+            (this.intake.getMode() == 3)
+                ? -rightTrigger * Constants.IntakeConstants.kCoralExtakeSpeedDutyCycle
+                : -rightTrigger * Constants.IntakeConstants.kAlgaeIntakeSpeedDutyCycle);
       else this.intake.set(rightTrigger * Constants.IntakeConstants.kCoralIntakeSpeedDutyCycle);
     } else {
       if (isInAlgaeMode || wrist.getSetpoint() == Constants.WristConstants.kLevel1Degrees)

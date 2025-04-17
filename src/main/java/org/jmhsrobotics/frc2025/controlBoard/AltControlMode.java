@@ -50,6 +50,13 @@ public class AltControlMode implements ControlBoard {
             return elevator.getSetpoint() == Constants.ElevatorConstants.kCoralIntakeMeters;
           });
 
+  private Trigger elevatorAtL4 =
+      new Trigger(
+          () -> {
+            return elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters
+                && elevator.atGoal();
+          });
+
   @Override
   public double rotation() {
     return driver.getRightX();
@@ -110,8 +117,18 @@ public class AltControlMode implements ControlBoard {
   }
 
   @Override
+  public Trigger L1AutoAlign() {
+    return nop;
+  }
+
+  @Override
   public Trigger turboMode() {
     return driver.leftBumper();
+  }
+
+  @Override
+  public Trigger TeleopAutoScore() {
+    return nop;
   }
 
   // =======Operator Controls=======
@@ -148,6 +165,11 @@ public class AltControlMode implements ControlBoard {
   @Override
   public Trigger placeCoralLevel4() {
     return driver.y().and(coralMode);
+  }
+
+  @Override
+  public Trigger altPlaceCoralLevel4() {
+    return driver.y().and(elevatorAtL4).and(coralMode);
   }
 
   @Override
@@ -218,5 +240,25 @@ public class AltControlMode implements ControlBoard {
   @Override
   public Trigger AdjustAlignBargeRight() {
     return driver.povRight();
+  }
+
+  @Override
+  public Trigger skipAutoScoreEast() {
+    return nop;
+  }
+
+  @Override
+  public Trigger skipAutoScoreWest() {
+    return nop;
+  }
+
+  @Override
+  public Trigger revertAutoScoreEast() {
+    return nop;
+  }
+
+  @Override
+  public Trigger revertAutoScoreWest() {
+    return nop;
   }
 }

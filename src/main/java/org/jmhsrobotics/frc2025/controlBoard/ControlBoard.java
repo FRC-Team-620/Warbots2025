@@ -28,6 +28,10 @@ public interface ControlBoard {
 
   public Trigger AdjustAlignBargeRight();
 
+  public Trigger L1AutoAlign();
+
+  public Trigger TeleopAutoScore();
+
   // =======Operator Controls=======
 
   public DoubleSupplier intakeCoral();
@@ -43,6 +47,8 @@ public interface ControlBoard {
   public Trigger placeCoralLevel3();
 
   public Trigger placeCoralLevel4();
+
+  public Trigger altPlaceCoralLevel4();
 
   public Trigger scoreAlgaeProcesser();
 
@@ -67,4 +73,12 @@ public interface ControlBoard {
   public Trigger UnOverrideControlMode();
 
   public Trigger zeroElevator();
+
+  public Trigger skipAutoScoreEast();
+
+  public Trigger skipAutoScoreWest();
+
+  public Trigger revertAutoScoreEast();
+
+  public Trigger revertAutoScoreWest();
 }

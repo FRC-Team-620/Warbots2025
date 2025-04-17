@@ -139,7 +139,7 @@ public class AutoAlign {
       if (isLeft)
         yTransform =
             (elevatorSetpoint == Constants.ElevatorConstants.kLevel1Meters)
-                ? Units.inchesToMeters(-19)
+                ? Units.inchesToMeters(-20)
                 : Units.inchesToMeters(-8.3);
       else
         yTransform =

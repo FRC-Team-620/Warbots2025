@@ -5,53 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Top Start Auto.0"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Drive Backwards"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake Until Indexer Has Coral"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "Finish Coral Intake"
+            "name": "Intake Until Indexer Has Coral"
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Fix Coral Placement"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Elevator And Wrist L3"
-                }
-              }
-            ]
+            "pathName": "Mid Start Auto.0"
           }
         }
       ]

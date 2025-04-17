@@ -32,7 +32,7 @@ public class AutoIntakeCoral extends ParallelRaceGroup {
                     wrist,
                     Constants.ElevatorConstants.kCoralIntakeMeters,
                     Constants.WristConstants.kRotationIntakeCoralDegrees),
-                new ScoreCoral(intake).withTimeout(0.15)),
+                new ScoreCoral(intake, elevator).withTimeout(0.15)),
             new IntakeUntilCoralInIndexer(wrist, intake, indexer, led).withTimeout(6)),
         new SequentialCommandGroup(
             new AlignSource(drive, alignCloseToStation), new DriveBackwards(drive)));

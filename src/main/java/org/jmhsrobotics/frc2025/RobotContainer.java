@@ -506,6 +506,8 @@ public class RobotContainer {
     SmartDashboard.putData(
         "cmd/Auto Intake Coral",
         new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false));
+
+    SmartDashboard.putData("cmd/Auto Score Coral", new ScoreCoral(intake, elevator));
   }
 
   private void configurePathPlanner() {
@@ -566,7 +568,8 @@ public class RobotContainer {
           "Fix Coral Placement", new FixCoralPlacement(intake).withTimeout(1.5));
     }
 
-    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(0.25));
+    NamedCommands.registerCommand(
+        "Score Coral", new ScoreCoral(intake, elevator).withTimeout(0.25));
 
     NamedCommands.registerCommand(
         "Align Reef Left", new AlignReef(drive, vision, led, elevator, true).withTimeout(4));

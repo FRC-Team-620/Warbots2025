@@ -31,7 +31,7 @@ public class AlignReefSetAngleProf extends Command {
   // private final PIDController xController = new PIDController(0.525, 0, 0.01);
   // private final PIDController yController = new PIDController(0.525, 0, 0.01);
   public static final ProfiledPIDControllerCustom distController =
-      new ProfiledPIDControllerCustom(4, 0, 0, new Constraints(6, 6, 3));
+      new ProfiledPIDControllerCustom(4.5, 0, 0, new Constraints(6, 6, 2));
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
   private double thetaGoalDegrees = 0; // Janky only work for one angle now

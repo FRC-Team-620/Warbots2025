@@ -42,7 +42,7 @@ public class AutoScoreCoral extends SequentialCommandGroup {
                     new FixCoralPlacement(intake).withTimeout(2),
                     new ElevatorAndWristMoveAlt(elevator, wrist)))),
         // scores coral. moves wrist in parallel if already aligned
-        new ScoreCoral(intake).withTimeout(0.15));
+        new ScoreCoral(intake, elevator).withTimeout(0.15));
   }
 
   // works the same as with the other constructor but allows for any wrist/elevator goal for L2 and
@@ -73,6 +73,6 @@ public class AutoScoreCoral extends SequentialCommandGroup {
                     new FixCoralPlacement(intake).withTimeout(2),
                     new ElevatorAndWristMove(
                         elevator, wrist, elevatorGoalMeters, wristGoalDegrees)))),
-        new ScoreCoral(intake).withTimeout(0.15));
+        new ScoreCoral(intake, elevator));
   }
 }

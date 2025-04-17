@@ -107,6 +107,6 @@ public class AlignSource extends Command {
       }
     }
 
-    return targetTagPose.plus(new Transform2d(0.4, ySetpoint, new Rotation2d()));
+    return targetTagPose.plus(new Transform2d(0.45, ySetpoint, new Rotation2d()));
   }
 }

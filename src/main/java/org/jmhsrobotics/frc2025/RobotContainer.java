@@ -661,35 +661,35 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral RNW",
-        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 20));
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 20, true));
 
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral RSW",
-        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 19));
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 19, true));
 
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral LSW",
-        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 19));
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 19, true));
 
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral LS",
-        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 18));
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 18, true));
 
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral LNE",
-        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 22));
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 22, true));
 
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral RSE",
-        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 17));
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 17, true));
 
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral LSE",
-        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 17));
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 17, true));
 
     NamedCommands.registerCommand(
         "Finish Intake and Score Coral RS",
-        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 18));
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 18, true));
 
     NamedCommands.registerCommand(
         "Intake North Algae",

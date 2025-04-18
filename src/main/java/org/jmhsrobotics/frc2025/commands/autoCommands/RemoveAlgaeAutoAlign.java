@@ -104,8 +104,8 @@ public class RemoveAlgaeAutoAlign extends Command {
   @Override
   public boolean isFinished() {
     // TODO Auto-generated method stub
-    return Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(7)
-        && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(7)
+    return Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(8)
+        && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(8)
         && Math.abs(drive.getRotation().getDegrees() - goalAngle) < 3
         && goalTransform == algaeInIntakeTransform;
   }

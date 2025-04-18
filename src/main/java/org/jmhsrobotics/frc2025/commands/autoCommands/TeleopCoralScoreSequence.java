@@ -41,7 +41,8 @@ public class TeleopCoralScoreSequence extends SequentialCommandGroup {
                             true,
                             20,
                             Constants.ElevatorConstants.kLevel3Meters,
-                            Constants.WristConstants.kLevel3Degrees),
+                            Constants.WristConstants.kLevel3Degrees,
+                            true),
                         Commands.runOnce(drive::addCoralScoredWest, drive),
                         new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false))
                     .onlyIf(() -> drive.getCoralScoredWest() < 1),
@@ -57,7 +58,8 @@ public class TeleopCoralScoreSequence extends SequentialCommandGroup {
                             false,
                             20,
                             Constants.ElevatorConstants.kLevel3Meters,
-                            Constants.WristConstants.kLevel3Degrees),
+                            Constants.WristConstants.kLevel3Degrees,
+                            true),
                         Commands.runOnce(drive::addCoralScoredWest, drive),
                         new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false))
                     .onlyIf(() -> drive.getCoralScoredWest() < 2),
@@ -73,7 +75,8 @@ public class TeleopCoralScoreSequence extends SequentialCommandGroup {
                             true,
                             20,
                             Constants.ElevatorConstants.kLevel2Meters,
-                            Constants.WristConstants.kLevel2Degrees),
+                            Constants.WristConstants.kLevel2Degrees,
+                            true),
                         Commands.runOnce(drive::addCoralScoredWest, drive),
                         new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false))
                     .onlyIf(() -> drive.getCoralScoredWest() < 3),
@@ -89,7 +92,8 @@ public class TeleopCoralScoreSequence extends SequentialCommandGroup {
                             false,
                             20,
                             Constants.ElevatorConstants.kLevel2Meters,
-                            Constants.WristConstants.kLevel2Degrees),
+                            Constants.WristConstants.kLevel2Degrees,
+                            true),
                         Commands.runOnce(drive::addCoralScoredWest, drive),
                         new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false))
                     .onlyIf(() -> drive.getCoralScoredWest() < 4),
@@ -178,7 +182,8 @@ public class TeleopCoralScoreSequence extends SequentialCommandGroup {
                             false,
                             22,
                             Constants.ElevatorConstants.kLevel3Meters,
-                            Constants.WristConstants.kLevel3Degrees),
+                            Constants.WristConstants.kLevel3Degrees,
+                            true),
                         Commands.runOnce(drive::addCoralScoredEast, drive),
                         new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false))
                     .onlyIf(() -> drive.getCoralScoredEast() < 1),
@@ -194,7 +199,8 @@ public class TeleopCoralScoreSequence extends SequentialCommandGroup {
                             true,
                             22,
                             Constants.ElevatorConstants.kLevel3Meters,
-                            Constants.WristConstants.kLevel3Degrees),
+                            Constants.WristConstants.kLevel3Degrees,
+                            true),
                         Commands.runOnce(drive::addCoralScoredEast, drive),
                         new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false))
                     .onlyIf(() -> drive.getCoralScoredEast() < 2),
@@ -210,7 +216,8 @@ public class TeleopCoralScoreSequence extends SequentialCommandGroup {
                             false,
                             22,
                             Constants.ElevatorConstants.kLevel2Meters,
-                            Constants.WristConstants.kLevel2Degrees),
+                            Constants.WristConstants.kLevel2Degrees,
+                            true),
                         Commands.runOnce(drive::addCoralScoredEast, drive),
                         new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false))
                     .onlyIf(() -> drive.getCoralScoredEast() < 3),
@@ -226,7 +233,8 @@ public class TeleopCoralScoreSequence extends SequentialCommandGroup {
                             true,
                             22,
                             Constants.ElevatorConstants.kLevel2Meters,
-                            Constants.WristConstants.kLevel2Degrees),
+                            Constants.WristConstants.kLevel2Degrees,
+                            true),
                         Commands.runOnce(drive::addCoralScoredEast, drive),
                         new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false))
                     .onlyIf(() -> drive.getCoralScoredEast() < 4),

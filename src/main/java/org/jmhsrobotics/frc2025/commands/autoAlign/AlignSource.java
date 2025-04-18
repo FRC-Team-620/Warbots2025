@@ -83,27 +83,27 @@ public class AlignSource extends Command {
    * @return Pose2d
    */
   public static Pose2d calculateSetpoints(Drive drive, boolean alignCloseToSource) {
-    double ySetpoint = 0.5;
+    double ySetpoint = 0.58;
     Pose2d targetTagPose;
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
       if (drive.getPose().getY() > 4) {
         targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(2).orElse(new Pose3d()).toPose2d();
-        if (!alignCloseToSource) ySetpoint = -0.5;
+        if (!alignCloseToSource) ySetpoint = -0.58;
       } else {
         targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(1).orElse(new Pose3d()).toPose2d();
-        if (alignCloseToSource) ySetpoint = -0.5;
+        if (alignCloseToSource) ySetpoint = -0.58;
       }
     } else {
       if (drive.getPose().getY() > 4) {
         targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(13).orElse(new Pose3d()).toPose2d();
-        if (alignCloseToSource) ySetpoint = -0.5;
+        if (alignCloseToSource) ySetpoint = -0.58;
       } else {
         targetTagPose =
             VisionConstants.aprilTagLayout.getTagPose(12).orElse(new Pose3d()).toPose2d();
-        if (!alignCloseToSource) ySetpoint = -0.5;
+        if (!alignCloseToSource) ySetpoint = -0.58;
       }
     }
 

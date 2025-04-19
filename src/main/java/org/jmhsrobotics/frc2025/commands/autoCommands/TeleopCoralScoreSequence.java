@@ -22,7 +22,7 @@ public class TeleopCoralScoreSequence extends SequentialCommandGroup {
       Indexer indexer,
       Vision vision,
       LED led) {
-    boolean isBlueAlliance = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue;
+    boolean isBlueAlliance = DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue;
     addCommands(
         // First sequential group only runs if at top and blue alliance, or at bottom and red
         // alliance

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AutoAlign;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
+import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
 import org.littletonrobotics.junction.Logger;
@@ -19,6 +20,7 @@ public class RemoveAlgaeAutoAlign extends Command {
   private Drive drive;
   private Vision vision;
   private Elevator elevator;
+  private Intake intake;
 
   private int targetTagID;
   private double goalAngle;
@@ -35,9 +37,10 @@ public class RemoveAlgaeAutoAlign extends Command {
 
   private Transform2d goalTransform = new Transform2d();
 
-  public RemoveAlgaeAutoAlign(Drive drive, Vision vision, int targetTagID) {
+  public RemoveAlgaeAutoAlign(Drive drive, Vision vision, Intake intake, int targetTagID) {
     this.drive = drive;
     this.vision = vision;
+    this.intake = intake;
 
     this.targetTagID = targetTagID;
 
@@ -63,8 +66,8 @@ public class RemoveAlgaeAutoAlign extends Command {
         && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(2.5)
         && Math.abs(drive.getRotation().getDegrees() - goalAngle) < 3) {
       if (goalTransform == algaeLineupTransform) goalTransform = algaeIntakeTransform;
-      else if (goalTransform == algaeIntakeTransform) goalTransform = algaeInIntakeTransform;
     }
+    if (intake.isAlgaeInintake()) goalTransform = algaeInIntakeTransform;
 
     tagPose = AutoAlign.getTagPoseRobotRelative(targetTagID, vision, lastTagPose, drive.getPose());
 
@@ -101,8 +104,8 @@ public class RemoveAlgaeAutoAlign extends Command {
   @Override
   public boolean isFinished() {
     // TODO Auto-generated method stub
-    return Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(5.5)
-        && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(5.5)
+    return Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(8)
+        && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(8)
         && Math.abs(drive.getRotation().getDegrees() - goalAngle) < 3
         && goalTransform == algaeInIntakeTransform;
   }

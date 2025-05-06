@@ -100,7 +100,7 @@ public final class Constants {
     public static final double kProcesserMeters = .10;
     public static final double kIntermediateAlgaeSetpoint = 0.27;
 
-    public static final double kAlgaeQTipMeters = .125;
+    public static final double kAlgaeQTipMeters = .1;
     public static final double kCoralIntakeMeters = 0.0;
     public static final double kAlgaeIntakeL2Meters = 0.54;
     public static final double kAlgaeIntakeL3Meters = 1.03;

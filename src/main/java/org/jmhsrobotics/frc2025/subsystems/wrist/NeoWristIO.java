@@ -83,6 +83,8 @@ public class NeoWristIO implements WristIO {
     SparkUtil.ifOk(motor, encoder::getVelocity, (value) -> previousRPM = value);
     inputs.wristSpeedDegPerSec = previousRPM;
 
+    SparkUtil.ifOk(motor, motor::getMotorTemperature, (value) -> inputs.motorTemp = value);
+
     pidController.setReference(setPointDegrees, ControlType.kPosition);
     // pidController.setReference(setPointDegrees, ControlType.kMAXMotionPositionControl);
   }

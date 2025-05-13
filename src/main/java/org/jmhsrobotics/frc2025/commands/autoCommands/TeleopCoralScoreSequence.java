@@ -20,7 +20,6 @@ public class TeleopCoralScoreSequence extends SequentialCommandGroup {
       Wrist wrist,
       Intake intake,
       Indexer indexer,
-      
       Vision vision,
       LED led) {
     boolean isBlueAlliance = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue;

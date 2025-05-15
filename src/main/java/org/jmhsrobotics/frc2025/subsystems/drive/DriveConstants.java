@@ -27,7 +27,7 @@ public class DriveConstants {
   // change coefficients when we want to implement turbo
   public static final double turboCoefficient = 1;
   public static final double nonTurboCoefficient = 0.9;
-  public static final double demoCoefficient = 0.65; 
+  public static final double demoCoefficient = 0.65;
 
   public static final double odometryFrequency = 100.0; // Hz
 

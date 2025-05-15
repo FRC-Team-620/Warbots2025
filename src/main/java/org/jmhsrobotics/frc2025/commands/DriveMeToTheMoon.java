@@ -121,13 +121,13 @@ public class DriveMeToTheMoon extends Command {
     double xValue, yValue, omega;
 
     if (drive.getTurboMode()) {
-      xValue = xSupplier.getAsDouble() * DriveConstants.turboCoefficient;
-      yValue = ySupplier.getAsDouble() * DriveConstants.turboCoefficient;
+      xValue = xSupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
+      yValue = ySupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
       omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.8, DEADBAND);
 
     } else {
-      xValue = xSupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
-      yValue = ySupplier.getAsDouble() * DriveConstants.nonTurboCoefficient;
+      xValue = xSupplier.getAsDouble() * DriveConstants.demoCoefficient;
+      yValue = ySupplier.getAsDouble() * DriveConstants.demoCoefficient;
       omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble() * 0.6, DEADBAND);
     }
 

@@ -30,4 +30,4 @@ TODO: Ascope Custom Assets configurations
 [Controls Document](https://docs.google.com/document/d/1e-1YQaEzNOAyU3wSqzTnjJ5owFP1VVmeT67x4Rzs9dU/edit?usp=sharing)
 
 # Preflight Procedure
-[Preflight Doucument](https://docs.google.com/document/d/1qXzPypZ0tb3C-xyKgzVnjZloq-KL23REz9yijnvnf6I/edit?usp=sharing)
+[Preflight Document](https://docs.google.com/document/d/1qXzPypZ0tb3C-xyKgzVnjZloq-KL23REz9yijnvnf6I/edit?usp=sharing)

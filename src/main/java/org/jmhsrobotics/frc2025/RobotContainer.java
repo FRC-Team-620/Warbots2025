@@ -468,6 +468,11 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(
                 () -> led.setPattern(LEDPattern.solid(Color.kRed).blink(Seconds.of(0.1))), led));
+
+    new Trigger(drive::getBlockedAlignComplete)
+        .whileTrue(
+            Commands.run(
+                () -> led.setPattern(LEDPattern.solid(Color.kGreen).blink(Seconds.of(0.1))), led));
   }
 
   private void setupSmartDashbaord() {

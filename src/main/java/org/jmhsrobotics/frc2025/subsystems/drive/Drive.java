@@ -76,6 +76,7 @@ public class Drive extends SubsystemBase {
   private boolean autoAlignComplete = false;
   private boolean turboMode = false;
   private boolean alignBlockedByCoral = false;
+  private boolean blockedAlignComplete = false;
 
   private double driveVelocity = 0;
   private double driveAcceleration = 0;
@@ -427,5 +428,13 @@ public class Drive extends SubsystemBase {
 
   public void setAlignBlockedByCoral(boolean alignBlockedByCoral) {
     this.alignBlockedByCoral = alignBlockedByCoral;
+  }
+
+  public boolean getBlockedAlignComplete() {
+    return blockedAlignComplete;
+  }
+
+  public void setBlockedAlignComplete(boolean blockedAlignComplete) {
+    this.blockedAlignComplete = blockedAlignComplete;
   }
 }

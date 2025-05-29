@@ -254,9 +254,8 @@ public class DriveMeToTheMoon extends Command {
           if (timer.hasElapsed(0.15)) drive.setAlignBlockedByCoral(true);
           else drive.setAlignBlockedByCoral(false);
 
-          drive.setBlockedAlignComplete(
-              drive.getAlignBlockedByCoral()
-                  && Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(2));
+          drive.setAlignedOnY(
+              Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1.5));
 
           Logger.recordOutput("Align/Timer Value", timer.get());
           Logger.recordOutput(
@@ -278,7 +277,7 @@ public class DriveMeToTheMoon extends Command {
         lastTagPose = null;
         drive.setAutoAlignComplete(false);
         drive.setAlignBlockedByCoral(false);
-        drive.setBlockedAlignComplete(false);
+        drive.setAlignedOnY(false);
         timer.reset();
       }
     }

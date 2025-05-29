@@ -77,6 +77,7 @@ public class Drive extends SubsystemBase {
   private boolean turboMode = false;
   private boolean alignBlockedByCoral = false;
   private boolean blockedAlignComplete = false;
+  private boolean alignedOnY = false;
 
   private double driveVelocity = 0;
   private double driveAcceleration = 0;
@@ -174,6 +175,9 @@ public class Drive extends SubsystemBase {
         module.stop();
       }
     }
+
+    if (alignedOnY && alignBlockedByCoral) blockedAlignComplete = true;
+    else blockedAlignComplete = false;
 
     // Log empty setpoint states when disabled
     if (DriverStation.isDisabled()) {
@@ -436,5 +440,13 @@ public class Drive extends SubsystemBase {
 
   public void setBlockedAlignComplete(boolean blockedAlignComplete) {
     this.blockedAlignComplete = blockedAlignComplete;
+  }
+
+  public boolean getAlignedOnY() {
+    return alignedOnY;
+  }
+
+  public void setAlignedOnY(boolean alignedOnY) {
+    this.alignedOnY = alignedOnY;
   }
 }

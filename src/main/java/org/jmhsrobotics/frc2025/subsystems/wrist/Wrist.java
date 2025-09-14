@@ -32,6 +32,7 @@ public class Wrist extends SubsystemBase {
     Logger.recordOutput("Wrist/OutputCurrent", inputs.motorAmps);
     Logger.recordOutput("Wrist/GoalAngle", setPointDegrees);
     Logger.recordOutput("Wrist/Calculated Setpoint", calculatedState.position);
+    Logger.recordOutput("Wrist/MotorTemp", inputs.motorTemp);
 
     Logger.recordOutput("Wrist/VelocityDegPerSec", inputs.wristSpeedDegPerSec);
     Logger.recordOutput("Wrist/AccelerationRPM/S", inputs.wristAccelerationRPMPerSec);

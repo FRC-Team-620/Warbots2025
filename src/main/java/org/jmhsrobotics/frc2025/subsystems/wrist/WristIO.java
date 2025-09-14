@@ -9,6 +9,7 @@ public interface WristIO {
     public double wristSpeedDegPerSec;
     public double wristAccelerationRPMPerSec;
     public double motorAmps;
+    public double motorTemp;
   }
 
   public default void updateInputs(WristIOInputs inputs) {}

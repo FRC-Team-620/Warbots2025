@@ -57,4 +57,8 @@ public interface ModuleIO {
 
   /** Set Brake Mode */
   public default void setBrakeMode(boolean enable) {}
+
+  public default void stoppedTurnKp() {}
+
+  public default void movingTurnKp() {}
 }

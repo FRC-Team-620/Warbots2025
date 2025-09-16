@@ -64,6 +64,9 @@ public class ModuleIOThrifty implements ModuleIO {
   private final Debouncer driveConnectedDebounce = new Debouncer(0.5);
   private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
 
+  private SparkMaxConfig updatableTurnConfig;
+  private boolean stopped;
+
   public ModuleIOThrifty(int module) {
     zeroRotation =
         switch (module) {
@@ -168,6 +171,8 @@ public class ModuleIOThrifty implements ModuleIO {
             turnSpark.configure(
                 turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
+    updatableTurnConfig = turnConfig;
+    
     // Create odometry queues
     timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
     drivePositionQueue =
@@ -272,4 +277,21 @@ public class ModuleIOThrifty implements ModuleIO {
             turnSpark.configure(
                 brakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
   }
+
+  public void stoppedTurnKp() {
+    if(!stopped){
+        updatableTurnConfig.closedLoop.pidf(thriftyConstants.stoppedTurnKp, 0.0, thriftyConstants.turnKd, 0.0);
+        turnSpark.configure(updatableTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        stopped = true;
+    }
+    
+}
+
+  public void movingTurnKp() {
+    if(stopped){
+        updatableTurnConfig.closedLoop.pidf(thriftyConstants.turnKp, 0.0, thriftyConstants.turnKd, 0.0);
+        turnSpark.configure(updatableTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        stopped = false;
+    }
+    } 
 }

@@ -23,7 +23,6 @@ import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AutoAlign;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
-import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIOThrifty;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
@@ -304,17 +303,20 @@ public class DriveMeToTheMoon extends Command {
       drive.stopWithX();
     }
 
-    if (DriverStation.isFMSAttached() && (Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2)) < 0.01 && Math.abs(speeds.omegaRadiansPerSecond) < 0.01)) {
+    if (DriverStation.isFMSAttached()
+        && (Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2))
+                < 0.01
+            && Math.abs(speeds.omegaRadiansPerSecond) < 0.01)) {
       stoppedTimer.start();
-      if(stoppedTimer.hasElapsed(5)){
-      
-          for(int i = 0; i<4; i++){
-            drive.getSwerveModules()[i].getIO().stoppedTurnKp();
-          }
+      if (stoppedTimer.hasElapsed(5)) {
+
+        for (int i = 0; i < 4; i++) {
+          drive.getSwerveModules()[i].getIO().stoppedTurnKp();
+        }
       }
-    }else if (DriverStation.isFMSAttached()){
+    } else if (DriverStation.isFMSAttached()) {
       stoppedTimer.reset();
-      for(int i = 0; i<4; i++){
+      for (int i = 0; i < 4; i++) {
         drive.getSwerveModules()[i].getIO().movingTurnKp();
       }
     }

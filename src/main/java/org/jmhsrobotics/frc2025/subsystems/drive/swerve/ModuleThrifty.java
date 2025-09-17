@@ -135,7 +135,7 @@ public class ModuleThrifty {
     io.setBrakeMode(enable);
   }
 
-  public ModuleIO getIO(){
+  public ModuleIO getIO() {
     return io;
   }
 }

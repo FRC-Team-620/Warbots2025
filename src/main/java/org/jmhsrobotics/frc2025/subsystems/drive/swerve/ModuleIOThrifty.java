@@ -172,7 +172,7 @@ public class ModuleIOThrifty implements ModuleIO {
                 turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     updatableTurnConfig = turnConfig;
-    
+
     // Create odometry queues
     timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
     drivePositionQueue =
@@ -279,19 +279,22 @@ public class ModuleIOThrifty implements ModuleIO {
   }
 
   public void stoppedTurnKp() {
-    if(!stopped){
-        updatableTurnConfig.closedLoop.pidf(thriftyConstants.stoppedTurnKp, 0.0, thriftyConstants.turnKd, 0.0);
-        turnSpark.configure(updatableTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        stopped = true;
+    if (!stopped) {
+      updatableTurnConfig.closedLoop.pidf(
+          thriftyConstants.stoppedTurnKp, 0.0, thriftyConstants.turnKd, 0.0);
+      turnSpark.configure(
+          updatableTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+      stopped = true;
     }
-    
-}
+  }
 
   public void movingTurnKp() {
-    if(stopped){
-        updatableTurnConfig.closedLoop.pidf(thriftyConstants.turnKp, 0.0, thriftyConstants.turnKd, 0.0);
-        turnSpark.configure(updatableTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        stopped = false;
+    if (stopped) {
+      updatableTurnConfig.closedLoop.pidf(
+          thriftyConstants.turnKp, 0.0, thriftyConstants.turnKd, 0.0);
+      turnSpark.configure(
+          updatableTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+      stopped = false;
     }
-    } 
+  }
 }

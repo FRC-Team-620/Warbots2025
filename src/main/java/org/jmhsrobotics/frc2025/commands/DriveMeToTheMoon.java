@@ -303,7 +303,7 @@ public class DriveMeToTheMoon extends Command {
       drive.stopWithX();
     }
 
-    if (DriverStation.isFMSAttached()
+    if (!DriverStation.isFMSAttached()
         && (Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2))
                 < 0.01
             && Math.abs(speeds.omegaRadiansPerSecond) < 0.01)) {
@@ -314,7 +314,7 @@ public class DriveMeToTheMoon extends Command {
           drive.getSwerveModules()[i].getIO().stoppedTurnKp();
         }
       }
-    } else if (DriverStation.isFMSAttached()) {
+    } else if (!DriverStation.isFMSAttached()) {
       stoppedTimer.reset();
       for (int i = 0; i < 4; i++) {
         drive.getSwerveModules()[i].getIO().movingTurnKp();

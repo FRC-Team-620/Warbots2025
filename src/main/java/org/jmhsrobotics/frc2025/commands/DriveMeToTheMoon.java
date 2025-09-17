@@ -320,6 +320,6 @@ public class DriveMeToTheMoon extends Command {
         drive.getSwerveModules()[i].getIO().movingTurnKp();
       }
     }
-    Logger.recordOutput("StoppedP", drive.getSwerveModules()[0].getIO().stoppedP());
+    Logger.recordOutput("Drive/StoppedP", drive.getSwerveModules()[0].getIO().stoppedP());
   }
 }

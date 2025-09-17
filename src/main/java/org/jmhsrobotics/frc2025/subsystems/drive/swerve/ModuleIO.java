@@ -61,4 +61,8 @@ public interface ModuleIO {
   public default void stoppedTurnKp() {}
 
   public default void movingTurnKp() {}
+
+  public default boolean stoppedP() {
+    return true;
+  }
 }

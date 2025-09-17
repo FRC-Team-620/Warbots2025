@@ -65,7 +65,7 @@ public class ModuleIOThrifty implements ModuleIO {
   private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
 
   private SparkMaxConfig updatableTurnConfig;
-  private boolean stopped;
+  private boolean stopped = false;
 
   public ModuleIOThrifty(int module) {
     zeroRotation =
@@ -278,6 +278,7 @@ public class ModuleIOThrifty implements ModuleIO {
                 brakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
   }
 
+  @Override
   public void stoppedTurnKp() {
     if (!stopped) {
       updatableTurnConfig.closedLoop.pidf(
@@ -288,6 +289,7 @@ public class ModuleIOThrifty implements ModuleIO {
     }
   }
 
+  @Override
   public void movingTurnKp() {
     if (stopped) {
       updatableTurnConfig.closedLoop.pidf(
@@ -296,5 +298,10 @@ public class ModuleIOThrifty implements ModuleIO {
           updatableTurnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
       stopped = false;
     }
+  }
+
+  @Override
+  public boolean stoppedP() {
+    return stopped;
   }
 }

@@ -306,18 +306,22 @@ public class DriveMeToTheMoon extends Command {
     if (!DriverStation.isFMSAttached()
         && (Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2))
                 < 0.01
-            && Math.abs(speeds.omegaRadiansPerSecond) < 0.01)) {
+            && Math.abs(speeds.omegaRadiansPerSecond) < 0.01)
+        && wrist.getSetpoint() != Constants.WristConstants.kRotationIntakeCoralDegrees
+        && !DriverStation.isAutonomous()) {
       stoppedTimer.start();
-      if (stoppedTimer.hasElapsed(5)) {
+      if (stoppedTimer.hasElapsed(0.5)) {
 
         for (int i = 0; i < 4; i++) {
-          drive.getSwerveModules()[i].getIO().stoppedTurnKp();
+          drive.getSwerveModules()[i].getIO().stoppedDrivePID();
         }
       }
-    } else if (!DriverStation.isFMSAttached()) {
+    } else if (!DriverStation.isFMSAttached()
+        && wrist.getSetpoint() != Constants.WristConstants.kRotationIntakeCoralDegrees
+        && !DriverStation.isAutonomous()) {
       stoppedTimer.reset();
       for (int i = 0; i < 4; i++) {
-        drive.getSwerveModules()[i].getIO().movingTurnKp();
+        drive.getSwerveModules()[i].getIO().movingDrivePID();
       }
     }
     Logger.recordOutput("Drive/StoppedP", drive.getSwerveModules()[0].getIO().stoppedP());

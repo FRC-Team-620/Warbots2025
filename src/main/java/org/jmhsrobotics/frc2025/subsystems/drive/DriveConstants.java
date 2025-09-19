@@ -196,7 +196,6 @@ public class DriveConstants {
     // Turn PID configuration
     // 14 for p value was too much
     public static final double turnKp = 6;
-    public static final double stoppedTurnKp = 2;
     public static final double turnKd = 0.03;
     public static final double turnSimP = 0.2;
     public static final double turnSimD = 0.0;

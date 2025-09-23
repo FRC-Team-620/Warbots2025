@@ -1,6 +1,7 @@
 package org.jmhsrobotics.frc2025.subsystems.elevator;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -32,6 +33,7 @@ public class VortexElevatorIO implements ElevatorIO {
   private double controlVoltage;
 
   private double goalMeters = 0;
+  private double arbFeedForward = 0;
 
   private double lp, li, ld, lf;
 
@@ -124,15 +126,16 @@ public class VortexElevatorIO implements ElevatorIO {
       this.vortexLeft.setVoltage(this.controlVoltage);
       this.vortexRight.setVoltage(this.controlVoltage);
     } else {
-      pidController.setReference(this.goalMeters, ControlType.kPosition);
+      pidController.setReference(
+          this.goalMeters, ControlType.kPosition, ClosedLoopSlot.kSlot0, this.arbFeedForward);
     }
   }
 
   @Override
-  public void setPositionMeters(double positionMeters) {
-    isOpenLoop = false;
-    // change the setpoint from meters to centimeters
-    this.goalMeters = positionMeters * 100.0;
+  public void setPositionMeters(double heightMeters, double arbFeedForward) {
+    this.isOpenLoop = false;
+    this.goalMeters = heightMeters * 100.0;
+    this.arbFeedForward = arbFeedForward;
   }
 
   public void setVoltage(double voltage) {

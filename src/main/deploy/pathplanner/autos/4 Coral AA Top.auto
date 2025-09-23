@@ -37,96 +37,13 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Score Coral"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator And Wrist Coral Intake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake Until Indexer Has Coral"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Align Source"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Drive Backwards"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Align Reef Left SouthWest"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Finish Coral Intake"
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Elevator And Wrist L4"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Fix Coral Placement"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
+                  "name": "Score Coral"
                 }
               }
             ]
@@ -135,205 +52,43 @@
         {
           "type": "named",
           "data": {
-            "name": "Score Coral"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator And Wrist Coral Intake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake Until Indexer Has Coral"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Align Source"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Drive Backwards"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Align Reef Right SouthWest"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Finish Coral Intake"
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Elevator And Wrist L4"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Fix Coral Placement"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "name": "Intake Coral And Align Source"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Score Coral"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator And Wrist Coral Intake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake Until Indexer Has Coral"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Align Source"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Drive Backwards"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Align Reef Left South"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Finish Coral Intake"
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Elevator And Wrist L4"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Fix Coral Placement"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "name": "Finish Intake and Score Coral LSW"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Score Coral"
+            "name": "Intake Coral And Align Source"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Elevator And Wrist Coral Intake"
+            "name": "Finish Intake and Score Coral RSW"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral And Align Source"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Finish Intake and Score Coral LS"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral And Align Source"
           }
         }
       ]

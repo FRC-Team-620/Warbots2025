@@ -49,6 +49,12 @@ public class SingleControl implements ControlBoard {
             return elevator.getSetpoint() == Constants.ElevatorConstants.kCoralIntakeMeters;
           });
 
+  private Trigger elevatorAtL4 =
+      new Trigger(
+          () -> {
+            return elevator.getSetpoint() == Constants.ElevatorConstants.kLevel4Meters;
+          });
+
   // ========Driver Controls========
 
   @Override
@@ -106,6 +112,16 @@ public class SingleControl implements ControlBoard {
     return driver.povRight();
   }
 
+  @Override
+  public Trigger L1AutoAlign() {
+    return nop;
+  }
+
+  @Override
+  public Trigger TeleopAutoScore() {
+    return nop;
+  }
+
   // =======Operator Controls=======
 
   @Override
@@ -149,15 +165,28 @@ public class SingleControl implements ControlBoard {
   }
 
   @Override
+  public Trigger altPlaceCoralLevel4() {
+    return driver.y().and(elevatorAtL4);
+  }
+
+  @Override
   public Trigger scoreAlgaeProcesser() {
-    // if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
-    return (driver.a().or(driver.b())).and(algaeMode);
+    return driver.a().and(algaeMode);
+  }
+
+  @Override
+  public Trigger algaeIntermediateSetpoint() {
+    return driver.b().and(algaeMode);
+  }
+
+  @Override
+  public Trigger prepareAlgaeBarge() {
+    return driver.x().and(algaeMode);
   }
 
   @Override
   public Trigger scoreAlgaeBarge() {
-    // if (intake.getMode() != Constants.ModeConstants.kAlgae) return nop;
-    return (driver.y().or(driver.x())).and(algaeMode);
+    return driver.y().and(algaeMode);
   }
 
   @Override
@@ -202,5 +231,25 @@ public class SingleControl implements ControlBoard {
   @Override
   public Trigger zeroElevator() {
     return driver.leftStick();
+  }
+
+  @Override
+  public Trigger skipAutoScoreEast() {
+    return nop;
+  }
+
+  @Override
+  public Trigger skipAutoScoreWest() {
+    return nop;
+  }
+
+  @Override
+  public Trigger revertAutoScoreEast() {
+    return nop;
+  }
+
+  @Override
+  public Trigger revertAutoScoreWest() {
+    return nop;
   }
 }

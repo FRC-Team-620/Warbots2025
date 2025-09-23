@@ -89,15 +89,18 @@ public final class Constants {
     // converts motor rotations to elevator height in centimeters
     public static final double conversionFactor = (((1.0 / 3.0) / 12.0) * 100);
 
-    public static final double kLevel1Meters = 0.05;
+    public static final double kLevel1Meters = 0.47;
     public static final double kLevel2Meters = 0.30;
     public static final double kLevel3Meters = 0.77;
     // BARGE AND L4 SETPOINT CANNOT BE THE EXACT SAME
-    public static final double kLevel4Meters = 1.53;
-    public static final double kBargeMeters = 1.78;
-    public static final double kProcesserMeters = .10;
+    public static final double kLevel4Meters = 1.58;
+    public static final double kAltLevel4Meters = 1.65; // needs to be tested and maybe changed
 
-    public static final double kAlgaeQTipMeters = .125;
+    public static final double kBargeMeters = 1.75;
+    public static final double kProcesserMeters = .10;
+    public static final double kIntermediateAlgaeSetpoint = 0.27;
+
+    public static final double kAlgaeQTipMeters = .1;
     public static final double kCoralIntakeMeters = 0.0;
     public static final double kAlgaeIntakeL2Meters = 0.54;
     public static final double kAlgaeIntakeL3Meters = 1.03;
@@ -113,16 +116,18 @@ public final class Constants {
 
     // TODO: When absolute encoder conversion is fixed, remove  / 360, recalibrate PID and change
     // tolerance to 1 degree;
-    public static final double kRotationIntakeCoralDegrees = 14;
+    public static final double kRotationIntakeCoralDegrees = 17;
 
-    public static final double kLevel1Degrees = 30.0;
-    public static final double kLevel2Degrees = 40.5;
-    public static final double kLevel3Degrees = 40.5;
-    public static final double kLevel4Degrees = 61.5;
+    public static final double kLevel1Degrees = 183;
+    public static final double kLevel2Degrees = 43.5;
+    public static final double kLevel3Degrees = 43.5;
+    public static final double kLevel4Degrees = 64.5;
+    public static final double kAltLevel4Degrees = 49;
 
-    public static final double kRotationAlgaeDegrees = 181;
-    public static final double kRotationProcesserDegrees = 190;
-    public static final double kRotationBargeDegrees = 70;
+    // algae rotation cannot be the exact same as kLevel1Degrees(stupid shit)
+    public static final double kRotationAlgaeDegrees = 184;
+    public static final double kRotationProcesserDegrees = 193;
+    public static final double kRotationBargeDegrees = 73;
 
     public static final double kP = 0.0225;
     public static final double kI = 0.00;
@@ -130,22 +135,22 @@ public final class Constants {
     public static final double kF = 0.0;
     public static final double kAngleTolerance = 5;
 
-    public static final double kSafeAngleDegrees = 40;
+    public static final double kSafeAngleDegrees = 43;
   }
 
   public static class IntakeConstants {
 
-    public static final double kAlgaeDefaultCommandSpeed = -0.13;
+    public static final double kAlgaeDefaultCommandSpeed = -0.2;
     public static final double kCoralDefaultCommandSpeed = 0.1;
 
-    public static final double kCoralIntakeSpeedDutyCycle = 0.4;
+    public static final double kCoralIntakeSpeedDutyCycle = 0.325;
     public static final double kCoralExtakeSpeedDutyCycle = 0.2;
 
     public static final double kCoralIntakeIndexerSpeedDutyCycle = 0.23;
     public static final double kCoralIntakeIndexerSlowSpeedDutyCycle = 0.2;
 
     public static final double kAlgaeExtakeSpeedDutyCycle = 0.9;
-    public static final double kAlgaeIntakeSpeedDutyCycle = -0.5;
+    public static final double kAlgaeIntakeSpeedDutyCycle = 0.5;
 
     public static final int kCoralInIntakeDistanceMm = 30;
     public static final int kAlgaeInIntakeDistanceMm = 40;
@@ -157,7 +162,7 @@ public final class Constants {
   public static final class IndexerConstants {
     public static final double kIndexerSpeedDutyCycle = 0.85;
 
-    public static final double kIndexerSpeedRPM = 9800;
+    public static final double kIndexerSpeedRPM = 8500;
     public static final double kIndexerMaxAcceleration = 30000;
 
     public static final double kP = 0.0;

@@ -2,6 +2,8 @@ package org.jmhsrobotics.frc2025.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
@@ -21,6 +24,7 @@ import org.jmhsrobotics.frc2025.commands.autoAlign.AutoAlign;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.drive.DriveConstants;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
+import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
 import org.jmhsrobotics.frc2025.subsystems.intake.Intake;
 import org.jmhsrobotics.frc2025.subsystems.vision.Vision;
 import org.jmhsrobotics.frc2025.subsystems.vision.VisionConstants;
@@ -33,24 +37,38 @@ public class DriveMeToTheMoon extends Command {
   private final Elevator elevator;
   private final Intake intake;
   private final Wrist wrist;
+  private final Indexer indexer;
 
-  private final PIDController xController = new PIDController(0.5, 0, 0.01);
-  private final PIDController yController = new PIDController(0.5, 0, 0.01);
+  private final PIDController reefXController = new PIDController(0.5, 0, 0.01);
+  private final PIDController reefYController = new PIDController(0.5, 0, 0.01);
   private final PIDController thetaController = new PIDController(0.01, 0, 0);
 
+  private final PIDController sourceXController = new PIDController(0.9, 0, 0.01);
+  private final PIDController sourceYController = new PIDController(0.9, 0, 0.01);
+
+  private Debouncer alignStuckDebouncer = new Debouncer(0.06, DebounceType.kBoth);
+
   private Trigger autoIntakeAlgae;
+  private Trigger l1AlignOverride;
   private int targetId;
 
   Pose3d tagPose = new Pose3d();
   Transform2d goalTransform = new Transform2d();
-  private Transform2d algaeIntakeTransform = new Transform2d(0.46, 0, new Rotation2d());
+  private Transform2d algaeIntakeTransform = new Transform2d(0.29, 0, new Rotation2d());
   private Transform2d algaeLineupTransform = new Transform2d(0.7, 0, new Rotation2d());
+  private Transform2d algaeInIntakeTransform = new Transform2d(1.0, 0, new Rotation2d());
 
   private Pose3d lastTagPose = null;
 
   private static final double DEADBAND = 0.05;
 
   private DoubleSupplier xSupplier, ySupplier, omegaSupplier, leftTriggerValue, rightTriggerValue;
+
+  // timer used for detecting if coral is in front of reef
+  private Timer timer = new Timer();
+  private Timer stoppedTimer = new Timer();
+
+  private double currentDistance;
 
   // boolean for if bot should align left or right
 
@@ -60,19 +78,23 @@ public class DriveMeToTheMoon extends Command {
       Elevator elevator,
       Intake intake,
       Wrist wrist,
+      Indexer indexer,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier,
       DoubleSupplier leftTriggerValue,
       DoubleSupplier rightTriggerValue,
-      Trigger autoIntakeAlgae) {
+      Trigger autoIntakeAlgae,
+      Trigger l1AlignOverride) {
     this.drive = drive;
     this.vision = vision;
     this.elevator = elevator;
     this.intake = intake;
     this.wrist = wrist;
+    this.indexer = indexer;
 
     this.autoIntakeAlgae = autoIntakeAlgae;
+    this.l1AlignOverride = l1AlignOverride;
     this.xSupplier = xSupplier;
     this.ySupplier = ySupplier;
     this.omegaSupplier = omegaSupplier;
@@ -84,8 +106,11 @@ public class DriveMeToTheMoon extends Command {
 
   @Override
   public void initialize() {
-    xController.reset();
-    yController.reset();
+    reefXController.reset();
+    reefYController.reset();
+    sourceXController.reset();
+    sourceYController.reset();
+
     thetaController.reset();
     thetaController.enableContinuousInput(-180, 180);
 
@@ -135,8 +160,9 @@ public class DriveMeToTheMoon extends Command {
     // if triggers elevator is at bottom and no coral in intake, default for triggers is source auto
     // align
     if (elevator.getSetpoint() == Constants.ElevatorConstants.kCoralIntakeMeters
-        && !intake.isCoralInIntake()
-        && !autoIntakeAlgae.getAsBoolean()) {
+        && intake.getMode() == 2
+        && !autoIntakeAlgae.getAsBoolean()
+        && !indexer.hasCoral()) {
       if (rightTriggerValue.getAsDouble() > 0.5 || leftTriggerValue.getAsDouble() > 0.5) {
         // calculates the field relative setpoint position
         // TODO: Needs to be cleaned up
@@ -158,7 +184,7 @@ public class DriveMeToTheMoon extends Command {
         speeds =
             speeds.plus(
                 AutoAlign.getDriveToPoseSpeeds(
-                    drive, setpoint, xController, yController, thetaController));
+                    drive, setpoint, sourceXController, sourceYController, thetaController));
       } else drive.setAutoAlignComplete(false);
     } else {
       // reef auto align
@@ -170,22 +196,29 @@ public class DriveMeToTheMoon extends Command {
         targetId = AutoAlign.calculateGoalTargetID(thetaGoalDegrees);
 
         if (autoIntakeAlgae.getAsBoolean()) {
-          if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
-              && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(1)
-              && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3) {
-            if (goalTransform == algaeIntakeTransform) goalTransform = algaeLineupTransform;
+          if (Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(5.5)
+              && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(5.5)
+              && Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees) < 3
+              && goalTransform != algaeInIntakeTransform) {
+            if (goalTransform == algaeIntakeTransform) goalTransform = algaeInIntakeTransform;
             else if (goalTransform == algaeLineupTransform
                 && (elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL2Meters
                     || elevator.getSetpoint() == Constants.ElevatorConstants.kAlgaeIntakeL3Meters))
               goalTransform = algaeIntakeTransform;
-            else if (goalTransform != algaeIntakeTransform && goalTransform != algaeLineupTransform)
-              goalTransform = algaeLineupTransform;
+            else if (goalTransform != algaeIntakeTransform
+                && goalTransform != algaeLineupTransform
+                && goalTransform != algaeInIntakeTransform) goalTransform = algaeLineupTransform;
           }
+          if (intake.isAlgaeInintake()) goalTransform = algaeInIntakeTransform;
         } else {
           goalTransform =
-              AutoAlign.calculateReefTransform(
-                  elevator.getSetpoint(),
-                  leftTriggerValue.getAsDouble() > rightTriggerValue.getAsDouble());
+              l1AlignOverride.getAsBoolean()
+                  ? AutoAlign.calculateReefTransform(
+                      Constants.ElevatorConstants.kLevel1Meters,
+                      leftTriggerValue.getAsDouble() > rightTriggerValue.getAsDouble())
+                  : AutoAlign.calculateReefTransform(
+                      elevator.getSetpoint(),
+                      leftTriggerValue.getAsDouble() > rightTriggerValue.getAsDouble());
         }
 
         tagPose = AutoAlign.getTagPoseRobotRelative(targetId, vision, lastTagPose, drive.getPose());
@@ -198,19 +231,39 @@ public class DriveMeToTheMoon extends Command {
 
           // gets reef align translation speeds and theta speeds separately, then adds them together
           ChassisSpeeds reefAlignSpeeds =
-              AutoAlign.getReefAlignSpeeds(tagPose, goalTransform, xController, yController);
+              AutoAlign.getReefAlignSpeeds(
+                  tagPose, goalTransform, reefXController, reefYController);
           reefAlignSpeeds =
               reefAlignSpeeds.plus(
                   AutoAlign.getAutoAlignThetaSpeeds(
                       thetaController, thetaGoalDegrees, drive.getRotation()));
           speeds = speeds.plus(reefAlignSpeeds);
 
-          // For LED driver feedback
-          Logger.recordOutput("Align/X Distance", Math.abs(tagPose.getX() - goalTransform.getX()));
-          Logger.recordOutput("Align/Y Distance", Math.abs(tagPose.getY() - goalTransform.getY()));
+          // calculates distance from goal position
+          this.currentDistance =
+              Math.sqrt(
+                  Math.pow(tagPose.getX() - goalTransform.getX(), 2)
+                      + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
+
+          if (alignStuckDebouncer.calculate(
+              tagPose.getX() - goalTransform.getX() > Units.inchesToMeters(3)
+                  && tagPose.getX() - goalTransform.getX() < Units.inchesToMeters(4.3)
+                  && Math.abs(tagPose.getY() - goalTransform.getY()) < Units.inchesToMeters(10)))
+            timer.start();
+          else timer.reset();
+
+          if (timer.hasElapsed(0.15)) drive.setAlignBlockedByCoral(true);
+          else drive.setAlignBlockedByCoral(false);
+
+          Logger.recordOutput("Align/Timer Value", timer.get());
           Logger.recordOutput(
-              "Align/Theta Distance",
-              Math.abs(drive.getRotation().getDegrees() - thetaGoalDegrees));
+              "Align/Align Distance Inches", Units.metersToInches(this.currentDistance));
+
+          // For LED driver feedback
+          Logger.recordOutput(
+              "Align/X Distance",
+              Units.metersToInches(Math.abs(tagPose.getX() - goalTransform.getX())));
+          Logger.recordOutput("Align/Y Distance", Math.abs(tagPose.getY() - goalTransform.getY()));
 
           drive.setAutoAlignComplete(
               Math.abs(tagPose.getX() - goalTransform.getX()) < Units.inchesToMeters(1)
@@ -221,6 +274,8 @@ public class DriveMeToTheMoon extends Command {
       } else {
         lastTagPose = null;
         drive.setAutoAlignComplete(false);
+        drive.setAlignBlockedByCoral(false);
+        timer.reset();
       }
     }
     // really weird way of stoping auto algae intake from starting at the intake setpoint instead of
@@ -247,5 +302,28 @@ public class DriveMeToTheMoon extends Command {
         && wrist.getSetpoint() == Constants.WristConstants.kRotationIntakeCoralDegrees) {
       drive.stopWithX();
     }
+
+    if (!DriverStation.isFMSAttached()
+        && (Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2))
+                < 0.01
+            && Math.abs(speeds.omegaRadiansPerSecond) < 0.01)
+        && wrist.getSetpoint() != Constants.WristConstants.kRotationIntakeCoralDegrees
+        && !DriverStation.isAutonomous()) {
+      stoppedTimer.start();
+      if (stoppedTimer.hasElapsed(0.5)) {
+
+        for (int i = 0; i < 4; i++) {
+          drive.getSwerveModules()[i].getIO().stoppedDrivePID();
+        }
+      }
+    } else if (!DriverStation.isFMSAttached()
+        && wrist.getSetpoint() != Constants.WristConstants.kRotationIntakeCoralDegrees
+        && !DriverStation.isAutonomous()) {
+      stoppedTimer.reset();
+      for (int i = 0; i < 4; i++) {
+        drive.getSwerveModules()[i].getIO().movingDrivePID();
+      }
+    }
+    Logger.recordOutput("Drive/StoppedP", drive.getSwerveModules()[0].getIO().stoppedP());
   }
 }

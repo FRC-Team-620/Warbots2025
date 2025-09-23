@@ -136,12 +136,22 @@ public class AutoAlign {
         || elevatorSetpoint == Constants.ElevatorConstants.kAlgaeIntakeL3Meters) {
       xTransform = 0.7;
     } else {
-      yTransform = isLeft ? Units.inchesToMeters(-7.3) : Units.inchesToMeters(6.8);
+      if (isLeft)
+        yTransform =
+            (elevatorSetpoint == Constants.ElevatorConstants.kLevel1Meters)
+                ? Units.inchesToMeters(-20)
+                : Units.inchesToMeters(-8.3);
+      else
+        yTransform =
+            (elevatorSetpoint == Constants.ElevatorConstants.kLevel1Meters)
+                ? Units.inchesToMeters(18)
+                : Units.inchesToMeters(6);
       if (elevatorSetpoint == Constants.ElevatorConstants.kLevel2Meters
-          || elevatorSetpoint == Constants.ElevatorConstants.kLevel3Meters) xTransform = 0.45;
+          || elevatorSetpoint == Constants.ElevatorConstants.kLevel3Meters) xTransform = 0.47;
+      else if (elevatorSetpoint == Constants.ElevatorConstants.kLevel1Meters) xTransform = 0.5;
       else {
-        if (isLeft) xTransform = 0.52;
-        else xTransform = 0.52;
+        if (isLeft) xTransform = 0.46;
+        else xTransform = 0.45;
       }
     }
     return new Transform2d(xTransform, yTransform, new Rotation2d());
@@ -151,21 +161,6 @@ public class AutoAlign {
       int targetId, Vision vision, Pose3d lastPose, Pose2d drivePose) {
     Pose3d tagPose = null;
     lastPose = null;
-    // looks at first cam to see if it sees the target tag
-    for (var target : vision.getTagPoses(0)) {
-      if (target.id() == targetId) tagPose = target.pose();
-    }
-    // Checks if other camera can see the tag if pose is still null
-    if (tagPose == null) {
-      for (var target : vision.getTagPoses(1)) {
-        if (target.id() == targetId) tagPose = target.pose();
-      }
-    }
-    // If tag is null estimates its position based on its last known pose
-    if (tagPose == null && lastPose != null) {
-      Transform3d transform = new Pose3d(drivePose).minus(lastPose);
-      tagPose = new Pose3d(transform.getTranslation(), transform.getRotation());
-    }
     // If no tag is seen, estimates tag pos using odometry
     if (tagPose == null) {
       Pose3d defaultTagPose =
@@ -188,5 +183,53 @@ public class AutoAlign {
         xOutput * DriveConstants.maxSpeedMetersPerSec,
         yOutput * DriveConstants.maxSpeedMetersPerSec,
         0);
+  }
+
+  public static double getAutoAlignDistance(Pose3d tagPose, Transform2d goalTransform) {
+    double currentDistance;
+    currentDistance =
+        Math.sqrt(
+            Math.pow(tagPose.getX() - goalTransform.getX(), 2)
+                + Math.pow(tagPose.getY() - goalTransform.getY(), 2));
+    return currentDistance;
+  }
+
+  public static int adjustTagID(int targetTagID) {
+    if (DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red) {
+      switch (targetTagID) {
+        case 17:
+          return 8;
+        case 18:
+          return 7;
+        case 19:
+          return 6;
+        case 20:
+          return 11;
+        case 21:
+          return 10;
+        case 22:
+          return 9;
+      }
+    }
+    return targetTagID;
+  }
+
+  public static double calculateGoalAngleFromId(int targetTagId) {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+      if (targetTagId == 18) return 0;
+      else if (targetTagId == 17) return 60;
+      else if (targetTagId == 22) return 120;
+      else if (targetTagId == 21) return 180;
+      else if (targetTagId == 19) return -60;
+      else return -120;
+    }
+
+    // if current alliance is red, use the following angles
+    if (targetTagId == 7) return 180;
+    else if (targetTagId == 8) return -120;
+    else if (targetTagId == 10) return 0;
+    else if (targetTagId == 6) return 120;
+    else if (targetTagId == 9) return -60;
+    else return 60;
   }
 }

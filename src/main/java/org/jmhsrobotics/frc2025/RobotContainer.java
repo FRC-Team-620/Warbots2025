@@ -13,8 +13,11 @@
 
 package org.jmhsrobotics.frc2025;
 
+import static edu.wpi.first.units.Units.Seconds;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -37,23 +40,30 @@ import org.jmhsrobotics.frc2025.commands.DriveCommands;
 import org.jmhsrobotics.frc2025.commands.DriveMeToTheMoon;
 import org.jmhsrobotics.frc2025.commands.DriveTimeCommand;
 import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
+import org.jmhsrobotics.frc2025.commands.ElevatorMoveTo;
 import org.jmhsrobotics.frc2025.commands.ElevatorSetZero;
 import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
-import org.jmhsrobotics.frc2025.commands.IndexerMove;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.IntakeMove;
-import org.jmhsrobotics.frc2025.commands.LEDFlashPattern;
 import org.jmhsrobotics.frc2025.commands.LEDToControlMode;
-import org.jmhsrobotics.frc2025.commands.ScoreBarge;
+import org.jmhsrobotics.frc2025.commands.ScoreBargeWrist;
 import org.jmhsrobotics.frc2025.commands.SetPointTuneCommand;
 import org.jmhsrobotics.frc2025.commands.WristMoveTo;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignBarge;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReef;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleProf;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSource;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignSourceProf;
+import org.jmhsrobotics.frc2025.commands.autoCommands.AutoIntakeCoral;
+import org.jmhsrobotics.frc2025.commands.autoCommands.AutoRemoveAlgae;
+import org.jmhsrobotics.frc2025.commands.autoCommands.AutoScoreAlgae;
+import org.jmhsrobotics.frc2025.commands.autoCommands.AutoScoreCoral;
 import org.jmhsrobotics.frc2025.commands.autoCommands.DriveBackwards;
 import org.jmhsrobotics.frc2025.commands.autoCommands.IntakeUntilCoralInIndexer;
 import org.jmhsrobotics.frc2025.commands.autoCommands.ScoreCoral;
+import org.jmhsrobotics.frc2025.commands.autoCommands.TeleopCoralScoreSequence;
+import org.jmhsrobotics.frc2025.commands.autoCommands.WristMoveToNoFinish;
 import org.jmhsrobotics.frc2025.controlBoard.ControlBoard;
 import org.jmhsrobotics.frc2025.controlBoard.DoubleControl;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
@@ -186,7 +196,7 @@ public class RobotContainer {
         break;
     }
 
-    this.control = new DoubleControl(intake, elevator);
+    this.control = new DoubleControl(drive, intake, elevator);
 
     led = new LED();
 
@@ -216,6 +226,7 @@ public class RobotContainer {
     configureButtonBindings();
     configureDriverFeedback();
     setupSmartDashbaord();
+    PathfindingCommand.warmupCommand().schedule();
   }
 
   /**
@@ -235,12 +246,14 @@ public class RobotContainer {
             elevator,
             intake,
             wrist,
+            indexer,
             () -> -control.translationY(),
             () -> -control.translationX(),
             () -> -control.rotation(),
             () -> control.alignLeft(),
             () -> control.alignRight(),
-            control.autoAlignAlgaeIntake()));
+            control.autoAlignAlgaeIntake(),
+            control.L1AutoAlign()));
     // Reset gyro to 0° when right bumper is pressed
 
     control
@@ -306,6 +319,15 @@ public class RobotContainer {
                 Constants.WristConstants.kLevel4Degrees));
 
     control
+        .altPlaceCoralLevel4()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kAltLevel4Meters,
+                Constants.WristConstants.kAltLevel4Degrees));
+
+    control
         .scoreAlgaeProcesser()
         .onTrue(
             new ElevatorAndWristMove(
@@ -314,7 +336,7 @@ public class RobotContainer {
                 Constants.ElevatorConstants.kProcesserMeters,
                 Constants.WristConstants.kRotationProcesserDegrees));
 
-    control.scoreAlgaeBarge().onTrue(new ScoreBarge(elevator, wrist, intake));
+    control.scoreAlgaeBarge().onTrue(new ScoreBargeWrist(wrist, elevator, intake));
 
     control
         .elevatorIntakeCoral()
@@ -351,6 +373,25 @@ public class RobotContainer {
                 wrist,
                 Constants.ElevatorConstants.kAlgaeQTipMeters,
                 Constants.WristConstants.kRotationAlgaeDegrees));
+
+    control
+        .prepareAlgaeBarge()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kBargeMeters,
+                Constants.WristConstants.kRotationProcesserDegrees));
+
+    control
+        .algaeIntermediateSetpoint()
+        .onTrue(
+            new ElevatorAndWristMove(
+                elevator,
+                wrist,
+                Constants.ElevatorConstants.kIntermediateAlgaeSetpoint,
+                Constants.WristConstants.kRotationProcesserDegrees));
+
     control
         .intakeCoralFromIndexer()
         .onTrue(
@@ -371,45 +412,62 @@ public class RobotContainer {
         .changeModeRight()
         .onTrue(Commands.runOnce(() -> intake.setMode(1), intake).ignoringDisable(true));
 
-    control
-        .zeroElevator()
-        .onTrue(
-            new SequentialCommandGroup(
-                new WristMoveTo(wrist, Constants.WristConstants.kSafeAngleDegrees),
-                new ElevatorSetZero(elevator)));
+    control.zeroElevator().onTrue(new ElevatorSetZero(elevator, wrist));
 
     control.UnOverrideControlMode().onTrue(Commands.runOnce(() -> intake.unOverrideControlMode()));
 
     control.turboMode().onTrue(Commands.runOnce(() -> drive.setTurboMode(true), drive));
     control.turboMode().onFalse(Commands.runOnce(() -> drive.setTurboMode(false), drive));
 
-    // control.autoAlignAlgae().whileTrue()
     control
         .autoAlignBarge()
         .whileTrue(
             new AlignBarge(drive, control.AdjustAlignBargeLeft(), control.AdjustAlignBargeRight()));
+
+    control.TeleopAutoScore()
+        .whileTrue(
+            new TeleopCoralScoreSequence(drive, elevator, wrist, intake, indexer, vision, led));
+
+    control.skipAutoScoreEast().onTrue(Commands.runOnce(() -> drive.addCoralScoredEast(), drive));
+
+    control.skipAutoScoreWest().onTrue(Commands.runOnce(() -> drive.addCoralScoredWest(), drive));
+
+    control
+        .revertAutoScoreEast()
+        .onTrue(Commands.runOnce(() -> drive.removeCoralScoredEast(), drive));
+    control
+        .revertAutoScoreWest()
+        .onTrue(Commands.runOnce(() -> drive.removeCoralScoredWest(), drive));
   }
 
   private void configureDriverFeedback() {
     // Changes LED light status and controller rumble
     led.setDefaultCommand(new LEDToControlMode(this.led, this.intake));
 
-    // If control mode is manually overridden, lights flash red and green(Christmas!)
+    // If control mode is manually overridden, lights flash red and
+    // green(Christmas!)
     new Trigger(intake::isControlModeOverridden)
         .onTrue(
-            new LEDFlashPattern(led, LEDPattern.solid(Color.kRed), LEDPattern.solid(Color.kWhite))
+            Commands.run(
+                    () -> led.setPattern(LEDPattern.solid(Color.kRed).blink(Seconds.of(0.1))), led)
                 .withTimeout(1.5));
 
     // if control mode is un-overridden, lights will flash gold and white
     new Trigger(intake::isControlModeOverridden)
         .onFalse(
-            new LEDFlashPattern(led, LEDPattern.solid(Color.kGold), LEDPattern.solid(Color.kWhite))
+            Commands.run(
+                    () -> led.setPattern(LEDPattern.solid(Color.kGold).blink(Seconds.of(0.1))), led)
                 .withTimeout(1.5));
 
     new Trigger(drive::isAutoAlignComplete)
         .whileTrue(
-            new LEDFlashPattern(
-                led, LEDPattern.solid(Color.kCyan), LEDPattern.solid(Color.kWhite)));
+            Commands.run(
+                () -> led.setPattern(LEDPattern.solid(Color.kCyan).blink(Seconds.of(0.1))), led));
+
+    new Trigger(drive::getAlignBlockedByCoral)
+        .whileTrue(
+            Commands.run(
+                () -> led.setPattern(LEDPattern.solid(Color.kRed).blink(Seconds.of(0.1))), led));
   }
 
   private void setupSmartDashbaord() {
@@ -423,7 +481,7 @@ public class RobotContainer {
         "cmd/SwitchModeLeft", Commands.runOnce(() -> intake.setMode(-1), intake));
     SmartDashboard.putData(
         "cmd/SwitchModeRight", Commands.runOnce(() -> intake.setMode(1), intake));
-    SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator));
+    SmartDashboard.putData("cmd/RunElevatorZeroCommand", new ElevatorSetZero(elevator, wrist));
     SmartDashboard.putData("cmd/SetPointTuneCommand", new SetPointTuneCommand(elevator, wrist));
     SmartDashboard.putData(
         "cmd/Align Reef Left", new AlignReef(drive, vision, led, elevator, true).withTimeout(5));
@@ -432,43 +490,38 @@ public class RobotContainer {
     SmartDashboard.putData("Fix Coral Placement", new FixCoralPlacement(intake));
 
     SmartDashboard.putData("Scheduler2", CommandScheduler.getInstance());
-    SmartDashboard.putData("cmd/Score Coral", new ScoreCoral(intake).withTimeout(0.15));
-    SmartDashboard.putData("cmd/Align Source Close", new AlignSource(drive, true));
-    SmartDashboard.putData("cmd/Align Source Far", new AlignSource(drive, false));
 
     SmartDashboard.putData(
-        "cmd/Intake Indexer",
-        new SequentialCommandGroup(
-            new ElevatorAndWristMove(
-                elevator,
-                wrist,
-                Constants.ElevatorConstants.kCoralIntakeMeters,
-                Constants.WristConstants.kRotationIntakeCoralDegrees),
-            new IntakeFromIndexer(wrist, intake, indexer, led),
-            new FixCoralPlacement(intake)));
-    SmartDashboard.putData(
         "cmd/Align Preset Southwest",
-        new AlignReefSetAngle(drive, vision, led, elevator, true, 19));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 19));
+
+    SmartDashboard.putData(
+        "cmd/Align Left Southwest Profiled",
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 19));
+
     SmartDashboard.putData(
         "cmd/Align Preset Southwest Right",
         new AlignReefSetAngle(drive, vision, led, elevator, false, 19));
+
     SmartDashboard.putData(
         "cmd/Align Preset Northwest",
         new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
-    SmartDashboard.putData("cmd/Run Indexer", new IndexerMove(indexer));
+
     SmartDashboard.putData(
-        "cmd/Run Intake Sequence",
-        new SequentialCommandGroup(
-            new ElevatorAndWristMove(
-                elevator,
-                wrist,
-                Constants.ElevatorConstants.kCoralIntakeMeters,
-                Constants.WristConstants.kRotationIntakeCoralDegrees),
-            new IntakeFromIndexer(wrist, intake, indexer, led),
-            new FixCoralPlacement(intake)));
+        "cmd/Run Teleop Scoring Sequence",
+        new TeleopCoralScoreSequence(drive, elevator, wrist, intake, indexer, vision, led));
+
     SmartDashboard.putData(
-        "cmd/Align Barge",
-        new AlignBarge(drive, control.AdjustAlignBargeLeft(), control.AdjustAlignBargeRight()));
+        "cmd/Auto Intake Coral",
+        new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false));
+    var sourceAlignprof = new AlignSourceProf(drive, false);
+    SmartDashboard.putData("Align Source Profiled Loop", AlignSourceProf.distController);
+    SmartDashboard.putData("cmd/Align Source Profiled", sourceAlignprof);
+
+    SmartDashboard.putData("Align Reef Profiled Loop", AlignReefSetAngleProf.distController);
+    SmartDashboard.putData("cmd/Align Source Non-Profiled", new AlignSource(drive, false));
+
+    SmartDashboard.putData("cmd/Auto Score Coral", new ScoreCoral(intake, elevator));
   }
 
   private void configurePathPlanner() {
@@ -502,10 +555,12 @@ public class RobotContainer {
             Constants.ElevatorConstants.kCoralIntakeMeters,
             Constants.WristConstants.kSafeAngleDegrees));
     // Intake Commands
-    // TODO: Intake Coral command needs to be updated once updated intake control is merged to
+    // TODO: Intake Coral command needs to be updated once updated intake control is
+    // merged to
     // master to also run the fix coral placement command
 
-    // timeouts needed for simulation since they will never end without simulated game piece pickup
+    // timeouts needed for simulation since they will never end without simulated
+    // game piece pickup
     if (Robot.isSimulation()) {
       NamedCommands.registerCommand(
           "Intake Until Indexer Has Coral",
@@ -516,6 +571,7 @@ public class RobotContainer {
 
       NamedCommands.registerCommand(
           "Fix Coral Placement", new FixCoralPlacement(intake).withTimeout(1.2));
+
     } else {
       NamedCommands.registerCommand(
           "Intake Until Indexer Has Coral",
@@ -528,59 +584,151 @@ public class RobotContainer {
           "Fix Coral Placement", new FixCoralPlacement(intake).withTimeout(1.5));
     }
 
-    NamedCommands.registerCommand("Score Coral", new ScoreCoral(intake).withTimeout(0.25));
+    NamedCommands.registerCommand(
+        "Score Coral", new ScoreCoral(intake, elevator).withTimeout(0.25));
 
     NamedCommands.registerCommand(
-        "Align Reef Left", new AlignReef(drive, vision, led, elevator, true));
+        "Align Reef Left", new AlignReef(drive, vision, led, elevator, true).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Right", new AlignReef(drive, vision, led, elevator, false));
+        "Align Reef Right", new AlignReef(drive, vision, led, elevator, false).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Left North", new AlignReefSetAngle(drive, vision, led, elevator, true, 21));
+        "Align Reef Left North",
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 21).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Left NorthWest", new AlignReefSetAngle(drive, vision, led, elevator, true, 20));
+        "Align Reef Left NorthWest",
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 20).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Left NorthEast", new AlignReefSetAngle(drive, vision, led, elevator, true, 22));
+        "Align Reef Left NorthEast",
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 22).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Left South", new AlignReefSetAngle(drive, vision, led, elevator, true, 18));
+        "Align Reef Left South",
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 18).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Left SouthWest", new AlignReefSetAngle(drive, vision, led, elevator, true, 19));
+        "Align Reef Left SouthWest",
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 19).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Left SouthEast", new AlignReefSetAngle(drive, vision, led, elevator, true, 17));
+        "Align Reef Left SouthEast",
+        new AlignReefSetAngleProf(drive, vision, led, elevator, true, 17).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Right North", new AlignReefSetAngle(drive, vision, led, elevator, false, 21));
+        "Align Reef Right North",
+        new AlignReefSetAngleProf(drive, vision, led, elevator, false, 21).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right NorthWest",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 20));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, false, 20).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right NorthEast",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 22));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, false, 22).withTimeout(4));
 
     NamedCommands.registerCommand(
-        "Align Reef Right South", new AlignReefSetAngle(drive, vision, led, elevator, false, 18));
+        "Align Reef Right South",
+        new AlignReefSetAngleProf(drive, vision, led, elevator, false, 18).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right SouthWest",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 19));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, false, 19).withTimeout(4));
 
     NamedCommands.registerCommand(
         "Align Reef Right SouthEast",
-        new AlignReefSetAngle(drive, vision, led, elevator, false, 17));
-
-    NamedCommands.registerCommand("Stop Drivetrain", Commands.runOnce(() -> drive.stop(), drive));
+        new AlignReefSetAngleProf(drive, vision, led, elevator, false, 17).withTimeout(4));
 
     NamedCommands.registerCommand("Drive Backwards", new DriveBackwards(drive));
 
     NamedCommands.registerCommand("Align Source", new AlignSource(drive, false));
+
+    NamedCommands.registerCommand(
+        "Elevator Only L4",
+        new ElevatorMoveTo(elevator, Constants.ElevatorConstants.kLevel4Meters));
+    NamedCommands.registerCommand(
+        "Wrist Only L4", new WristMoveTo(wrist, Constants.WristConstants.kLevel4Degrees));
+
+    NamedCommands.registerCommand(
+        "Wrist Only L4 Unending",
+        new WristMoveToNoFinish(wrist, Constants.WristConstants.kLevel4Degrees));
+
+    NamedCommands.registerCommand(
+        "Intake Coral And Align Source",
+        new AutoIntakeCoral(drive, wrist, elevator, intake, indexer, led, false));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral RNW",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 20, true));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral RSW",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 19, true));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral LSW",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 19, true));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral LS",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 18, true));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral LNE",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 22, true));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral RSE",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 17, true));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral LSE",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, true, 17, true));
+
+    NamedCommands.registerCommand(
+        "Finish Intake and Score Coral RS",
+        new AutoScoreCoral(drive, elevator, wrist, intake, indexer, vision, led, false, 18, true));
+
+    NamedCommands.registerCommand(
+        "Intake North Algae",
+        new AutoRemoveAlgae(
+            drive,
+            elevator,
+            wrist,
+            intake,
+            vision,
+            21,
+            Constants.ElevatorConstants.kAlgaeIntakeL2Meters));
+
+    NamedCommands.registerCommand(
+        "Intake North West Algae",
+        new AutoRemoveAlgae(
+            drive,
+            elevator,
+            wrist,
+            intake,
+            vision,
+            20,
+            Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
+
+    NamedCommands.registerCommand(
+        "Score Barge Right", new AutoScoreAlgae(drive, elevator, wrist, intake, 1.2));
+
+    NamedCommands.registerCommand(
+        "Score Barge Right Center", new AutoScoreAlgae(drive, elevator, wrist, intake, 0.5));
+
+    NamedCommands.registerCommand(
+        "Intake North East Algae",
+        new AutoRemoveAlgae(
+            drive,
+            elevator,
+            wrist,
+            intake,
+            vision,
+            22,
+            Constants.ElevatorConstants.kAlgaeIntakeL3Meters));
   }
 
   public Command getToggleBrakeCommand() {

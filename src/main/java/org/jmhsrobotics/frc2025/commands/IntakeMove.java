@@ -41,11 +41,11 @@ public class IntakeMove extends Command {
     // Makes it so the intake moves a different direction based on the angle of the wrist so that
     // the right trigger is always intake
     if (rightTrigger >= leftTrigger) {
-      if (isInAlgaeMode)
+      if (isInAlgaeMode || wrist.getSetpoint() == Constants.WristConstants.kLevel1Degrees)
         this.intake.set(-rightTrigger * Constants.IntakeConstants.kAlgaeIntakeSpeedDutyCycle);
       else this.intake.set(rightTrigger * Constants.IntakeConstants.kCoralIntakeSpeedDutyCycle);
     } else {
-      if (isInAlgaeMode)
+      if (isInAlgaeMode || wrist.getSetpoint() == Constants.WristConstants.kLevel1Degrees)
         this.intake.set(leftTrigger * Constants.IntakeConstants.kAlgaeExtakeSpeedDutyCycle);
       else this.intake.set(-leftTrigger * Constants.IntakeConstants.kCoralExtakeSpeedDutyCycle);
     }
@@ -64,7 +64,7 @@ public class IntakeMove extends Command {
     if (intake.getAlgaeDistance() < 30 && intake.getAlgaeDistance() > 0) {
       intake.set(Constants.IntakeConstants.kAlgaeDefaultCommandSpeed);
     } else {
-      intake.set(Constants.IntakeConstants.kAlgaeIntakeSpeedDutyCycle);
+      intake.set(-Constants.IntakeConstants.kAlgaeIntakeSpeedDutyCycle);
     }
   }
 

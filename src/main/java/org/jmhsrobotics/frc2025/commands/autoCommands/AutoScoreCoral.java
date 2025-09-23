@@ -7,6 +7,7 @@ import org.jmhsrobotics.frc2025.commands.ElevatorAndWristMove;
 import org.jmhsrobotics.frc2025.commands.FixCoralPlacement;
 import org.jmhsrobotics.frc2025.commands.IntakeFromIndexer;
 import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngle;
+import org.jmhsrobotics.frc2025.commands.autoAlign.AlignReefSetAngleProf;
 import org.jmhsrobotics.frc2025.subsystems.drive.Drive;
 import org.jmhsrobotics.frc2025.subsystems.elevator.Elevator;
 import org.jmhsrobotics.frc2025.subsystems.indexer.Indexer;
@@ -28,6 +29,36 @@ public class AutoScoreCoral extends SequentialCommandGroup {
       int targetTagID) {
     addCommands(
         new ParallelCommandGroup(
+            new AlignReefSetAngleProf(drive, vision, led, elevator, isLeft, targetTagID),
+            // intakes from indexer, timeout dependent on if sim or real, also fixes coral placement
+            // and then raises the elevator and moves wrist
+            new SequentialCommandGroup(
+                new IntakeFromIndexer(wrist, intake, indexer, led)
+                    .withTimeout(2)
+                    .onlyIf(() -> Robot.isSimulation()),
+                new IntakeFromIndexer(wrist, intake, indexer, led)
+                    .withTimeout(8)
+                    .onlyIf(() -> Robot.isReal()),
+                new ParallelCommandGroup(
+                    new FixCoralPlacement(intake).withTimeout(2),
+                    new ElevatorAndWristMoveAlt(elevator, wrist)))),
+        // scores coral. moves wrist in parallel if already aligned
+        new ScoreCoral(intake, elevator).withTimeout(0.15));
+  }
+
+  public AutoScoreCoral(
+      Drive drive,
+      Elevator elevator,
+      Wrist wrist,
+      Intake intake,
+      Indexer indexer,
+      Vision vision,
+      LED led,
+      boolean isLeft,
+      int targetTagID,
+      boolean isNotProfiled) {
+    addCommands(
+        new ParallelCommandGroup(
             new AlignReefSetAngle(drive, vision, led, elevator, isLeft, targetTagID),
             // intakes from indexer, timeout dependent on if sim or real, also fixes coral placement
             // and then raises the elevator and moves wrist
@@ -42,7 +73,7 @@ public class AutoScoreCoral extends SequentialCommandGroup {
                     new FixCoralPlacement(intake).withTimeout(2),
                     new ElevatorAndWristMoveAlt(elevator, wrist)))),
         // scores coral. moves wrist in parallel if already aligned
-        new ScoreCoral(intake).withTimeout(0.15));
+        new ScoreCoral(intake, elevator).withTimeout(0.15));
   }
 
   // works the same as with the other constructor but allows for any wrist/elevator goal for L2 and
@@ -61,6 +92,36 @@ public class AutoScoreCoral extends SequentialCommandGroup {
       double wristGoalDegrees) {
     addCommands(
         new ParallelCommandGroup(
+            new AlignReefSetAngleProf(drive, vision, led, elevator, isLeft, targetTagID),
+            new SequentialCommandGroup(
+                new IntakeFromIndexer(wrist, intake, indexer, led)
+                    .withTimeout(2)
+                    .onlyIf(() -> Robot.isSimulation()),
+                new IntakeFromIndexer(wrist, intake, indexer, led)
+                    .withTimeout(8)
+                    .onlyIf(() -> Robot.isReal()),
+                new ParallelCommandGroup(
+                    new FixCoralPlacement(intake).withTimeout(2),
+                    new ElevatorAndWristMove(
+                        elevator, wrist, elevatorGoalMeters, wristGoalDegrees)))),
+        new ScoreCoral(intake, elevator));
+  }
+
+  public AutoScoreCoral(
+      Drive drive,
+      Elevator elevator,
+      Wrist wrist,
+      Intake intake,
+      Indexer indexer,
+      Vision vision,
+      LED led,
+      boolean isLeft,
+      int targetTagID,
+      double elevatorGoalMeters,
+      double wristGoalDegrees,
+      boolean isNotProfiled) {
+    addCommands(
+        new ParallelCommandGroup(
             new AlignReefSetAngle(drive, vision, led, elevator, isLeft, targetTagID),
             new SequentialCommandGroup(
                 new IntakeFromIndexer(wrist, intake, indexer, led)
@@ -73,6 +134,6 @@ public class AutoScoreCoral extends SequentialCommandGroup {
                     new FixCoralPlacement(intake).withTimeout(2),
                     new ElevatorAndWristMove(
                         elevator, wrist, elevatorGoalMeters, wristGoalDegrees)))),
-        new ScoreCoral(intake).withTimeout(0.15));
+        new ScoreCoral(intake, elevator));
   }
 }

@@ -64,6 +64,8 @@ public class ModuleIOThrifty implements ModuleIO {
   private final Debouncer driveConnectedDebounce = new Debouncer(0.5);
   private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
 
+  private boolean stopped = false;
+
   public ModuleIOThrifty(int module) {
     zeroRotation =
         switch (module) {
@@ -113,8 +115,8 @@ public class ModuleIOThrifty implements ModuleIO {
     driveConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(thriftyConstants.driveKp, 0, thriftyConstants.driveKd, 0);
-    // .pidf(thriftyConstants.driveKp, 0, thriftyConstants.driveKd, 0.114);
+        .pidf(thriftyConstants.driveKp, 0, thriftyConstants.driveKd, 0, ClosedLoopSlot.kSlot0)
+        .pidf(0, 0, 0, 0.114, ClosedLoopSlot.kSlot1);
     driveConfig
         .signals
         .primaryEncoderPositionAlwaysOn(true)
@@ -240,7 +242,7 @@ public class ModuleIOThrifty implements ModuleIO {
     driveController.setReference(
         velocityRadPerSec,
         ControlType.kVelocity,
-        ClosedLoopSlot.kSlot0,
+        this.stopped ? ClosedLoopSlot.kSlot1 : ClosedLoopSlot.kSlot0,
         ffVolts,
         ArbFFUnits.kVoltage);
   }
@@ -271,5 +273,20 @@ public class ModuleIOThrifty implements ModuleIO {
         () ->
             turnSpark.configure(
                 brakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+  }
+
+  @Override
+  public void stoppedDrivePID() {
+    stopped = true;
+  }
+
+  @Override
+  public void movingDrivePID() {
+    stopped = false;
+  }
+
+  @Override
+  public boolean stoppedP() {
+    return stopped;
   }
 }

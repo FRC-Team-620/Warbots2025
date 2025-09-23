@@ -428,4 +428,8 @@ public class Drive extends SubsystemBase {
   public void setAlignBlockedByCoral(boolean alignBlockedByCoral) {
     this.alignBlockedByCoral = alignBlockedByCoral;
   }
+
+  public ModuleThrifty[] getSwerveModules() {
+    return modules;
+  }
 }

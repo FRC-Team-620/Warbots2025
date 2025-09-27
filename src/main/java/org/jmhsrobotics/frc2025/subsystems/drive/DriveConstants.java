@@ -27,6 +27,7 @@ public class DriveConstants {
   // change coefficients when we want to implement turbo
   public static final double turboCoefficient = 1;
   public static final double nonTurboCoefficient = 0.9;
+  public static final double demoCoefficient = 0.75;
 
   public static final double odometryFrequency = 100.0; // Hz
 
@@ -173,7 +174,7 @@ public class DriveConstants {
         (2 * Math.PI) / 60.0 / driveMotorReduction; // Rotor RPM -> Wheel Rad/Sec
 
     // Drive PID configuration
-    public static final double driveKp = 0.025;
+    public static final double driveKp = 0.0125;
     public static final double driveKd = 0.0;
     public static final double driveKs = 0.0;
     public static final double driveKv = 0.126;
@@ -195,7 +196,7 @@ public class DriveConstants {
 
     // Turn PID configuration
     // 14 for p value was too much
-    public static final double turnKp = 6;
+    public static final double turnKp = 3;
     public static final double turnKd = 0.03;
     public static final double turnSimP = 0.2;
     public static final double turnSimD = 0.0;

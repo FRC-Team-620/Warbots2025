@@ -42,6 +42,8 @@ public class Elevator extends SubsystemBase {
     Logger.recordOutput("Elevator/Current", this.getCurrentAmps());
     Logger.recordOutput("Elevator/Height", inputs.heightMeters);
     Logger.recordOutput("Elevator/Setpoint Value", setPointMeters);
+    Logger.recordOutput("Elevator/Left Motor Temp", inputs.leftMotorTemp);
+    Logger.recordOutput("Elevator/Right Motor Temp", inputs.rightMotorTemp);
 
     SmartDashboard.putNumber("Elevator/Raw Height Meters", inputs.heightMeters);
   }

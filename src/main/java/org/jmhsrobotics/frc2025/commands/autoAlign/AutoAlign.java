@@ -140,12 +140,12 @@ public class AutoAlign {
         yTransform =
             (elevatorSetpoint == Constants.ElevatorConstants.kLevel1Meters)
                 ? Units.inchesToMeters(-20)
-                : Units.inchesToMeters(-8.3);
+                : Units.inchesToMeters(-8.3 + 1);
       else
         yTransform =
             (elevatorSetpoint == Constants.ElevatorConstants.kLevel1Meters)
                 ? Units.inchesToMeters(18)
-                : Units.inchesToMeters(6);
+                : Units.inchesToMeters(6 + 1);
       if (elevatorSetpoint == Constants.ElevatorConstants.kLevel2Meters
           || elevatorSetpoint == Constants.ElevatorConstants.kLevel3Meters) xTransform = 0.47;
       else if (elevatorSetpoint == Constants.ElevatorConstants.kLevel1Meters) xTransform = 0.5;

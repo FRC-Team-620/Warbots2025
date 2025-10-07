@@ -66,6 +66,7 @@ public class DriveMeToTheMoon extends Command {
 
   // timer used for detecting if coral is in front of reef
   private Timer timer = new Timer();
+  private Timer stoppedTimer = new Timer();
 
   private double currentDistance;
 
@@ -301,5 +302,28 @@ public class DriveMeToTheMoon extends Command {
         && wrist.getSetpoint() == Constants.WristConstants.kRotationIntakeCoralDegrees) {
       drive.stopWithX();
     }
+
+    if (!DriverStation.isFMSAttached()
+        && (Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2) + Math.pow(speeds.vyMetersPerSecond, 2))
+                < 0.01
+            && Math.abs(speeds.omegaRadiansPerSecond) < 0.01)
+        && wrist.getSetpoint() != Constants.WristConstants.kRotationIntakeCoralDegrees
+        && !DriverStation.isAutonomous()) {
+      stoppedTimer.start();
+      if (stoppedTimer.hasElapsed(0.5)) {
+
+        for (int i = 0; i < 4; i++) {
+          drive.getSwerveModules()[i].getIO().stoppedDrivePID();
+        }
+      }
+    } else if (!DriverStation.isFMSAttached()
+        && wrist.getSetpoint() != Constants.WristConstants.kRotationIntakeCoralDegrees
+        && !DriverStation.isAutonomous()) {
+      stoppedTimer.reset();
+      for (int i = 0; i < 4; i++) {
+        drive.getSwerveModules()[i].getIO().movingDrivePID();
+      }
+    }
+    Logger.recordOutput("Drive/StoppedP", drive.getSwerveModules()[0].getIO().stoppedP());
   }
 }

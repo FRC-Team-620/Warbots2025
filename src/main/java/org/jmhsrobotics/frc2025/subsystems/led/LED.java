@@ -4,6 +4,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -33,6 +34,10 @@ public class LED extends SubsystemBase {
   }
 
   public void setPattern(LEDPattern pattern) {
-    this.pattern = pattern.atBrightness(Dimensionless.ofRelativeUnits(60, Units.Percent));
+    if (DriverStation.isAutonomousEnabled() || DriverStation.isDisabled()) {
+      this.pattern = pattern.atBrightness(Dimensionless.ofRelativeUnits(15, Units.Percent));
+    } else {
+      this.pattern = pattern.atBrightness(Dimensionless.ofRelativeUnits(60, Units.Percent));
+    }
   }
 }

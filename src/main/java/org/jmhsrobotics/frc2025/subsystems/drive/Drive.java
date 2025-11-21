@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -46,6 +47,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.jmhsrobotics.frc2025.Constants;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleIO;
 import org.jmhsrobotics.frc2025.subsystems.drive.swerve.ModuleThrifty;
+import org.jmhsrobotics.frc2025.util.AntiTipping;
 import org.jmhsrobotics.frc2025.util.LocalADStarAK;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -83,6 +85,8 @@ public class Drive extends SubsystemBase {
   private int coralScoredEast = 0;
   private int coralScoredWest = 0;
 
+  private final AntiTipping antitip;
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -94,6 +98,21 @@ public class Drive extends SubsystemBase {
     modules[1] = new ModuleThrifty(frModuleIO, 1);
     modules[2] = new ModuleThrifty(blModuleIO, 2);
     modules[3] = new ModuleThrifty(brModuleIO, 3);
+    this.antitip =
+        new AntiTipping(
+            () -> {
+              double pitch = gyroInputs.pitchPosition;
+              SmartDashboard.putNumber("gyro/pitchDegrees", pitch);
+              return pitch;
+            },
+            () -> {
+              double roll = gyroInputs.rollPosition;
+              SmartDashboard.putNumber("gyro/rollDegrees", roll);
+              return roll;
+            },
+            0.1,
+            5.0,
+            1.0);
 
     // Usage reporting for swerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
@@ -144,6 +163,9 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("Gyro/Gyro Heading", gyroInputs.yawPosition);
     Logger.recordOutput("Drive/Coral Scored East", this.coralScoredEast);
     Logger.recordOutput("Drive/Coral Scored West", this.coralScoredWest);
+
+    SmartDashboard.putBoolean("Drive/tipping", antitip.isTipping());
+    antitip.calculate();
 
     // Calculates acceleration and velocity, then logs them
     driveAcceleration =
@@ -227,6 +249,10 @@ public class Drive extends SubsystemBase {
    * @param speeds Speeds in meters/sec
    */
   public void runVelocity(ChassisSpeeds speeds) {
+    if (antitip.isTipping()) {
+      speeds = antitip.getVelocityAntiTipping();
+    }
+
     // Calculate module setpoints
 
     speeds = ChassisSpeeds.discretize(speeds, Constants.krealTimeStep);

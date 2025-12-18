@@ -38,6 +38,10 @@ public class GyroIOBoron implements GyroIO {
     inputs.calibrated = !canandgyro.isCalibrating();
     inputs.yawPosition = Rotation2d.fromRotations(canandgyro.getYaw());
     inputs.yawVelocityRadPerSec = Units.rotationsToRadians(canandgyro.getAngularVelocityYaw());
+    inputs.pitchPosition =
+        (canandgyro.getRoll() - 0.5)
+            * 360; // gyro is mounted wrong, so pitch and roll are swithced (flipped them)
+    inputs.rollPosition = (((canandgyro.getPitch())) * 360);
 
     inputs.odometryYawTimestamps =
         yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
